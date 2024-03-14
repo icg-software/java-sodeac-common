@@ -12,7 +12,7 @@ package org.sodeac.common.model.logging;
 
 import java.util.function.Consumer;
 
-import javax.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElement;
 
 import org.sodeac.common.typedtree.BranchNodeType;
 import org.sodeac.common.typedtree.ModelRegistry;

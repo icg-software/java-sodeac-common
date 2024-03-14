@@ -15,8 +15,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
 
 import org.sodeac.common.annotation.BowMethod;
 import org.sodeac.common.annotation.BowParameter;

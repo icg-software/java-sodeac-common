@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.sodeac.common.model.logging;
 
-import javax.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElement;
 
 import org.sodeac.common.annotation.GenerateBow;
 import org.sodeac.common.model.CommonGenericPropertyNodeType;

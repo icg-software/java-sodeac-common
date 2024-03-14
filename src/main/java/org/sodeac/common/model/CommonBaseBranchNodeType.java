@@ -17,8 +17,8 @@ import java.util.Date;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
 
 import org.sodeac.common.annotation.GenerateBow;
 import org.sodeac.common.jdbc.DBSchemaUtils;

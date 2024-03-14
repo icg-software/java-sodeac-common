@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.sodeac.common.model;
 
-import javax.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElement;
 
 import org.sodeac.common.typedtree.BranchNodeType;
 import org.sodeac.common.typedtree.ModelRegistry;

@@ -705,11 +705,6 @@ public class LogServiceImpl implements ILogService
 			catch (Error e) {e.printStackTrace();}
 		}
 		
-		private void flush()
-		{
-			
-		}
-		
 		public void heartBeatLogger()
 		{
 			

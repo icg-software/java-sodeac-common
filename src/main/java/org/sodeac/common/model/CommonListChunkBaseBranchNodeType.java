@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.sodeac.common.model;
 
-import javax.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlAttribute;
 
 import org.sodeac.common.annotation.GenerateBow;
 import org.sodeac.common.typedtree.BranchNodeMetaModel;

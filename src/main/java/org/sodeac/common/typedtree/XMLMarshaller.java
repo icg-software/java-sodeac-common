@@ -24,8 +24,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
@@ -80,7 +80,7 @@ public class XMLMarshaller
 		for(Entry<Class<? extends BranchNodeMetaModel>,XMLNodeMarshaller> entry : this.nodeMarshallerIndex.entrySet())
 		{
 			BranchNodeMetaModel metaModel = ModelRegistry.getBranchNodeMetaModel(entry.getValue().nodeModelClass);
-			for(INodeType nodeType : metaModel.getNodeTypeList())
+			for(INodeType<?,?> nodeType : metaModel.getNodeTypeList())
 			{
 				if(nodeType instanceof LeafNodeType)
 				{
@@ -383,7 +383,7 @@ public class XMLMarshaller
 		protected Class<? extends BranchNodeMetaModel> nodeModelClass = null;
 		protected List<SubMarshallerContainer> attributeSubMarshallerList = new ArrayList<>();
 		protected List<SubMarshallerContainer> elementMarshallerList = new ArrayList<>();
-		protected List<Consumer<BranchNode>> defaultSetterUnmarshalling = new ArrayList<>();
+		protected List<Consumer<BranchNode<?,?>>> defaultSetterUnmarshalling = new ArrayList<>();
 		protected Map<String,SubUnmarshallerContainer> attributeSubUnmarshallerIndex = new HashMap<>();
 		protected Map<String,SubUnmarshallerContainer> elementSubUnmarshallerIndex = new HashMap<>();
 		
@@ -401,7 +401,7 @@ public class XMLMarshaller
 			}
 		}
 		
-		protected void unmarshal(ReaderInput readerInput, BranchNode node) throws XMLStreamException 
+		protected void unmarshal(ReaderInput readerInput, BranchNode<?,?> node) throws XMLStreamException 
 		{
 			SubUnmarshallerContainer unmarshallerContainerForText = null;
 			boolean isNull = false;
@@ -541,16 +541,16 @@ public class XMLMarshaller
 	
 	private class SubUnmarshallerContainer
 	{
-		protected INodeType nodeType;
+		protected INodeType<?,?> nodeType;
 		protected boolean parseTextOnly = false;
 		protected Function<String,Object> stringToValue = null;
-		protected BiConsumer<ReaderInput, BranchNode> runner = null;
+		protected BiConsumer<ReaderInput, BranchNode<?,?>> runner = null;
 		protected XMLNodeMarshaller marshaller = null;
 		protected String nodeName = null;
 		protected String singleName = null;
 		protected boolean listElement = true;
 		
-		protected void runLeafNodeAsAttribute(ReaderInput readerInput, BranchNode node)
+		protected void runLeafNodeAsAttribute(ReaderInput readerInput, BranchNode<?,?> node)
 		{
 			node.setValue((LeafNodeType)nodeType, stringToValue.apply(readerInput.getValue()));
 		}
@@ -660,7 +660,7 @@ public class XMLMarshaller
 				throw new RuntimeException("" + nodeType + " " + e.getMessage(),e);
 			}
 		}
-		protected void runBranchNodeListWithoutListElement(ReaderInput readerInput, BranchNode node)
+		protected void runBranchNodeListWithoutListElement(ReaderInput readerInput, BranchNode<?,?> node)
 		{
 			try
 			{
@@ -691,8 +691,8 @@ public class XMLMarshaller
 	
 	private class SubMarshallerContainer
 	{
-		protected INodeType nodeType;
-		protected BiConsumer<XMLStreamWriter, BranchNode> runner = null;
+		protected INodeType<?,?> nodeType;
+		protected BiConsumer<XMLStreamWriter, BranchNode<?,?>> runner = null;
 		protected Function<Object, String> valueToString = null;
 		protected XMLNodeMarshaller marshaller = null;
 		protected String nodeName = null;
@@ -704,7 +704,7 @@ public class XMLMarshaller
 		boolean ignoreIfEmpty = false;
 		
 		
-		protected void runLeafNodeAsElement(XMLStreamWriter out, BranchNode node)
+		protected void runLeafNodeAsElement(XMLStreamWriter out, BranchNode<?,?> node)
 		{
 			try
 			{
@@ -742,7 +742,7 @@ public class XMLMarshaller
 			}
 		}
 		
-		protected void runLeafNodeAsAttribute(XMLStreamWriter out, BranchNode node)
+		protected void runLeafNodeAsAttribute(XMLStreamWriter out, BranchNode<?,?> node)
 		{
 			try
 			{
@@ -774,7 +774,7 @@ public class XMLMarshaller
 			}
 		}
 		
-		protected void runBranchNode(XMLStreamWriter out, BranchNode node)
+		protected void runBranchNode(XMLStreamWriter out, BranchNode<?,?> node)
 		{
 			try
 			{
@@ -803,7 +803,7 @@ public class XMLMarshaller
 			}
 		}
 		
-		protected void runBranchNodeList(XMLStreamWriter out, BranchNode node)
+		protected void runBranchNodeList(XMLStreamWriter out, BranchNode<?,?> node)
 		{
 			try
 			{

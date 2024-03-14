@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<servicecomponent xmlns="http://www.sodeac.org/xmlns/serviceregistration/v1.0.0" type="org.sodeac.common">
-  <factories>
-    <factory lower-scaling-limit="1" upper-scaling-limit="1" initial-scaling="0" shared="true" class="org.sodeac.common.jdbc.TypedTreeJDBCCruder$LocalServiceFactory">
-      <property key="a" type="string">b</property>
-      <registration domain="org.sodeac.common.jdbc" name="TypedTreeJDBCCruder" version="1.0.0" interface="org.sodeac.common.jdbc.TypedTreeJDBCCruder"></registration>
-    </factory>
-  </factories>
-</servicecomponent>

@@ -160,6 +160,7 @@ public class MessageDispatcherChannelSetup
 		public void applyToChannel(IDispatcherChannel<?> channel);
 	}
 	
+	@SuppressWarnings("rawtypes")
 	protected static class ChannelMasterManager implements IDispatcherChannelManager,IOnChannelAttach,IDispatcherChannelReference
 	{
 		private String id;
@@ -190,7 +191,6 @@ public class MessageDispatcherChannelSetup
 			dispatcher.unregisterChannelManager(this);
 		}
 
-		@SuppressWarnings("rawtypes")
 		@Override
 		public void onChannelAttach(IDispatcherChannel channel)
 		{
@@ -209,10 +209,11 @@ public class MessageDispatcherChannelSetup
 			this.featureList = null;
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public <T> IDispatcherChannel<T> getChannel(Class<T> type)
 		{
-			return (IDispatcherChannel) dispatcher.getChannel(id);
+			return (IDispatcherChannel<T>) dispatcher.getChannel(id);
 		}
 	}
 	
