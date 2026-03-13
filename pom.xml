@@ -5,7 +5,7 @@
 
     <groupId>org.sodeac</groupId>
     <artifactId>org.sodeac.common</artifactId>
-    <version>0.7.1</version>
+    <version>2.0.0-SNAPSHOT</version>
 
     <name>Sodeac Common</name>
     <description>Core framework for sodeac project</description>
@@ -13,15 +13,16 @@
 
     <parent>
         <groupId>com.icg-software</groupId>
-        <artifactId>osgi-parent</artifactId>
-        <version>2.0.1</version>
+        <artifactId>bsx-osgi-super-parent</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
     </parent>
 
     <properties>
-        <bundle.version>0.6.10</bundle.version>
+        <bundle.version>2.0.0-SNAPSHOT</bundle.version>
     </properties>
 
     <dependencies>
+        <!-- TODO H2 DB is not working correctly since upgrade from 1.4.200 to 2.0.x -->
 
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
@@ -109,7 +110,7 @@
 
                         <Import-Package>
                             org.slf4j;version="[1.7,2)";resolution:=optional,
-                            jakarta.xml.bind.annotation;version="[2,3)";resolution:=optional,
+                            jakarta.xml.bind.annotation;version="[4,5)";resolution:=optional,
                             org.postgresql.*;resolution:=optional;version=!,
                             javax.json;version="[1.1,2)";resolution:=optional,
                             javax.json.stream;version="[1.1,2)";resolution:=optional,
