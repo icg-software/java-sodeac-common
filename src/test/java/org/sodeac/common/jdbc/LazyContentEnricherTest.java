@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -167,28 +168,31 @@ public class LazyContentEnricherTest
                                                                                                 }
                                                                                         ).buildParser();
 
-            final PreparedStatement preparedStatementEmployees = closeableCollector.register(connection.prepareStatement
-                                                                                                               (
-                                                                                                                       "SELECT "
-                                                                                                                       + "E.EMPLOYEENUMBER AS EMPLOYEENUMBER, "
-                                                                                                                       + "E.OFFICECODE AS OFFICECODE, "
-                                                                                                                       + "E.EXTENSION AS EMPLOYEEEXTENSION, "
-                                                                                                                       + "E.FIRSTNAME AS EMPLOYEEFIRSTNAME, "
-                                                                                                                       + "E.LASTNAME AS EMPLOYEELASTNAME, "
-                                                                                                                       + "E.JOBTITLE AS EMPLOYEEJOBTITLE, "
-                                                                                                                       + "E.EMAIL AS EMPLOYEEEMAIL, "
-                                                                                                                       + "E.REPORTSTO AS EMPLOYEEREPORTSTO "
-                                                                                                                       + "FROM "
-                                                                                                                       + "EMPLOYEES E "
-                                                                                                                       + "WHERE "
-                                                                                                                       + "E.OFFICECODE IN (UNNEST(?)) "
-                                                                                                                       + "ORDER BY "
-                                                                                                                       + "E.OFFICECODE, "
-                                                                                                                       + "E.EMPLOYEENUMBER"
-                                                                                                               ));
             employeeContentEnricher.defineContentEnricher(ExceptionCatchedConsumer.wrap(c ->
             {
-                preparedStatementEmployees.setArray(1, connection.createArrayOf("VARCHAR", c.getReferences().toArray()));
+                final List<String> list = new ArrayList<>(c.getReferences());
+                if(list.isEmpty()) { throw new IllegalArgumentException("empty list"); }
+
+                final String placeholders = list.stream().map(x -> "?").collect(Collectors.joining(", "));
+
+                final PreparedStatement preparedStatementEmployees =
+                        closeableCollector.register(connection.prepareStatement(
+                                "SELECT "
+                                + "E.EMPLOYEENUMBER AS EMPLOYEENUMBER, "
+                                + "E.OFFICECODE AS OFFICECODE, "
+                                + "E.EXTENSION AS EMPLOYEEEXTENSION, "
+                                + "E.FIRSTNAME AS EMPLOYEEFIRSTNAME, "
+                                + "E.LASTNAME AS EMPLOYEELASTNAME, "
+                                + "E.JOBTITLE AS EMPLOYEEJOBTITLE, "
+                                + "E.EMAIL AS EMPLOYEEEMAIL, "
+                                + "E.REPORTSTO AS EMPLOYEEREPORTSTO "
+                                + "FROM EMPLOYEES E "
+                                + "WHERE E.OFFICECODE IN (" + placeholders + ") "
+                                + "ORDER BY E.OFFICECODE, E.EMPLOYEENUMBER"
+                        ));
+                // fill placeholders
+                for (int i = 0; i < list.size(); i++) { preparedStatementEmployees.setString(i + 1, list.get(i)); }
+
                 final ResultSet resultSet = preparedStatementEmployees.executeQuery();
                 try
                 {
@@ -219,33 +223,40 @@ public class LazyContentEnricherTest
 
             }));
 
-            final PreparedStatement preparedStatementCustomer = closeableCollector.register(connection.prepareStatement
-                                                                                                              (
-                                                                                                                      "SELECT "
-                                                                                                                      + "C.CUSTOMERNUMBER AS CUSTOMERNUMBER, "
-                                                                                                                      + "C.SALESREPEMPLOYEENUMBER AS SALESREPEMPLOYEENUMBER, "
-                                                                                                                      + "C.CUSTOMERNAME AS CUSTOMERNAME, "
-                                                                                                                      + "C.CONTACTLASTNAME AS CUSTOMERCONTACTLASTNAME, "
-                                                                                                                      + "C.CREDITLIMIT AS CUSTOMERCREDITLIMIT, "
-                                                                                                                      + "C.CONTACTFIRSTNAME AS CUSTOMERCONTACTFIRSTNAME, "
-                                                                                                                      + "C.PHONE AS CUSTOMERPHONE, "
-                                                                                                                      + "C.ADDRESSLINE1 AS CUSTOMERADDRESSLINE1, "
-                                                                                                                      + "C.ADDRESSLINE2 AS CUSTOMERADDRESSLINE2, "
-                                                                                                                      + "C.CITY AS CUSTOMERCITY, "
-                                                                                                                      + "C.STATE AS CUSTOMERSTATE, "
-                                                                                                                      + "C.POSTALCODE AS CUSTOMERPOSTALCODE, "
-                                                                                                                      + "C.COUNTRY AS CUSTOMERCOUNTRY "
-                                                                                                                      + "FROM "
-                                                                                                                      + "CUSTOMERS C "
-                                                                                                                      + "WHERE "
-                                                                                                                      + "C.SALESREPEMPLOYEENUMBER IN (UNNEST(?)) "
-                                                                                                                      + "ORDER BY "
-                                                                                                                      + "C.SALESREPEMPLOYEENUMBER,"
-                                                                                                                      + "C.CUSTOMERNUMBER"
-                                                                                                              ));
             customerContentEnricher.defineContentEnricher(ExceptionCatchedConsumer.wrap(c ->
             {
-                preparedStatementCustomer.setArray(1, connection.createArrayOf("INTEGER", c.getReferences().toArray()));
+                final List<Integer> list = new ArrayList<>(c.getReferences());
+                if(list.isEmpty()) { throw new IllegalArgumentException("empty list"); }
+
+                final String placeholders = list.stream().map(x -> "?").collect(Collectors.joining(", "));
+
+                final PreparedStatement preparedStatementCustomer =
+                        closeableCollector.register(connection.prepareStatement(
+                                "SELECT "
+                                + "C.CUSTOMERNUMBER AS CUSTOMERNUMBER, "
+                                + "C.SALESREPEMPLOYEENUMBER AS SALESREPEMPLOYEENUMBER, "
+                                + "C.CUSTOMERNAME AS CUSTOMERNAME, "
+                                + "C.CONTACTLASTNAME AS CUSTOMERCONTACTLASTNAME, "
+                                + "C.CREDITLIMIT AS CUSTOMERCREDITLIMIT, "
+                                + "C.CONTACTFIRSTNAME AS CUSTOMERCONTACTFIRSTNAME, "
+                                + "C.PHONE AS CUSTOMERPHONE, "
+                                + "C.ADDRESSLINE1 AS CUSTOMERADDRESSLINE1, "
+                                + "C.ADDRESSLINE2 AS CUSTOMERADDRESSLINE2, "
+                                + "C.CITY AS CUSTOMERCITY, "
+                                + "C.STATE AS CUSTOMERSTATE, "
+                                + "C.POSTALCODE AS CUSTOMERPOSTALCODE, "
+                                + "C.COUNTRY AS CUSTOMERCOUNTRY "
+                                + "FROM "
+                                + "CUSTOMERS C "
+                                + "WHERE "
+                                + "C.SALESREPEMPLOYEENUMBER IN (" + placeholders + ") "
+                                + "ORDER BY "
+                                + "C.SALESREPEMPLOYEENUMBER,"
+                                + "C.CUSTOMERNUMBER"
+                        ));
+                // fill placeholders
+                for (int i = 0; i < list.size(); i++) { preparedStatementCustomer.setInt(i + 1, list.get(i)); }
+
                 final ResultSet resultSet = preparedStatementCustomer.executeQuery();
                 try
                 {
@@ -254,27 +265,24 @@ public class LazyContentEnricherTest
 
                         for (final BranchNode<OfficeNodeType, EmployeeNodeType> employee : c.getObjectsToBeEnrichByReference().get(resultSet.getInt("SALESREPEMPLOYEENUMBER")))
                         {
-                            orderContentEnricher.register
-                                                        (
-                                                                paymentContentEnricher.register
-                                                                                              (
-                                                                                                      employee.create(EmployeeNodeType.CUSTOMERS)
-                                                                                                              .setValue(CustomerNodeType.CUSTOMERNUMBER, resultSet.getInt(CustomerNodeType.CUSTOMERNUMBER.getNodeName()))
-                                                                                                              .setValue(CustomerNodeType.CUSTOMERNAME, resultSet.getString(CustomerNodeType.CUSTOMERNAME.getNodeName()))
-                                                                                                              .setValue(CustomerNodeType.CUSTOMERCONTACTLASTNAME, resultSet.getString(CustomerNodeType.CUSTOMERCONTACTLASTNAME.getNodeName()))
-                                                                                                              .setValue(CustomerNodeType.CUSTOMERCONTACTFIRSTNAME, resultSet.getString(CustomerNodeType.CUSTOMERCONTACTFIRSTNAME.getNodeName()))
-                                                                                                              .setValue(CustomerNodeType.CUSTOMERADDRESSLINE1, resultSet.getString(CustomerNodeType.CUSTOMERADDRESSLINE1.getNodeName()))
-                                                                                                              .setValue(CustomerNodeType.CUSTOMERADDRESSLINE2, resultSet.getString(CustomerNodeType.CUSTOMERADDRESSLINE2.getNodeName()))
-                                                                                                              .setValue(CustomerNodeType.CUSTOMERCITY, resultSet.getString(CustomerNodeType.CUSTOMERCITY.getNodeName()))
-                                                                                                              .setValue(CustomerNodeType.CUSTOMERCOUNTRY, resultSet.getString(CustomerNodeType.CUSTOMERCOUNTRY.getNodeName()))
-                                                                                                              .setValue(CustomerNodeType.CUSTOMERSTATE, resultSet.getString(CustomerNodeType.CUSTOMERSTATE.getNodeName()))
-                                                                                                              .setValue(CustomerNodeType.CUSTOMERPOSTALCODE, resultSet.getString(CustomerNodeType.CUSTOMERPOSTALCODE.getNodeName()))
-                                                                                                              .setValue(CustomerNodeType.CUSTOMERPHONE, resultSet.getString(CustomerNodeType.CUSTOMERPHONE.getNodeName()))
-                                                                                                              .setValue(CustomerNodeType.CUSTOMERCREDITLIMIT, resultSet.getInt(CustomerNodeType.CUSTOMERCREDITLIMIT.getNodeName())),
-                                                                                                      resultSet.getInt(CustomerNodeType.CUSTOMERNUMBER.getNodeName())
-                                                                                              )
-                                                                , resultSet.getInt(CustomerNodeType.CUSTOMERNUMBER.getNodeName())
-                                                        );
+                            orderContentEnricher.register(paymentContentEnricher.register(
+                                            employee.create(EmployeeNodeType.CUSTOMERS)
+                                                    .setValue(CustomerNodeType.CUSTOMERNUMBER, resultSet.getInt(CustomerNodeType.CUSTOMERNUMBER.getNodeName()))
+                                                    .setValue(CustomerNodeType.CUSTOMERNAME, resultSet.getString(CustomerNodeType.CUSTOMERNAME.getNodeName()))
+                                                    .setValue(CustomerNodeType.CUSTOMERCONTACTLASTNAME, resultSet.getString(CustomerNodeType.CUSTOMERCONTACTLASTNAME.getNodeName()))
+                                                    .setValue(CustomerNodeType.CUSTOMERCONTACTFIRSTNAME, resultSet.getString(CustomerNodeType.CUSTOMERCONTACTFIRSTNAME.getNodeName()))
+                                                    .setValue(CustomerNodeType.CUSTOMERADDRESSLINE1, resultSet.getString(CustomerNodeType.CUSTOMERADDRESSLINE1.getNodeName()))
+                                                    .setValue(CustomerNodeType.CUSTOMERADDRESSLINE2, resultSet.getString(CustomerNodeType.CUSTOMERADDRESSLINE2.getNodeName()))
+                                                    .setValue(CustomerNodeType.CUSTOMERCITY, resultSet.getString(CustomerNodeType.CUSTOMERCITY.getNodeName()))
+                                                    .setValue(CustomerNodeType.CUSTOMERCOUNTRY, resultSet.getString(CustomerNodeType.CUSTOMERCOUNTRY.getNodeName()))
+                                                    .setValue(CustomerNodeType.CUSTOMERSTATE, resultSet.getString(CustomerNodeType.CUSTOMERSTATE.getNodeName()))
+                                                    .setValue(CustomerNodeType.CUSTOMERPOSTALCODE, resultSet.getString(CustomerNodeType.CUSTOMERPOSTALCODE.getNodeName()))
+                                                    .setValue(CustomerNodeType.CUSTOMERPHONE, resultSet.getString(CustomerNodeType.CUSTOMERPHONE.getNodeName()))
+                                                    .setValue(CustomerNodeType.CUSTOMERCREDITLIMIT, resultSet.getInt(CustomerNodeType.CUSTOMERCREDITLIMIT.getNodeName())),
+                                            resultSet.getInt(CustomerNodeType.CUSTOMERNUMBER.getNodeName())
+                                    )
+                                    , resultSet.getInt(CustomerNodeType.CUSTOMERNUMBER.getNodeName())
+                            );
                             customerIds1.add(resultSet.getInt(CustomerNodeType.CUSTOMERNUMBER.getNodeName()));
                         }
                     }
@@ -285,24 +293,31 @@ public class LazyContentEnricherTest
                 }
             }));
 
-            final PreparedStatement preparedStatementPayment = closeableCollector.register(connection.prepareStatement
-                                                                                                             (
-                                                                                                                     "SELECT "
-                                                                                                                     + "P.ID AS PAYMENTID, "
-                                                                                                                     + "P.CUSTOMERNUMBER AS CUSTOMERNUMBER, "
-                                                                                                                     + "P.AMOUNT AS PAYMENTAMOUNT, "
-                                                                                                                     + "P.CHECKNUMBER AS PAYMENTCHECKNUMBER, "
-                                                                                                                     + "P.PAYMENTDATE AS PAYMENTDATE "
-                                                                                                                     + "FROM "
-                                                                                                                     + "PAYMENTS P "
-                                                                                                                     + "WHERE "
-                                                                                                                     + "P.CUSTOMERNUMBER IN (UNNEST(?)) "
-                                                                                                                     + "ORDER BY "
-                                                                                                                     + "P.CUSTOMERNUMBER,P.ID"
-                                                                                                             ));
             paymentContentEnricher.defineContentEnricher(ExceptionCatchedConsumer.wrap(c ->
             {
-                preparedStatementPayment.setArray(1, connection.createArrayOf("INTEGER", c.getReferences().toArray()));
+                final List<Integer> list = new ArrayList<>(c.getReferences());
+                if(list.isEmpty()) { throw new IllegalArgumentException("empty list"); }
+
+                final String placeholders = list.stream().map(x -> "?").collect(Collectors.joining(", "));
+
+                final PreparedStatement preparedStatementPayment =
+                        closeableCollector.register(connection.prepareStatement(
+                                "SELECT "
+                                + "P.ID AS PAYMENTID, "
+                                + "P.CUSTOMERNUMBER AS CUSTOMERNUMBER, "
+                                + "P.AMOUNT AS PAYMENTAMOUNT, "
+                                + "P.CHECKNUMBER AS PAYMENTCHECKNUMBER, "
+                                + "P.PAYMENTDATE AS PAYMENTDATE "
+                                + "FROM "
+                                + "PAYMENTS P "
+                                + "WHERE "
+                                + "P.CUSTOMERNUMBER IN (" + placeholders + ") "
+                                + "ORDER BY "
+                                + "P.CUSTOMERNUMBER,P.ID"
+                        ));
+                // fill placeholders
+                for (int i = 0; i < list.size(); i++) { preparedStatementPayment.setInt(i + 1, list.get(i)); }
+
                 final ResultSet resultSet = preparedStatementPayment.executeQuery();
                 try
                 {
@@ -327,26 +342,33 @@ public class LazyContentEnricherTest
                 }
             }));
 
-            final PreparedStatement preparedStatementOrders = closeableCollector.register(connection.prepareStatement
-                                                                                                            (
-                                                                                                                    "SELECT "
-                                                                                                                    + "R.ORDERNUMBER AS ORDERNUMBER, "
-                                                                                                                    + "R.CUSTOMERNUMBER AS CUSTOMERNUMBER, "
-                                                                                                                    + "R.REQUIREDDATE AS ORDERREQUIREDDATE, "
-                                                                                                                    + "R.ORDERDATE AS ORDERORDERDATE, "
-                                                                                                                    + "R.SHIPPEDDATE AS ORDERSHIPPEDDATE, "
-                                                                                                                    + "R.STATUS AS ORDERSTATUS, "
-                                                                                                                    + "R.COMMENTS AS ORDERCOMMENTS "
-                                                                                                                    + "FROM "
-                                                                                                                    + "ORDERS R "
-                                                                                                                    + "WHERE "
-                                                                                                                    + "R.CUSTOMERNUMBER IN (UNNEST(?)) "
-                                                                                                                    + "ORDER BY "
-                                                                                                                    + "R.CUSTOMERNUMBER, R.ORDERNUMBER"
-                                                                                                            ));
             orderContentEnricher.defineContentEnricher(ExceptionCatchedConsumer.wrap(c ->
             {
-                preparedStatementOrders.setArray(1, connection.createArrayOf("INTEGER", c.getReferences().toArray()));
+                final List<Integer> list = new ArrayList<>(c.getReferences());
+                if(list.isEmpty()) { throw new IllegalArgumentException("empty list"); }
+
+                final String placeholders = list.stream().map(x -> "?").collect(Collectors.joining(", "));
+
+                final PreparedStatement preparedStatementOrders =
+                        closeableCollector.register(connection.prepareStatement(
+                                "SELECT "
+                                + "R.ORDERNUMBER AS ORDERNUMBER, "
+                                + "R.CUSTOMERNUMBER AS CUSTOMERNUMBER, "
+                                + "R.REQUIREDDATE AS ORDERREQUIREDDATE, "
+                                + "R.ORDERDATE AS ORDERORDERDATE, "
+                                + "R.SHIPPEDDATE AS ORDERSHIPPEDDATE, "
+                                + "R.STATUS AS ORDERSTATUS, "
+                                + "R.COMMENTS AS ORDERCOMMENTS "
+                                + "FROM "
+                                + "ORDERS R "
+                                + "WHERE "
+                                + "R.CUSTOMERNUMBER IN (" + placeholders + ") "
+                                + "ORDER BY "
+                                + "R.CUSTOMERNUMBER, R.ORDERNUMBER"
+                        ));
+                // fill placeholders
+                for (int i = 0; i < list.size(); i++) { preparedStatementOrders.setInt(i + 1, list.get(i)); }
+
                 final ResultSet resultSet = preparedStatementOrders.executeQuery();
                 try
                 {
@@ -354,17 +376,16 @@ public class LazyContentEnricherTest
                     {
                         for (final BranchNode<EmployeeNodeType, CustomerNodeType> customer : c.getObjectsToBeEnrichByReference().get(resultSet.getInt("CUSTOMERNUMBER")))
                         {
-                            orderDetailContentEnricher.register
-                                                              (
-                                                                      customer.create(CustomerNodeType.ORDERS)
-                                                                              .setValue(OrderNodeType.ORDERNUMBER, resultSet.getInt(OrderNodeType.ORDERNUMBER.getNodeName()))
-                                                                              .setValue(OrderNodeType.ORDERREQUIREDDATE, resultSet.getDate(OrderNodeType.ORDERREQUIREDDATE.getNodeName()))
-                                                                              .setValue(OrderNodeType.ORDERORDERDATE, resultSet.getDate(OrderNodeType.ORDERORDERDATE.getNodeName()))
-                                                                              .setValue(OrderNodeType.ORDERSHIPPEDDATE, resultSet.getDate(OrderNodeType.ORDERSHIPPEDDATE.getNodeName()))
-                                                                              .setValue(OrderNodeType.ORDERCOMMENTS, resultSet.getString(OrderNodeType.ORDERCOMMENTS.getNodeName()))
-                                                                              .setValue(OrderNodeType.ORDERSTATUS, resultSet.getString(OrderNodeType.ORDERSTATUS.getNodeName())),
-                                                                      resultSet.getInt(OrderNodeType.ORDERNUMBER.getNodeName())
-                                                              );
+                            orderDetailContentEnricher.register(
+                                    customer.create(CustomerNodeType.ORDERS)
+                                            .setValue(OrderNodeType.ORDERNUMBER, resultSet.getInt(OrderNodeType.ORDERNUMBER.getNodeName()))
+                                            .setValue(OrderNodeType.ORDERREQUIREDDATE, resultSet.getDate(OrderNodeType.ORDERREQUIREDDATE.getNodeName()))
+                                            .setValue(OrderNodeType.ORDERORDERDATE, resultSet.getDate(OrderNodeType.ORDERORDERDATE.getNodeName()))
+                                            .setValue(OrderNodeType.ORDERSHIPPEDDATE, resultSet.getDate(OrderNodeType.ORDERSHIPPEDDATE.getNodeName()))
+                                            .setValue(OrderNodeType.ORDERCOMMENTS, resultSet.getString(OrderNodeType.ORDERCOMMENTS.getNodeName()))
+                                            .setValue(OrderNodeType.ORDERSTATUS, resultSet.getString(OrderNodeType.ORDERSTATUS.getNodeName())),
+                                    resultSet.getInt(OrderNodeType.ORDERNUMBER.getNodeName())
+                            );
                             orderIds1.add(resultSet.getInt(OrderNodeType.ORDERNUMBER.getNodeName()));
                         }
                     }
@@ -375,25 +396,32 @@ public class LazyContentEnricherTest
                 }
             }));
 
-            final PreparedStatement preparedStatementOrderDetail = closeableCollector.register(connection.prepareStatement
-                                                                                                                 (
-                                                                                                                         "SELECT "
-                                                                                                                         + "D.ID AS ORDERDETAILID,"
-                                                                                                                         + "D.ORDERNUMBER AS ORDERNUMBER, "
-                                                                                                                         + "D.PRODUCTCODE AS PRODUCTCODE, "
-                                                                                                                         + "D.ORDERLINENUMBER AS ORDERDETAILORDERLINENUMBER, "
-                                                                                                                         + "D.PRICEEACH AS ORDERDETAILPRICEEACH, "
-                                                                                                                         + "D.QUANTITYORDERED AS ORDERDETAILQUANTITYORDERED "
-                                                                                                                         + "FROM "
-                                                                                                                         + "ORDERDETAILS D "
-                                                                                                                         + "WHERE "
-                                                                                                                         + "D.ORDERNUMBER IN (UNNEST(?)) "
-                                                                                                                         + "ORDER BY "
-                                                                                                                         + "D.ORDERNUMBER,D.ORDERLINENUMBER"
-                                                                                                                 ));
             orderDetailContentEnricher.defineContentEnricher(ExceptionCatchedConsumer.wrap(c ->
             {
-                preparedStatementOrderDetail.setArray(1, connection.createArrayOf("INTEGER", c.getReferences().toArray()));
+                final List<Integer> list = new ArrayList<>(c.getReferences());
+                if(list.isEmpty()) { throw new IllegalArgumentException("empty list"); }
+
+                final String placeholders = list.stream().map(x -> "?").collect(Collectors.joining(", "));
+
+                final PreparedStatement preparedStatementOrderDetail =
+                        closeableCollector.register(connection.prepareStatement(
+                                "SELECT "
+                                + "D.ID AS ORDERDETAILID,"
+                                + "D.ORDERNUMBER AS ORDERNUMBER, "
+                                + "D.PRODUCTCODE AS PRODUCTCODE, "
+                                + "D.ORDERLINENUMBER AS ORDERDETAILORDERLINENUMBER, "
+                                + "D.PRICEEACH AS ORDERDETAILPRICEEACH, "
+                                + "D.QUANTITYORDERED AS ORDERDETAILQUANTITYORDERED "
+                                + "FROM "
+                                + "ORDERDETAILS D "
+                                + "WHERE "
+                                + "D.ORDERNUMBER IN (" + placeholders + ") "
+                                + "ORDER BY "
+                                + "D.ORDERNUMBER,D.ORDERLINENUMBER"
+                        ));
+                // fill placeholders
+                for (int i = 0; i < list.size(); i++) { preparedStatementOrderDetail.setInt(i + 1, list.get(i)); }
+
                 final ResultSet resultSet = preparedStatementOrderDetail.executeQuery();
                 try
                 {
@@ -420,26 +448,33 @@ public class LazyContentEnricherTest
                 }
             }));
 
-            final PreparedStatement preparedStatementProduct = closeableCollector.register(connection.prepareStatement
-                                                                                                             (
-                                                                                                                     "SELECT "
-                                                                                                                     + "PR.PRODUCTCODE AS PRODUCTCODE, "
-                                                                                                                     + "PR.PRODUCTNAME AS PRODUCTNAME, "
-                                                                                                                     + "PR.PRODUCTLINE AS PRODUCTLINE, "
-                                                                                                                     + "PR.PRODUCTSCALE AS PRODUCTSCALE, "
-                                                                                                                     + "PR.PRODUCTVENDOR AS PRODUCTVENDOR, "
-                                                                                                                     + "PR.PRODUCTDESCRIPTION AS PRODUCTDESCRIPTION, "
-                                                                                                                     + "PR.QUANTITYINSTOCK AS PRODUCTQUANTITYINSTOCK, "
-                                                                                                                     + "PR.BUYPRICE AS PRODUCTBUYPRICE, "
-                                                                                                                     + "PR.MSRP AS PRODUCTMSRP "
-                                                                                                                     + "FROM "
-                                                                                                                     + "PRODUCTS PR "
-                                                                                                                     + "WHERE "
-                                                                                                                     + "PR.PRODUCTCODE IN (UNNEST(?)) "
-                                                                                                             ));
             productContentEnricher.defineContentEnricher(ExceptionCatchedConsumer.wrap(c ->
             {
-                preparedStatementProduct.setArray(1, connection.createArrayOf("VARCHAR", c.getReferences().toArray()));
+                final List<String> list = new ArrayList<>(c.getReferences());
+                if(list.isEmpty()) { throw new IllegalArgumentException("empty list"); }
+
+                final String placeholders = list.stream().map(x -> "?").collect(Collectors.joining(", "));
+
+                final PreparedStatement preparedStatementProduct =
+                        closeableCollector.register(connection.prepareStatement(
+                                "SELECT "
+                                + "PR.PRODUCTCODE AS PRODUCTCODE, "
+                                + "PR.PRODUCTNAME AS PRODUCTNAME, "
+                                + "PR.PRODUCTLINE AS PRODUCTLINE, "
+                                + "PR.PRODUCTSCALE AS PRODUCTSCALE, "
+                                + "PR.PRODUCTVENDOR AS PRODUCTVENDOR, "
+                                + "PR.PRODUCTDESCRIPTION AS PRODUCTDESCRIPTION, "
+                                + "PR.QUANTITYINSTOCK AS PRODUCTQUANTITYINSTOCK, "
+                                + "PR.BUYPRICE AS PRODUCTBUYPRICE, "
+                                + "PR.MSRP AS PRODUCTMSRP "
+                                + "FROM "
+                                + "PRODUCTS PR "
+                                + "WHERE "
+                                + "PR.PRODUCTCODE IN (" + placeholders + ") "
+                        ));
+                // fill placeholders
+                for (int i = 0; i < list.size(); i++) { preparedStatementProduct.setString(i + 1, list.get(i)); }
+
                 final ResultSet resultSet = preparedStatementProduct.executeQuery();
                 try
                 {
@@ -698,10 +733,6 @@ public class LazyContentEnricherTest
             assertEquals("values should be equal", productIds1.size(), productIds2.size());
 
             new File(tempDir + "/" + database + ".mv.db").delete();
-        }
-        catch (final Exception e)
-        {
-            e.printStackTrace();
         }
     }
 
