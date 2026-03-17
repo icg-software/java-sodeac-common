@@ -32,6 +32,8 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.sql.DataSource;
 
@@ -1072,24 +1074,41 @@ public class TypedTreeJDBCCruder implements AutoCloseable
                 this.constrainHelperIndex.put(runtimeParameter.searchField, constraintHelper);
             }
 
-            String completeSQL = null;
-            if(runtimeParameter.getSession().isPostgreSQL)
+            final Object[] searchValues = runtimeParameter.searchValues == null ? new Object[0] : runtimeParameter.searchValues;
+
+            final String completeSQL;
+
+            if(searchValues.length == 0) // give back nothing
+            {
+                completeSQL = this.sql + " where 1 = 0";
+                runtimeParameter.preparedStatement = runtimeParameter.getPreparedStatement(completeSQL);
+            }
+            else if(runtimeParameter.getSession().isPostgreSQL) // via unnest
             {
                 completeSQL = this.sql + " where " + constraintHelper.column + " in (select * from unnest(?))";
+                runtimeParameter.preparedStatement = runtimeParameter.getPreparedStatement(completeSQL);
+                runtimeParameter.preparedStatement.setArray(
+                        1,
+                        runtimeParameter.connection.createArrayOf(constraintHelper.sqlType, searchValues)
+                );
             }
-            else if(runtimeParameter.getSession().isH2)
+            else // isH2 and all else via normal IN (?, ?, ?)
             {
-                completeSQL = this.sql + " where " + constraintHelper.column + " in (UNNEST(?))";
-            }
-            else
-            {
-                completeSQL = this.sql + " where " + constraintHelper.column + " in (?)";
+                final String placeholders = IntStream.range(0, searchValues.length)
+                                                     .mapToObj(i -> "?")
+                                                     .collect(Collectors.joining(", "));
+
+                completeSQL = this.sql + " where " + constraintHelper.column + " in (" + placeholders + ")";
+                runtimeParameter.preparedStatement = runtimeParameter.getPreparedStatement(completeSQL);
+
+                for (int i = 0; i < searchValues.length; i++)
+                {
+                    runtimeParameter.preparedStatement.setObject(i + 1, searchValues[i]);
+                }
             }
 
-            runtimeParameter.preparedStatement = runtimeParameter.getPreparedStatement(completeSQL);
             runtimeParameter.values = new Object[this.columns.size()];
             runtimeParameter.convertEvent.setPreparedStatement(runtimeParameter.preparedStatement);
-            runtimeParameter.preparedStatement.setArray(1, runtimeParameter.connection.createArrayOf(constraintHelper.sqlType, runtimeParameter.searchValues));
 
             final ResultSet resultSet = runtimeParameter.preparedStatement.executeQuery();
             try
