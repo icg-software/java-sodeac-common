@@ -184,19 +184,17 @@ public class ConplierBeanTest
 
         final ConplierBean<Boolean> consumed = new ConplierBean<Boolean>(false);
 
-        final ConplierBean<Integer>.ConsumeOnChangeListener pcl = conplier.consumeOnChange
-                                                                                  (
-                                                                                          new Consumer<Integer>()
-                                                                                          {
-
-                                                                                              @Override
-                                                                                              public void accept(final Integer t)
-                                                                                              {
-                                                                                                  consumed.setValue(true);
-                                                                                                  assertEquals("value should be correct", 42, t.intValue());
-                                                                                              }
-                                                                                          }
-                                                                                  );
+        final ConplierBean<Integer>.ConsumeOnChangeListener pcl =
+                conplier.consumeOnChange(new Consumer<Integer>()
+                                         {
+                                             @Override
+                                             public void accept(final Integer t)
+                                             {
+                                                 consumed.setValue(true);
+                                                 assertEquals("value should be correct", 42, t.intValue());
+                                             }
+                                         }
+                );
 
         assertFalse("value should be not consumed", consumed.get());
         conplier.setValue(42);
@@ -212,6 +210,7 @@ public class ConplierBeanTest
     @Test
     public void test102()
     {
+        // new Long() is deprecated
         final Long l1 = Long.valueOf(1L);
         final Long l2 = Long.valueOf(1L);
 
@@ -220,13 +219,31 @@ public class ConplierBeanTest
 
         assertEquals("equals should return correct value", conplier1, conplier2);
 
+        // since new Long() is deprecated, equalsBySameValue has no meaning here (also new String, new Integer...)
         conplier1.setEqualsBySameValue(true);
 
-        assertNotEquals("equals should return correct value", conplier1, conplier2);
+        assertEquals("equals should return correct value", conplier1, conplier2);
 
         conplier2.setValue(l1);
 
         assertEquals("equals should return correct value", conplier1, conplier2);
 
     }
+
+    @Test
+    public void testEqualsBySameValue()
+    {
+        final ConplierBean<Person> conplier1 = new ConplierBean<>(new Person("Holger"));
+        final ConplierBean<Person> conplier2 = new ConplierBean<>(new Person("Holger"));
+
+        assertEquals("person1.equals(person2) must be true", conplier1, conplier2);
+
+        conplier1.setEqualsBySameValue(true);
+        assertNotEquals("person1 == person2 must be false", conplier1, conplier2);
+
+        assertEquals("person2.equals(person1) must be true", conplier2, conplier1);
+    }
+
+    private record Person(String name) { }
+
 }

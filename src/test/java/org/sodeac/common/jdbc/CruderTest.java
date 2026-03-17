@@ -14,7 +14,6 @@ import java.util.concurrent.Callable;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -34,7 +33,6 @@ import org.sodeac.common.typedtree.ModelRegistry;
 import org.sodeac.common.typedtree.TypedTreeMetaModel.RootBranchNode;
 import org.sodeac.common.typedtree.annotation.SQLTable;
 
-@Ignore
 @RunWith(Parameterized.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CruderTest
@@ -105,6 +103,7 @@ public class CruderTest
         schemaSpec.dispose();
     }
 
+    @Test
     public void t00010SimpleTests() throws Exception
     {
         if(!this.testConnection.enabled)
@@ -225,6 +224,7 @@ public class CruderTest
         cruder.close();
     }
 
+    @Test
     public void t00110TestExtension2() throws Exception
     {
         if(!this.testConnection.enabled)
