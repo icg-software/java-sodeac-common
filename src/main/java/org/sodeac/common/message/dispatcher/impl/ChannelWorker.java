@@ -98,10 +98,6 @@ public class ChannelWorker extends Thread
                     {
                         this.logger.error("Exception on on-create() event controller", e);
                     }
-                    catch (final Error e)
-                    {
-                        this.logger.error("Exception on on-create() event controller", e);
-                    }
                 }
             }
             finally
@@ -110,10 +106,6 @@ public class ChannelWorker extends Thread
             }
         }
         catch (final Exception e)
-        {
-            this.logger.error("Exception while check queueAttach", e);
-        }
-        catch (final Error e)
         {
             this.logger.error("Exception while check queueAttach", e);
         }
@@ -129,32 +121,15 @@ public class ChannelWorker extends Thread
         DequeSnapshot<? extends IMessage> removedMessagesSnapshot;
         while (this.go)
         {
+            checkQueueAttach();
 
-            try
+            synchronized (this.waitMonitor)
             {
-                checkQueueAttach();
+                this.isUpdateNotified = false;
+                this.isSoftUpdated = false;
             }
-            catch (final Exception ex) { }
-            catch (final Error ex) { }
 
-            try
-            {
-                synchronized (this.waitMonitor)
-                {
-                    this.isUpdateNotified = false;
-                    this.isSoftUpdated = false;
-                }
-
-                this.channel.closeWorkerSnapshots();
-            }
-            catch (final Exception e)
-            {
-                this.logger.error("Exception while worker go init", e);
-            }
-            catch (final Error e)
-            {
-                this.logger.error("Exception while worker go init", e);
-            }
+            this.channel.closeWorkerSnapshots();
 
             try
             {
@@ -163,16 +138,7 @@ public class ChannelWorker extends Thread
                 {
                     if((removedMessagesSnapshot != null) && (!removedMessagesSnapshot.isEmpty()))
                     {
-
-                        try
-                        {
-                            checkQueueAttach();
-                        }
-                        catch (final Exception ex) { }
-                        catch (final Error ex) { }
-
-                        final boolean onMessageRemoveSingle = false;
-                        final boolean onMessageRemoveSnapshot = false;
+                        checkQueueAttach();
 
                         for (final ChannelManagerContainer conf : this.channel.getManagerContainerList())
                         {
@@ -183,8 +149,7 @@ public class ChannelWorker extends Thread
                                     ((IOnMessageRemoveSnapshot) conf.getChannelManager()).onMessageRemoveSnapshot(removedMessagesSnapshot);
                                 }
                             }
-                            catch (final Exception e) { }
-                            catch (final Error e) { }
+                            catch (final Exception ignored) { }
                         }
 
                         for (final MessageImpl message : (DequeSnapshot<MessageImpl>) removedMessagesSnapshot)
@@ -199,8 +164,7 @@ public class ChannelWorker extends Thread
                                         ((IOnMessageRemove) conf.getChannelManager()).onMessageRemove(message);
                                     }
                                 }
-                                catch (final Exception e) { }
-                                catch (final Error e) { }
+                                catch (final Exception ignored) { }
                             }
                         }
 
@@ -210,8 +174,7 @@ public class ChannelWorker extends Thread
                             {
                                 message.dispose();
                             }
-                            catch (final Exception e) { }
-                            catch (final Error e) { }
+                            catch (final Exception ignored) { }
                         }
                     }
                 }
@@ -237,6 +200,7 @@ public class ChannelWorker extends Thread
             catch (final Error e)
             {
                 this.logger.error("Error while process removedEventList", e);
+                throw e;
             }
 
             try
@@ -246,12 +210,7 @@ public class ChannelWorker extends Thread
                 {
                     if((newMessagesSnapshot != null) && (!newMessagesSnapshot.isEmpty()))
                     {
-                        try
-                        {
-                            checkQueueAttach();
-                        }
-                        catch (final Exception ex) { }
-                        catch (final Error ex) { }
+                        checkQueueAttach();
 
                         boolean onMessageStoredSingle = false;
                         boolean onMessageStoredSnapshot = false;
@@ -277,7 +236,7 @@ public class ChannelWorker extends Thread
                                 {
                                     scheduledResultSet.add(event.getScheduleResultObject());
                                 }
-                                catch (final Exception ie) { }
+                                catch (final Exception ignored) { }
                             }
 
                             if(onMessageStoredSnapshot)
@@ -290,10 +249,8 @@ public class ChannelWorker extends Thread
                                         try
                                         {
                                             ((IOnMessageStoreSnapshot) conf.getChannelManager()).onMessageStoreSnapshot(newMessagesSnapshot);
-
                                         }
-                                        catch (final Exception e) { }
-                                        catch (final Error e) { }
+                                        catch (final Exception ignored) { }
                                     }
 
                                 }
@@ -319,7 +276,7 @@ public class ChannelWorker extends Thread
                                             {
                                                 message.getScheduleResultObject().addError(e);
                                             }
-                                            catch (final Exception ie) { }
+                                            catch (final Exception ignored) { }
                                         }
                                         catch (final Error e)
                                         {
@@ -327,7 +284,8 @@ public class ChannelWorker extends Thread
                                             {
                                                 message.getScheduleResultObject().addError(e);
                                             }
-                                            catch (final Exception ie) { }
+                                            catch (final Exception ignored) { }
+                                            throw e;
                                         }
                                     }
                                 }
@@ -339,7 +297,7 @@ public class ChannelWorker extends Thread
                                 {
                                     ((PublishMessageResultImpl) scheduleResult).processPhaseIsFinished();
                                 }
-                                catch (final Exception ie) { }
+                                catch (final Exception ignored) { }
                             }
                             for (final MessageImpl<?> event : (DequeSnapshot<MessageImpl<?>>) newMessagesSnapshot)
                             {
@@ -347,7 +305,7 @@ public class ChannelWorker extends Thread
                                 {
                                     event.setScheduleResultObject(null);
                                 }
-                                catch (final Exception e) { }
+                                catch (final Exception ignored) { }
                             }
 
                             scheduledResultSet.clear();
@@ -377,6 +335,7 @@ public class ChannelWorker extends Thread
             catch (final Error e)
             {
                 this.logger.error("Error while process newScheduledList", e);
+                throw e;
             }
 
             try
@@ -386,13 +345,7 @@ public class ChannelWorker extends Thread
                 {
                     if((signalSnapshot != null) && (!signalSnapshot.isEmpty()))
                     {
-
-                        try
-                        {
-                            checkQueueAttach();
-                        }
-                        catch (final Exception ex) { }
-                        catch (final Error ex) { }
+                        checkQueueAttach();
 
                         signalProcessed.clear();
                         for (final String signal : signalSnapshot)
@@ -419,6 +372,7 @@ public class ChannelWorker extends Thread
                                 catch (final Error e)
                                 {
                                     this.logger.error("Error while process signal", e);
+                                    throw e;
                                 }
                             }
 
@@ -435,7 +389,7 @@ public class ChannelWorker extends Thread
                         {
                             signalSnapshot.close();
                         }
-                        catch (final Exception e) { }
+                        catch (final Exception ignored) { }
                     }
                 }
             }
@@ -446,6 +400,7 @@ public class ChannelWorker extends Thread
             catch (final Error e)
             {
                 this.logger.error("Error while process signalList", e);
+                throw e;
             }
 
             this.dueTaskList.clear();
@@ -453,13 +408,7 @@ public class ChannelWorker extends Thread
 
             if(!this.dueTaskList.isEmpty())
             {
-
-                try
-                {
-                    checkQueueAttach();
-                }
-                catch (final Exception ex) { }
-                catch (final Error ex) { }
+                checkQueueAttach();
 
                 this.channel.touchLastWorkerAction();
                 boolean taskTimeOut = false;
@@ -518,7 +467,7 @@ public class ChannelWorker extends Thread
                                             }
                                         }
                                     }
-                                    catch (final Exception e) { }
+                                    catch (final Exception ignored) { }
 
                                     if(periodicRepetitionInterval < 1)
                                     {
@@ -591,13 +540,20 @@ public class ChannelWorker extends Thread
                                 this.currentTimeOutTimeStamp = null;
                                 this.currentRunningTask = null;
 
-                                runningTask.getPropertyBlock().setProperty(ChannelImpl.PROPERTY_KEY_THROWED_EXCEPTION, e);
+                                if(runningTask != null) { runningTask.getPropertyBlock().setProperty(ChannelImpl.PROPERTY_KEY_THROWED_EXCEPTION, e); }
                                 this.logger.error("Exception while process task " + dueTask.getTask(), e);
 
                                 dueTask.getTaskControl().postRun();
                                 if(taskTimeOut)
                                 {
-                                    this.channel.getMessageDispatcher().unregisterTimeOut(this.channel, dueTask);
+                                    try
+                                    {
+                                        this.channel.getMessageDispatcher().unregisterTimeOut(this.channel, dueTask);
+                                    }
+                                    catch (final Exception e2)
+                                    {
+                                        this.logger.error("eventQueue.getEventDispatcher().unregisterTimeOut(this.eventQueue,dueTask)", e2);
+                                    }
                                 }
 
                                 if(!(dueTask.getTask() instanceof IDispatcherChannelService))
@@ -641,29 +597,25 @@ public class ChannelWorker extends Thread
                                 this.currentRunningTask = null;
 
                                 final Exception exc = new Exception(e.getMessage(), e);
-                                runningTask.getPropertyBlock().setProperty(ChannelImpl.PROPERTY_KEY_THROWED_EXCEPTION, exc);
+
+                                if(runningTask != null) { runningTask.getPropertyBlock().setProperty(ChannelImpl.PROPERTY_KEY_THROWED_EXCEPTION, exc); }
                                 this.logger.error("Error while process task " + dueTask.getTask(), e);
 
                                 dueTask.getTaskControl().postRun();
                                 if(taskTimeOut)
                                 {
-                                    this.channel.getMessageDispatcher().unregisterTimeOut(this.channel, dueTask);
+                                    try
+                                    {
+                                        this.channel.getMessageDispatcher().unregisterTimeOut(this.channel, dueTask);
+                                    }
+                                    catch (final Exception e2)
+                                    {
+                                        this.logger.error("eventQueue.getEventDispatcher().unregisterTimeOut(this.eventQueue,dueTask)", e2);
+                                    }
                                 }
-
                                 if(!(dueTask.getTask() instanceof IDispatcherChannelService))
                                 {
                                     dueTask.getTaskControl().setDone();
-                                }
-
-                                if(e instanceof ThreadDeath)
-                                {
-                                    this.go = false;
-                                }
-
-                                if(!this.go)
-                                {
-                                    this.channel.closeWorkerSnapshots();
-                                    return;
                                 }
 
                                 try
@@ -688,6 +640,7 @@ public class ChannelWorker extends Thread
                                     this.logger.error("Error while process onTaskError " + dueTask, ie);
                                 }
 
+                                throw e;
                             }
 
                             this.currentTimeOutTimeStamp = null;
@@ -713,7 +666,7 @@ public class ChannelWorker extends Thread
                                             }
                                         }
                                     }
-                                    catch (final Exception e) { }
+                                    catch (final Exception ignored) { }
                                 }
                             }
                         }
@@ -727,8 +680,8 @@ public class ChannelWorker extends Thread
                                 dueTask.getTaskControl().setDone();
                             }
                         }
-                        catch (final Exception ie) { }
-                        this.logger.error("Error while process currentProcessedTaskList", e);
+                        catch (final Exception ignored) { }
+                        this.logger.error("Exception while process currentProcessedTaskList", e);
                     }
 
                 }
@@ -762,9 +715,12 @@ public class ChannelWorker extends Thread
                                 this.waitMonitor.wait(DEFAULT_WAIT_TIME);
                                 this.wakeUpTimeStamp = -1;
                             }
-                            catch (final Exception e) { }
-                            catch (final ThreadDeath e) { this.go = false; }
-                            catch (final Error e) { }
+                            catch (final InterruptedException e)
+                            {
+                                this.go = false;
+                                // not this.interrupt() bc it will try to interrupt again
+                                Thread.currentThread().interrupt();
+                            }
                         }
 
                         this.inFreeingArea = false;
@@ -780,12 +736,7 @@ public class ChannelWorker extends Thread
                     }
                 }
 
-                try
-                {
-                    checkQueueAttach();
-                }
-                catch (final Exception ex) { }
-                catch (final Error ex) { }
+                checkQueueAttach();
 
                 if(this.go && this.isUpdateNotified)
                 {
@@ -799,9 +750,9 @@ public class ChannelWorker extends Thread
                 {
                     nextRunTimeStamp = this.channel.getNextRun();
                 }
-                catch (Exception | Error e)
+                catch (final Exception e)
                 {
-                    this.logger.error("Error recalc next runtime ", e);
+                    this.logger.error("Exception recalc next runtime ", e);
                 }
 				
 				/*boolean freeWorker = false;
@@ -857,9 +808,11 @@ public class ChannelWorker extends Thread
                                         this.waitMonitor.wait(DEFAULT_WAIT_TIME);
                                         this.wakeUpTimeStamp = -1;
                                     }
-                                    catch (final Exception e) { }
-                                    catch (final ThreadDeath e) { this.go = false; }
-                                    catch (final Error e) { }
+                                    catch (final InterruptedException e)
+                                    {
+                                        this.go = false;
+                                        Thread.currentThread().interrupt();
+                                    }
                                 }
 
                                 this.inFreeingArea = false;
@@ -867,27 +820,31 @@ public class ChannelWorker extends Thread
                             else
                             {
                                 this.inFreeingArea = false;
-                                this.wakeUpTimeStamp = System.currentTimeMillis() + waitTime;
-                                this.waitMonitor.wait(waitTime);
-                                this.wakeUpTimeStamp = -1;
+
+                                try
+                                {
+                                    this.wakeUpTimeStamp = System.currentTimeMillis() + waitTime;
+                                    this.waitMonitor.wait(waitTime);
+                                    this.wakeUpTimeStamp = -1;
+                                }
+                                catch (final InterruptedException e)
+                                {
+                                    this.go = false;
+                                    Thread.currentThread().interrupt();
+                                }
                             }
                         }
                     }
                 }
             }
-
-            catch (final InterruptedException e) { }
             catch (final Exception e)
             {
                 this.logger.error("Exception while run QueueWorker", e);
             }
-            catch (final ThreadDeath e)
-            {
-                this.go = false;
-            }
             catch (final Error e)
             {
                 this.logger.error("Error while run QueueWorker", e);
+                throw e;
             }
         }
     }
@@ -925,7 +882,7 @@ public class ChannelWorker extends Thread
             }
             catch (final Exception e)
             {
-                this.logger.error("Error checking heartbeat timeout", e);
+                this.logger.error("Exception checking heartbeat timeout", e);
             }
         }
 
@@ -964,6 +921,7 @@ public class ChannelWorker extends Thread
         timeOutTaskContainer.setTaskControl(taskControl.copyForTimeout());
 
         this.go = false;
+        this.interrupt();
 
         try
         {
@@ -976,7 +934,7 @@ public class ChannelWorker extends Thread
                 taskControl.timeout();
             }
         }
-        catch (final Exception e) { }
+        catch (final Exception ignored) { }
 
         for (final ChannelManagerContainer conf : channel.getManagerContainerList())
         {
@@ -988,17 +946,17 @@ public class ChannelWorker extends Thread
                     {
                         ((MessageDispatcherImpl) channel.getDispatcher()).executeOnTaskTimeOut((IOnTaskTimeout) conf.getChannelManager(), channel, task, taskState, this);
                     }
-                    catch (Exception | Error e) { }
+                    catch (final Exception ignored) { }
                 }
             }
-            catch (Exception | Error e) { }
+            catch (final Exception ignored) { }
         }
 
         try
         {
             this.context.onTimeout();
         }
-        catch (final Exception e) { }
+        catch (final Exception ignored) { }
 
         if(stopFlag)
         {
@@ -1009,7 +967,7 @@ public class ChannelWorker extends Thread
                     stop.set(true);
                     ((MessageDispatcherImpl) channel.getDispatcher()).executeOnTaskStopExecuter(this, task);
                 }
-                catch (final Exception e) { }
+                catch (final Exception ignored) { }
 
             }
             else
@@ -1029,41 +987,30 @@ public class ChannelWorker extends Thread
 
     public void notifyUpdate(final long newRuntimeStamp)
     {
-        try
+        synchronized (this.waitMonitor)
         {
-            synchronized (this.waitMonitor)
+            this.isUpdateNotified = true;
+            this.isSoftUpdated = false;
+            if(this.wakeUpTimeStamp > 0) // waits for new run
             {
-                this.isUpdateNotified = true;
-                this.isSoftUpdated = false;
-                if(this.wakeUpTimeStamp > 0) // waits for new run
+                if(newRuntimeStamp <= System.currentTimeMillis()
+                   || this.wakeUpTimeStamp >= newRuntimeStamp)
                 {
-                    if(newRuntimeStamp <= System.currentTimeMillis())
-                    {
-                        this.waitMonitor.notify();
-                    }
-                    else if(this.wakeUpTimeStamp >= newRuntimeStamp)
-                    {
-                        this.waitMonitor.notify();
-                    }
+                    this.waitMonitor.notifyAll();
                 }
             }
         }
-        catch (Exception | Error e) { }
     }
 
     public void notifyUpdate()
     {
-        try
+        synchronized (this.waitMonitor)
         {
-            synchronized (this.waitMonitor)
-            {
-                this.isUpdateNotified = true;
-                this.isSoftUpdated = false;
+            this.isUpdateNotified = true;
+            this.isSoftUpdated = false;
 
-                this.waitMonitor.notify();
-            }
+            this.waitMonitor.notifyAll();
         }
-        catch (Exception | Error e) { }
     }
 
     public void softStopWorker()
@@ -1074,16 +1021,12 @@ public class ChannelWorker extends Thread
     public void stopWorker()
     {
         this.go = false;
+        // interrupt this thread
+        this.interrupt();
+
         synchronized (this.waitMonitor)
         {
-            try
-            {
-                this.waitMonitor.notify();
-            }
-            catch (Exception | Error e)
-            {
-                this.logger.error("Error while stop QueueWorker", e);
-            }
+            this.waitMonitor.notifyAll();
         }
     }
 
