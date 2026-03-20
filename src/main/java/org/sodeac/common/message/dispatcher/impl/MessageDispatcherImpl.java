@@ -1107,34 +1107,7 @@ public class MessageDispatcherImpl implements IMessageDispatcher
 
                 }
 
-                if(worker.isAlive())
-                {
-                    try
-                    {
-                        worker.interrupt();
-                    }
-                    catch (final Exception e) { }
-                    catch (final Error e) { }
-
-                    try
-                    {
-                        Thread.sleep(13);
-                    }
-                    catch (final Exception e) { }
-                    catch (final Error e) { }
-
-                    if(worker.isAlive())
-                    {
-
-                        try
-                        {
-                            // TODO: muss unbedingt raus! Ab Java21 wird einfach Exception geworfen
-                            worker.stop();
-                        }
-                        catch (final Exception e) { logError("stop worker " + worker.getName(), e); }
-                        catch (final Error e) { logError("stop worker " + worker.getName(), e); }
-                    }
-                }
+                if(worker.isAlive()) { worker.interrupt(); }
             }
         });
     }
@@ -1186,7 +1159,7 @@ public class MessageDispatcherImpl implements IMessageDispatcher
             {
                 // TODO managerListReadLock.lock(); // TODO required ?
 
-                for (ChannelManagerContainer managerContainer : matchedManagerContainer)
+                for (final ChannelManagerContainer managerContainer : matchedManagerContainer)
                 {
                     modifyFlags.reset();
 
@@ -1194,7 +1167,7 @@ public class MessageDispatcherImpl implements IMessageDispatcher
                     {
                         channel.checkForChannelManager(managerContainer, modifyFlags);
                     }
-                    catch (Exception e)
+                    catch (final Exception e)
                     {
                         logError("check channel binding for manager by configuration filter on channel configuration modify", e);
                     }
@@ -1212,14 +1185,14 @@ public class MessageDispatcherImpl implements IMessageDispatcher
             if(matchedServiceContainer != null)
             {
                 // TODO serviceListReadLock.lock(); // TODO required?
-                for (ServiceContainer serviceContainer : matchedServiceContainer)
+                for (final ServiceContainer serviceContainer : matchedServiceContainer)
                 {
                     modifyFlags.reset();
                     try
                     {
                         channel.checkForService(serviceContainer, modifyFlags);
                     }
-                    catch (Exception e)
+                    catch (final Exception e)
                     {
                         logError("check channel binding for services by configuration filter on channel configuration modify", e);
                     }
