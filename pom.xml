@@ -23,12 +23,10 @@
     </properties>
 
     <dependencies>
-        <!-- TODO H2 DB is not working correctly since upgrade from 1.4.200 to 2.0.x -->
-
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
-            <version>4.0.2</version>
+            <version>4.0.5</version>
             <scope>provided</scope>
         </dependency>
 
@@ -36,6 +34,7 @@
             <groupId>org.glassfish</groupId>
             <artifactId>jakarta.json</artifactId>
             <version>1.1.6</version>
+            <!-- <version>2.0.1</version> -->
         </dependency>
 
     </dependencies>
@@ -114,7 +113,7 @@
                             jakarta.xml.bind.annotation;version="[4,5)";resolution:=optional,
                             org.postgresql.*;resolution:=optional;version=!,
                             javax.json;version="[1.1,2)";resolution:=optional,
-                            javax.json.stream;version="[1.1,2)";resolution:=optional,
+                            jakarta.json.stream;version="[1.1,2)";resolution:=optional,
                             *
                         </Import-Package>
                     </instructions>
