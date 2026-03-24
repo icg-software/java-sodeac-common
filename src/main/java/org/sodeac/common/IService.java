@@ -20,13 +20,13 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import javax.json.Json;
-
 import org.sodeac.common.misc.DefaultServiceFactory;
 import org.sodeac.common.misc.Version;
 import org.sodeac.common.xuri.URI;
 import org.sodeac.common.xuri.ldapfilter.FilterBuilder;
 import org.sodeac.common.xuri.ldapfilter.IFilterItem;
+
+import jakarta.json.Json;
 
 public interface IService
 {
