@@ -75,7 +75,7 @@ public class MessageConsumerFeatureTest
                                               {
                                                   if("TEST1".equals(m.getPayload()))
                                                   {
-                                                      System.out.println("in TEST1");
+                                                      // System.out.println("in TEST1");
                                                       try
                                                       {// timeout 1s >> will always be interrupted after 1s
                                                           Thread.sleep(3000);
@@ -93,7 +93,7 @@ public class MessageConsumerFeatureTest
                                                   }
                                                   else if("TEST2".equals(m.getPayload()))
                                                   {
-                                                      System.out.println("in TEST2");
+                                                      // System.out.println("in TEST2");
                                                       inTimeout.setValue(h.isInTimeout());
                                                       taskDoneNotifier2.setTaskDone();
                                                   }
@@ -102,7 +102,7 @@ public class MessageConsumerFeatureTest
                                               .onTimeout((m, h) ->
                                               {
                                                   handleTimeout.setValue(true);
-                                                  System.out.println("in handleTimeout: " + handleTimeout.get());
+                                                  // System.out.println("in handleTimeout: " + handleTimeout.get());
                                                   m.removeFromChannel();
                                                   taskDoneNotifier1.countDown();
                                               })
@@ -117,7 +117,7 @@ public class MessageConsumerFeatureTest
         final Boolean to = inTimeout.get();
 
         assertTrue("value should be correct: " + to, to);
-        System.out.println("new handleTimeout: " + handleTimeout.get());
+        // System.out.println("new handleTimeout: " + handleTimeout.get());
         assertTrue("value should be correct", handleTimeout.get());
 
         inTimeout.setValue(false);
