@@ -4,16 +4,14 @@ Helper tools and core framework - incubator
 
 ## Installation
 
-- runs with Apache Karaf 4.4.10 -> OSGi 8.0.0
+- runs with Apache Karaf 4.4.10 → OSGi 8.0.0
 - `mvn clean install`
 
-### Karaf
-
-#### Debugging
+### via Karaf commands
 
 ```bash
-# open karaf console in debug mode
-karaf debug
+# open karaf console
+karaf
 ```
 
 ```bash
@@ -27,5 +25,6 @@ install -s mvn:org.osgi/org.osgi.service.component.annotations/1.5.1
 # --- project bundle
 install -s mvn:org.sodeac/org.sodeac.common/2.0.0-SNAPSHOT
 
-bundle:watch org.sodeac.common
+# Debug: SNAPSHOT + 'karaf debug' (not 'karaf')
+# bundle:watch org.sodeac.common 
 ```

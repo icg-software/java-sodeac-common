@@ -81,7 +81,7 @@ public class ChannelWorker extends Thread
         try
         {
             final DequeSnapshot<IOnChannelAttach> onQueueAttachSnapshot = this.channel.getOnQueueAttachList();
-            if(onQueueAttachSnapshot == null)
+            if (onQueueAttachSnapshot == null)
             {
                 return;
             }
@@ -136,7 +136,7 @@ public class ChannelWorker extends Thread
                 removedMessagesSnapshot = this.channel.getRemovedMessagesSnapshot();
                 try
                 {
-                    if((removedMessagesSnapshot != null) && (!removedMessagesSnapshot.isEmpty()))
+                    if ((removedMessagesSnapshot != null) && (!removedMessagesSnapshot.isEmpty()))
                     {
                         checkQueueAttach();
 
@@ -144,7 +144,7 @@ public class ChannelWorker extends Thread
                         {
                             try
                             {
-                                if(this.go && conf.isImplementingIOnMessageRemoveSnapshot())
+                                if (this.go && conf.isImplementingIOnMessageRemoveSnapshot())
                                 {
                                     ((IOnMessageRemoveSnapshot) conf.getChannelManager()).onMessageRemoveSnapshot(removedMessagesSnapshot);
                                 }
@@ -159,7 +159,7 @@ public class ChannelWorker extends Thread
                             {
                                 try
                                 {
-                                    if(this.go && conf.isImplementingIOnMessageRemove())
+                                    if (this.go && conf.isImplementingIOnMessageRemove())
                                     {
                                         ((IOnMessageRemove) conf.getChannelManager()).onMessageRemove(message);
                                     }
@@ -180,7 +180,7 @@ public class ChannelWorker extends Thread
                 }
                 finally
                 {
-                    if(removedMessagesSnapshot != null)
+                    if (removedMessagesSnapshot != null)
                     {
                         try
                         {
@@ -208,7 +208,7 @@ public class ChannelWorker extends Thread
                 newMessagesSnapshot = this.channel.getNewScheduledEventsSnaphot();
                 try
                 {
-                    if((newMessagesSnapshot != null) && (!newMessagesSnapshot.isEmpty()))
+                    if ((newMessagesSnapshot != null) && (!newMessagesSnapshot.isEmpty()))
                     {
                         checkQueueAttach();
 
@@ -217,17 +217,17 @@ public class ChannelWorker extends Thread
 
                         for (final ChannelManagerContainer conf : this.channel.getManagerContainerList())
                         {
-                            if(conf.isImplementingIOnMessageStore())
+                            if (conf.isImplementingIOnMessageStore())
                             {
                                 onMessageStoredSingle = true;
                             }
-                            if(conf.isImplementingIOnMessageStoreSnapshot())
+                            if (conf.isImplementingIOnMessageStoreSnapshot())
                             {
                                 onMessageStoredSnapshot = true;
                             }
                         }
 
-                        if(onMessageStoredSingle || onMessageStoredSnapshot)
+                        if (onMessageStoredSingle || onMessageStoredSnapshot)
                         {
                             scheduledResultSet.clear();
                             for (final IMessage<?> event : newMessagesSnapshot)
@@ -239,12 +239,12 @@ public class ChannelWorker extends Thread
                                 catch (final Exception ignored) { }
                             }
 
-                            if(onMessageStoredSnapshot)
+                            if (onMessageStoredSnapshot)
                             {
                                 this.channel.touchLastWorkerAction();
                                 for (final ChannelManagerContainer conf : this.channel.getManagerContainerList())
                                 {
-                                    if(this.go && conf.isImplementingIOnMessageStoreSnapshot())
+                                    if (this.go && conf.isImplementingIOnMessageStoreSnapshot())
                                     {
                                         try
                                         {
@@ -256,7 +256,7 @@ public class ChannelWorker extends Thread
                                 }
                             }
 
-                            if(onMessageStoredSingle)
+                            if (onMessageStoredSingle)
                             {
                                 for (final MessageImpl<?> message : (DequeSnapshot<MessageImpl<?>>) newMessagesSnapshot)
                                 {
@@ -265,7 +265,7 @@ public class ChannelWorker extends Thread
                                     {
                                         try
                                         {
-                                            if(this.go && conf.isImplementingIOnMessageStore())
+                                            if (this.go && conf.isImplementingIOnMessageStore())
                                             {
                                                 ((IOnMessageStore) conf.getChannelManager()).onMessageStore(message);
                                             }
@@ -314,7 +314,7 @@ public class ChannelWorker extends Thread
                 }
                 finally
                 {
-                    if(newMessagesSnapshot != null)
+                    if (newMessagesSnapshot != null)
                     {
                         try
                         {
@@ -343,14 +343,14 @@ public class ChannelWorker extends Thread
                 final DequeSnapshot<String> signalSnapshot = this.channel.getSignalsSnapshot();
                 try
                 {
-                    if((signalSnapshot != null) && (!signalSnapshot.isEmpty()))
+                    if ((signalSnapshot != null) && (!signalSnapshot.isEmpty()))
                     {
                         checkQueueAttach();
 
                         signalProcessed.clear();
                         for (final String signal : signalSnapshot)
                         {
-                            if(signalProcessed.contains(signal))
+                            if (signalProcessed.contains(signal))
                             {
                                 continue;
                             }
@@ -360,7 +360,7 @@ public class ChannelWorker extends Thread
                                 try
                                 {
 
-                                    if(this.go && conf.isImplementingIOnChannelSignal())
+                                    if (this.go && conf.isImplementingIOnChannelSignal())
                                     {
                                         ((IOnChannelSignal) conf.getChannelManager()).onChannelSignal(this.channel, signal);
                                     }
@@ -383,7 +383,7 @@ public class ChannelWorker extends Thread
                 }
                 finally
                 {
-                    if(signalSnapshot != null)
+                    if (signalSnapshot != null)
                     {
                         try
                         {
@@ -406,7 +406,7 @@ public class ChannelWorker extends Thread
             this.dueTaskList.clear();
             this.channel.getDueTasks(this.dueTaskList);
 
-            if(!this.dueTaskList.isEmpty())
+            if (!this.dueTaskList.isEmpty())
             {
                 checkQueueAttach();
 
@@ -416,11 +416,11 @@ public class ChannelWorker extends Thread
                 {
                     try
                     {
-                        if(dueTask.getTaskControl().isDone())
+                        if (dueTask.getTaskControl().isDone())
                         {
                             continue;
                         }
-                        if(this.go)
+                        if (this.go)
                         {
                             this.context.resetCurrentProcessedTaskList();
 
@@ -429,10 +429,10 @@ public class ChannelWorker extends Thread
                                 taskTimeOut = ((dueTask.getTaskControl().getTimeout() > 0) || (dueTask.getTaskControl().getHeartbeatTimeout() > 0));
                                 this.currentRunningTask = dueTask;
 
-                                if(dueTask.getTask() instanceof IPeriodicChannelTask)
+                                if (dueTask.getTask() instanceof IPeriodicChannelTask)
                                 {
                                     Long periodicRepetitionInterval = ((IPeriodicChannelTask) dueTask.getTask()).getPeriodicRepetitionInterval();
-                                    if((periodicRepetitionInterval == null) || (periodicRepetitionInterval.longValue() < 1))
+                                    if ((periodicRepetitionInterval == null) || (periodicRepetitionInterval.longValue() < 1))
                                     {
                                         periodicRepetitionInterval = 1000L * 60L * 60L * 24L * 365L * 108L;
                                     }
@@ -444,20 +444,20 @@ public class ChannelWorker extends Thread
                                             );
                                     dueTask.getTaskControl().preRunPeriodicTask();
                                 }
-                                else if(dueTask.getTask() instanceof IDispatcherChannelService)
+                                else if (dueTask.getTask() instanceof IDispatcherChannelService)
                                 {
                                     long periodicRepetitionInterval = -1L;
 
                                     try
                                     {
-                                        if(dueTask.getPropertyBlock().getProperty(ChannelImpl.PROPERTY_PERIODIC_REPETITION_INTERVAL) != null)
+                                        if (dueTask.getPropertyBlock().getProperty(ChannelImpl.PROPERTY_PERIODIC_REPETITION_INTERVAL) != null)
                                         {
                                             final Object pri = dueTask.getPropertyBlock().getProperty(ChannelImpl.PROPERTY_PERIODIC_REPETITION_INTERVAL);
-                                            if(pri instanceof String)
+                                            if (pri instanceof String)
                                             {
                                                 periodicRepetitionInterval = Long.parseLong(((String) pri).trim());
                                             }
-                                            else if(pri instanceof Integer)
+                                            else if (pri instanceof Integer)
                                             {
                                                 periodicRepetitionInterval = ((Integer) pri);
                                             }
@@ -469,7 +469,7 @@ public class ChannelWorker extends Thread
                                     }
                                     catch (final Exception ignored) { }
 
-                                    if(periodicRepetitionInterval < 1)
+                                    if (periodicRepetitionInterval < 1)
                                     {
                                         periodicRepetitionInterval = 1000L * 60L * 60L * 24L * 365L * 108L;
                                     }
@@ -486,9 +486,9 @@ public class ChannelWorker extends Thread
                                     dueTask.getTaskControl().preRun();
                                 }
 
-                                if(taskTimeOut)
+                                if (taskTimeOut)
                                 {
-                                    if(dueTask.getTaskControl().getTimeout() > 0)
+                                    if (dueTask.getTaskControl().getTimeout() > 0)
                                     {
                                         this.currentTimeOutTimeStamp = System.currentTimeMillis() + dueTask.getTaskControl().getTimeout();
                                     }
@@ -508,7 +508,7 @@ public class ChannelWorker extends Thread
 
                                 dueTask.getTask().run(this.context);
 
-                                if(this.go)
+                                if (this.go)
                                 {
                                     dueTask.getPropertyBlock().setProperty(ChannelImpl.PROPERTY_KEY_THROWED_EXCEPTION, null);
 
@@ -516,7 +516,7 @@ public class ChannelWorker extends Thread
 
                                     this.currentTimeOutTimeStamp = null;
                                     this.currentRunningTask = null;
-                                    if(taskTimeOut)
+                                    if (taskTimeOut)
                                     {
                                         try
                                         {
@@ -540,11 +540,11 @@ public class ChannelWorker extends Thread
                                 this.currentTimeOutTimeStamp = null;
                                 this.currentRunningTask = null;
 
-                                if(runningTask != null) { runningTask.getPropertyBlock().setProperty(ChannelImpl.PROPERTY_KEY_THROWED_EXCEPTION, e); }
+                                if (runningTask != null) { runningTask.getPropertyBlock().setProperty(ChannelImpl.PROPERTY_KEY_THROWED_EXCEPTION, e); }
                                 this.logger.error("Exception while process task " + dueTask.getTask(), e);
 
                                 dueTask.getTaskControl().postRun();
-                                if(taskTimeOut)
+                                if (taskTimeOut)
                                 {
                                     try
                                     {
@@ -556,12 +556,12 @@ public class ChannelWorker extends Thread
                                     }
                                 }
 
-                                if(!(dueTask.getTask() instanceof IDispatcherChannelService))
+                                if (!(dueTask.getTask() instanceof IDispatcherChannelService))
                                 {
                                     dueTask.getTaskControl().setDone();
                                 }
 
-                                if(!this.go)
+                                if (!this.go)
                                 {
                                     this.channel.closeWorkerSnapshots();
                                     return;
@@ -571,7 +571,7 @@ public class ChannelWorker extends Thread
                                 {
                                     for (final ChannelManagerContainer conf : this.channel.getManagerContainerList())
                                     {
-                                        if(conf.isImplementingIOnTaskError())
+                                        if (conf.isImplementingIOnTaskError())
                                         {
                                             try
                                             {
@@ -598,11 +598,11 @@ public class ChannelWorker extends Thread
 
                                 final Exception exc = new Exception(e.getMessage(), e);
 
-                                if(runningTask != null) { runningTask.getPropertyBlock().setProperty(ChannelImpl.PROPERTY_KEY_THROWED_EXCEPTION, exc); }
+                                if (runningTask != null) { runningTask.getPropertyBlock().setProperty(ChannelImpl.PROPERTY_KEY_THROWED_EXCEPTION, exc); }
                                 this.logger.error("Error while process task " + dueTask.getTask(), e);
 
                                 dueTask.getTaskControl().postRun();
-                                if(taskTimeOut)
+                                if (taskTimeOut)
                                 {
                                     try
                                     {
@@ -613,7 +613,7 @@ public class ChannelWorker extends Thread
                                         this.logger.error("eventQueue.getEventDispatcher().unregisterTimeOut(this.eventQueue,dueTask)", e2);
                                     }
                                 }
-                                if(!(dueTask.getTask() instanceof IDispatcherChannelService))
+                                if (!(dueTask.getTask() instanceof IDispatcherChannelService))
                                 {
                                     dueTask.getTaskControl().setDone();
                                 }
@@ -622,7 +622,7 @@ public class ChannelWorker extends Thread
                                 {
                                     for (final ChannelManagerContainer conf : this.channel.getManagerContainerList())
                                     {
-                                        if(conf.isImplementingIOnTaskError())
+                                        if (conf.isImplementingIOnTaskError())
                                         {
                                             try
                                             {
@@ -646,21 +646,21 @@ public class ChannelWorker extends Thread
                             this.currentTimeOutTimeStamp = null;
                             this.currentRunningTask = null;
 
-                            if(!this.go)
+                            if (!this.go)
                             {
                                 this.channel.closeWorkerSnapshots();
                                 return;
                             }
 
-                            if(dueTask.getTaskControl().isDone())
+                            if (dueTask.getTaskControl().isDone())
                             {
                                 for (final ChannelManagerContainer conf : this.channel.getManagerContainerList())
                                 {
                                     try
                                     {
-                                        if(this.go)
+                                        if (this.go)
                                         {
-                                            if(conf.isImplementingIOnTaskDone())
+                                            if (conf.isImplementingIOnTaskDone())
                                             {
                                                 ((IOnTaskDone) conf.getChannelManager()).onTaskDone(this.channel, dueTask.getTask());
                                             }
@@ -675,7 +675,7 @@ public class ChannelWorker extends Thread
                     {
                         try
                         {
-                            if(!(dueTask.getTask() instanceof IDispatcherChannelService))
+                            if (!(dueTask.getTask() instanceof IDispatcherChannelService))
                             {
                                 dueTask.getTaskControl().setDone();
                             }
@@ -693,17 +693,17 @@ public class ChannelWorker extends Thread
             try
             {
                 boolean shutdownWorker = false;
-                if(System.currentTimeMillis() > (this.channel.getLastWorkerAction() + DEFAULT_SHUTDOWN_TIME))
+                if (System.currentTimeMillis() > (this.channel.getLastWorkerAction() + DEFAULT_SHUTDOWN_TIME))
                 {
                     this.inFreeingArea = true;
                     shutdownWorker = this.channel.checkWorkerShutdown(this);
-                    if(!shutdownWorker)
+                    if (!shutdownWorker)
                     {
                         this.inFreeingArea = false;
                     }
                 }
 
-                if(shutdownWorker)
+                if (shutdownWorker)
                 {
                     synchronized (this.waitMonitor)
                     {
@@ -713,19 +713,23 @@ public class ChannelWorker extends Thread
                             {
                                 this.wakeUpTimeStamp = System.currentTimeMillis() + DEFAULT_WAIT_TIME;
                                 this.waitMonitor.wait(DEFAULT_WAIT_TIME);
-                                this.wakeUpTimeStamp = -1;
                             }
                             catch (final InterruptedException e)
                             {
                                 this.go = false;
-                                // not this.interrupt() bc it will try to interrupt again
+                                // InterruptedException clears the interrupt flag; re-set it so callers can see the interrupt
                                 Thread.currentThread().interrupt();
+                                break;
+                            }
+                            finally
+                            {
+                                this.wakeUpTimeStamp = -1;
                             }
                         }
 
                         this.inFreeingArea = false;
 
-                        if(!this.go)
+                        if (!this.go)
                         {
                             return;
                         }
@@ -738,7 +742,7 @@ public class ChannelWorker extends Thread
 
                 checkQueueAttach();
 
-                if(this.go && this.isUpdateNotified)
+                if (this.go && this.isUpdateNotified)
                 {
                     this.wakeUpTimeStamp = -1;
                     this.isUpdateNotified = false;
@@ -772,33 +776,33 @@ public class ChannelWorker extends Thread
 
                 synchronized (this.waitMonitor)
                 {
-                    if(this.go)
+                    if (this.go)
                     {
                         this.wakeUpTimeStamp = -1;
 
-                        if(this.isUpdateNotified)
+                        if (this.isUpdateNotified)
                         {
                             this.isUpdateNotified = false;
                             continue;
                         }
 
                         long waitTime = nextRunTimeStamp - System.currentTimeMillis();
-                        if(waitTime > DEFAULT_WAIT_TIME)
+                        if (waitTime > DEFAULT_WAIT_TIME)
                         {
                             waitTime = DEFAULT_WAIT_TIME;
                         }
-                        if(waitTime > 0)
+                        if (waitTime > 0)
                         {
                             boolean freeWorker = false;
-                            if(!this.isSoftUpdated)
+                            if (!this.isSoftUpdated)
                             {
                                 this.inFreeingArea = true;
-                                if(waitTime >= FREE_TIME)
+                                if (waitTime >= FREE_TIME)
                                 {
                                     freeWorker = this.channel.checkFreeWorker(this, nextRunTimeStamp);                        // TODO Problem ???
                                 }
                             }
-                            if(freeWorker)
+                            if (freeWorker)
                             {
                                 while ((this.channel == null) && (this.go))
                                 {
@@ -806,12 +810,17 @@ public class ChannelWorker extends Thread
                                     {
                                         this.wakeUpTimeStamp = System.currentTimeMillis() + DEFAULT_WAIT_TIME;
                                         this.waitMonitor.wait(DEFAULT_WAIT_TIME);
-                                        this.wakeUpTimeStamp = -1;
                                     }
                                     catch (final InterruptedException e)
                                     {
                                         this.go = false;
+                                        // InterruptedException clears the interrupt flag; re-set it so callers can see the interrupt
                                         Thread.currentThread().interrupt();
+                                        break;
+                                    }
+                                    finally
+                                    {
+                                        this.wakeUpTimeStamp = -1;
                                     }
                                 }
 
@@ -825,12 +834,16 @@ public class ChannelWorker extends Thread
                                 {
                                     this.wakeUpTimeStamp = System.currentTimeMillis() + waitTime;
                                     this.waitMonitor.wait(waitTime);
-                                    this.wakeUpTimeStamp = -1;
                                 }
                                 catch (final InterruptedException e)
                                 {
                                     this.go = false;
+                                    // InterruptedException clears the interrupt flag; re-set it so callers can see the interrupt
                                     Thread.currentThread().interrupt();
+                                }
+                                finally
+                                {
+                                    this.wakeUpTimeStamp = -1;
                                 }
                             }
                         }
@@ -852,13 +865,13 @@ public class ChannelWorker extends Thread
     public boolean checkTimeOut(final AtomicBoolean stop)
     {
         final TaskContainer timeOutTaskContainer = this.currentRunningTask;
-        if(timeOutTaskContainer == null)
+        if (timeOutTaskContainer == null)
         {
             return false;
         }
 
         TaskControlImpl taskControl = null;
-        if((taskControl = timeOutTaskContainer.getTaskControl()) == null)
+        if ((taskControl = timeOutTaskContainer.getTaskControl()) == null)
         {
             return false;
         }
@@ -867,14 +880,14 @@ public class ChannelWorker extends Thread
 
         boolean heartBeatTimeout = false;
 
-        if(taskControl.getHeartbeatTimeout() > 0)
+        if (taskControl.getHeartbeatTimeout() > 0)
         {
             try
             {
                 final long lastHeartBeat = timeOutTaskContainer.getLastHeartbeat();
-                if(lastHeartBeat > 0)
+                if (lastHeartBeat > 0)
                 {
-                    if((lastHeartBeat + taskControl.getHeartbeatTimeout()) <= System.currentTimeMillis())
+                    if ((lastHeartBeat + taskControl.getHeartbeatTimeout()) <= System.currentTimeMillis())
                     {
                         heartBeatTimeout = true;
                     }
@@ -886,29 +899,29 @@ public class ChannelWorker extends Thread
             }
         }
 
-        if(!heartBeatTimeout)
+        if (!heartBeatTimeout)
         {
             // Task TimeOut
 
             final Long timeOut = this.currentTimeOutTimeStamp;
-            if(timeOut == null)
+            if (timeOut == null)
             {
                 return false;
             }
 
             // check timeOut and timeOutTask again to prevent working with values don't match
 
-            if(timeOutTaskContainer != this.currentRunningTask)
+            if (timeOutTaskContainer != this.currentRunningTask)
             {
                 return false;
             }
 
-            if(timeOut != this.currentTimeOutTimeStamp)
+            if (timeOut != this.currentTimeOutTimeStamp)
             {
                 return false;
             }
 
-            if(timeOut.longValue() > System.currentTimeMillis())
+            if (timeOut.longValue() > System.currentTimeMillis())
             {
                 return false;
             }
@@ -925,7 +938,7 @@ public class ChannelWorker extends Thread
 
         try
         {
-            if(task instanceof IDispatcherChannelService)
+            if (task instanceof IDispatcherChannelService)
             {
                 taskControl.timeOutService();
             }
@@ -940,7 +953,7 @@ public class ChannelWorker extends Thread
         {
             try
             {
-                if(conf.getChannelManager() instanceof IOnTaskTimeout)
+                if (conf.getChannelManager() instanceof IOnTaskTimeout)
                 {
                     try
                     {
@@ -958,9 +971,9 @@ public class ChannelWorker extends Thread
         }
         catch (final Exception ignored) { }
 
-        if(stopFlag)
+        if (stopFlag)
         {
-            if(Thread.currentThread() != this)
+            if (Thread.currentThread() != this)
             {
                 try
                 {
@@ -980,7 +993,7 @@ public class ChannelWorker extends Thread
     }
 
     public void notifySoftUpdate()
-    {
+    { // FIXME: also synchronized(this.waitMonitor) ???
         this.isUpdateNotified = true;
         this.isSoftUpdated = true;
     }
@@ -991,10 +1004,10 @@ public class ChannelWorker extends Thread
         {
             this.isUpdateNotified = true;
             this.isSoftUpdated = false;
-            if(this.wakeUpTimeStamp > 0) // waits for new run
+            if (this.wakeUpTimeStamp > 0) // waits for new run
             {
-                if(newRuntimeStamp <= System.currentTimeMillis()
-                   || this.wakeUpTimeStamp >= newRuntimeStamp)
+                if (newRuntimeStamp <= System.currentTimeMillis()
+                    || this.wakeUpTimeStamp >= newRuntimeStamp)
                 {
                     this.waitMonitor.notifyAll();
                 }
@@ -1037,24 +1050,24 @@ public class ChannelWorker extends Thread
 
     protected boolean setMessageChannel(final ChannelImpl channel)
     {
-        if(!this.go)
+        if (!this.go)
         {
             return false;
         }
 
-        if((channel != null) && (this.channel != null))
+        if ((channel != null) && (this.channel != null))
         {
             return false;
         }
 
-        if(!this.inFreeingArea)
+        if (!this.inFreeingArea)
         {
             return false;
         }
 
         this.channel = channel;
         this.context.setChannel(this.channel);
-        if(this.channel == null)
+        if (this.channel == null)
         {
             super.setName(ChannelWorker.class.getSimpleName() + " IDLE");
         }
