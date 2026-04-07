@@ -80,20 +80,20 @@ public class ThrowableNodeType extends BranchNodeMetaModel
     @IgnoreIfFalse
     public static volatile LeafNodeType<ThrowableNodeType, Boolean> isRuntimeException;
     
-    public static RootBranchNode<CoreTreeModel, StacktraceNodeType> nodeFromStacktrace(StackTraceElement[] stacktrace)
+    public static RootBranchNode<CoreTreeModel, StacktraceNodeType> nodeFromStacktrace(final StackTraceElement[] stacktrace)
     {
         return nodeFromStacktrace(stacktrace, null);
     }
     
     @BowMethod(convertReturnValueToBow = true, keepStatic = true, returnBowMode = ReturnBowMode.UNDEFINED_PARENT_TYPE)
-    protected static RootBranchNode<CoreTreeModel, StacktraceNodeType> nodeFromStacktrace(StackTraceElement[] stacktrace, @BowParameter(automaticConsumerMode = AutomaticConsumer.NEW_BOW_BY_RETURNTYPE) Consumer<RootBranchNode<CoreTreeModel, StacktraceNodeType>> onRootNodeCreated)
+    protected static RootBranchNode<CoreTreeModel, StacktraceNodeType> nodeFromStacktrace(final StackTraceElement[] stacktrace, @BowParameter(automaticConsumerMode = AutomaticConsumer.NEW_BOW_BY_RETURNTYPE) final Consumer<RootBranchNode<CoreTreeModel, StacktraceNodeType>> onRootNodeCreated)
     {
         RootBranchNode<CoreTreeModel, StacktraceNodeType> stacktraceNode = TypedTreeMetaModel.getInstance(CoreTreeModel.class).createRootNode(CoreTreeModel.stacktrace);
         if (onRootNodeCreated != null)
         {
             onRootNodeCreated.accept(stacktraceNode);
         }
-        for (StackTraceElement stackTraceElement : stacktrace)
+        for (final StackTraceElement stackTraceElement : stacktrace)
         {
             stacktraceNode.create(StacktraceNodeType.elements)
                           .setValue(StacktraceElementNodeType.className, stackTraceElement.getClassName())
@@ -105,13 +105,13 @@ public class ThrowableNodeType extends BranchNodeMetaModel
         return stacktraceNode;
     }
     
-    public static RootBranchNode<CoreTreeModel, ThrowableNodeType> nodeFromThrowable(Throwable throwable)
+    public static RootBranchNode<CoreTreeModel, ThrowableNodeType> nodeFromThrowable(final Throwable throwable)
     {
         return nodeFromThrowable(throwable, null);
     }
     
     @BowMethod(convertReturnValueToBow = true, keepStatic = true, returnBowMode = ReturnBowMode.UNDEFINED_PARENT_TYPE)
-    protected static RootBranchNode<CoreTreeModel, ThrowableNodeType> nodeFromThrowable(Throwable throwable, @BowParameter(automaticConsumerMode = AutomaticConsumer.NEW_BOW_BY_RETURNTYPE) Consumer<RootBranchNode<CoreTreeModel, ThrowableNodeType>> onRootNodeCreated)
+    protected static RootBranchNode<CoreTreeModel, ThrowableNodeType> nodeFromThrowable(final Throwable throwable, @BowParameter(automaticConsumerMode = AutomaticConsumer.NEW_BOW_BY_RETURNTYPE) final Consumer<RootBranchNode<CoreTreeModel, ThrowableNodeType>> onRootNodeCreated)
     {
         if (throwable == null)
         {
@@ -130,7 +130,7 @@ public class ThrowableNodeType extends BranchNodeMetaModel
         return throwableNode;
     }
     
-    private static void recursiveConvertThrowable(BranchNode<?, ThrowableNodeType> throwableNode, Throwable throwable, Set<Throwable> doneIndex)
+    private static void recursiveConvertThrowable(final BranchNode<?, ThrowableNodeType> throwableNode, final Throwable throwable, final Set<Throwable> doneIndex)
     {
         throwableNode.setValue(ThrowableNodeType.className, throwable.getClass().getCanonicalName());
         throwableNode.setValue(ThrowableNodeType.message, throwable.getMessage());
@@ -139,7 +139,7 @@ public class ThrowableNodeType extends BranchNodeMetaModel
         if (throwable.getStackTrace() != null)
         {
             BranchNode<ThrowableNodeType, StacktraceNodeType> stacktraceNode = throwableNode.create(ThrowableNodeType.stacktrace);
-            for (StackTraceElement stackTraceElement : throwable.getStackTrace())
+            for (final StackTraceElement stackTraceElement : throwable.getStackTrace())
             {
                 stacktraceNode.create(StacktraceNodeType.elements)
                               .setValue(StacktraceElementNodeType.className, stackTraceElement.getClassName())
@@ -150,9 +150,8 @@ public class ThrowableNodeType extends BranchNodeMetaModel
             }
         }
         
-        if (throwable instanceof SQLException)
+        if (throwable instanceof final SQLException sqlException)
         {
-            SQLException sqlException = (SQLException) throwable;
             throwableNode.setValue(ThrowableNodeType.state, sqlException.getSQLState());
             throwableNode.setValue(ThrowableNodeType.code, (long) sqlException.getErrorCode());
             

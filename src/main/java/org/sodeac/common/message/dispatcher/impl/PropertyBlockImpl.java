@@ -35,7 +35,7 @@ import org.sodeac.common.xuri.ldapfilter.IMatchable;
 
 public class PropertyBlockImpl implements IPropertyBlock
 {
-    protected PropertyBlockImpl(MessageDispatcherImpl dispatcher)
+    protected PropertyBlockImpl(final MessageDispatcherImpl dispatcher)
     {
         super();
         
@@ -60,22 +60,22 @@ public class PropertyBlockImpl implements IPropertyBlock
     private Map<String, IMatchable> matchables;
     private Set<String> keySet;
     
-    private ReentrantReadWriteLock propertiesLock;
-    private ReadLock propertiesReadLock;
-    private WriteLock propertiesWriteLock;
+    private final ReentrantReadWriteLock propertiesLock;
+    private final ReadLock propertiesReadLock;
+    private final WriteLock propertiesWriteLock;
     
     private Map<String, UUID> lockedProperties;
     
-    private MessageDispatcherImpl dispatcher;
+    private final MessageDispatcherImpl dispatcher;
     
     @Override
-    public Object setProperty(String key, Object value)
+    public Object setProperty(final String key, final Object value)
     {
         Object old = null;
         IPropertyBlockModifyListener.ModifyType modifyType = IPropertyBlockModifyListener.ModifyType.INSERT;
         List<IPropertyBlockModifyListener> listenerList = null;
         
-        propertiesWriteLock.lock();
+        this.propertiesWriteLock.lock();
         try
         {
             if ((this.lockedProperties != null) && (this.lockedProperties.get(key) != null))
@@ -103,33 +103,33 @@ public class PropertyBlockImpl implements IPropertyBlock
         }
         finally
         {
-            propertiesWriteLock.unlock();
+            this.propertiesWriteLock.unlock();
         }
         
         if ((listenerList != null) && (!listenerList.isEmpty()))
         {
             try
             {
-                for (IPropertyBlockModifyListener listener : listenerList)
+                for (final IPropertyBlockModifyListener listener : listenerList)
                 {
                     try
                     {
                         listener.onModify(modifyType, key, old, value);
                     }
-                    catch (Exception e)
+                    catch (final Exception e)
                     {
-                        if (dispatcher != null)
+                        if (this.dispatcher != null)
                         {
-                            dispatcher.logError("execute property modify listener (update/insert)", e);
+                            this.dispatcher.logError("execute property modify listener (update/insert)", e);
                         }
                     }
                 }
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
-                if (dispatcher != null)
+                if (this.dispatcher != null)
                 {
-                    dispatcher.logError("execute property modify listener list (update/insert)", e);
+                    this.dispatcher.logError("execute property modify listener list (update/insert)", e);
                 }
             }
         }
@@ -137,7 +137,7 @@ public class PropertyBlockImpl implements IPropertyBlock
     }
     
     @Override
-    public Map<String, Object> setPropertyEntrySet(Set<Entry<String, Object>> propertyEntrySet, boolean ignoreIfEquals)
+    public Map<String, Object> setPropertyEntrySet(final Set<Entry<String, Object>> propertyEntrySet, final boolean ignoreIfEquals)
     {
         if (propertyEntrySet == null)
         {
@@ -153,12 +153,12 @@ public class PropertyBlockImpl implements IPropertyBlock
         List<PropertyBlockModifyItem> modifyList = null;
         List<IPropertyBlockModifyListener> listenerList = null;
         
-        propertiesWriteLock.lock();
+        this.propertiesWriteLock.lock();
         try
         {
             if (this.lockedProperties != null)
             {
-                for (Entry<String, Object> entry : propertyEntrySet)
+                for (final Entry<String, Object> entry : propertyEntrySet)
                 {
                     if (this.lockedProperties.get(entry.getKey()) != null)
                     {
@@ -178,7 +178,7 @@ public class PropertyBlockImpl implements IPropertyBlock
             Object newValue;
             boolean update;
             
-            for (Entry<String, Object> propertyEntry : propertyEntrySet)
+            for (final Entry<String, Object> propertyEntry : propertyEntrySet)
             {
                 if (this.properties.containsKey(propertyEntry.getKey()))
                 {
@@ -237,7 +237,7 @@ public class PropertyBlockImpl implements IPropertyBlock
         }
         finally
         {
-            propertiesWriteLock.unlock();
+            this.propertiesWriteLock.unlock();
         }
         
         if (modifyList == null)
@@ -249,26 +249,26 @@ public class PropertyBlockImpl implements IPropertyBlock
         {
             try
             {
-                for (IPropertyBlockModifyListener listener : listenerList)
+                for (final IPropertyBlockModifyListener listener : listenerList)
                 {
                     try
                     {
                         listener.onModifySet(modifyList);
                     }
-                    catch (Exception e)
+                    catch (final Exception e)
                     {
-                        if (dispatcher != null)
+                        if (this.dispatcher != null)
                         {
-                            dispatcher.logError("execute property modify listener (update/insert set)", e);
+                            this.dispatcher.logError("execute property modify listener (update/insert set)", e);
                         }
                     }
                 }
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
-                if (dispatcher != null)
+                if (this.dispatcher != null)
                 {
-                    dispatcher.logError("execute property modify listener list (update/insert set)", e);
+                    this.dispatcher.logError("execute property modify listener list (update/insert set)", e);
                 }
             }
         }
@@ -277,7 +277,7 @@ public class PropertyBlockImpl implements IPropertyBlock
     }
     
     @Override
-    public Object getProperty(String key)
+    public Object getProperty(final String key)
     {
         if (this.properties == null)
         {
@@ -286,17 +286,17 @@ public class PropertyBlockImpl implements IPropertyBlock
         
         try
         {
-            propertiesReadLock.lock();
+            this.propertiesReadLock.lock();
             return this.properties.get(key);
         }
         finally
         {
-            propertiesReadLock.unlock();
+            this.propertiesReadLock.unlock();
         }
     }
     
     @Override
-    public Object removeProperty(String key)
+    public Object removeProperty(final String key)
     {
         if (this.properties == null)
         {
@@ -305,15 +305,15 @@ public class PropertyBlockImpl implements IPropertyBlock
         
         try
         {
-            propertiesReadLock.lock();
-            if (!properties.containsKey(key))
+            this.propertiesReadLock.lock();
+            if (!this.properties.containsKey(key))
             {
                 return null;
             }
         }
         finally
         {
-            propertiesReadLock.unlock();
+            this.propertiesReadLock.unlock();
         }
         
         Object oldPropertyValue = null;
@@ -321,14 +321,14 @@ public class PropertyBlockImpl implements IPropertyBlock
         
         try
         {
-            propertiesWriteLock.lock();
+            this.propertiesWriteLock.lock();
             
             if ((this.lockedProperties != null) && (this.lockedProperties.get(key) != null))
             {
                 throw new PropertyIsLockedException("writable access to \"" + key + "\" denied by lock");
             }
             
-            if (!properties.containsKey(key))
+            if (!this.properties.containsKey(key))
             {
                 return null;
             }
@@ -344,33 +344,33 @@ public class PropertyBlockImpl implements IPropertyBlock
         }
         finally
         {
-            propertiesWriteLock.unlock();
+            this.propertiesWriteLock.unlock();
         }
         
         if ((listenerList != null) && (!listenerList.isEmpty()))
         {
             try
             {
-                for (IPropertyBlockModifyListener listener : listenerList)
+                for (final IPropertyBlockModifyListener listener : listenerList)
                 {
                     try
                     {
                         listener.onModify(IPropertyBlockModifyListener.ModifyType.REMOVE, key, oldPropertyValue, null);
                     }
-                    catch (Exception e)
+                    catch (final Exception e)
                     {
-                        if (dispatcher != null)
+                        if (this.dispatcher != null)
                         {
-                            dispatcher.logError("execute property modify listener (remove)", e);
+                            this.dispatcher.logError("execute property modify listener (remove)", e);
                         }
                     }
                 }
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
-                if (dispatcher != null)
+                if (this.dispatcher != null)
                 {
-                    dispatcher.logError("execute property modify listener list (remove)", e);
+                    this.dispatcher.logError("execute property modify listener list (remove)", e);
                 }
             }
         }
@@ -388,7 +388,7 @@ public class PropertyBlockImpl implements IPropertyBlock
         
         try
         {
-            propertiesReadLock.lock();
+            this.propertiesReadLock.lock();
             if (this.keySet == null)
             {
                 this.keySet = Collections.unmodifiableSet(this.properties.keySet());
@@ -397,7 +397,7 @@ public class PropertyBlockImpl implements IPropertyBlock
         }
         finally
         {
-            propertiesReadLock.unlock();
+            this.propertiesReadLock.unlock();
         }
     }
     
@@ -412,7 +412,7 @@ public class PropertyBlockImpl implements IPropertyBlock
         Map<String, Object> props = this.propertiesCopy;
         if (props == null)
         {
-            propertiesWriteLock.lock();
+            this.propertiesWriteLock.lock();
             try
             {
                 if (this.properties == null)
@@ -424,7 +424,7 @@ public class PropertyBlockImpl implements IPropertyBlock
             }
             finally
             {
-                propertiesWriteLock.unlock();
+                this.propertiesWriteLock.unlock();
             }
         }
         return props;
@@ -440,7 +440,7 @@ public class PropertyBlockImpl implements IPropertyBlock
         Map<String, IMatchable> props = this.matchables;
         if (props == null)
         {
-            propertiesWriteLock.lock();
+            this.propertiesWriteLock.lock();
             try
             {
                 if (this.properties == null)
@@ -448,7 +448,7 @@ public class PropertyBlockImpl implements IPropertyBlock
                     return null;
                 }
                 props = new HashMap<String, IMatchable>();
-                for (Entry<String, Object> entry : this.properties.entrySet())
+                for (final Entry<String, Object> entry : this.properties.entrySet())
                 {
                     props.put(entry.getKey(), new DefaultMatchableWrapper(entry.getValue()));
                 }
@@ -456,7 +456,7 @@ public class PropertyBlockImpl implements IPropertyBlock
             }
             finally
             {
-                propertiesWriteLock.unlock();
+                this.propertiesWriteLock.unlock();
             }
         }
         return props;
@@ -475,7 +475,7 @@ public class PropertyBlockImpl implements IPropertyBlock
         List<IPropertyBlockModifyListener> listenerList = null;
         List<PropertyBlockModifyItem> modifyList = null;
         
-        propertiesWriteLock.lock();
+        this.propertiesWriteLock.lock();
         try
         {
             if ((this.lockedProperties != null) && (!this.lockedProperties.isEmpty()))
@@ -499,7 +499,7 @@ public class PropertyBlockImpl implements IPropertyBlock
             
             listenerList = getModifyListenerList();
             
-            for (Entry<String, Object> oldEntry : oldValues.entrySet())
+            for (final Entry<String, Object> oldEntry : oldValues.entrySet())
             {
                 modifyList.add(new PropertyBlockModifyItem(IPropertyBlockModifyListener.ModifyType.REMOVE, oldEntry.getKey(), oldEntry.getValue(), null));
             }
@@ -511,33 +511,33 @@ public class PropertyBlockImpl implements IPropertyBlock
         }
         finally
         {
-            propertiesWriteLock.unlock();
+            this.propertiesWriteLock.unlock();
         }
         
         if ((listenerList != null) && (!listenerList.isEmpty()))
         {
             try
             {
-                for (IPropertyBlockModifyListener listener : listenerList)
+                for (final IPropertyBlockModifyListener listener : listenerList)
                 {
                     try
                     {
                         listener.onModifySet(modifyList);
                     }
-                    catch (Exception e)
+                    catch (final Exception e)
                     {
-                        if (dispatcher != null)
+                        if (this.dispatcher != null)
                         {
-                            dispatcher.logError("execute property modify listener (clear)", e);
+                            this.dispatcher.logError("execute property modify listener (clear)", e);
                         }
                     }
                 }
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
-                if (dispatcher != null)
+                if (this.dispatcher != null)
                 {
-                    dispatcher.logError("execute property modify listener list (clear)", e);
+                    this.dispatcher.logError("execute property modify listener list (clear)", e);
                 }
             }
         }
@@ -545,16 +545,16 @@ public class PropertyBlockImpl implements IPropertyBlock
     }
     
     @Override
-    public void addModifyListener(IPropertyBlockModifyListener listener)
+    public void addModifyListener(final IPropertyBlockModifyListener listener)
     {
-        propertiesWriteLock.lock();
+        this.propertiesWriteLock.lock();
         try
         {
             if (this.modifyListenerList == null)
             {
                 this.modifyListenerList = new ArrayList<>();
             }
-            for (IPropertyBlockModifyListener listenerExists : this.modifyListenerList)
+            for (final IPropertyBlockModifyListener listenerExists : this.modifyListenerList)
             {
                 if (listenerExists == listener)
                 {
@@ -571,20 +571,20 @@ public class PropertyBlockImpl implements IPropertyBlock
                 {
                     // TODO doit in future -- this.modifyListenerListCopy.clear();
                 }
-                catch (Exception e) { }
+                catch (final Exception e) { }
             }
             this.modifyListenerListCopy = null;
         }
         finally
         {
-            propertiesWriteLock.unlock();
+            this.propertiesWriteLock.unlock();
         }
     }
     
     @Override
-    public void removeModifyListener(IPropertyBlockModifyListener listener)
+    public void removeModifyListener(final IPropertyBlockModifyListener listener)
     {
-        propertiesWriteLock.lock();
+        this.propertiesWriteLock.lock();
         try
         {
             if (this.modifyListenerList == null)
@@ -603,20 +603,20 @@ public class PropertyBlockImpl implements IPropertyBlock
                 {
                     // TODO doit in future -- this.modifyListenerListCopy.clear();
                 }
-                catch (Exception e) { }
+                catch (final Exception e) { }
             }
             this.modifyListenerListCopy = null;
         }
         finally
         {
-            propertiesWriteLock.unlock();
+            this.propertiesWriteLock.unlock();
         }
     }
     
     @Override
     public void dispose()
     {
-        propertiesWriteLock.lock();
+        this.propertiesWriteLock.lock();
         try
         {
             if (this.modifyListenerList != null)
@@ -628,7 +628,7 @@ public class PropertyBlockImpl implements IPropertyBlock
                         this.modifyListenerList.clear();
                     }
                 }
-                catch (Exception e) { }
+                catch (final Exception e) { }
                 this.modifyListenerList = null;
             }
             this.modifyListenerListCopy = null;
@@ -639,7 +639,7 @@ public class PropertyBlockImpl implements IPropertyBlock
                 {
                     this.properties.clear();
                 }
-                catch (Exception e) { }
+                catch (final Exception e) { }
                 this.properties = null;
             }
             this.propertiesCopy = null;
@@ -647,7 +647,7 @@ public class PropertyBlockImpl implements IPropertyBlock
         }
         finally
         {
-            propertiesWriteLock.unlock();
+            this.propertiesWriteLock.unlock();
         }
     }
     
@@ -661,7 +661,7 @@ public class PropertyBlockImpl implements IPropertyBlock
         
         try
         {
-            propertiesReadLock.lock();
+            this.propertiesReadLock.lock();
             if (this.properties == null)
             {
                 return false;
@@ -670,12 +670,12 @@ public class PropertyBlockImpl implements IPropertyBlock
         }
         finally
         {
-            propertiesReadLock.unlock();
+            this.propertiesReadLock.unlock();
         }
     }
     
     @Override
-    public boolean containsKey(Object key)
+    public boolean containsKey(final Object key)
     {
         if (this.properties == null)
         {
@@ -684,7 +684,7 @@ public class PropertyBlockImpl implements IPropertyBlock
         
         try
         {
-            propertiesReadLock.lock();
+            this.propertiesReadLock.lock();
             if (this.properties == null)
             {
                 return false;
@@ -693,20 +693,20 @@ public class PropertyBlockImpl implements IPropertyBlock
         }
         finally
         {
-            propertiesReadLock.unlock();
+            this.propertiesReadLock.unlock();
         }
     }
     
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T getProperty(String key, Class<T> resultClass)
+    public <T> T getProperty(final String key, final Class<T> resultClass)
     {
         return (T) getProperty(key);
     }
     
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T getPropertyOrDefault(String key, Class<T> resultClass, T defaultValue)
+    public <T> T getPropertyOrDefault(final String key, final Class<T> resultClass, final T defaultValue)
     {
         T typedValue = defaultValue;
         Object current = getProperty(key);
@@ -722,7 +722,7 @@ public class PropertyBlockImpl implements IPropertyBlock
     }
     
     @Override
-    public String getPropertyOrDefaultAsString(String key, String defaultValue)
+    public String getPropertyOrDefaultAsString(final String key, final String defaultValue)
     {
         String stringValue = defaultValue;
         Object current = getProperty(key);
@@ -745,7 +745,7 @@ public class PropertyBlockImpl implements IPropertyBlock
     }
     
     @Override
-    public IPropertyLock lockProperty(String key)
+    public IPropertyLock lockProperty(final String key)
     {
         if (key == null)
         {
@@ -757,7 +757,7 @@ public class PropertyBlockImpl implements IPropertyBlock
             return null;
         }
         
-        propertiesWriteLock.lock();
+        this.propertiesWriteLock.lock();
         try
         {
             if (this.lockedProperties == null)
@@ -775,24 +775,24 @@ public class PropertyBlockImpl implements IPropertyBlock
         }
         finally
         {
-            propertiesWriteLock.unlock();
+            this.propertiesWriteLock.unlock();
         }
     }
     
     protected void unlockAllProperties()
     {
-        propertiesWriteLock.lock();
+        this.propertiesWriteLock.lock();
         try
         {
             this.lockedProperties = null;
         }
         finally
         {
-            propertiesWriteLock.unlock();
+            this.propertiesWriteLock.unlock();
         }
     }
     
-    protected boolean unlockProperty(PropertyLockImpl lock)
+    protected boolean unlockProperty(final PropertyLockImpl lock)
     {
         if (lock == null)
         {
@@ -810,7 +810,7 @@ public class PropertyBlockImpl implements IPropertyBlock
         {
             return false;
         }
-        propertiesWriteLock.lock();
+        this.propertiesWriteLock.lock();
         try
         {
             if (this.lockedProperties == null)
@@ -826,18 +826,18 @@ public class PropertyBlockImpl implements IPropertyBlock
         }
         finally
         {
-            propertiesWriteLock.unlock();
+            this.propertiesWriteLock.unlock();
         }
         return false;
     }
     
     @Override
-    public Supplier<List<PropertyBlockModifyItem>> computeProcedure(IPropertyBlockAtomicProcedure operationHandler)
+    public Supplier<List<PropertyBlockModifyItem>> computeProcedure(final IPropertyBlockAtomicProcedure operationHandler)
     {
         UnlockedWrapper wrapper = new UnlockedWrapper();
         List<IPropertyBlockModifyListener> listenerList = null;
         
-        propertiesWriteLock.lock();
+        this.propertiesWriteLock.lock();
         try
         {
             operationHandler.accept(wrapper);
@@ -854,12 +854,12 @@ public class PropertyBlockImpl implements IPropertyBlock
         finally
         {
             wrapper.valid.set(false);
-            propertiesWriteLock.unlock();
+            this.propertiesWriteLock.unlock();
         }
         
         if ((listenerList != null) && (!listenerList.isEmpty()))
         {
-            for (IPropertyBlockModifyListener listener : listenerList)
+            for (final IPropertyBlockModifyListener listener : listenerList)
             {
                 listener.onModifySet(wrapper.modifyList);
             }
@@ -872,7 +872,7 @@ public class PropertyBlockImpl implements IPropertyBlock
     {
         private List<PropertyBlockModifyItem> modifyList = null;
         
-        public PropertyBlockProcedureModifyAuditTrail(List<PropertyBlockModifyItem> modifyList)
+        public PropertyBlockProcedureModifyAuditTrail(final List<PropertyBlockModifyItem> modifyList)
         {
             super();
             this.modifyList = modifyList;
@@ -894,11 +894,11 @@ public class PropertyBlockImpl implements IPropertyBlock
         public UnlockedWrapper()
         {
             super();
-            valid = new AtomicBoolean(true);
+            this.valid = new AtomicBoolean(true);
         }
         
         @Override
-        public Object setProperty(String key, Object value) throws PropertyIsLockedException
+        public Object setProperty(final String key, final Object value) throws PropertyIsLockedException
         {
             checkValid();
             
@@ -935,7 +935,7 @@ public class PropertyBlockImpl implements IPropertyBlock
         }
         
         @Override
-        public Map<String, Object> setPropertyEntrySet(Set<Entry<String, Object>> propertyEntrySet, boolean ignoreIfEquals) throws PropertyIsLockedException
+        public Map<String, Object> setPropertyEntrySet(final Set<Entry<String, Object>> propertyEntrySet, final boolean ignoreIfEquals) throws PropertyIsLockedException
         {
             checkValid();
             
@@ -949,7 +949,7 @@ public class PropertyBlockImpl implements IPropertyBlock
                 return EMPTY_PROPERTIES;
             }
             Map<String, Object> oldValue = new HashMap<String, Object>();
-            for (Entry<String, Object> entry : propertyEntrySet)
+            for (final Entry<String, Object> entry : propertyEntrySet)
             {
                 oldValue.put(entry.getKey(), this.setProperty(entry.getKey(), entry.getValue()));
             }
@@ -957,7 +957,7 @@ public class PropertyBlockImpl implements IPropertyBlock
         }
         
         @Override
-        public Object getProperty(String key)
+        public Object getProperty(final String key)
         {
             checkValid();
             
@@ -970,7 +970,7 @@ public class PropertyBlockImpl implements IPropertyBlock
         
         @SuppressWarnings("unchecked")
         @Override
-        public <T> T getProperty(String key, Class<T> resultClass)
+        public <T> T getProperty(final String key, final Class<T> resultClass)
         {
             checkValid();
             
@@ -983,7 +983,7 @@ public class PropertyBlockImpl implements IPropertyBlock
         
         @SuppressWarnings("unchecked")
         @Override
-        public <T> T getPropertyOrDefault(String key, Class<T> resultClass, T defaultValue)
+        public <T> T getPropertyOrDefault(final String key, final Class<T> resultClass, final T defaultValue)
         {
             checkValid();
             
@@ -1001,7 +1001,7 @@ public class PropertyBlockImpl implements IPropertyBlock
         }
         
         @Override
-        public String getPropertyOrDefaultAsString(String key, String defaultValue)
+        public String getPropertyOrDefaultAsString(final String key, final String defaultValue)
         {
             checkValid();
             
@@ -1026,7 +1026,7 @@ public class PropertyBlockImpl implements IPropertyBlock
         }
         
         @Override
-        public Object removeProperty(String key) throws PropertyIsLockedException
+        public Object removeProperty(final String key) throws PropertyIsLockedException
         {
             checkValid();
             
@@ -1035,7 +1035,7 @@ public class PropertyBlockImpl implements IPropertyBlock
                 return null;
             }
             
-            if (!properties.containsKey(key))
+            if (!PropertyBlockImpl.this.properties.containsKey(key))
             {
                 return null;
             }
@@ -1117,7 +1117,7 @@ public class PropertyBlockImpl implements IPropertyBlock
         }
         
         @Override
-        public boolean containsKey(Object key)
+        public boolean containsKey(final Object key)
         {
             checkValid();
             
@@ -1151,7 +1151,7 @@ public class PropertyBlockImpl implements IPropertyBlock
             }
             
             oldValues = new HashMap<>(PropertyBlockImpl.this.properties);
-            for (Entry<String, Object> oldEntry : oldValues.entrySet())
+            for (final Entry<String, Object> oldEntry : oldValues.entrySet())
             {
                 if (this.modifyList == null)
                 {
@@ -1170,7 +1170,7 @@ public class PropertyBlockImpl implements IPropertyBlock
         }
         
         @Override
-        public IPropertyLock lockProperty(String key)
+        public IPropertyLock lockProperty(final String key)
         {
             checkValid();
             
@@ -1200,7 +1200,7 @@ public class PropertyBlockImpl implements IPropertyBlock
         }
         
         @Override
-        public Supplier<List<PropertyBlockModifyItem>> computeProcedure(IPropertyBlockAtomicProcedure operationHandler)
+        public Supplier<List<PropertyBlockModifyItem>> computeProcedure(final IPropertyBlockAtomicProcedure operationHandler)
         {
             checkValid();
             
@@ -1222,14 +1222,14 @@ public class PropertyBlockImpl implements IPropertyBlock
         }
         
         @Override
-        public void addModifyListener(IPropertyBlockModifyListener listener)
+        public void addModifyListener(final IPropertyBlockModifyListener listener)
         {
             // TODO Auto-generated method stub
             
         }
         
         @Override
-        public void removeModifyListener(IPropertyBlockModifyListener listener)
+        public void removeModifyListener(final IPropertyBlockModifyListener listener)
         {
             // TODO Auto-generated method stub
             
@@ -1252,7 +1252,7 @@ public class PropertyBlockImpl implements IPropertyBlock
             return list;
         }
         
-        propertiesWriteLock.lock();
+        this.propertiesWriteLock.lock();
         try
         {
             list = this.modifyListenerListCopy;
@@ -1265,7 +1265,7 @@ public class PropertyBlockImpl implements IPropertyBlock
         }
         finally
         {
-            propertiesWriteLock.unlock();
+            this.propertiesWriteLock.unlock();
         }
         this.modifyListenerListCopy = list;
         return list;

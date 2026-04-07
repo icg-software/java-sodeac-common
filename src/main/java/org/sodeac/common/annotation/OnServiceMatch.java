@@ -30,9 +30,9 @@ public @interface OnServiceMatch
     
     int order() default 1080;
     
-    public class NoTrigger implements Consumer<IService.IServiceReference<?>>
+    class NoTrigger implements Consumer<IService.IServiceReference<?>>
     {
         @Override
-        public void accept(IServiceReference<?> t) { }
+        public void accept(final IServiceReference<?> t) { }
     }
 }

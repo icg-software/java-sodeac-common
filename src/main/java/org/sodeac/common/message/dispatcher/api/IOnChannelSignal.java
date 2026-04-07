@@ -28,5 +28,5 @@ public interface IOnChannelSignal<T> extends IDispatcherChannelManager
      * @param channel parent queue
      * @param signal  fired signal
      */
-    public void onChannelSignal(IDispatcherChannel<T> channel, String signal);
+    void onChannelSignal(IDispatcherChannel<T> channel, String signal);
 }

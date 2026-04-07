@@ -15,10 +15,8 @@ import java.util.List;
 
 public class BooleanFunction implements IExpression<Boolean>
 {
-    public static enum LogicalOperator
+    public enum LogicalOperator
     {AND, OR}
-    
-    ;
     
     private List<IExpression<Boolean>> operandList = new ArrayList<IExpression<Boolean>>();
     private LogicalOperator operator = LogicalOperator.AND;
@@ -29,20 +27,20 @@ public class BooleanFunction implements IExpression<Boolean>
         super();
     }
     
-    public BooleanFunction(LogicalOperator operator)
+    public BooleanFunction(final LogicalOperator operator)
     {
         super();
         this.operator = operator;
     }
     
-    public BooleanFunction(LogicalOperator operator, boolean invert)
+    public BooleanFunction(final LogicalOperator operator, final boolean invert)
     {
         super();
         this.operator = operator;
         this.invert = invert;
     }
     
-    public BooleanFunction addOperand(IExpression<Boolean> operand)
+    public BooleanFunction addOperand(final IExpression<Boolean> operand)
     {
         this.operandList.add(operand);
         return this;
@@ -63,7 +61,7 @@ public class BooleanFunction implements IExpression<Boolean>
             expressionString.append("!(");
         }
         boolean first = false;
-        for (IExpression<Boolean> operand : this.operandList)
+        for (final IExpression<Boolean> operand : this.operandList)
         {
             if (first)
             {
@@ -93,7 +91,7 @@ public class BooleanFunction implements IExpression<Boolean>
     }
     
     @Override
-    public Boolean evaluate(Context context)
+    public Boolean evaluate(final Context context)
     {
         if (this.operandList.isEmpty())
         {
@@ -104,7 +102,7 @@ public class BooleanFunction implements IExpression<Boolean>
         if (this.operator == LogicalOperator.AND)
         {
             currentResult = true;
-            for (IExpression<Boolean> expression : this.operandList)
+            for (final IExpression<Boolean> expression : this.operandList)
             {
                 if (!Boolean.TRUE.equals(expression.evaluate(null)))
                 {
@@ -115,7 +113,7 @@ public class BooleanFunction implements IExpression<Boolean>
         }
         else
         {
-            for (IExpression<Boolean> expression : this.operandList)
+            for (final IExpression<Boolean> expression : this.operandList)
             {
                 if (Boolean.TRUE.equals(expression.evaluate(null)))
                 {
@@ -124,7 +122,7 @@ public class BooleanFunction implements IExpression<Boolean>
                 }
             }
         }
-        return this.invert ? !currentResult : currentResult;
+        return this.invert != currentResult;
     }
     
     @Override
@@ -133,7 +131,7 @@ public class BooleanFunction implements IExpression<Boolean>
         IExpression.super.dispose();
         if (this.operandList != null)
         {
-            for (IExpression<Boolean> operand : this.operandList)
+            for (final IExpression<Boolean> operand : this.operandList)
             {
                 operand.dispose();
             }

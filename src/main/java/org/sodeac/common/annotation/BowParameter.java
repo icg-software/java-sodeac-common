@@ -22,7 +22,7 @@ import java.lang.annotation.Target;
 @Target(PARAMETER)
 public @interface BowParameter
 {
-    public enum AutomaticConsumer
+    enum AutomaticConsumer
     {NONE, NEW_BOW_BY_RETURNTYPE}
     
     boolean self() default false;

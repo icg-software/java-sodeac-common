@@ -30,7 +30,7 @@ public enum ComparativeOperator
     LTE(3, "<="),
     APPROX(4, "~=");
     
-    private ComparativeOperator(int intValue, String abbreviation)
+    ComparativeOperator(final int intValue, final String abbreviation)
     {
         this.intValue = intValue;
         this.abbreviation = abbreviation;
@@ -38,17 +38,17 @@ public enum ComparativeOperator
     
     private static volatile Set<ComparativeOperator> ALL = null;
     
-    private int intValue;
-    private String abbreviation;
+    private final int intValue;
+    private final String abbreviation;
     
     public int getIntValue()
     {
-        return intValue;
+        return this.intValue;
     }
     
     public String getAbbreviation()
     {
-        return abbreviation;
+        return this.abbreviation;
     }
     
     public static Set<ComparativeOperator> getAll()
@@ -61,9 +61,9 @@ public enum ComparativeOperator
         return ComparativeOperator.ALL;
     }
     
-    public static ComparativeOperator findByInteger(int value)
+    public static ComparativeOperator findByInteger(final int value)
     {
-        for (ComparativeOperator operation : getAll())
+        for (final ComparativeOperator operation : getAll())
         {
             if (operation.intValue == value)
             {
@@ -73,9 +73,9 @@ public enum ComparativeOperator
         return null;
     }
     
-    public static ComparativeOperator findByAbbreviation(String abbreviation)
+    public static ComparativeOperator findByAbbreviation(final String abbreviation)
     {
-        for (ComparativeOperator operation : getAll())
+        for (final ComparativeOperator operation : getAll())
         {
             if (operation.abbreviation.equals(abbreviation))
             {
@@ -85,9 +85,9 @@ public enum ComparativeOperator
         return null;
     }
     
-    public static ComparativeOperator findByName(String name)
+    public static ComparativeOperator findByName(final String name)
     {
-        for (ComparativeOperator operation : getAll())
+        for (final ComparativeOperator operation : getAll())
         {
             if (operation.name().equalsIgnoreCase(name))
             {

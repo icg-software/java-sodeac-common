@@ -23,7 +23,7 @@ import org.sodeac.common.typedtree.TypedTreeMetaModel.RootBranchNode;
 
 public abstract class BranchNodeToObjectWrapper implements Externalizable
 {
-    protected BranchNodeToObjectWrapper(BranchNode<?, ? extends BranchNodeMetaModel> branchNode, BranchNodeToObjectWrapper parent)
+    protected BranchNodeToObjectWrapper(final BranchNode<?, ? extends BranchNodeMetaModel> branchNode, final BranchNodeToObjectWrapper parent)
     {
         super();
         Objects.requireNonNull(branchNode, "BaseObjectWrapper requires a node to wrap");
@@ -64,7 +64,7 @@ public abstract class BranchNodeToObjectWrapper implements Externalizable
         return this.__branchNode.getModel();
     }
     
-    public <P extends BranchNodeToObjectWrapper> P getTypedParent(Class<P> clazz)
+    public <P extends BranchNodeToObjectWrapper> P getTypedParent(final Class<P> clazz)
     {
         return (P) this.__parent;
     }
@@ -74,47 +74,47 @@ public abstract class BranchNodeToObjectWrapper implements Externalizable
         return this.__branchNode;
     }
     
-    protected <M extends BranchNodeMetaModel> BranchNodeMetaModel getModel(Class<M> clazz)
+    protected <M extends BranchNodeMetaModel> BranchNodeMetaModel getModel(final Class<M> clazz)
     {
         return ModelRegistry.DEFAULT_INSTANCE.getCachedBranchNodeMetaModel(clazz);
     }
     
-    protected Object getLeafNodeValue(NodeField nodeField)
+    protected Object getLeafNodeValue(final NodeField nodeField)
     {
         return this.__branchNode.getLeafNodeValue(nodeField.nodeTypeIndex, (LeafNodeType) nodeField.nodeType);
     }
     
-    protected void setLeafNodeValue(NodeField nodeField, Object value)
+    protected void setLeafNodeValue(final NodeField nodeField, final Object value)
     {
         this.__branchNode.setLeafNodeValue(nodeField.nodeTypeIndex, (LeafNodeType) nodeField.nodeType, value);
     }
     
-    protected BranchNode createBranchNode(NodeField nodeField)
+    protected BranchNode createBranchNode(final NodeField nodeField)
     {
         return this.__branchNode.create(nodeField.nodeTypeIndex, (BranchNodeType) nodeField.nodeType, null);
     }
     
-    protected BranchNode getBranchNode(NodeField nodeField)
+    protected BranchNode getBranchNode(final NodeField nodeField)
     {
         return this.__branchNode.get(nodeField.nodeTypeIndex, (BranchNodeType) nodeField.nodeType);
     }
     
-    protected BranchNode createBranchNodeItem(NodeField nodeField)
+    protected BranchNode createBranchNodeItem(final NodeField nodeField)
     {
         return this.__branchNode.create(nodeField.nodeTypeIndex, (BranchNodeListType) nodeField.nodeType);
     }
     
-    protected List<BranchNodeToObjectWrapper> getBowList(NodeField nodeField)
+    protected List<BranchNodeToObjectWrapper> getBowList(final NodeField nodeField)
     {
         return this.__branchNode.getUnmodifiableBowList(nodeField.nodeTypeIndex, (BranchNodeListType) nodeField.nodeType);
     }
     
-    protected Stream<BranchNodeToObjectWrapper> getBowStream(NodeField nodeField)
+    protected Stream<BranchNodeToObjectWrapper> getBowStream(final NodeField nodeField)
     {
         return this.__branchNode.getUnmodifiableNodeList(nodeField.nodeTypeIndex, (BranchNodeListType) nodeField.nodeType).stream().map(BranchNode.FnBowFromBranchNode);
     }
     
-    protected boolean removeBranchNodeItem(NodeField nodeField, BranchNodeToObjectWrapper nestedBow)
+    protected boolean removeBranchNodeItem(final NodeField nodeField, final BranchNodeToObjectWrapper nestedBow)
     {
         if ((nestedBow == null) || (nestedBow.getWrappedBranchNode() == null))
         {
@@ -123,7 +123,7 @@ public abstract class BranchNodeToObjectWrapper implements Externalizable
         return this.__branchNode.remove(nodeField.nodeTypeIndex, (BranchNodeListType) nodeField.nodeType, nestedBow.getWrappedBranchNode());
     }
     
-    protected BranchNodeToObjectWrapper createNestedBow(int nodeTypeIndex, INodeType nodeType, BranchNode branchNode)
+    protected BranchNodeToObjectWrapper createNestedBow(final int nodeTypeIndex, final INodeType nodeType, final BranchNode branchNode)
     {
         return null;
     }
@@ -134,13 +134,15 @@ public abstract class BranchNodeToObjectWrapper implements Externalizable
         this.__parent = null;
     }
     
-    public void writeExternal(ObjectOutput out) throws IOException
+    @Override
+    public void writeExternal(final ObjectOutput out) throws IOException
     {
         // TODO Auto-generated method stub
         
     }
     
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
+    @Override
+    public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException
     {
         // TODO Auto-generated method stub
         
@@ -148,24 +150,24 @@ public abstract class BranchNodeToObjectWrapper implements Externalizable
     
     public static class NestedPowFactoryCache
     {
-        public NestedPowFactoryCache(NodeField nodeField, BiFunction<BranchNode, BranchNodeToObjectWrapper, BranchNodeToObjectWrapper> factory)
+        public NestedPowFactoryCache(final NodeField nodeField, final BiFunction<BranchNode, BranchNodeToObjectWrapper, BranchNodeToObjectWrapper> factory)
         {
             super();
             this.nodeField = nodeField;
             this.factory = factory;
         }
         
-        private NodeField nodeField;
-        private BiFunction<BranchNode, BranchNodeToObjectWrapper, BranchNodeToObjectWrapper> factory;
+        private final NodeField nodeField;
+        private final BiFunction<BranchNode, BranchNodeToObjectWrapper, BranchNodeToObjectWrapper> factory;
         
         public NodeField getNodeField()
         {
-            return nodeField;
+            return this.nodeField;
         }
         
         public BiFunction<BranchNode, BranchNodeToObjectWrapper, BranchNodeToObjectWrapper> getFactory()
         {
-            return factory;
+            return this.factory;
         }
         
         public NestedPowFactoryCache copy()
@@ -177,24 +179,24 @@ public abstract class BranchNodeToObjectWrapper implements Externalizable
     public static class NodeField
     {
         
-        public NodeField(int nodeTypeIndex, INodeType nodeType)
+        public NodeField(final int nodeTypeIndex, final INodeType nodeType)
         {
             super();
             this.nodeTypeIndex = nodeTypeIndex;
             this.nodeType = nodeType;
         }
         
-        private int nodeTypeIndex;
-        private INodeType nodeType;
+        private final int nodeTypeIndex;
+        private final INodeType nodeType;
         
         public int getNodeTypeIndex()
         {
-            return nodeTypeIndex;
+            return this.nodeTypeIndex;
         }
         
         public INodeType getNodeType()
         {
-            return nodeType;
+            return this.nodeType;
         }
         
         public NodeField copy()
@@ -207,13 +209,13 @@ public abstract class BranchNodeToObjectWrapper implements Externalizable
         {
             final int prime = 31;
             int result = 1;
-            result = prime * result + ((nodeType == null) ? 0 : nodeType.hashCode());
-            result = prime * result + nodeTypeIndex;
+            result = prime * result + ((this.nodeType == null) ? 0 : this.nodeType.hashCode());
+            result = prime * result + this.nodeTypeIndex;
             return result;
         }
         
         @Override
-        public boolean equals(Object obj)
+        public boolean equals(final Object obj)
         {
             if (this == obj)
             {
@@ -228,22 +230,18 @@ public abstract class BranchNodeToObjectWrapper implements Externalizable
                 return false;
             }
             NodeField other = (NodeField) obj;
-            if (nodeType == null)
+            if (this.nodeType == null)
             {
                 if (other.nodeType != null)
                 {
                     return false;
                 }
             }
-            else if (!nodeType.equals(other.nodeType))
+            else if (!this.nodeType.equals(other.nodeType))
             {
                 return false;
             }
-            if (nodeTypeIndex != other.nodeTypeIndex)
-            {
-                return false;
-            }
-            return true;
+            return this.nodeTypeIndex == other.nodeTypeIndex;
         }
     }
 }

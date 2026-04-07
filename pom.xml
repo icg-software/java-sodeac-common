@@ -17,11 +17,6 @@
     <description>Core framework for sodeac project</description>
     <packaging>bundle</packaging>
 
-
-    <properties>
-        <bundle.version>2.0.0-SNAPSHOT</bundle.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
@@ -82,26 +77,26 @@
                 <configuration>
                     <instructions>
                         <Export-Package>
-                            org.sodeac.common;version="${bundle.version}",
-                            org.sodeac.common.annotation;version="${bundle.version}",
-                            org.sodeac.common.expression;version="${bundle.version}",
-                            org.sodeac.common.snapdeque;version="${bundle.version}",
-                            org.sodeac.common.function;version="${bundle.version}",
-                            org.sodeac.common.typedtree*;version="${bundle.version}",
-                            org.sodeac.common.model*;version="${bundle.version}",
-                            org.sodeac.common.xuri;version="${bundle.version}",
-                            org.sodeac.common.xuri.ldapfilter;version="${bundle.version}",
-                            org.sodeac.common.xuri.json;version="${bundle.version}",
-                            org.sodeac.common.message;version="${bundle.version}",
-                            org.sodeac.common.message.dispatcher.api;version="${bundle.version}",
-                            org.sodeac.common.message.dispatcher.setup;version="${bundle.version}",
-                            org.sodeac.common.message.service.api;version="${bundle.version}",
-                            org.sodeac.common.local.service.annotation;version="${bundle.version}",
-                            org.sodeac.common.local.service.api;version="${bundle.version}",
-                            org.sodeac.common.misc;version="${bundle.version}",
-                            org.sodeac.common.synchronization;version="${bundle.version}",
-                            org.sodeac.common.jdbc;version="${bundle.version}",
-                            org.sodeac.common.jdbc.schemax;version="${bundle.version}"
+                            org.sodeac.common;version="${project.version}",
+                            org.sodeac.common.annotation;version="${project.version}",
+                            org.sodeac.common.expression;version="${project.version}",
+                            org.sodeac.common.snapdeque;version="${project.version}",
+                            org.sodeac.common.function;version="${project.version}",
+                            org.sodeac.common.typedtree*;version="${project.version}",
+                            org.sodeac.common.model*;version="${project.version}",
+                            org.sodeac.common.xuri;version="${project.version}",
+                            org.sodeac.common.xuri.ldapfilter;version="${project.version}",
+                            org.sodeac.common.xuri.json;version="${project.version}",
+                            org.sodeac.common.message;version="${project.version}",
+                            org.sodeac.common.message.dispatcher.api;version="${project.version}",
+                            org.sodeac.common.message.dispatcher.setup;version="${project.version}",
+                            org.sodeac.common.message.service.api;version="${project.version}",
+                            org.sodeac.common.local.service.annotation;version="${project.version}",
+                            org.sodeac.common.local.service.api;version="${project.version}",
+                            org.sodeac.common.misc;version="${project.version}",
+                            org.sodeac.common.synchronization;version="${project.version}",
+                            org.sodeac.common.jdbc;version="${project.version}",
+                            org.sodeac.common.jdbc.schemax;version="${project.version}"
                         </Export-Package>
 
                         <Private-Package>

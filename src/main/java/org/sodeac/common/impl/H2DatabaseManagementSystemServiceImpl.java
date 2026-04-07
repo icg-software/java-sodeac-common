@@ -38,7 +38,7 @@ public class H2DatabaseManagementSystemServiceImpl implements IDatabaseManagemen
 {
     
     @Override
-    public int driverIsApplicableFor(Map<String, Object> properties)
+    public int driverIsApplicableFor(final Map<String, Object> properties)
     {
         boolean wrongType = true;
         
@@ -69,7 +69,7 @@ public class H2DatabaseManagementSystemServiceImpl implements IDatabaseManagemen
     }
     
     @Override
-    public boolean createDatabase(SystemProperties systemProperties, DatabaseProperties databaseProperties, ConnectionProperties connectionProperties) throws SQLException
+    public boolean createDatabase(final SystemProperties systemProperties, final DatabaseProperties databaseProperties, final ConnectionProperties connectionProperties) throws SQLException
     {
         Objects.requireNonNull(connectionProperties, "ConnectionProperties are requiered");
         Objects.requireNonNull(connectionProperties.getDbname(), "db name is requiered");
@@ -89,7 +89,7 @@ public class H2DatabaseManagementSystemServiceImpl implements IDatabaseManagemen
             {
                 directory = connectionProperties.getDirectory();
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
                 throw new RuntimeWrappedException(e);
             }
@@ -108,7 +108,7 @@ public class H2DatabaseManagementSystemServiceImpl implements IDatabaseManagemen
     }
     
     @Override
-    public String getUser(ConnectionProperties connectionProperties)
+    public String getUser(final ConnectionProperties connectionProperties)
     {
         if (connectionProperties == null)
         {
@@ -118,7 +118,7 @@ public class H2DatabaseManagementSystemServiceImpl implements IDatabaseManagemen
     }
     
     @Override
-    public String getPassword(ConnectionProperties connectionProperties)
+    public String getPassword(final ConnectionProperties connectionProperties)
     {
         if (connectionProperties == null)
         {
@@ -136,7 +136,7 @@ public class H2DatabaseManagementSystemServiceImpl implements IDatabaseManagemen
     }
     
     @Override
-    public boolean removeDatabase(SystemProperties systemProperties, DatabaseProperties databaseProperties, ConnectionProperties connectionProperties)
+    public boolean removeDatabase(final SystemProperties systemProperties, final DatabaseProperties databaseProperties, final ConnectionProperties connectionProperties)
     {
         Objects.requireNonNull(connectionProperties, "ConnectionProperties are requiered");
         Objects.requireNonNull(connectionProperties.getDbname(), "db name is requiered");
@@ -156,7 +156,7 @@ public class H2DatabaseManagementSystemServiceImpl implements IDatabaseManagemen
             {
                 directory = connectionProperties.getDirectory();
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
                 throw new RuntimeWrappedException(e);
             }
@@ -170,13 +170,13 @@ public class H2DatabaseManagementSystemServiceImpl implements IDatabaseManagemen
         
         boolean failed = false;
         
-        for (File file : directoryFile.listFiles())
+        for (final File file : directoryFile.listFiles())
         {
             if (file.isDirectory())
             {
                 if (file.getName().equalsIgnoreCase(connectionProperties.getDbname() + ".lobs.db"))
                 {
-                    for (File lob : file.listFiles())
+                    for (final File lob : file.listFiles())
                     {
                         if (lob.getName().toLowerCase().endsWith(".lob.db")) // lob
                         {
@@ -245,7 +245,7 @@ public class H2DatabaseManagementSystemServiceImpl implements IDatabaseManagemen
     }
     
     @Override
-    public boolean createSchema(ConnectionProperties connectionProperties) throws SQLException
+    public boolean createSchema(final ConnectionProperties connectionProperties) throws SQLException
     {
         Objects.requireNonNull(connectionProperties);
         Objects.requireNonNull(connectionProperties.getSchema());
@@ -282,7 +282,7 @@ public class H2DatabaseManagementSystemServiceImpl implements IDatabaseManagemen
     }
     
     @Override
-    public boolean removeSchema(ConnectionProperties connectionProperties) throws SQLException
+    public boolean removeSchema(final ConnectionProperties connectionProperties) throws SQLException
     {
         Objects.requireNonNull(connectionProperties);
         Objects.requireNonNull(connectionProperties.getSchema());
@@ -318,7 +318,7 @@ public class H2DatabaseManagementSystemServiceImpl implements IDatabaseManagemen
     }
     
     @Override
-    public String getConnectionString(ConnectionProperties connectionProperties)
+    public String getConnectionString(final ConnectionProperties connectionProperties)
     {
         Objects.requireNonNull(connectionProperties, "connection properties are requiered");
         
@@ -339,7 +339,7 @@ public class H2DatabaseManagementSystemServiceImpl implements IDatabaseManagemen
             File directoryFile = new File(directory);
             directory = directoryFile.getCanonicalPath();
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             throw new RuntimeWrappedException(e);
         }
@@ -371,7 +371,7 @@ public class H2DatabaseManagementSystemServiceImpl implements IDatabaseManagemen
     }
     
     @Override
-    public File backup(SystemProperties properties, ConnectionProperties connectionProperties, File backupDirectory, File tempDirectory, String key, String... schemas) throws SQLException, IOException
+    public File backup(final SystemProperties properties, final ConnectionProperties connectionProperties, final File backupDirectory, File tempDirectory, final String key, final String... schemas) throws SQLException, IOException
     {
         Objects.requireNonNull(connectionProperties, "connection properties are requiered");
         if (connectionProperties.getDbname().isEmpty())
@@ -397,7 +397,7 @@ public class H2DatabaseManagementSystemServiceImpl implements IDatabaseManagemen
         Connection connection = getConnection(connectionProperties);
         try
         {
-            File cloneFile = new File(tempDirectory, UUID.randomUUID().toString() + ".zip");
+            File cloneFile = new File(tempDirectory, UUID.randomUUID() + ".zip");
             try
             {
                 Date now = new Date();
@@ -413,9 +413,9 @@ public class H2DatabaseManagementSystemServiceImpl implements IDatabaseManagemen
                 
                 StringBuilder schemaPart = new StringBuilder();
                 
-                if ((schemas != null) && (schemas.length > 0))
+                if (schemas != null)
                 {
-                    for (String schema : schemas)
+                    for (final String schema : schemas)
                     {
                         if (schema == null)
                         {
@@ -430,7 +430,7 @@ public class H2DatabaseManagementSystemServiceImpl implements IDatabaseManagemen
                     }
                 }
                 
-                String filename = "db-backup-" + connectionProperties.getDbname().toLowerCase() + schemaPart.toString();
+                String filename = "db-backup-" + connectionProperties.getDbname().toLowerCase() + schemaPart;
                 
                 if (filename.length() > 200)
                 {
@@ -460,9 +460,9 @@ public class H2DatabaseManagementSystemServiceImpl implements IDatabaseManagemen
                     {
                         StringBuilder schemaQuery = new StringBuilder();
                         
-                        if ((schemas != null) && (schemas.length > 0))
+                        if (schemas != null)
                         {
-                            for (String schema : schemas)
+                            for (final String schema : schemas)
                             {
                                 if (schema == null)
                                 {
@@ -481,7 +481,7 @@ public class H2DatabaseManagementSystemServiceImpl implements IDatabaseManagemen
                                 schemaQuery.append(" " + schema);
                             }
                         }
-                        PreparedStatement preparedStatementScript = cloneConnection.prepareStatement("SCRIPT DROP BLOCKSIZE 8096" + schemaQuery.toString());
+                        PreparedStatement preparedStatementScript = cloneConnection.prepareStatement("SCRIPT DROP BLOCKSIZE 8096" + schemaQuery);
                         try
                         {
                             ResultSet resultSet = preparedStatementScript.executeQuery();
@@ -532,7 +532,7 @@ public class H2DatabaseManagementSystemServiceImpl implements IDatabaseManagemen
     }
     
     @Override
-    public void restore(SystemProperties properties, ConnectionProperties connectionProperties, File backupFile, File tempDirectory, String key) throws SQLException, IOException
+    public void restore(final SystemProperties properties, final ConnectionProperties connectionProperties, File backupFile, File tempDirectory, final String key) throws SQLException, IOException
     {
         Objects.requireNonNull(connectionProperties, "connection properties are requiered");
         if (connectionProperties.getDbname().isEmpty())
@@ -560,7 +560,7 @@ public class H2DatabaseManagementSystemServiceImpl implements IDatabaseManagemen
         try
         {
             connectionRestore.setAutoCommit(false);
-            File tempRestore = new File(tempDirectory, "restore-" + UUID.randomUUID().toString() + ".sql");
+            File tempRestore = new File(tempDirectory, "restore-" + UUID.randomUUID() + ".sql");
             try
             {
                 CommonConsumer.CopyStreamAndClose.accept

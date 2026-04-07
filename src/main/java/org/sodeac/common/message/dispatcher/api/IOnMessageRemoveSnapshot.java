@@ -28,5 +28,5 @@ public interface IOnMessageRemoveSnapshot<T> extends IDispatcherChannelManager
      *
      * @param messageRemoveSnapshot removed message snapshot
      */
-    public void onMessageRemoveSnapshot(DequeSnapshot<IMessage<T>> messageRemoveSnapshot);
+    void onMessageRemoveSnapshot(DequeSnapshot<IMessage<T>> messageRemoveSnapshot);
 }

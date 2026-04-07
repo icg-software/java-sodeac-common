@@ -93,14 +93,14 @@ public enum PrivateChannelWorkerRequirement
      */
     RequirePrivateChannelWorker(4);
     
-    private PrivateChannelWorkerRequirement(int intValue)
+    PrivateChannelWorkerRequirement(final int intValue)
     {
         this.intValue = intValue;
     }
     
     private static volatile Set<PrivateChannelWorkerRequirement> ALL = null;
     
-    private int intValue;
+    private final int intValue;
     
     /**
      * getter for all privateQueueWorker
@@ -124,9 +124,9 @@ public enum PrivateChannelWorkerRequirement
      *
      * @return privateQueueWorker enum represents by {@code value}
      */
-    public static PrivateChannelWorkerRequirement findByInteger(int value)
+    public static PrivateChannelWorkerRequirement findByInteger(final int value)
     {
-        for (PrivateChannelWorkerRequirement privateChannelWorker : getAll())
+        for (final PrivateChannelWorkerRequirement privateChannelWorker : getAll())
         {
             if (privateChannelWorker.intValue == value)
             {
@@ -143,9 +143,9 @@ public enum PrivateChannelWorkerRequirement
      *
      * @return enum represents by {@code name}
      */
-    public static PrivateChannelWorkerRequirement findByName(String name)
+    public static PrivateChannelWorkerRequirement findByName(final String name)
     {
-        for (PrivateChannelWorkerRequirement privateChannelWorker : getAll())
+        for (final PrivateChannelWorkerRequirement privateChannelWorker : getAll())
         {
             if (privateChannelWorker.name().equalsIgnoreCase(name))
             {

@@ -27,14 +27,14 @@ public interface IExtensible
      *
      * @return extension
      */
-    public IExtension<?> getExtension(String type);
+    IExtension<?> getExtension(String type);
     
     /**
      * getter for all extensions
      *
      * @return extension list
      */
-    public List<IExtension<?>> getExtensionList();
+    List<IExtension<?>> getExtensionList();
     
     /**
      * getter for extension list of defined type
@@ -43,5 +43,5 @@ public interface IExtensible
      *
      * @return filtered extension list
      */
-    public List<IExtension<?>> getExtensionList(String type);
+    List<IExtension<?>> getExtensionList(String type);
 }

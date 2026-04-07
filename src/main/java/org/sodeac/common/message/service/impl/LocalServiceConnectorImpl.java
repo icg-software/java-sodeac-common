@@ -31,7 +31,7 @@ public class LocalServiceConnectorImpl implements IServiceConnector
     protected volatile OSGiDriverRegistry internalBootstrapDep;
     
     @Override
-    public int driverIsApplicableFor(Map<String, Object> properties)
+    public int driverIsApplicableFor(final Map<String, Object> properties)
     {
         if ((properties == null) || properties.isEmpty())
         {
@@ -45,7 +45,7 @@ public class LocalServiceConnectorImpl implements IServiceConnector
     }
     
     @Override
-    public IServiceConnection lookup(URI serviceURI)
+    public IServiceConnection lookup(final URI serviceURI)
     {
 		/*IServiceRegistry serviceRegistry = this.serviceRegistry;
 		if(serviceRegistry == null)

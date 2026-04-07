@@ -35,7 +35,7 @@ import org.sodeac.common.typedtree.BranchNode;
 @Target(FIELD)
 public @interface SQLColumn
 {
-    public enum SQLColumnType
+    enum SQLColumnType
     {AUTO, CHAR, VARCHAR, CLOB, UUID, BOOLEAN, SMALLINT, INTEGER, BIGINT, REAL, DOUBLE, TIMESTAMP, DATE, TIME, BINARY, BLOB}
     
     String name();
@@ -66,46 +66,46 @@ public @interface SQLColumn
     
     Class<? extends Function<?, ?>> JDBC2NodeValue() default NoJDBC2Node.class;
     
-    public class NoConsumer implements Consumer<TypedTreeJDBCCruder.ConvertEvent>
+    class NoConsumer implements Consumer<TypedTreeJDBCCruder.ConvertEvent>
     {
         @Override
-        public void accept(ConvertEvent t) { }
+        public void accept(final ConvertEvent t) { }
         
     }
     
-    public class NoNode2JDBC implements Function<Object, Object>
+    class NoNode2JDBC implements Function<Object, Object>
     {
         
         @Override
-        public Object apply(Object t)
+        public Object apply(final Object t)
         {
             return t;
         }
         
     }
     
-    public class NoJDBC2Node implements Function<Object, Object>
+    class NoJDBC2Node implements Function<Object, Object>
     {
         
         @Override
-        public Object apply(Object t)
+        public Object apply(final Object t)
         {
             return t;
         }
         
     }
     
-    public class NoDefaultValueExpressionDriver implements IDefaultValueExpressionDriver
+    class NoDefaultValueExpressionDriver implements IDefaultValueExpressionDriver
     {
         
         @Override
-        public int driverIsApplicableFor(Map<String, Object> properties)
+        public int driverIsApplicableFor(final Map<String, Object> properties)
         {
             return IDriver.APPLICABLE_NONE;
         }
         
         @Override
-        public String createExpression(BranchNode<?, ColumnNodeType> column, Connection connection, String schema, Dictionary<String, Object> properties, IDBSchemaUtilsDriver driver)
+        public String createExpression(final BranchNode<?, ColumnNodeType> column, final Connection connection, final String schema, final Dictionary<String, Object> properties, final IDBSchemaUtilsDriver driver)
         {
             return null;
         }

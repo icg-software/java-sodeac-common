@@ -49,7 +49,7 @@ public class DequeSnapshot<E> implements AutoCloseable, Collection<E>
     protected Integer pollCapacity;
     
     // Has to be run in write lock !!!
-    protected DequeSnapshot(SnapshotableDeque<E> snapshotableDeque, boolean poll, Integer pollCapacity)
+    protected DequeSnapshot(final SnapshotableDeque<E> snapshotableDeque, final boolean poll, final Integer pollCapacity)
     {
         super();
         this.uuid = UUID.randomUUID();
@@ -68,17 +68,17 @@ public class DequeSnapshot<E> implements AutoCloseable, Collection<E>
         Eyebolt<E> beginLink = this.snapshotableDeque.begin.getLink();
         if (beginLink == null)
         {
-            firstLink = null;
-            size = 0;
+            this.firstLink = null;
+            this.size = 0;
         }
         else
         {
-            firstLink = beginLink.nextLink;
+            this.firstLink = beginLink.nextLink;
             this.size = beginLink.getSize();
         }
         
         Eyebolt<E> endLink = snapshotableDeque.end.getLink();
-        lastLink = endLink == null ? null : endLink.previewsLink;
+        this.lastLink = endLink == null ? null : endLink.previewsLink;
         
         if (poll && (this.size > 0))
         {
@@ -143,13 +143,13 @@ public class DequeSnapshot<E> implements AutoCloseable, Collection<E>
     
     protected SnapshotableDeque<E> getParent()
     {
-        return snapshotableDeque;
+        return this.snapshotableDeque;
     }
     
     @Override
     public void close()
     {
-        if (closed)
+        if (this.closed)
         {
             return;
         }
@@ -157,7 +157,7 @@ public class DequeSnapshot<E> implements AutoCloseable, Collection<E>
         lock.lock();
         try
         {
-            closed = true;
+            this.closed = true;
             SnapshotVersion<E> version = this.version;
             if (version != null)
             {
@@ -183,7 +183,7 @@ public class DequeSnapshot<E> implements AutoCloseable, Collection<E>
      */
     public boolean isClosed()
     {
-        return closed;
+        return this.closed;
     }
     
     /**
@@ -203,9 +203,9 @@ public class DequeSnapshot<E> implements AutoCloseable, Collection<E>
      *
      * @return matched link
      */
-    protected Link<E> getLink(E o)
+    protected Link<E> getLink(final E o)
     {
-        for (Link<E> element : this.linkIterable())
+        for (final Link<E> element : this.linkIterable())
         {
             if (element.node.getElement() == o)
             {
@@ -222,9 +222,9 @@ public class DequeSnapshot<E> implements AutoCloseable, Collection<E>
      *
      * @return matched node
      */
-    public DequeNode<E> getNode(E o)
+    public DequeNode<E> getNode(final E o)
     {
-        for (Link<E> element : this.linkIterable())
+        for (final Link<E> element : this.linkIterable())
         {
             if (element.node.getElement() == o)
             {
@@ -241,9 +241,9 @@ public class DequeSnapshot<E> implements AutoCloseable, Collection<E>
      *
      * @return matched node
      */
-    public DequeNode<E> getLinkedNode(E o)
+    public DequeNode<E> getLinkedNode(final E o)
     {
-        for (Link<E> element : this.linkIterable())
+        for (final Link<E> element : this.linkIterable())
         {
             if (element.node.getElement() == o)
             {
@@ -259,7 +259,7 @@ public class DequeSnapshot<E> implements AutoCloseable, Collection<E>
     @Override
     public Iterator<E> iterator()
     {
-        if (closed)
+        if (this.closed)
         {
             throw new RuntimeException("snapshot is closed");
         }
@@ -273,12 +273,13 @@ public class DequeSnapshot<E> implements AutoCloseable, Collection<E>
      */
     protected Iterable<Link<E>> linkIterable()
     {
-        if (closed)
+        if (this.closed)
         {
             throw new RuntimeException("snapshot is closed");
         }
         return new Iterable<Link<E>>()
         {
+            @Override
             public Iterator<Link<E>> iterator()
             {
                 return new LinkSnapshotIterator();
@@ -296,6 +297,7 @@ public class DequeSnapshot<E> implements AutoCloseable, Collection<E>
         checkClosed();
         return new Iterable<DequeNode<E>>()
         {
+            @Override
             public Iterator<DequeNode<E>> iterator()
             {
                 return new NodeSnapshotIterator();
@@ -327,7 +329,7 @@ public class DequeSnapshot<E> implements AutoCloseable, Collection<E>
     }
     
     @Override
-    public boolean contains(Object o)
+    public boolean contains(final Object o)
     {
         checkClosed();
         if (o == null)
@@ -395,7 +397,7 @@ public class DequeSnapshot<E> implements AutoCloseable, Collection<E>
         checkClosed();
         Object[] array = new Object[size()];
         int index = 0;
-        for (E element : this)
+        for (final E element : this)
         {
             array[index] = element;
             index++;
@@ -418,7 +420,7 @@ public class DequeSnapshot<E> implements AutoCloseable, Collection<E>
             a = (T[]) new Object[size()];
         }
         int index = 0;
-        for (E element : this)
+        for (final E element : this)
         {
             a[index] = (T) element;
             index++;
@@ -431,13 +433,13 @@ public class DequeSnapshot<E> implements AutoCloseable, Collection<E>
     }
     
     @Override
-    public boolean add(E e)
+    public boolean add(final E e)
     {
         return this.snapshotableDeque.add(e);
     }
     
     @Override
-    public boolean remove(Object o)
+    public boolean remove(final Object o)
     {
         checkClosed();
         Lock lock = this.snapshotableDeque.writeLock;
@@ -446,7 +448,7 @@ public class DequeSnapshot<E> implements AutoCloseable, Collection<E>
         {
             if (o == null)
             {
-                for (DequeNode<E> node : nodeIterable())
+                for (final DequeNode<E> node : nodeIterable())
                 {
                     if (node.getElement() == null)
                     {
@@ -459,7 +461,7 @@ public class DequeSnapshot<E> implements AutoCloseable, Collection<E>
             }
             else
             {
-                for (DequeNode<E> node : nodeIterable())
+                for (final DequeNode<E> node : nodeIterable())
                 {
                     if (o.equals(node.getElement()))
                     {
@@ -479,12 +481,12 @@ public class DequeSnapshot<E> implements AutoCloseable, Collection<E>
     }
     
     @Override
-    public boolean containsAll(Collection<?> c)
+    public boolean containsAll(final Collection<?> c)
     {
         Objects.requireNonNull(c);
         checkClosed();
         col:
-        for (Object o : c)
+        for (final Object o : c)
         {
             if (o == null)
             {
@@ -544,14 +546,14 @@ public class DequeSnapshot<E> implements AutoCloseable, Collection<E>
     }
     
     @Override
-    public boolean addAll(Collection<? extends E> c)
+    public boolean addAll(final Collection<? extends E> c)
     {
         checkClosed();
         return this.snapshotableDeque.addAll(c);
     }
     
     @Override
-    public boolean removeAll(Collection<?> c)
+    public boolean removeAll(final Collection<?> c)
     {
         Objects.requireNonNull(c);
         checkClosed();
@@ -561,7 +563,7 @@ public class DequeSnapshot<E> implements AutoCloseable, Collection<E>
         try
         {
             boolean modified = false;
-            for (DequeNode<E> node : nodeIterable())
+            for (final DequeNode<E> node : nodeIterable())
             {
                 if (c.contains(node.getElement()))
                 {
@@ -580,7 +582,7 @@ public class DequeSnapshot<E> implements AutoCloseable, Collection<E>
     }
     
     @Override
-    public boolean retainAll(Collection<?> c)
+    public boolean retainAll(final Collection<?> c)
     {
         checkClosed();
         Objects.requireNonNull(c);
@@ -590,7 +592,7 @@ public class DequeSnapshot<E> implements AutoCloseable, Collection<E>
         try
         {
             boolean modified = false;
-            for (DequeNode<E> node : nodeIterable())
+            for (final DequeNode<E> node : nodeIterable())
             {
                 if (!c.contains(node.getElement()))
                 {
@@ -616,7 +618,7 @@ public class DequeSnapshot<E> implements AutoCloseable, Collection<E>
         lock.lock();
         try
         {
-            for (DequeNode<E> node : nodeIterable())
+            for (final DequeNode<E> node : nodeIterable())
             {
                 node.unlink();
             }
@@ -720,9 +722,9 @@ public class DequeSnapshot<E> implements AutoCloseable, Collection<E>
         @Override
         public void remove()
         {
-            if (removable != null)
+            if (this.removable != null)
             {
-                removable.unlink();
+                this.removable.unlink();
             }
         }
         
@@ -755,9 +757,9 @@ public class DequeSnapshot<E> implements AutoCloseable, Collection<E>
         @Override
         public void remove()
         {
-            if (removable != null)
+            if (this.removable != null)
             {
-                removable.unlink();
+                this.removable.unlink();
             }
         }
         
@@ -790,9 +792,9 @@ public class DequeSnapshot<E> implements AutoCloseable, Collection<E>
         @Override
         public void remove()
         {
-            if (removable != null)
+            if (this.removable != null)
             {
-                removable.unlink();
+                this.removable.unlink();
             }
         }
         
@@ -822,7 +824,7 @@ public class DequeSnapshot<E> implements AutoCloseable, Collection<E>
         {
             super();
             this.next = DequeSnapshot.this.firstLink;
-            nextCalculated = true;
+            this.nextCalculated = true;
         }
         
         public boolean hasNext()
@@ -832,7 +834,7 @@ public class DequeSnapshot<E> implements AutoCloseable, Collection<E>
                 throw new RuntimeException("snapshot is closed");
             }
             
-            nextCalculated = true;
+            this.nextCalculated = true;
             
             if (DequeSnapshot.this.size <= this.provided)
             {
@@ -841,7 +843,7 @@ public class DequeSnapshot<E> implements AutoCloseable, Collection<E>
                 return false;
             }
             
-            if (next != null)
+            if (this.next != null)
             {
                 return true;
             }
@@ -942,14 +944,14 @@ public class DequeSnapshot<E> implements AutoCloseable, Collection<E>
     {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((snapshotableDeque == null) ? 0 : snapshotableDeque.hashCode());
-        result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
-        result = prime * result + ((version == null) ? 0 : version.hashCode());
+        result = prime * result + ((this.snapshotableDeque == null) ? 0 : this.snapshotableDeque.hashCode());
+        result = prime * result + ((this.uuid == null) ? 0 : this.uuid.hashCode());
+        result = prime * result + ((this.version == null) ? 0 : this.version.hashCode());
         return result;
     }
     
     @Override
-    public boolean equals(Object obj)
+    public boolean equals(final Object obj)
     {
         return this == obj;
     }

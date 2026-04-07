@@ -17,7 +17,7 @@ public class ChannelWorkerWrapper implements IDispatcherChannelWorker
 {
     private ChannelWorker worker = null;
     
-    protected ChannelWorkerWrapper(ChannelWorker worker)
+    protected ChannelWorkerWrapper(final ChannelWorker worker)
     {
         super();
         this.worker = worker;
@@ -26,13 +26,13 @@ public class ChannelWorkerWrapper implements IDispatcherChannelWorker
     @Override
     public void interrupt()
     {
-        worker.interrupt();
+        this.worker.interrupt();
     }
     
     @Override
     public IDispatcherChannel getChannel()
     {
-        return worker.getMessageChannel();
+        return this.worker.getMessageChannel();
     }
     
 }

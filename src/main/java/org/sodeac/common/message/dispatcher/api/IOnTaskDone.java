@@ -27,5 +27,5 @@ public interface IOnTaskDone<T> extends IDispatcherChannelManager
      * @param channel queue of task finished {@link IDispatcherChannelTask}
      * @param task    finished {@link IDispatcherChannelTask}
      */
-    public void onTaskDone(IDispatcherChannel<T> channel, IDispatcherChannelTask<T> task);
+    void onTaskDone(IDispatcherChannel<T> channel, IDispatcherChannelTask<T> task);
 }

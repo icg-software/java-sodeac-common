@@ -58,17 +58,15 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
     protected enum KeepMessagesMode
     {MessagesConsumed, MessagesProcessed, MessagesConsumedByRule, MessagesProcessedByRule}
     
-    ;
-    
     @Override
-    public void configureChannelManagerPolicy(IChannelManagerPolicy componentBindingPolicy)
+    public void configureChannelManagerPolicy(final IChannelManagerPolicy componentBindingPolicy)
     {
         componentBindingPolicy
             .addConfigurationDetail(new ComponentBindingSetup.BoundedByChannelConfiguration(MATCH_FILTER).setName(MANAGER_NAME));
     }
     
     @Override
-    public void configureChannelServicePolicy(IChannelServicePolicy componentBindingPolicy)
+    public void configureChannelServicePolicy(final IChannelServicePolicy componentBindingPolicy)
     {
         componentBindingPolicy
             .addConfigurationDetail(new ComponentBindingSetup.BoundedByChannelConfiguration(MATCH_FILTER).setName(SERVICE_NAME))
@@ -78,7 +76,7 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
     }
     
     @Override
-    public void onChannelAttach(IDispatcherChannel<Object> channel)
+    public void onChannelAttach(final IDispatcherChannel<Object> channel)
     {
         // activate Consume-Message-Execute manager in parent channel
         channel.getParentChannel().getConfigurationPropertyBlock().setProperty(ConsumeMessagesConsumerManager.class.getCanonicalName(), Boolean.TRUE.toString());
@@ -111,7 +109,7 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
     }
     
     @Override
-    public void onChannelDetach(IDispatcherChannel<Object> channel)
+    public void onChannelDetach(final IDispatcherChannel<Object> channel)
     {
         ConsumeMessagesPlannerManagerAdapter plannerAdapter = channel.getStateAdapter(ConsumeMessagesPlannerManagerAdapter.class);
         if (plannerAdapter == null)
@@ -129,7 +127,7 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
     }
     
     @Override
-    public void run(IDispatcherChannelTaskContext<Object> taskContext) throws Exception
+    public void run(final IDispatcherChannelTaskContext<Object> taskContext) throws Exception
     {
         ConsumeMessagesPlannerManagerAdapter plannerAdapter = taskContext.getChannel().getStateAdapter(ConsumeMessagesPlannerManagerAdapter.class);
         if (plannerAdapter == null)
@@ -142,7 +140,7 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
     
     protected static class ConsumeMessagesPlannerManagerAdapter
     {
-        public ConsumeMessagesPlannerManagerAdapter(MessageConsumerFeature.MessageConsumerFeatureConfiguration configuration, IDispatcherChannel<Object> channel)
+        public ConsumeMessagesPlannerManagerAdapter(final MessageConsumerFeature.MessageConsumerFeatureConfiguration configuration, final IDispatcherChannel<Object> channel)
         {
             super();
             Objects.requireNonNull(configuration, "no configuratrion for message consumer feature");
@@ -151,7 +149,7 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
             this.lock = new ReentrantLock();
             this.monitoringPoolList = new ArrayList<>(configuration.getConsumerRuleList().size());
             
-            for (ConsumerRule consumerRule : configuration.getConsumerRuleList())
+            for (final ConsumerRule consumerRule : configuration.getConsumerRuleList())
             {
                 this.monitoringPoolList.add(new MessageMonitoringPool(consumerRule, channel));
             }
@@ -164,7 +162,7 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
         private IDispatcherChannel<Object> channel = null;
         private volatile boolean disposed = false;
         
-        protected void removeConsumeMessageFlag(UUID poolId, UUID flag)
+        protected void removeConsumeMessageFlag(final UUID poolId, final UUID flag)
         {
             if (poolId == null)
             {
@@ -180,12 +178,12 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
             lock.lock();
             try
             {
-                if (disposed)
+                if (this.disposed)
                 {
                     return;
                 }
                 
-                for (MessageMonitoringPool messageMonitoringPool : monitoringPoolList)
+                for (final MessageMonitoringPool messageMonitoringPool : this.monitoringPoolList)
                 {
                     if (!poolId.equals(messageMonitoringPool.id))
                     {
@@ -206,18 +204,18 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
             }
         }
         
-        protected ConsumableState getConsumableState(boolean requireMessageList)
+        protected ConsumableState getConsumableState(final boolean requireMessageList)
         {
             Lock lock = this.lock;
             lock.lock();
             try
             {
-                if (disposed)
+                if (this.disposed)
                 {
                     return null;
                 }
                 
-                for (MessageMonitoringPool messageMonitoringPool : monitoringPoolList)
+                for (final MessageMonitoringPool messageMonitoringPool : this.monitoringPoolList)
                 {
                     ConsumableState consumableState = messageMonitoringPool.getConsumableState(requireMessageList);
                     if (consumableState == null)
@@ -238,20 +236,20 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
             return null;
         }
         
-        protected void serviceRoutine(IDispatcherChannelTaskContext<Object> taskContext)
+        protected void serviceRoutine(final IDispatcherChannelTaskContext<Object> taskContext)
         {
             Lock lock = this.lock;
             lock.lock();
             try
             {
-                if (disposed)
+                if (this.disposed)
                 {
                     return;
                 }
                 
                 Long minTimestamp = 0L;
                 boolean signal = false;
-                for (MessageMonitoringPool messageMonitoringPool : monitoringPoolList)
+                for (final MessageMonitoringPool messageMonitoringPool : this.monitoringPoolList)
                 {
                     long next = messageMonitoringPool.calculateFatefulTime();
                     if (next < 0L)
@@ -306,14 +304,14 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
             lock.lock();
             try
             {
-                if (disposed)
+                if (this.disposed)
                 {
                     return false;
                 }
                 
                 boolean consume = false;
                 Long minTimestamp = 0L;
-                for (MessageMonitoringPool messageMonitoringPool : monitoringPoolList)
+                for (final MessageMonitoringPool messageMonitoringPool : this.monitoringPoolList)
                 {
                     long next = messageMonitoringPool.calculateFatefulTime();
                     if (next < 0L)
@@ -346,7 +344,7 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
                 if (this.currentReschedule != minTimestamp) ;
                 {
                     this.currentReschedule = minTimestamp;
-                    channel.rescheduleTask(SERVICE_ID, this.currentReschedule, -1L, -1L);
+                    this.channel.rescheduleTask(SERVICE_ID, this.currentReschedule, -1L, -1L);
                 }
                 return consume;
             }
@@ -356,18 +354,18 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
             }
         }
         
-        protected void addMessageToMonitoring(IMessage<Object> message)
+        protected void addMessageToMonitoring(final IMessage<Object> message)
         {
             Lock lock = this.lock;
             lock.lock();
             try
             {
-                if (disposed)
+                if (this.disposed)
                 {
                     return;
                 }
                 
-                for (MessageMonitoringPool messageMonitoringPool : monitoringPoolList)
+                for (final MessageMonitoringPool messageMonitoringPool : this.monitoringPoolList)
                 {
                     messageMonitoringPool.addToMonitoring(message);
                 }
@@ -378,20 +376,20 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
             }
         }
         
-        protected void addMessagesToMonitoring(DequeSnapshot<IMessage<Object>> snapshot)
+        protected void addMessagesToMonitoring(final DequeSnapshot<IMessage<Object>> snapshot)
         {
             Lock lock = this.lock;
             lock.lock();
             try
             {
-                if (disposed)
+                if (this.disposed)
                 {
                     return;
                 }
                 
-                for (MessageMonitoringPool messageMonitoringPool : monitoringPoolList)
+                for (final MessageMonitoringPool messageMonitoringPool : this.monitoringPoolList)
                 {
-                    for (IMessage<Object> message : snapshot)
+                    for (final IMessage<Object> message : snapshot)
                     {
                         messageMonitoringPool.addToMonitoring(message);
                     }
@@ -403,18 +401,18 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
             }
         }
         
-        protected void addAllToMonitoring(Collection<IMessage<Object>> messageList)
+        protected void addAllToMonitoring(final Collection<IMessage<Object>> messageList)
         {
             Lock lock = this.lock;
             lock.lock();
             try
             {
-                if (disposed)
+                if (this.disposed)
                 {
                     return;
                 }
                 
-                for (MessageMonitoringPool messageMonitoringPool : monitoringPoolList)
+                for (final MessageMonitoringPool messageMonitoringPool : this.monitoringPoolList)
                 {
                     messageList.forEach(m -> messageMonitoringPool.addToMonitoring(m));
                 }
@@ -431,12 +429,12 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
             lock.lock();
             try
             {
-                if (disposed)
+                if (this.disposed)
                 {
                     return;
                 }
                 
-                for (MessageMonitoringPool messageMonitoringPool : monitoringPoolList)
+                for (final MessageMonitoringPool messageMonitoringPool : this.monitoringPoolList)
                 {
                     messageMonitoringPool.removeRemovedMessages();
                 }
@@ -447,18 +445,18 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
             }
         }
         
-        protected void setConsumeTimestamp(long timestamp, Set<String> members)
+        protected void setConsumeTimestamp(final long timestamp, final Set<String> members)
         {
             Lock lock = this.lock;
             lock.lock();
             try
             {
-                if (disposed)
+                if (this.disposed)
                 {
                     return;
                 }
                 
-                for (MessageMonitoringPool messageMonitoringPool : monitoringPoolList)
+                for (final MessageMonitoringPool messageMonitoringPool : this.monitoringPoolList)
                 {
                     messageMonitoringPool.setConsumeTimestamp(timestamp, members);
                 }
@@ -469,19 +467,19 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
             }
         }
         
-        protected boolean consumeMessages(String poolAddress)
+        protected boolean consumeMessages(final String poolAddress)
         {
             boolean match = false;
             Lock lock = this.lock;
             lock.lock();
             try
             {
-                if (disposed)
+                if (this.disposed)
                 {
                     return false;
                 }
                 
-                for (MessageMonitoringPool messageMonitoringPool : monitoringPoolList)
+                for (final MessageMonitoringPool messageMonitoringPool : this.monitoringPoolList)
                 {
                     if (poolAddress.equals(messageMonitoringPool.consumerRule.getPoolAddress()))
                     {
@@ -498,18 +496,18 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
             return match;
         }
         
-        protected void updateKeepMessagesState(UUID poolId)
+        protected void updateKeepMessagesState(final UUID poolId)
         {
             Lock lock = this.lock;
             lock.lock();
             try
             {
-                if (disposed)
+                if (this.disposed)
                 {
                     return;
                 }
                 
-                for (MessageMonitoringPool messageMonitoringPool : monitoringPoolList)
+                for (final MessageMonitoringPool messageMonitoringPool : this.monitoringPoolList)
                 {
                     if (messageMonitoringPool.id.equals(poolId))
                     {
@@ -533,7 +531,7 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
         
         protected class ConsumableState
         {
-            public ConsumableState(UUID poolId)
+            public ConsumableState(final UUID poolId)
             {
                 super();
                 this.poolId = poolId;
@@ -550,30 +548,30 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
             
             protected boolean isConsumable()
             {
-                return consumable;
+                return this.consumable;
             }
             
             protected Long getFatefulTime()
             {
-                return fatefulTime;
+                return this.fatefulTime;
             }
             
             protected LinkedList<IMessage<Object>> getConsumableList()
             {
-                return consumableList;
+                return this.consumableList;
             }
             
             protected ConsumerRule getConsumerRule()
             {
-                return consumerRule;
+                return this.consumerRule;
             }
             
             protected MessageConsumeHelperImpl getMessageConsumeHelperImpl()
             {
-                return messageConsumeHelperImpl;
+                return this.messageConsumeHelperImpl;
             }
             
-            protected void setMessageConsumeHelperImpl(MessageConsumeHelperImpl messageConsumeHelperImpl)
+            protected void setMessageConsumeHelperImpl(final MessageConsumeHelperImpl messageConsumeHelperImpl)
             {
                 this.messageConsumeHelperImpl = messageConsumeHelperImpl;
             }
@@ -585,12 +583,12 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
             
             protected KeepMessagesMode getKeepMessagesMode()
             {
-                return keepMessagesMode;
+                return this.keepMessagesMode;
             }
             
             protected UUID getConsumeMessageId()
             {
-                return consumeMessageId;
+                return this.consumeMessageId;
             }
             
             protected void dispose()
@@ -607,7 +605,7 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
         
         private class MessageMonitoringPool
         {
-            public MessageMonitoringPool(ConsumerRule consumerRule, IDispatcherChannel<Object> channel)
+            public MessageMonitoringPool(final ConsumerRule consumerRule, final IDispatcherChannel<Object> channel)
             {
                 super();
                 this.id = UUID.randomUUID();
@@ -686,7 +684,7 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
                 
                 if (consumerRule.isConsumeEventAgeTriggerNeverMode())
                 {
-                    lastConsumeEvent = 1L;
+                    this.lastConsumeEvent = 1L;
                 }
                 
             }
@@ -719,7 +717,7 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
             private long calculateFatefulTime()
             {
                 long now = System.currentTimeMillis();
-                if ((consumable != null) && consumable.booleanValue())
+                if ((this.consumable != null) && this.consumable.booleanValue())
                 {
                     // cached state: is consumable now;
                     return now;
@@ -731,47 +729,47 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
                     return now;
                 }
                 
-                if (consumable == null) // cleared cache
+                if (this.consumable == null) // cleared cache
                 {
-                    currentConsumableCountByAge = 0;
-                    consumable = false;
+                    this.currentConsumableCountByAge = 0;
+                    this.consumable = false;
                 }
-                if ((fatefulTime != null) && (fatefulTime.longValue() > now))
+                if ((this.fatefulTime != null) && (this.fatefulTime.longValue() > now))
                 {
                     // cached fatefulTime
-                    return fatefulTime;
+                    return this.fatefulTime;
                 }
                 
-                if (consumeAgeSensible)
+                if (this.consumeAgeSensible)
                 {
-                    if (lastConsumeEvent == 0)
+                    if (this.lastConsumeEvent == 0)
                     {
                         return -1;
                     }
-                    long fatefulTimeByComsumeAge = lastConsumeEvent + consumeAgeTriggerTimeInMillis;
+                    long fatefulTimeByComsumeAge = this.lastConsumeEvent + this.consumeAgeTriggerTimeInMillis;
                     if (fatefulTimeByComsumeAge > now)
                     {
-                        fatefulTime = fatefulTimeByComsumeAge;
+                        this.fatefulTime = fatefulTimeByComsumeAge;
                         return fatefulTimeByComsumeAge;
                     }
                 }
                 
                 // check min pool size
                 
-                if (this.messageMonitoringList.size() < consumerRule.getPoolMinSize())
+                if (this.messageMonitoringList.size() < this.consumerRule.getPoolMinSize())
                 {
                     // wait for more messages
-                    fatefulTime = null;
+                    this.fatefulTime = null;
                     return -1;
                 }
                 
-                if ((keepMessagesMode != null) && (!consumeAgeSensible))
+                if ((this.keepMessagesMode != null) && (!this.consumeAgeSensible))
                 {
-                    int max = consumerRule.getPoolMaxSize();
+                    int max = this.consumerRule.getPoolMaxSize();
                     ListIterator<IMessage<Object>> itr = this.messageMonitoringList.listIterator();
                     boolean unDone = false;
                     
-                    if (keepMessagesMode == KeepMessagesMode.MessagesConsumed)
+                    if (this.keepMessagesMode == KeepMessagesMode.MessagesConsumed)
                     {
                         while ((max > 0) && itr.hasNext())
                         {
@@ -784,7 +782,7 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
                             }
                         }
                     }
-                    else if (keepMessagesMode == KeepMessagesMode.MessagesProcessed)
+                    else if (this.keepMessagesMode == KeepMessagesMode.MessagesProcessed)
                     {
                         while ((max > 0) && itr.hasNext())
                         {
@@ -797,7 +795,7 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
                             }
                         }
                     }
-                    else if (keepMessagesMode == KeepMessagesMode.MessagesConsumedByRule)
+                    else if (this.keepMessagesMode == KeepMessagesMode.MessagesConsumedByRule)
                     {
                         while ((max > 0) && itr.hasNext())
                         {
@@ -810,7 +808,7 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
                             }
                         }
                     }
-                    else if (keepMessagesMode == KeepMessagesMode.MessagesProcessedByRule)
+                    else if (this.keepMessagesMode == KeepMessagesMode.MessagesProcessedByRule)
                     {
                         while ((max > 0) && itr.hasNext())
                         {
@@ -828,26 +826,26 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
                     {
                         // prevent to consume same messages over and over again
                         
-                        fatefulTime = null;
+                        this.fatefulTime = null;
                         return -1;
                     }
                 }
                 
-                if ((!messageAgeSensible) || (requiredConsumableCountByAge <= currentConsumableCountByAge))
+                if ((!this.messageAgeSensible) || (this.requiredConsumableCountByAge <= this.currentConsumableCountByAge))
                 {
                     // is consumable
-                    fatefulTime = null;
-                    consumable = true;
+                    this.fatefulTime = null;
+                    this.consumable = true;
                     return now;
                 }
                 
                 // check message age sensible
                 
-                if (!messageMonitoringList.isEmpty())
+                if (!this.messageMonitoringList.isEmpty())
                 {
-                    ListIterator<IMessage<Object>> itr = this.messageMonitoringList.listIterator(this.messageMonitoringList.size() - currentConsumableCountByAge);
+                    ListIterator<IMessage<Object>> itr = this.messageMonitoringList.listIterator(this.messageMonitoringList.size() - this.currentConsumableCountByAge);
                     
-                    long requiredCreateTimestamp = now - messageAgeTriggerTimeInMillis;
+                    long requiredCreateTimestamp = now - this.messageAgeTriggerTimeInMillis;
                     
                     Long calculatedFatefulTime = null;
                     Integer futureConsumableCount = null;
@@ -857,9 +855,9 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
                         if (calculatedFatefulTime != null)
                         {
                             futureConsumableCount++;
-                            calculatedFatefulTime = message.getCreateTimestamp() + messageAgeTriggerTimeInMillis;
+                            calculatedFatefulTime = message.getCreateTimestamp() + this.messageAgeTriggerTimeInMillis;
                             
-                            if (requiredConsumableCountByAge <= futureConsumableCount)
+                            if (this.requiredConsumableCountByAge <= futureConsumableCount)
                             {
                                 break;
                             }
@@ -867,21 +865,21 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
                         }
                         if (message.getCreateTimestamp() <= requiredCreateTimestamp)
                         {
-                            currentConsumableCountByAge++;
+                            this.currentConsumableCountByAge++;
                             
-                            if (requiredConsumableCountByAge <= currentConsumableCountByAge)
+                            if (this.requiredConsumableCountByAge <= this.currentConsumableCountByAge)
                             {
-                                consumable = true;
-                                fatefulTime = null;
+                                this.consumable = true;
+                                this.fatefulTime = null;
                                 return now;
                             }
                         }
                         else
                         {
-                            futureConsumableCount = currentConsumableCountByAge + 1;
-                            calculatedFatefulTime = message.getCreateTimestamp() + messageAgeTriggerTimeInMillis;
+                            futureConsumableCount = this.currentConsumableCountByAge + 1;
+                            calculatedFatefulTime = message.getCreateTimestamp() + this.messageAgeTriggerTimeInMillis;
                             
-                            if (requiredConsumableCountByAge <= futureConsumableCount)
+                            if (this.requiredConsumableCountByAge <= futureConsumableCount)
                             {
                                 break;
                             }
@@ -890,8 +888,8 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
                     
                     if (calculatedFatefulTime != null)
                     {
-                        fatefulTime = calculatedFatefulTime;
-                        return fatefulTime;
+                        this.fatefulTime = calculatedFatefulTime;
+                        return this.fatefulTime;
                     }
                 }
                 
@@ -899,7 +897,7 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
                 return -1;
             }
             
-            private ConsumableState getConsumableState(boolean requireMessageList)
+            private ConsumableState getConsumableState(final boolean requireMessageList)
             {
                 ConsumableState consumableState = new ConsumableState(this.id);
                 consumableState.keepMessagesMode = this.keepMessagesMode;
@@ -914,12 +912,12 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
                     return consumableState;
                 }
                 
-                consumableState.consumable = consumable;
-                consumableState.fatefulTime = fatefulTime;
+                consumableState.consumable = this.consumable;
+                consumableState.fatefulTime = this.fatefulTime;
                 
-                if (consumable || (consumableState.consumeMessageId != null))
+                if (this.consumable || (consumableState.consumeMessageId != null))
                 {
-                    consumableState.consumerRule = consumerRule;
+                    consumableState.consumerRule = this.consumerRule;
                 }
                 
                 if (requireMessageList)
@@ -928,15 +926,15 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
                     {
                         consumableState.consumableList = new LinkedList<>(this.messageMonitoringList);
                     }
-                    else if (consumable) // consume by rule
+                    else if (this.consumable) // consume by rule
                     {
                         consumableState.consumableList = new LinkedList<>();
                         
                         ListIterator<IMessage<Object>> itr = this.messageMonitoringList.listIterator(this.messageMonitoringList.size());
                         if (this.consumerRule.getMessageAgeTriggerMode() == TriggerByMessageAgeMode.ALL)
                         {
-                            long requiredCreateTimestamp = System.currentTimeMillis() - messageAgeTriggerTimeInMillis;
-                            while (itr.hasPrevious() && (consumableState.consumableList.size() < consumerRule.getPoolMaxSize()))
+                            long requiredCreateTimestamp = System.currentTimeMillis() - this.messageAgeTriggerTimeInMillis;
+                            while (itr.hasPrevious() && (consumableState.consumableList.size() < this.consumerRule.getPoolMaxSize()))
                             {
                                 IMessage<Object> message = itr.previous();
                                 if (this.consumerRule.getMessageAgeTriggerMode() == TriggerByMessageAgeMode.ALL)
@@ -952,7 +950,7 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
                         }
                         else
                         {
-                            while (itr.hasPrevious() && (consumableState.consumableList.size() < consumerRule.getPoolMaxSize()))
+                            while (itr.hasPrevious() && (consumableState.consumableList.size() < this.consumerRule.getPoolMaxSize()))
                             {
                                 consumableState.consumableList.addLast(itr.previous());
                             }
@@ -970,9 +968,9 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
                 this.currentConsumableCountByAge = 0;
             }
             
-            private void setConsumeTimestamp(long timestamp, Set<String> members)
+            private void setConsumeTimestamp(final long timestamp, final Set<String> members)
             {
-                if (!consumeAgeSensible)
+                if (!this.consumeAgeSensible)
                 {
                     return;
                 }
@@ -988,13 +986,13 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
                 resetCache();
             }
             
-            private boolean addToMonitoring(IMessage<Object> message)
+            private boolean addToMonitoring(final IMessage<Object> message)
             {
                 if (message == null)
                 {
                     return false;
                 }
-                if (consumerRule.getPoolMaxSize() < 1)
+                if (this.consumerRule.getPoolMaxSize() < 1)
                 {
                     return false;
                 }
@@ -1028,7 +1026,7 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
                     {
                         boolean removed = false;
                         
-                        for (IMessage<Object> check : messageMonitoringList)
+                        for (final IMessage<Object> check : this.messageMonitoringList)
                         {
                             try
                             {
@@ -1051,7 +1049,7 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
                         
                         if (removed)
                         {
-                            ListIterator<IMessage<Object>> itr = messageBufferList.listIterator();
+                            ListIterator<IMessage<Object>> itr = this.messageBufferList.listIterator();
                             while (itr.hasNext())
                             {
                                 if (itr.next().isRemoved())
@@ -1060,7 +1058,7 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
                                 }
                             }
                             
-                            itr = messageMonitoringList.listIterator();
+                            itr = this.messageMonitoringList.listIterator();
                             boolean reset = false;
                             while (itr.hasNext())
                             {
@@ -1073,9 +1071,9 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
                             
                             if (reset)
                             {
-                                while ((!messageBufferList.isEmpty()) && (messageMonitoringList.size() < consumerRule.getPoolMaxSize()))
+                                while ((!this.messageBufferList.isEmpty()) && (this.messageMonitoringList.size() < this.consumerRule.getPoolMaxSize()))
                                 {
-                                    messageMonitoringList.addFirst(messageBufferList.removeLast());
+                                    this.messageMonitoringList.addFirst(this.messageBufferList.removeLast());
                                 }
                                 
                                 this.resetCache();
@@ -1083,14 +1081,14 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
                         }
                     }
                     
-                    boolean bufferIsEmpty = messageBufferList.isEmpty();
-                    boolean monitorIsEmpty = messageMonitoringList.isEmpty();
+                    boolean bufferIsEmpty = this.messageBufferList.isEmpty();
+                    boolean monitorIsEmpty = this.messageMonitoringList.isEmpty();
                     
                     if (bufferIsEmpty && monitorIsEmpty)
                     {
                         // new message is the only one => add to monitor directly
                         
-                        messageMonitoringList.addFirst(message);
+                        this.messageMonitoringList.addFirst(message);
                         
                         return true;
                     }
@@ -1098,29 +1096,29 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
                     Long biggestExistingSequenceInPool = null;
                     if (!bufferIsEmpty)
                     {
-                        biggestExistingSequenceInPool = messageBufferList.getFirst().getSequence();
+                        biggestExistingSequenceInPool = this.messageBufferList.getFirst().getSequence();
                     }
                     else if (!monitorIsEmpty)
                     {
-                        biggestExistingSequenceInPool = messageMonitoringList.getFirst().getSequence();
+                        biggestExistingSequenceInPool = this.messageMonitoringList.getFirst().getSequence();
                     }
                     
                     if ((biggestExistingSequenceInPool != null) && (biggestExistingSequenceInPool.longValue() < newMessageSequence))
                     {
                         // no one of messages in pool has an sequence greater than new message
                         
-                        if (bufferIsEmpty && (messageMonitoringList.size() < consumerRule.getPoolMaxSize()))
+                        if (bufferIsEmpty && (this.messageMonitoringList.size() < this.consumerRule.getPoolMaxSize()))
                         {
                             // no message in buffer => add to monitor directly
                             
-                            messageMonitoringList.addFirst(message);
+                            this.messageMonitoringList.addFirst(message);
                             
                             return true;
                         }
                         else
                         {
                             // add to buffer
-                            messageBufferList.addFirst(message);
+                            this.messageBufferList.addFirst(message);
                             
                             return true;
                         }
@@ -1129,7 +1127,7 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
                     {
                         // search in buffer  => insert message after first and before last of buffer
                         
-                        ListIterator<IMessage<Object>> itr = messageBufferList.listIterator();
+                        ListIterator<IMessage<Object>> itr = this.messageBufferList.listIterator();
                         while (itr.hasNext())
                         {
                             IMessage<Object> check = itr.next();
@@ -1153,21 +1151,21 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
                         {
                             // insert message as last of buffer
                             
-                            messageBufferList.add(message);
+                            this.messageBufferList.add(message);
                             return true;
                         }
                         
-                        if (newMessageSequence > messageMonitoringList.getFirst().getSequence().longValue())
+                        if (newMessageSequence > this.messageMonitoringList.getFirst().getSequence().longValue())
                         {
                             // insert message as last of buffer
                             
-                            messageBufferList.add(message);
+                            this.messageBufferList.add(message);
                             return true;
                         }
                         
                         // exceptional case
                         
-                        itr = messageMonitoringList.listIterator();
+                        itr = this.messageMonitoringList.listIterator();
                         while (itr.hasNext())
                         {
                             IMessage<Object> check = itr.next();
@@ -1182,7 +1180,7 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
                                     return true; // nothing to add
                                 }
                                 
-                                if ((consumable != null) && (consumable.booleanValue()))
+                                if ((this.consumable != null) && (this.consumable.booleanValue()))
                                 {
                                     // is already consumable
                                     
@@ -1190,12 +1188,12 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
                                     itr.add(message);
                                     
                                     // remove current consumable count cache
-                                    currentConsumableCountByAge = 0;
+                                    this.currentConsumableCountByAge = 0;
                                     
                                     return true;
                                 }
                                 
-                                currentConsumableCountByAge = 0;
+                                this.currentConsumableCountByAge = 0;
                                 
                                 itr.previous();
                                 itr.add(message);
@@ -1207,7 +1205,7 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
                         
                         // insert message as last of monitor
                         
-                        messageMonitoringList.add(message);
+                        this.messageMonitoringList.add(message);
                         this.resetCache();
                         
                         return true;
@@ -1215,21 +1213,21 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
                 }
                 finally
                 {
-                    while (messageMonitoringList.size() > consumerRule.getPoolMaxSize())
+                    while (this.messageMonitoringList.size() > this.consumerRule.getPoolMaxSize())
                     {
-                        messageBufferList.addLast(messageMonitoringList.removeFirst());
+                        this.messageBufferList.addLast(this.messageMonitoringList.removeFirst());
                         this.resetCache();
                     }
-                    while ((messageBufferList.size() > 0) && (messageMonitoringList.size() < consumerRule.getPoolMaxSize()))
+                    while ((this.messageBufferList.size() > 0) && (this.messageMonitoringList.size() < this.consumerRule.getPoolMaxSize()))
                     {
-                        messageMonitoringList.addFirst(messageBufferList.removeLast());
+                        this.messageMonitoringList.addFirst(this.messageBufferList.removeLast());
                     }
                 }
             }
             
             private void removeRemovedMessages()
             {
-                ListIterator<IMessage<Object>> itr = messageBufferList.listIterator();
+                ListIterator<IMessage<Object>> itr = this.messageBufferList.listIterator();
                 while (itr.hasNext())
                 {
                     if (itr.next().isRemoved())
@@ -1239,7 +1237,7 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
                 }
                 
                 boolean reset = false;
-                itr = messageMonitoringList.listIterator();
+                itr = this.messageMonitoringList.listIterator();
                 while (itr.hasNext())
                 {
                     if (itr.next().isRemoved())
@@ -1251,9 +1249,9 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
                 
                 if (reset)
                 {
-                    while ((!messageBufferList.isEmpty()) && (messageMonitoringList.size() < consumerRule.getPoolMaxSize()))
+                    while ((!this.messageBufferList.isEmpty()) && (this.messageMonitoringList.size() < this.consumerRule.getPoolMaxSize()))
                     {
-                        messageMonitoringList.addFirst(messageBufferList.removeLast());
+                        this.messageMonitoringList.addFirst(this.messageBufferList.removeLast());
                     }
                     
                     this.resetCache();
@@ -1304,14 +1302,14 @@ public class ConsumeMessagesPlannerManager implements IDispatcherChannelSystemMa
             try
             {
                 this.disposed = true;
-                for (MessageMonitoringPool messageMonitoringPool : monitoringPoolList)
+                for (final MessageMonitoringPool messageMonitoringPool : this.monitoringPoolList)
                 {
                     messageMonitoringPool.dispose();
                 }
                 
                 try
                 {
-                    monitoringPoolList.clear();
+                    this.monitoringPoolList.clear();
                 }
                 catch (Exception | Error e) { }
                 

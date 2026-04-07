@@ -42,18 +42,18 @@ public enum Axis
     DESCENDANT_OR_SELF(12, "descendant-or-self"),
     ANCESTOR_OR_SELF(13, "ancestor-or-self");
     
-    private Axis(int intValue)
+    Axis(final int intValue)
     {
         this.intValue = intValue;
     }
     
-    private Axis(int intValue, String xPathAxisName)
+    Axis(final int intValue, final String xPathAxisName)
     {
         this.intValue = intValue;
         this.xPathAxisName = xPathAxisName;
     }
     
-    private Axis(int intValue, String xPathAxisName, String xPathAxisAbbreviated)
+    Axis(final int intValue, final String xPathAxisName, final String xPathAxisAbbreviated)
     {
         this.intValue = intValue;
         this.xPathAxisName = xPathAxisName;
@@ -62,23 +62,23 @@ public enum Axis
     
     private static volatile Set<Axis> ALL = null;
     
-    private int intValue;
+    private final int intValue;
     private String xPathAxisName = null;
     private String xPathAxisAbbreviated = null;
     
     public int getIntValue()
     {
-        return intValue;
+        return this.intValue;
     }
     
     public String getXPathAxisName()
     {
-        return xPathAxisName;
+        return this.xPathAxisName;
     }
     
     public String getXPathAxisAbbreviated()
     {
-        return xPathAxisAbbreviated;
+        return this.xPathAxisAbbreviated;
     }
     
     public static Set<Axis> getAll()
@@ -91,9 +91,9 @@ public enum Axis
         return Axis.ALL;
     }
     
-    public static Axis findByInteger(int value)
+    public static Axis findByInteger(final int value)
     {
-        for (Axis axis : getAll())
+        for (final Axis axis : getAll())
         {
             if (axis.intValue == value)
             {
@@ -103,9 +103,9 @@ public enum Axis
         return null;
     }
     
-    public static Axis findByXPathAxisName(String xPathAxisName)
+    public static Axis findByXPathAxisName(final String xPathAxisName)
     {
-        for (Axis axis : getAll())
+        for (final Axis axis : getAll())
         {
             if (axis.xPathAxisName.equalsIgnoreCase(xPathAxisName))
             {
@@ -115,9 +115,9 @@ public enum Axis
         return null;
     }
     
-    public static Axis findByXPathAxisAbbreviated(String xPathAxisAbbreviated)
+    public static Axis findByXPathAxisAbbreviated(final String xPathAxisAbbreviated)
     {
-        for (Axis axis : getAll())
+        for (final Axis axis : getAll())
         {
             if (axis.xPathAxisAbbreviated.equalsIgnoreCase(xPathAxisAbbreviated))
             {
@@ -127,9 +127,9 @@ public enum Axis
         return null;
     }
     
-    public static Axis findByName(String name)
+    public static Axis findByName(final String name)
     {
-        for (Axis axis : getAll())
+        for (final Axis axis : getAll())
         {
             if (axis.name().equalsIgnoreCase(name))
             {
@@ -139,12 +139,12 @@ public enum Axis
         return null;
     }
     
-    public static Axis parseAxisType(CharSequence charSequence, int position)
+    public static Axis parseAxisType(final CharSequence charSequence, final int position)
     {
         return parseAxisType(charSequence, new AtomicInteger(position));
     }
     
-    public static Axis parseAxisType(CharSequence charSequence, AtomicInteger position)
+    public static Axis parseAxisType(final CharSequence charSequence, final AtomicInteger position)
     {
         int startposition = position.get();
         int currentposition = startposition;
@@ -190,7 +190,7 @@ public enum Axis
         
         int startmatchposition = currentposition;
         all:
-        for (Axis axis : getAll())
+        for (final Axis axis : getAll())
         {
             for (int i = 0; i < axis.xPathAxisName.length(); i++)
             {

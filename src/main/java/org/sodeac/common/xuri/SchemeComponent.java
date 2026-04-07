@@ -36,7 +36,7 @@ public class SchemeComponent extends AbstractComponent<NoSubComponent>
      *
      * @param value representative scheme string
      */
-    protected SchemeComponent(String value)
+    protected SchemeComponent(final String value)
     {
         super(ComponentType.SCHEME);
         this.value = value;

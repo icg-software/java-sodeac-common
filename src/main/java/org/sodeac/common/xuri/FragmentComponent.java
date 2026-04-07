@@ -38,7 +38,7 @@ public class FragmentComponent extends AbstractComponent<NoSubComponent> impleme
     private List<IExtension<?>> extensions = null;
     private volatile List<IExtension<?>> extensionsImmutable = null;
     
-    protected FragmentComponent(String value)
+    protected FragmentComponent(final String value)
     {
         super(ComponentType.FRAGMENT);
         this.value = value;
@@ -49,7 +49,7 @@ public class FragmentComponent extends AbstractComponent<NoSubComponent> impleme
      *
      * @param extension
      */
-    protected void addExtension(IExtension<?> extension)
+    protected void addExtension(final IExtension<?> extension)
     {
         if (this.extensions == null)
         {
@@ -60,7 +60,7 @@ public class FragmentComponent extends AbstractComponent<NoSubComponent> impleme
     }
     
     @Override
-    public IExtension<?> getExtension(String type)
+    public IExtension<?> getExtension(final String type)
     {
         List<IExtension<?>> extensionList = getExtensionList();
         
@@ -68,7 +68,7 @@ public class FragmentComponent extends AbstractComponent<NoSubComponent> impleme
         {
             return extensionList.get(0);
         }
-        for (IExtension<?> extension : extensionList)
+        for (final IExtension<?> extension : extensionList)
         {
             if (type.equals(extension.getType()))
             {
@@ -81,7 +81,7 @@ public class FragmentComponent extends AbstractComponent<NoSubComponent> impleme
     @Override
     public List<IExtension<?>> getExtensionList()
     {
-        List<IExtension<?>> extensionList = extensionsImmutable;
+        List<IExtension<?>> extensionList = this.extensionsImmutable;
         if (extensionList == null)
         {
             extensionList = this.extensionsImmutable;
@@ -96,10 +96,10 @@ public class FragmentComponent extends AbstractComponent<NoSubComponent> impleme
     }
     
     @Override
-    public List<IExtension<?>> getExtensionList(String type)
+    public List<IExtension<?>> getExtensionList(final String type)
     {
         List<IExtension<?>> extensionList = new ArrayList<IExtension<?>>();
-        for (IExtension<?> extension : getExtensionList())
+        for (final IExtension<?> extension : getExtensionList())
         {
             if (type.equals(extension.getType()))
             {

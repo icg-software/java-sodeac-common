@@ -37,7 +37,7 @@ public class TransformedList
      *
      * @see <a href="https://guava.dev/releases/23.0/api/docs/com/google/common/collect/Lists.html#transform-java.util.List-com.google.common.base.Function-">Guava API Docs</a>
      */
-    public static <F, T> List<T> createView(List<F> fromList, Function<? super F, ? extends T> function)
+    public static <F, T> List<T> createView(final List<F> fromList, final Function<? super F, ? extends T> function)
     {
         return (fromList instanceof RandomAccess)
             ? new GuavasTransformingRandomAccessList<>(fromList, function)
@@ -49,7 +49,7 @@ public class TransformedList
         final List<F> fromList;
         final Function<? super F, ? extends T> function;
         
-        GuavasTransformingRandomAccessList(List<F> fromList, Function<? super F, ? extends T> function)
+        GuavasTransformingRandomAccessList(final List<F> fromList, final Function<? super F, ? extends T> function)
         {
             Objects.requireNonNull(fromList);
             Objects.requireNonNull(function);
@@ -60,13 +60,13 @@ public class TransformedList
         @Override
         public void clear()
         {
-            fromList.clear();
+            this.fromList.clear();
         }
         
         @Override
-        public T get(int index)
+        public T get(final int index)
         {
-            return function.apply(fromList.get(index));
+            return this.function.apply(this.fromList.get(index));
         }
         
         @Override
@@ -76,14 +76,14 @@ public class TransformedList
         }
         
         @Override
-        public ListIterator<T> listIterator(int index)
+        public ListIterator<T> listIterator(final int index)
         {
-            return new GuavasTransformedListIterator<F, T>(fromList.listIterator(index))
+            return new GuavasTransformedListIterator<F, T>(this.fromList.listIterator(index))
             {
                 @Override
-                T transform(F from)
+                T transform(final F from)
                 {
-                    return function.apply(from);
+                    return GuavasTransformingRandomAccessList.this.function.apply(from);
                 }
             };
         }
@@ -91,26 +91,26 @@ public class TransformedList
         @Override
         public boolean isEmpty()
         {
-            return fromList.isEmpty();
+            return this.fromList.isEmpty();
         }
         
         @Override
-        public boolean removeIf(Predicate<? super T> filter)
+        public boolean removeIf(final Predicate<? super T> filter)
         {
             Objects.requireNonNull(filter);
-            return fromList.removeIf(element -> filter.test(function.apply(element)));
+            return this.fromList.removeIf(element -> filter.test(this.function.apply(element)));
         }
         
         @Override
-        public T remove(int index)
+        public T remove(final int index)
         {
-            return function.apply(fromList.remove(index));
+            return this.function.apply(this.fromList.remove(index));
         }
         
         @Override
         public int size()
         {
-            return fromList.size();
+            return this.fromList.size();
         }
         
         private static final long serialVersionUID = 0;
@@ -121,7 +121,7 @@ public class TransformedList
         final List<F> fromList;
         final Function<? super F, ? extends T> function;
         
-        GuavasTransformingSequentialList(List<F> fromList, Function<? super F, ? extends T> function)
+        GuavasTransformingSequentialList(final List<F> fromList, final Function<? super F, ? extends T> function)
         {
             Objects.requireNonNull(fromList);
             Objects.requireNonNull(function);
@@ -136,33 +136,33 @@ public class TransformedList
         @Override
         public void clear()
         {
-            fromList.clear();
+            this.fromList.clear();
         }
         
         @Override
         public int size()
         {
-            return fromList.size();
+            return this.fromList.size();
         }
         
         @Override
         public ListIterator<T> listIterator(final int index)
         {
-            return new GuavasTransformedListIterator<F, T>(fromList.listIterator(index))
+            return new GuavasTransformedListIterator<F, T>(this.fromList.listIterator(index))
             {
                 @Override
-                T transform(F from)
+                T transform(final F from)
                 {
-                    return function.apply(from);
+                    return GuavasTransformingSequentialList.this.function.apply(from);
                 }
             };
         }
         
         @Override
-        public boolean removeIf(Predicate<? super T> filter)
+        public boolean removeIf(final Predicate<? super T> filter)
         {
             Objects.requireNonNull(filter);
-            return fromList.removeIf(element -> filter.test(function.apply(element)));
+            return this.fromList.removeIf(element -> filter.test(this.function.apply(element)));
         }
         
         private static final long serialVersionUID = 0;
@@ -172,7 +172,7 @@ public class TransformedList
     {
         final Iterator<? extends F> backingIterator;
         
-        GuavasTransformedIterator(Iterator<? extends F> backingIterator)
+        GuavasTransformedIterator(final Iterator<? extends F> backingIterator)
         {
             Objects.requireNonNull(backingIterator);
             this.backingIterator = backingIterator;
@@ -184,32 +184,32 @@ public class TransformedList
         @Override
         public final boolean hasNext()
         {
-            return backingIterator.hasNext();
+            return this.backingIterator.hasNext();
         }
         
         @Override
         public final T next()
         {
-            return transform(backingIterator.next());
+            return transform(this.backingIterator.next());
         }
         
         @Override
         public final void remove()
         {
-            backingIterator.remove();
+            this.backingIterator.remove();
         }
     }
     
     private abstract static class GuavasTransformedListIterator<F, T> extends GuavasTransformedIterator<F, T> implements ListIterator<T>
     {
-        GuavasTransformedListIterator(ListIterator<? extends F> backingIterator)
+        GuavasTransformedListIterator(final ListIterator<? extends F> backingIterator)
         {
             super(backingIterator);
         }
         
         private ListIterator<? extends F> backingIterator()
         {
-            return (ListIterator) backingIterator;
+            return (ListIterator) this.backingIterator;
         }
         
         @Override
@@ -237,13 +237,13 @@ public class TransformedList
         }
         
         @Override
-        public void set(T element)
+        public void set(final T element)
         {
             throw new UnsupportedOperationException();
         }
         
         @Override
-        public void add(T element)
+        public void add(final T element)
         {
             throw new UnsupportedOperationException();
         }

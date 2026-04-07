@@ -51,14 +51,14 @@ public enum LogPropertyType
      */
     CORRELATION("sdc://identifier.specs/org.sodeac.logging/logpropertytype/correlation");
     
-    private LogPropertyType(String uri)
+    LogPropertyType(final String uri)
     {
         this.uri = uri;
     }
     
     private static volatile Set<LogPropertyType> ALL = null;
     
-    private String uri;
+    private final String uri;
     
     public static Set<LogPropertyType> getAll()
     {
@@ -70,9 +70,9 @@ public enum LogPropertyType
         return LogPropertyType.ALL;
     }
     
-    public static LogPropertyType findByURI(String uri)
+    public static LogPropertyType findByURI(final String uri)
     {
-        for (LogPropertyType type : getAll())
+        for (final LogPropertyType type : getAll())
         {
             if (type.uri.equals(uri))
             {
@@ -82,9 +82,9 @@ public enum LogPropertyType
         return null;
     }
     
-    public static LogPropertyType findByName(String name)
+    public static LogPropertyType findByName(final String name)
     {
-        for (LogPropertyType type : getAll())
+        for (final LogPropertyType type : getAll())
         {
             if (type.name().equalsIgnoreCase(name))
             {

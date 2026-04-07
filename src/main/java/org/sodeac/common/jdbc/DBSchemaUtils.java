@@ -50,7 +50,7 @@ public class DBSchemaUtils
     private IDBSchemaUtilsDriver driver = null;
     private ILogService logService = null;
     
-    public static DBSchemaUtils get(Connection connection)
+    public static DBSchemaUtils get(final Connection connection)
     {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put(Connection.class.getCanonicalName(), connection);
@@ -66,7 +66,7 @@ public class DBSchemaUtils
     
     public IDBSchemaUtilsDriver getDriver()
     {
-        return driver;
+        return this.driver;
     }
     
     //	@SuppressWarnings("unchecked")
@@ -76,7 +76,7 @@ public class DBSchemaUtils
     //		return adaptSchema(schema.getWrappedBranchNode());
     //	}
     
-    public boolean adaptSchema(BranchNode<?, DBSchemaNodeType> schema) throws SQLException
+    public boolean adaptSchema(final BranchNode<?, DBSchemaNodeType> schema) throws SQLException
     {
         
         if (schema == null)
@@ -88,8 +88,8 @@ public class DBSchemaUtils
         String schemaSpecificationName = schema.getValue(DBSchemaNodeType.name);
         
         DBSchemaEvent event = new DBSchemaEvent();
-        event.setConnection(connection);
-        event.setDriver(driver);
+        event.setConnection(this.connection);
+        event.setDriver(this.driver);
         event.setSchemaSpecificationName(schemaSpecificationName);
         
         if (!schema.getUnmodifiableNodeList(DBSchemaNodeType.consumers).isEmpty())
@@ -103,7 +103,7 @@ public class DBSchemaUtils
             event.setPhaseType(PhaseType.PRE);
             event.setException(null);
             
-            for (BranchNode<DBSchemaNodeType, EventConsumerNodeType> consumerNode : schema.getUnmodifiableNodeList(DBSchemaNodeType.consumers))
+            for (final BranchNode<DBSchemaNodeType, EventConsumerNodeType> consumerNode : schema.getUnmodifiableNodeList(DBSchemaNodeType.consumers))
             {
                 ExceptionCatchedConsumer<DBSchemaUtils.DBSchemaEvent> consumer = consumerNode.getValue(EventConsumerNodeType.eventConsumer);
                 if (consumer == null)
@@ -114,7 +114,7 @@ public class DBSchemaUtils
                 {
                     consumer.acceptWithException(event);
                 }
-                catch (Exception e)
+                catch (final Exception e)
                 {
                     this.logError(e, schema, "Error on UpdateListener.Schema.Check.Pre " + event.getSchemaSpecificationName(), checkProperties);
                 }
@@ -130,18 +130,18 @@ public class DBSchemaUtils
         
         // create sequences
         
-        for (BranchNode<DBSchemaNodeType, TableNodeType> table : schema.getUnmodifiableNodeList(DBSchemaNodeType.tables))
+        for (final BranchNode<DBSchemaNodeType, TableNodeType> table : schema.getUnmodifiableNodeList(DBSchemaNodeType.tables))
         {
             try
             {
-                for (BranchNode<TableNodeType, ColumnNodeType> column : table.getUnmodifiableNodeList(TableNodeType.columns))
+                for (final BranchNode<TableNodeType, ColumnNodeType> column : table.getUnmodifiableNodeList(TableNodeType.columns))
                 {
                     BranchNode<ColumnNodeType, SequenceNodeType> sequence = column.get(ColumnNodeType.sequence);
                     if (sequence != null)
                     {
                         try
                         {
-                            String schemaName = DBSchemaUtils.getSchema(connection);
+                            String schemaName = DBSchemaUtils.getSchema(this.connection);
                             if ((schema.getValue(DBSchemaNodeType.dbmsSchemaName) != null) && (!schema.getValue(DBSchemaNodeType.dbmsSchemaName).isEmpty()))
                             {
                                 schemaName = schema.getValue(DBSchemaNodeType.dbmsSchemaName);
@@ -154,9 +154,9 @@ public class DBSchemaUtils
                             String sequenceName = sequence.getValue(SequenceNodeType.name);
                             if ((sequenceName == null) || sequenceName.isEmpty())
                             {
-                                sequenceName = driver.objectNameGuidelineFormat(schema, connection, "seq_" + table.getValue(TableNodeType.name) + "_" + column.getValue(ColumnNodeType.name), "SEQUENCE");
+                                sequenceName = this.driver.objectNameGuidelineFormat(schema, this.connection, "seq_" + table.getValue(TableNodeType.name) + "_" + column.getValue(ColumnNodeType.name), "SEQUENCE");
                             }
-                            if (!driver.isSequenceExists(schemaName, sequenceName, connection))
+                            if (!this.driver.isSequenceExists(schemaName, sequenceName, this.connection))
                             {
                                 Long min = sequence.getValue(SequenceNodeType.min);
                                 if (min == null)
@@ -174,10 +174,10 @@ public class DBSchemaUtils
                                     cycle = false;
                                 }
                                 
-                                driver.createSequence(schemaName, sequenceName, connection, min, max, cycle, sequence.getValue(SequenceNodeType.cache));
+                                this.driver.createSequence(schemaName, sequenceName, this.connection, min, max, cycle, sequence.getValue(SequenceNodeType.cache));
                             }
                         }
-                        catch (Exception e)
+                        catch (final Exception e)
                         {
                             this.logError
                                     (
@@ -193,7 +193,7 @@ public class DBSchemaUtils
                     }
                 }
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
                 this.logError(e, schema, "Error on checkSchema / section sequences", checkProperties);
             }
@@ -205,13 +205,13 @@ public class DBSchemaUtils
         
         // create tables
         
-        for (BranchNode<DBSchemaNodeType, TableNodeType> table : schema.getUnmodifiableNodeList(DBSchemaNodeType.tables))
+        for (final BranchNode<DBSchemaNodeType, TableNodeType> table : schema.getUnmodifiableNodeList(DBSchemaNodeType.tables))
         {
             try
             {
-                tableTrackerList.add(TableProcessor.checkTableDefinition(this, connection, driver, schema, table, checkProperties));
+                tableTrackerList.add(TableProcessor.checkTableDefinition(this, this.connection, this.driver, schema, table, checkProperties));
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
                 this.logError(e, schema, "Error on checkSchema " + schemaSpecificationName, checkProperties);
             }
@@ -223,15 +223,15 @@ public class DBSchemaUtils
         
         // create columns
         
-        for (TableTracker tableTracker : tableTrackerList)
+        for (final TableTracker tableTracker : tableTrackerList)
         {
             if (tableTracker.isExits())
             {
-                for (BranchNode<TableNodeType, ColumnNodeType> column : tableTracker.getTable().getUnmodifiableNodeList(TableNodeType.columns))
+                for (final BranchNode<TableNodeType, ColumnNodeType> column : tableTracker.getTable().getUnmodifiableNodeList(TableNodeType.columns))
                 {
                     tableTracker.getColumnTrackerList().add(ColumnProcessor.checkColumnDefinition
                                                                                (
-                                                                                   this, connection, driver, schema, tableTracker.getTable(), column, tableTracker.getTableProperties(), checkProperties
+                                                                                   this, this.connection, this.driver, schema, tableTracker.getTable(), column, tableTracker.getTableProperties(), checkProperties
                                                                                ));
                     
                     if (checkProperties.isInterrupted())
@@ -257,7 +257,7 @@ public class DBSchemaUtils
                 event.setPhaseType(PhaseType.PRE);
                 event.setException(null);
                 
-                for (BranchNode<DBSchemaNodeType, EventConsumerNodeType> consumerNode : schema.getUnmodifiableNodeList(DBSchemaNodeType.consumers))
+                for (final BranchNode<DBSchemaNodeType, EventConsumerNodeType> consumerNode : schema.getUnmodifiableNodeList(DBSchemaNodeType.consumers))
                 {
                     ExceptionCatchedConsumer<DBSchemaUtils.DBSchemaEvent> consumer = consumerNode.getValue(EventConsumerNodeType.eventConsumer);
                     if (consumer == null)
@@ -268,11 +268,11 @@ public class DBSchemaUtils
                     {
                         consumer.acceptWithException(event);
                     }
-                    catch (SQLException e)
+                    catch (final SQLException e)
                     {
                         logSQLException(e);
                     }
-                    catch (Exception e)
+                    catch (final Exception e)
                     {
                         this.logError(e, schema, "Convert Schema " + schemaSpecificationName + " Error on UpdateListener.Schema.Check.Pre ", checkProperties);
                     }
@@ -283,7 +283,7 @@ public class DBSchemaUtils
                     }
                 }
                 
-                for (BranchNode<DBSchemaNodeType, EventConsumerNodeType> consumerNode : schema.getUnmodifiableNodeList(DBSchemaNodeType.consumers))
+                for (final BranchNode<DBSchemaNodeType, EventConsumerNodeType> consumerNode : schema.getUnmodifiableNodeList(DBSchemaNodeType.consumers))
                 {
                     event.setObjects(objects);
                     event.setActionType(ActionType.UPDATE);
@@ -300,11 +300,11 @@ public class DBSchemaUtils
                     {
                         consumer.acceptWithException(event);
                     }
-                    catch (SQLException e)
+                    catch (final SQLException e)
                     {
                         logSQLException(e);
                     }
-                    catch (Exception e)
+                    catch (final Exception e)
                     {
                         this.logError(e, schema, "Convert Schema " + schemaSpecificationName + " Error on UpdateListener.Schema.Update.Pre ", checkProperties);
                     }
@@ -319,11 +319,11 @@ public class DBSchemaUtils
                     {
                         consumer.acceptWithException(event);
                     }
-                    catch (SQLException e)
+                    catch (final SQLException e)
                     {
                         logSQLException(e);
                     }
-                    catch (Exception e)
+                    catch (final Exception e)
                     {
                         this.logError(e, schema, "Convert Schema " + schemaSpecificationName + " Error on UpdateListener.Schema.Update.Post ", checkProperties);
                     }
@@ -340,7 +340,7 @@ public class DBSchemaUtils
                 event.setPhaseType(PhaseType.POST);
                 event.setException(null);
                 
-                for (BranchNode<DBSchemaNodeType, EventConsumerNodeType> consumerNode : schema.getUnmodifiableNodeList(DBSchemaNodeType.consumers))
+                for (final BranchNode<DBSchemaNodeType, EventConsumerNodeType> consumerNode : schema.getUnmodifiableNodeList(DBSchemaNodeType.consumers))
                 {
                     ExceptionCatchedConsumer<DBSchemaUtils.DBSchemaEvent> consumer = consumerNode.getValue(EventConsumerNodeType.eventConsumer);
                     if (consumer == null)
@@ -351,11 +351,11 @@ public class DBSchemaUtils
                     {
                         consumer.acceptWithException(event);
                     }
-                    catch (SQLException e)
+                    catch (final SQLException e)
                     {
                         logSQLException(e);
                     }
-                    catch (Exception e)
+                    catch (final Exception e)
                     {
                         this.logError(e, schema, "Convert Schema " + schemaSpecificationName + " Error on UpdateListener.Schema.Check.Post ", checkProperties);
                     }
@@ -373,7 +373,7 @@ public class DBSchemaUtils
                 event.setException(null);
             }
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             this.logError(e, schema, "Error on schema ConvertPhase " + schemaSpecificationName, checkProperties);
         }
@@ -385,36 +385,36 @@ public class DBSchemaUtils
         
         try
         {
-            SQLWarning warning = connection.getWarnings();
+            SQLWarning warning = this.connection.getWarnings();
             if (warning != null)
             {
                 logSQLException(warning);
             }
-            connection.clearWarnings();
+            this.connection.clearWarnings();
         }
-        catch (SQLException e)
+        catch (final SQLException e)
         {
             logSQLException(e);
             try
             {
-                connection.clearWarnings();
+                this.connection.clearWarnings();
             }
-            catch (Exception e2) { }
+            catch (final Exception e2) { }
         }
         
         // column properties
         
-        boolean skipChecks = schema.getValue(DBSchemaNodeType.skipChecks) == null ? false : schema.getValue(DBSchemaNodeType.skipChecks).booleanValue();
+        boolean skipChecks = schema.getValue(DBSchemaNodeType.skipChecks) != null && schema.getValue(DBSchemaNodeType.skipChecks).booleanValue();
         
-        for (TableTracker tableTracker : tableTrackerList)
+        for (final TableTracker tableTracker : tableTrackerList)
         {
             if (tableTracker.isExits())
             {
-                for (ColumnTracker columnTracker : tableTracker.getColumnTrackerList())
+                for (final ColumnTracker columnTracker : tableTracker.getColumnTrackerList())
                 {
                     if (columnTracker.isExits())
                     {
-                        boolean backupNullable = columnTracker.getColumn().getValue(ColumnNodeType.nullable) == null ? true : columnTracker.getColumn().getValue(ColumnNodeType.nullable).booleanValue();
+                        boolean backupNullable = columnTracker.getColumn().getValue(ColumnNodeType.nullable) == null || columnTracker.getColumn().getValue(ColumnNodeType.nullable).booleanValue();
                         
                         if (skipChecks)
                         {
@@ -424,7 +424,7 @@ public class DBSchemaUtils
                         {
                             ColumnProcessor.checkColumnProperties
                                                (
-                                                   this, connection, driver, schema, tableTracker.getTable(), columnTracker.getColumn(), columnTracker, columnTracker.getColumnProperties(), checkProperties
+                                                   this, this.connection, this.driver, schema, tableTracker.getTable(), columnTracker.getColumn(), columnTracker, columnTracker.getColumnProperties(), checkProperties
                                                );
                         }
                         finally
@@ -445,18 +445,18 @@ public class DBSchemaUtils
         
         if (!skipChecks)
         {
-            for (TableTracker tableTracker : tableTrackerList)
+            for (final TableTracker tableTracker : tableTrackerList)
             {
                 if (tableTracker.isExits())
                 {
-                    TableProcessor.createTableKeys(this, connection, driver, schema, tableTracker, checkProperties);
+                    TableProcessor.createTableKeys(this, this.connection, this.driver, schema, tableTracker, checkProperties);
                     
                     if (checkProperties.isInterrupted())
                     {
                         return checkProperties.getUnusableExceptionList().isEmpty();
                     }
                     
-                    TableProcessor.createTableIndices(this, connection, driver, schema, tableTracker, checkProperties);
+                    TableProcessor.createTableIndices(this, this.connection, this.driver, schema, tableTracker, checkProperties);
                     
                     if (checkProperties.isInterrupted())
                     {
@@ -465,17 +465,17 @@ public class DBSchemaUtils
                 }
             }
             
-            for (TableTracker tableTracker : tableTrackerList)
+            for (final TableTracker tableTracker : tableTrackerList)
             {
                 if (tableTracker.isExits())
                 {
-                    for (ColumnTracker columnTracker : tableTracker.getColumnTrackerList())
+                    for (final ColumnTracker columnTracker : tableTracker.getColumnTrackerList())
                     {
                         if (columnTracker.isExits())
                         {
                             ColumnProcessor.createColumnKeys
                                                (
-                                                   this, connection, driver, schema, tableTracker.getTable(), columnTracker, checkProperties
+                                                   this, this.connection, this.driver, schema, tableTracker.getTable(), columnTracker, checkProperties
                                                );
                             
                             if (checkProperties.isInterrupted())
@@ -490,13 +490,13 @@ public class DBSchemaUtils
         
         try
         {
-            driver.dropDummyColumns(connection, schema);
+            this.driver.dropDummyColumns(this.connection, schema);
         }
-        catch (SQLException e)
+        catch (final SQLException e)
         {
             logSQLException(e);
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             this.logError(e, schema, "Error on drop dummy columns " + schemaSpecificationName, checkProperties);
         }
@@ -518,7 +518,7 @@ public class DBSchemaUtils
             event.setPhaseType(PhaseType.POST);
             event.setException(null);
             
-            for (BranchNode<DBSchemaNodeType, EventConsumerNodeType> consumerNode : schema.getUnmodifiableNodeList(DBSchemaNodeType.consumers))
+            for (final BranchNode<DBSchemaNodeType, EventConsumerNodeType> consumerNode : schema.getUnmodifiableNodeList(DBSchemaNodeType.consumers))
             {
                 ExceptionCatchedConsumer<DBSchemaUtils.DBSchemaEvent> consumer = consumerNode.getValue(EventConsumerNodeType.eventConsumer);
                 if (consumer == null)
@@ -529,11 +529,11 @@ public class DBSchemaUtils
                 {
                     consumer.acceptWithException(event);
                 }
-                catch (SQLException e)
+                catch (final SQLException e)
                 {
                     logSQLException(e);
                 }
-                catch (Exception e)
+                catch (final Exception e)
                 {
                     this.logError(e, schema, "Error on UpdateListener.Schema.Check.Post " + schemaSpecificationName, checkProperties);
                 }
@@ -558,7 +558,7 @@ public class DBSchemaUtils
         return checkProperties.getUnusableExceptionList().isEmpty();
     }
     
-    protected void logUpdate(String message, BranchNode<?, DBSchemaNodeType> schema)
+    protected void logUpdate(final String message, final BranchNode<?, DBSchemaNodeType> schema)
     {
         if ((schema.getValue(DBSchemaNodeType.logUpdates) != null) && (!schema.getValue(DBSchemaNodeType.logUpdates).booleanValue()))
         {
@@ -567,7 +567,7 @@ public class DBSchemaUtils
         this.logService.info(message);
     }
     
-    protected void logSQLException(SQLException e)
+    protected void logSQLException(final SQLException e)
     {
         if (this.logService == null)
         {
@@ -603,7 +603,7 @@ public class DBSchemaUtils
         
     }
     
-    protected void logError(Throwable throwable, BranchNode<?, DBSchemaNodeType> schema, String msg, CheckProperties checkProperties)
+    protected void logError(final Throwable throwable, final BranchNode<?, DBSchemaNodeType> schema, final String msg, final CheckProperties checkProperties)
     {
         if (throwable instanceof SchemaUnusableException)
         {
@@ -624,7 +624,7 @@ public class DBSchemaUtils
         }
         else
         {
-            System.err.println("" + msg);
+            System.err.println(msg);
             if (throwable != null)
             {
                 throwable.printStackTrace();
@@ -658,14 +658,14 @@ public class DBSchemaUtils
          */
         UPDATE(2);
         
-        private ActionType(int intValue)
+        ActionType(final int intValue)
         {
             this.intValue = intValue;
         }
         
         private static volatile Set<ActionType> ALL = null;
         
-        private int intValue;
+        private final int intValue;
         
         /**
          * getter for all action types
@@ -689,9 +689,9 @@ public class DBSchemaUtils
          *
          * @return action type enum represents by {@code value}
          */
-        public static ActionType findByInteger(int value)
+        public static ActionType findByInteger(final int value)
         {
-            for (ActionType actionType : getAll())
+            for (final ActionType actionType : getAll())
             {
                 if (actionType.intValue == value)
                 {
@@ -708,9 +708,9 @@ public class DBSchemaUtils
          *
          * @return enum represents by {@code name}
          */
-        public static ActionType findByName(String name)
+        public static ActionType findByName(final String name)
         {
-            for (ActionType actionType : getAll())
+            for (final ActionType actionType : getAll())
             {
                 if (actionType.name().equalsIgnoreCase(name))
                 {
@@ -787,14 +787,14 @@ public class DBSchemaUtils
          */
         SCHEMA_CONVERT_SCHEMA(16);
         
-        private ObjectType(int intValue)
+        ObjectType(final int intValue)
         {
             this.intValue = intValue;
         }
         
         private static volatile Set<ObjectType> ALL = null;
         
-        private int intValue;
+        private final int intValue;
         
         /**
          * getter for all object types
@@ -818,9 +818,9 @@ public class DBSchemaUtils
          *
          * @return object type enum represents by {@code value}
          */
-        public static ObjectType findByInteger(int value)
+        public static ObjectType findByInteger(final int value)
         {
-            for (ObjectType actionType : getAll())
+            for (final ObjectType actionType : getAll())
             {
                 if (actionType.intValue == value)
                 {
@@ -837,9 +837,9 @@ public class DBSchemaUtils
          *
          * @return enum represents by {@code name}
          */
-        public static ObjectType findByName(String name)
+        public static ObjectType findByName(final String name)
         {
-            for (ObjectType actionType : getAll())
+            for (final ObjectType actionType : getAll())
             {
                 if (actionType.name().equalsIgnoreCase(name))
                 {
@@ -870,14 +870,14 @@ public class DBSchemaUtils
          */
         POST(2);
         
-        private PhaseType(int intValue)
+        PhaseType(final int intValue)
         {
             this.intValue = intValue;
         }
         
         private static volatile Set<PhaseType> ALL = null;
         
-        private int intValue;
+        private final int intValue;
         
         public static Set<PhaseType> getAll()
         {
@@ -889,9 +889,9 @@ public class DBSchemaUtils
             return PhaseType.ALL;
         }
         
-        public static PhaseType findByInteger(int value)
+        public static PhaseType findByInteger(final int value)
         {
-            for (PhaseType actionType : getAll())
+            for (final PhaseType actionType : getAll())
             {
                 if (actionType.intValue == value)
                 {
@@ -901,9 +901,9 @@ public class DBSchemaUtils
             return null;
         }
         
-        public static PhaseType findByName(String name)
+        public static PhaseType findByName(final String name)
         {
-            for (PhaseType actionType : getAll())
+            for (final PhaseType actionType : getAll())
             {
                 if (actionType.name().equalsIgnoreCase(name))
                 {
@@ -931,7 +931,7 @@ public class DBSchemaUtils
          */
         public ActionType getActionType()
         {
-            return actionType;
+            return this.actionType;
         }
         
         /**
@@ -940,7 +940,7 @@ public class DBSchemaUtils
          */
         public ObjectType getObjectType()
         {
-            return objectType;
+            return this.objectType;
         }
         
         /**
@@ -949,7 +949,7 @@ public class DBSchemaUtils
          */
         public PhaseType getPhaseType()
         {
-            return phaseType;
+            return this.phaseType;
         }
         
         /**
@@ -958,7 +958,7 @@ public class DBSchemaUtils
          */
         public Connection getConnection()
         {
-            return connection;
+            return this.connection;
         }
         
         /**
@@ -967,7 +967,7 @@ public class DBSchemaUtils
          */
         public String getSchemaSpecificationName()
         {
-            return schemaSpecificationName;
+            return this.schemaSpecificationName;
         }
         
         /**
@@ -976,7 +976,7 @@ public class DBSchemaUtils
          */
         public Dictionary<ObjectType, Object> getObjects()
         {
-            return objects;
+            return this.objects;
         }
         
         /**
@@ -985,7 +985,7 @@ public class DBSchemaUtils
          */
         public IDBSchemaUtilsDriver getDriver()
         {
-            return driver;
+            return this.driver;
         }
         
         /**
@@ -994,45 +994,45 @@ public class DBSchemaUtils
          */
         public Exception getException()
         {
-            return exception;
+            return this.exception;
         }
         
-        protected void setActionType(ActionType actionType)
+        protected void setActionType(final ActionType actionType)
         {
             this.actionType = actionType;
         }
         
-        protected void setObjectType(ObjectType objectType)
+        protected void setObjectType(final ObjectType objectType)
         {
             this.objectType = objectType;
         }
         
-        protected void setPhaseType(PhaseType phaseType)
+        protected void setPhaseType(final PhaseType phaseType)
         {
             this.phaseType = phaseType;
         }
         
-        protected void setConnection(Connection connection)
+        protected void setConnection(final Connection connection)
         {
             this.connection = connection;
         }
         
-        protected void setSchemaSpecificationName(String schemaSpecificationName)
+        protected void setSchemaSpecificationName(final String schemaSpecificationName)
         {
             this.schemaSpecificationName = schemaSpecificationName;
         }
         
-        protected void setObjects(Dictionary<ObjectType, Object> objects)
+        protected void setObjects(final Dictionary<ObjectType, Object> objects)
         {
             this.objects = objects;
         }
         
-        protected void setDriver(IDBSchemaUtilsDriver driver)
+        protected void setDriver(final IDBSchemaUtilsDriver driver)
         {
             this.driver = driver;
         }
         
-        protected void setException(Exception exception)
+        protected void setException(final Exception exception)
         {
             this.exception = exception;
         }
@@ -1045,20 +1045,20 @@ public class DBSchemaUtils
         
         public boolean isInterrupted()
         {
-            return interrupted;
+            return this.interrupted;
         }
         
-        public void setInterrupted(boolean interrupted)
+        public void setInterrupted(final boolean interrupted)
         {
             this.interrupted = interrupted;
         }
         
         public List<SchemaUnusableException> getUnusableExceptionList()
         {
-            return unusableExceptionList;
+            return this.unusableExceptionList;
         }
         
-        public void setUnusableExceptionList(List<SchemaUnusableException> unusableExceptionList)
+        public void setUnusableExceptionList(final List<SchemaUnusableException> unusableExceptionList)
         {
             this.unusableExceptionList = unusableExceptionList;
         }
@@ -1083,22 +1083,22 @@ public class DBSchemaUtils
             super();
         }
         
-        public SchemaUnusableException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace)
+        public SchemaUnusableException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace)
         {
             super(message, cause, enableSuppression, writableStackTrace);
         }
         
-        public SchemaUnusableException(String message, Throwable cause)
+        public SchemaUnusableException(final String message, final Throwable cause)
         {
             super(message, cause);
         }
         
-        public SchemaUnusableException(String message)
+        public SchemaUnusableException(final String message)
         {
             super(message);
         }
         
-        public SchemaUnusableException(Throwable cause)
+        public SchemaUnusableException(final Throwable cause)
         {
             super(cause);
         }
@@ -1125,22 +1125,22 @@ public class DBSchemaUtils
             super();
         }
         
-        public TerminateException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace)
+        public TerminateException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace)
         {
             super(message, cause, enableSuppression, writableStackTrace);
         }
         
-        public TerminateException(String message, Throwable cause)
+        public TerminateException(final String message, final Throwable cause)
         {
             super(message, cause);
         }
         
-        public TerminateException(String message)
+        public TerminateException(final String message)
         {
             super(message);
         }
         
-        public TerminateException(Throwable cause)
+        public TerminateException(final Throwable cause)
         {
             super(cause);
         }
@@ -1157,52 +1157,52 @@ public class DBSchemaUtils
         
         public boolean isCreated()
         {
-            return created;
+            return this.created;
         }
         
-        public void setCreated(boolean created)
+        public void setCreated(final boolean created)
         {
             this.created = created;
         }
         
         public boolean isExits()
         {
-            return exits;
+            return this.exits;
         }
         
-        public void setExits(boolean exits)
+        public void setExits(final boolean exits)
         {
             this.exits = exits;
         }
         
         protected BranchNode<DBSchemaNodeType, TableNodeType> getTable()
         {
-            return table;
+            return this.table;
         }
         
-        protected void setTable(BranchNode<DBSchemaNodeType, TableNodeType> table)
+        protected void setTable(final BranchNode<DBSchemaNodeType, TableNodeType> table)
         {
             this.table = table;
         }
         
         public Map<String, Object> getTableProperties()
         {
-            return tableProperties;
+            return this.tableProperties;
         }
         
-        public void setTableProperties(Map<String, Object> tableProperties)
+        public void setTableProperties(final Map<String, Object> tableProperties)
         {
             this.tableProperties = tableProperties;
         }
         
-        protected void setColumnTrackerList(List<ColumnTracker> columnTrackerList)
+        protected void setColumnTrackerList(final List<ColumnTracker> columnTrackerList)
         {
             this.columnTrackerList = columnTrackerList;
         }
         
         public List<ColumnTracker> getColumnTrackerList()
         {
-            return columnTrackerList;
+            return this.columnTrackerList;
         }
     }
     
@@ -1215,40 +1215,40 @@ public class DBSchemaUtils
         
         public boolean isCreated()
         {
-            return created;
+            return this.created;
         }
         
-        public void setCreated(boolean created)
+        public void setCreated(final boolean created)
         {
             this.created = created;
         }
         
         public boolean isExits()
         {
-            return exits;
+            return this.exits;
         }
         
-        public void setExits(boolean exits)
+        public void setExits(final boolean exits)
         {
             this.exits = exits;
         }
         
         protected BranchNode<TableNodeType, ColumnNodeType> getColumn()
         {
-            return column;
+            return this.column;
         }
         
-        protected void setColumn(BranchNode<TableNodeType, ColumnNodeType> column)
+        protected void setColumn(final BranchNode<TableNodeType, ColumnNodeType> column)
         {
             this.column = column;
         }
         
         public Map<String, Object> getColumnProperties()
         {
-            return columnProperties;
+            return this.columnProperties;
         }
         
-        public void setColumnProperties(Map<String, Object> columnProperties)
+        public void setColumnProperties(final Map<String, Object> columnProperties)
         {
             this.columnProperties = columnProperties;
         }
@@ -1258,12 +1258,12 @@ public class DBSchemaUtils
     {
         protected static TableTracker checkTableDefinition
             (
-                DBSchemaUtils dbSchemaUtils,
-                Connection connection,
-                IDBSchemaUtilsDriver driver,
-                BranchNode<?, DBSchemaNodeType> schema,
-                BranchNode<DBSchemaNodeType, TableNodeType> table,
-                CheckProperties checkProperties
+                final DBSchemaUtils dbSchemaUtils,
+                final Connection connection,
+                final IDBSchemaUtilsDriver driver,
+                final BranchNode<?, DBSchemaNodeType> schema,
+                final BranchNode<DBSchemaNodeType, TableNodeType> table,
+                final CheckProperties checkProperties
             )
         {
             String schemaSpecificationName = schema.getValue(DBSchemaNodeType.name);
@@ -1288,7 +1288,7 @@ public class DBSchemaUtils
                     event.setPhaseType(PhaseType.PRE);
                     event.setException(null);
                     
-                    for (BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
+                    for (final BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
                     {
                         ExceptionCatchedConsumer<DBSchemaUtils.DBSchemaEvent> consumer = consumerNode.getValue(EventConsumerNodeType.eventConsumer);
                         if (consumer == null)
@@ -1299,11 +1299,11 @@ public class DBSchemaUtils
                         {
                             consumer.acceptWithException(event);
                         }
-                        catch (SQLException e)
+                        catch (final SQLException e)
                         {
                             dbSchemaUtils.logSQLException(e);
                         }
-                        catch (Exception e)
+                        catch (final Exception e)
                         {
                             dbSchemaUtils.logError(e, schema, "Table " + table.getValue(TableNodeType.name) + " Error on UpdateListener.Table.Check.Pre ", checkProperties);
                         }
@@ -1340,7 +1340,7 @@ public class DBSchemaUtils
                         event.setPhaseType(PhaseType.PRE);
                         event.setException(null);
                         
-                        for (BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
+                        for (final BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
                         {
                             ExceptionCatchedConsumer<DBSchemaUtils.DBSchemaEvent> consumer = consumerNode.getValue(EventConsumerNodeType.eventConsumer);
                             if (consumer == null)
@@ -1351,11 +1351,11 @@ public class DBSchemaUtils
                             {
                                 consumer.acceptWithException(event);
                             }
-                            catch (SQLException e)
+                            catch (final SQLException e)
                             {
                                 dbSchemaUtils.logSQLException(e);
                             }
-                            catch (Exception e)
+                            catch (final Exception e)
                             {
                                 dbSchemaUtils.logError(e, schema, "Table " + table.getValue(TableNodeType.name) + " Error on UpdateListener.Table.Insert.Pre ", checkProperties);
                             }
@@ -1382,12 +1382,12 @@ public class DBSchemaUtils
                         tableTracker.setCreated(true);
                         tableTracker.setExits(true);
                     }
-                    catch (SQLException e)
+                    catch (final SQLException e)
                     {
                         exc = e;
                         dbSchemaUtils.logSQLException(e);
                     }
-                    catch (Exception e)
+                    catch (final Exception e)
                     {
                         exc = e;
                         dbSchemaUtils.logError(e, schema, "Table " + table.getValue(TableNodeType.name) + " can not create ", checkProperties);
@@ -1410,7 +1410,7 @@ public class DBSchemaUtils
                         event.setPhaseType(PhaseType.POST);
                         event.setException(exc);
                         
-                        for (BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
+                        for (final BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
                         {
                             ExceptionCatchedConsumer<DBSchemaUtils.DBSchemaEvent> consumer = consumerNode.getValue(EventConsumerNodeType.eventConsumer);
                             if (consumer == null)
@@ -1421,11 +1421,11 @@ public class DBSchemaUtils
                             {
                                 consumer.acceptWithException(event);
                             }
-                            catch (SQLException e)
+                            catch (final SQLException e)
                             {
                                 dbSchemaUtils.logSQLException(e);
                             }
-                            catch (Exception e)
+                            catch (final Exception e)
                             {
                                 dbSchemaUtils.logError(e, schema, "Table " + table.getValue(TableNodeType.name) + " Error on UpdateListener.Table.Insert.Post ", checkProperties);
                             }
@@ -1444,11 +1444,11 @@ public class DBSchemaUtils
                     }
                 }
             }
-            catch (SQLException e)
+            catch (final SQLException e)
             {
                 dbSchemaUtils.logSQLException(e);
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
                 dbSchemaUtils.logError(e, schema, "Table " + table.getValue(TableNodeType.name) + " Error", checkProperties);
             }
@@ -1470,7 +1470,7 @@ public class DBSchemaUtils
                 event.setPhaseType(PhaseType.POST);
                 event.setException(null);
                 
-                for (BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
+                for (final BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
                 {
                     ExceptionCatchedConsumer<DBSchemaUtils.DBSchemaEvent> consumer = consumerNode.getValue(EventConsumerNodeType.eventConsumer);
                     if (consumer == null)
@@ -1481,11 +1481,11 @@ public class DBSchemaUtils
                     {
                         consumer.acceptWithException(event);
                     }
-                    catch (SQLException e)
+                    catch (final SQLException e)
                     {
                         dbSchemaUtils.logSQLException(e);
                     }
-                    catch (Exception e)
+                    catch (final Exception e)
                     {
                         dbSchemaUtils.logError(e, schema, "Table " + table.getValue(TableNodeType.name) + " Error on UpdateListener.Table.Check.Post", checkProperties);
                     }
@@ -1512,14 +1512,14 @@ public class DBSchemaUtils
                 }
                 connection.clearWarnings();
             }
-            catch (SQLException e)
+            catch (final SQLException e)
             {
                 dbSchemaUtils.logSQLException(e);
                 try
                 {
                     connection.clearWarnings();
                 }
-                catch (Exception e2) { }
+                catch (final Exception e2) { }
             }
             
             event.setConnection(null);
@@ -1531,12 +1531,12 @@ public class DBSchemaUtils
         
         public static void createTableKeys
             (
-                DBSchemaUtils dbSchemaUtils,
-                Connection connection,
-                IDBSchemaUtilsDriver driver,
-                BranchNode<?, DBSchemaNodeType> schema,
-                TableTracker tableTracker,
-                CheckProperties checkProperties
+                final DBSchemaUtils dbSchemaUtils,
+                final Connection connection,
+                final IDBSchemaUtilsDriver driver,
+                final BranchNode<?, DBSchemaNodeType> schema,
+                final TableTracker tableTracker,
+                final CheckProperties checkProperties
             )
         {
             if (!tableTracker.isExits())
@@ -1571,7 +1571,7 @@ public class DBSchemaUtils
                         event.setPhaseType(PhaseType.PRE);
                         event.setException(null);
                         
-                        for (BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
+                        for (final BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
                         {
                             ExceptionCatchedConsumer<DBSchemaUtils.DBSchemaEvent> consumer = consumerNode.getValue(EventConsumerNodeType.eventConsumer);
                             if (consumer == null)
@@ -1582,11 +1582,11 @@ public class DBSchemaUtils
                             {
                                 consumer.acceptWithException(event);
                             }
-                            catch (SQLException e)
+                            catch (final SQLException e)
                             {
                                 dbSchemaUtils.logSQLException(e);
                             }
-                            catch (Exception e)
+                            catch (final Exception e)
                             {
                                 dbSchemaUtils.logError(e, schema, "Table " + table.getValue(TableNodeType.name) + " Error on UpdateListener.PrimaryKey.Pre ", checkProperties);
                             }
@@ -1610,12 +1610,12 @@ public class DBSchemaUtils
                     {
                         driver.setPrimaryKey(connection, schema, table, tableTracker.getTableProperties());
                     }
-                    catch (SQLException e)
+                    catch (final SQLException e)
                     {
                         exc = e;
                         dbSchemaUtils.logSQLException(e);
                     }
-                    catch (Exception e)
+                    catch (final Exception e)
                     {
                         exc = e;
                         dbSchemaUtils.logError(e, schema, "Primary Key for Table " + table.getValue(TableNodeType.name) + " can not create ", checkProperties);
@@ -1638,7 +1638,7 @@ public class DBSchemaUtils
                         event.setPhaseType(PhaseType.POST);
                         event.setException(exc);
                         
-                        for (BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
+                        for (final BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
                         {
                             ExceptionCatchedConsumer<DBSchemaUtils.DBSchemaEvent> consumer = consumerNode.getValue(EventConsumerNodeType.eventConsumer);
                             if (consumer == null)
@@ -1649,11 +1649,11 @@ public class DBSchemaUtils
                             {
                                 consumer.acceptWithException(event);
                             }
-                            catch (SQLException e)
+                            catch (final SQLException e)
                             {
                                 dbSchemaUtils.logSQLException(e);
                             }
-                            catch (Exception e)
+                            catch (final Exception e)
                             {
                                 dbSchemaUtils.logError(e, schema, "Table " + table.getValue(TableNodeType.name) + " Error on UpdateListener.PrimaryKey.Post ", checkProperties);
                             }
@@ -1672,11 +1672,11 @@ public class DBSchemaUtils
                     }
                 }
             }
-            catch (SQLException e)
+            catch (final SQLException e)
             {
                 dbSchemaUtils.logSQLException(e);
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
                 dbSchemaUtils.logError(e, schema, "Table " + table.getValue(TableNodeType.name) + " Error handle primary key ", checkProperties);
             }
@@ -1695,14 +1695,14 @@ public class DBSchemaUtils
                 }
                 connection.clearWarnings();
             }
-            catch (SQLException e)
+            catch (final SQLException e)
             {
                 dbSchemaUtils.logSQLException(e);
                 try
                 {
                     connection.clearWarnings();
                 }
-                catch (Exception e2) { }
+                catch (final Exception e2) { }
             }
             
             event.setConnection(null);
@@ -1712,12 +1712,12 @@ public class DBSchemaUtils
         
         public static void createTableIndices
             (
-                DBSchemaUtils dbSchemaUtils,
-                Connection connection,
-                IDBSchemaUtilsDriver driver,
-                BranchNode<?, DBSchemaNodeType> schema,
-                TableTracker tableTracker,
-                CheckProperties checkProperties
+                final DBSchemaUtils dbSchemaUtils,
+                final Connection connection,
+                final IDBSchemaUtilsDriver driver,
+                final BranchNode<?, DBSchemaNodeType> schema,
+                final TableTracker tableTracker,
+                final CheckProperties checkProperties
             )
         {
             if (!tableTracker.isExits())
@@ -1735,7 +1735,7 @@ public class DBSchemaUtils
             
             try
             {
-                for (BranchNode<TableNodeType, IndexNodeType> index : table.getUnmodifiableNodeList(TableNodeType.indices))
+                for (final BranchNode<TableNodeType, IndexNodeType> index : table.getUnmodifiableNodeList(TableNodeType.indices))
                 {
                     try
                     {
@@ -1760,7 +1760,7 @@ public class DBSchemaUtils
                                 event.setPhaseType(PhaseType.PRE);
                                 event.setException(null);
                                 
-                                for (BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
+                                for (final BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
                                 {
                                     ExceptionCatchedConsumer<DBSchemaUtils.DBSchemaEvent> consumer = consumerNode.getValue(EventConsumerNodeType.eventConsumer);
                                     if (consumer == null)
@@ -1771,11 +1771,11 @@ public class DBSchemaUtils
                                     {
                                         consumer.acceptWithException(event);
                                     }
-                                    catch (SQLException e)
+                                    catch (final SQLException e)
                                     {
                                         dbSchemaUtils.logSQLException(e);
                                     }
-                                    catch (Exception e)
+                                    catch (final Exception e)
                                     {
                                         dbSchemaUtils.logError(e, schema, "Table " + table.getValue(TableNodeType.name) + " Error on UpdateListener.Index.Pre", checkProperties);
                                     }
@@ -1798,12 +1798,12 @@ public class DBSchemaUtils
                             {
                                 driver.setValidIndex(connection, schema, table, index, columnIndexProperties);
                             }
-                            catch (SQLException e)
+                            catch (final SQLException e)
                             {
                                 exc = e;
                                 dbSchemaUtils.logSQLException(e);
                             }
-                            catch (Exception e)
+                            catch (final Exception e)
                             {
                                 exc = e;
                                 dbSchemaUtils.logError(e, schema, "Index " + index.getValue(IndexNodeType.name) + " can not create ", checkProperties);
@@ -1827,7 +1827,7 @@ public class DBSchemaUtils
                                 event.setPhaseType(PhaseType.POST);
                                 event.setException(exc);
                                 
-                                for (BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
+                                for (final BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
                                 {
                                     ExceptionCatchedConsumer<DBSchemaUtils.DBSchemaEvent> consumer = consumerNode.getValue(EventConsumerNodeType.eventConsumer);
                                     if (consumer == null)
@@ -1838,11 +1838,11 @@ public class DBSchemaUtils
                                     {
                                         consumer.acceptWithException(event);
                                     }
-                                    catch (SQLException e)
+                                    catch (final SQLException e)
                                     {
                                         dbSchemaUtils.logSQLException(e);
                                     }
-                                    catch (Exception e)
+                                    catch (final Exception e)
                                     {
                                         dbSchemaUtils.logError(e, schema, "Table " + table.getValue(TableNodeType.name) + " Error on UpdateListener.Index.Post", checkProperties);
                                     }
@@ -1861,18 +1861,18 @@ public class DBSchemaUtils
                             }
                         }
                     }
-                    catch (SQLException e)
+                    catch (final SQLException e)
                     {
                         dbSchemaUtils.logSQLException(e);
                     }
-                    catch (Exception e)
+                    catch (final Exception e)
                     {
                         dbSchemaUtils.logError(e, schema, "error: " + index.getValue(IndexNodeType.name), checkProperties);
                     }
                 }
                 
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
                 dbSchemaUtils.logError(e, schema, e.getMessage(), checkProperties);
             }
@@ -1891,14 +1891,14 @@ public class DBSchemaUtils
                 }
                 connection.clearWarnings();
             }
-            catch (SQLException e)
+            catch (final SQLException e)
             {
                 dbSchemaUtils.logSQLException(e);
                 try
                 {
                     connection.clearWarnings();
                 }
-                catch (Exception e2) { }
+                catch (final Exception e2) { }
             }
             
             event.setConnection(null);
@@ -1911,14 +1911,14 @@ public class DBSchemaUtils
     {
         public static ColumnTracker checkColumnDefinition
             (
-                DBSchemaUtils dbSchemaUtils,
-                Connection connection,
-                IDBSchemaUtilsDriver driver,
-                BranchNode<?, DBSchemaNodeType> schema,
-                BranchNode<DBSchemaNodeType, TableNodeType> table,
-                BranchNode<TableNodeType, ColumnNodeType> column,
-                Map<String, Object> tableProperties,
-                CheckProperties checkProperties
+                final DBSchemaUtils dbSchemaUtils,
+                final Connection connection,
+                final IDBSchemaUtilsDriver driver,
+                final BranchNode<?, DBSchemaNodeType> schema,
+                final BranchNode<DBSchemaNodeType, TableNodeType> table,
+                final BranchNode<TableNodeType, ColumnNodeType> column,
+                final Map<String, Object> tableProperties,
+                final CheckProperties checkProperties
             )
         {
             String schemaSpecificationName = schema.getValue(DBSchemaNodeType.name);
@@ -1944,7 +1944,7 @@ public class DBSchemaUtils
                     event.setPhaseType(PhaseType.PRE);
                     event.setException(null);
                     
-                    for (BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
+                    for (final BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
                     {
                         ExceptionCatchedConsumer<DBSchemaUtils.DBSchemaEvent> consumer = consumerNode.getValue(EventConsumerNodeType.eventConsumer);
                         if (consumer == null)
@@ -1955,11 +1955,11 @@ public class DBSchemaUtils
                         {
                             consumer.acceptWithException(event);
                         }
-                        catch (SQLException e)
+                        catch (final SQLException e)
                         {
                             dbSchemaUtils.logSQLException(e);
                         }
-                        catch (Exception e)
+                        catch (final Exception e)
                         {
                             dbSchemaUtils.logError(e, schema, "Table " + table.getValue(TableNodeType.name) + " Col " + column.getValue(ColumnNodeType.name) + " Error on UpdateListener.Column.Check.Pre ", checkProperties);
                         }
@@ -1980,7 +1980,7 @@ public class DBSchemaUtils
                 Map<String, Object> columnProperties = new HashMap<String, Object>();
                 if (tableProperties != null)
                 {
-                    for (Entry<String, Object> entry : tableProperties.entrySet())
+                    for (final Entry<String, Object> entry : tableProperties.entrySet())
                     {
                         columnProperties.put(entry.getKey(), entry.getValue());
                     }
@@ -2005,7 +2005,7 @@ public class DBSchemaUtils
                         event.setPhaseType(PhaseType.PRE);
                         event.setException(null);
                         
-                        for (BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
+                        for (final BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
                         {
                             ExceptionCatchedConsumer<DBSchemaUtils.DBSchemaEvent> consumer = consumerNode.getValue(EventConsumerNodeType.eventConsumer);
                             if (consumer == null)
@@ -2016,11 +2016,11 @@ public class DBSchemaUtils
                             {
                                 consumer.acceptWithException(event);
                             }
-                            catch (SQLException e)
+                            catch (final SQLException e)
                             {
                                 dbSchemaUtils.logSQLException(e);
                             }
-                            catch (Exception e)
+                            catch (final Exception e)
                             {
                                 dbSchemaUtils.logError(e, schema, "Table " + table.getValue(TableNodeType.name) + " Col " + column.getValue(ColumnNodeType.name) + " Error on UpdateListener.Column.Insert.Pre ", checkProperties);
                             }
@@ -2047,12 +2047,12 @@ public class DBSchemaUtils
                         columnTracker.setExits(true);
                         columnTracker.setCreated(true);
                     }
-                    catch (SQLException e)
+                    catch (final SQLException e)
                     {
                         exc = e;
                         dbSchemaUtils.logSQLException(e);
                     }
-                    catch (Exception e)
+                    catch (final Exception e)
                     {
                         exc = e;
                         dbSchemaUtils.logError(e, schema, "Column " + table.getValue(TableNodeType.name) + " Col " + column.getValue(ColumnNodeType.name) + " can not create ", checkProperties);
@@ -2076,7 +2076,7 @@ public class DBSchemaUtils
                         event.setPhaseType(PhaseType.POST);
                         event.setException(exc);
                         
-                        for (BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
+                        for (final BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
                         {
                             ExceptionCatchedConsumer<DBSchemaUtils.DBSchemaEvent> consumer = consumerNode.getValue(EventConsumerNodeType.eventConsumer);
                             if (consumer == null)
@@ -2087,11 +2087,11 @@ public class DBSchemaUtils
                             {
                                 consumer.acceptWithException(event);
                             }
-                            catch (SQLException e)
+                            catch (final SQLException e)
                             {
                                 dbSchemaUtils.logSQLException(e);
                             }
-                            catch (Exception e)
+                            catch (final Exception e)
                             {
                                 dbSchemaUtils.logError(e, schema, "Table " + table.getValue(TableNodeType.name) + " Col " + column.getValue(ColumnNodeType.name) + " Error on UpdateListener.Column.Insert.Post ", checkProperties);
                             }
@@ -2110,11 +2110,11 @@ public class DBSchemaUtils
                     }
                 }
             }
-            catch (SQLException e)
+            catch (final SQLException e)
             {
                 dbSchemaUtils.logSQLException(e);
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
                 dbSchemaUtils.logError(e, schema, "Table " + table.getValue(TableNodeType.name) + " Col " + column.getValue(ColumnNodeType.name) + " Error ", checkProperties);
             }
@@ -2137,7 +2137,7 @@ public class DBSchemaUtils
                 event.setPhaseType(PhaseType.POST);
                 event.setException(null);
                 
-                for (BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
+                for (final BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
                 {
                     ExceptionCatchedConsumer<DBSchemaUtils.DBSchemaEvent> consumer = consumerNode.getValue(EventConsumerNodeType.eventConsumer);
                     if (consumer == null)
@@ -2148,11 +2148,11 @@ public class DBSchemaUtils
                     {
                         consumer.acceptWithException(event);
                     }
-                    catch (SQLException e)
+                    catch (final SQLException e)
                     {
                         dbSchemaUtils.logSQLException(e);
                     }
-                    catch (Exception e)
+                    catch (final Exception e)
                     {
                         dbSchemaUtils.logError(e, schema, "Table " + table.getValue(TableNodeType.name) + " Col " + column.getValue(ColumnNodeType.name) + " Error on UpdateListener.Column.Check.Post", checkProperties);
                     }
@@ -2179,14 +2179,14 @@ public class DBSchemaUtils
                 }
                 connection.clearWarnings();
             }
-            catch (SQLException e)
+            catch (final SQLException e)
             {
                 dbSchemaUtils.logSQLException(e);
                 try
                 {
                     connection.clearWarnings();
                 }
-                catch (Exception e2) { }
+                catch (final Exception e2) { }
             }
             
             event.setConnection(null);
@@ -2198,15 +2198,15 @@ public class DBSchemaUtils
         
         public static void checkColumnProperties
             (
-                DBSchemaUtils dbSchemaUtils,
-                Connection connection,
-                IDBSchemaUtilsDriver driver,
-                BranchNode<?, DBSchemaNodeType> schema,
-                BranchNode<?, TableNodeType> table,
-                BranchNode<?, ColumnNodeType> column,
-                ColumnTracker columnTracker,
-                Map<String, Object> columnProperties,
-                CheckProperties checkProperties
+                final DBSchemaUtils dbSchemaUtils,
+                final Connection connection,
+                final IDBSchemaUtilsDriver driver,
+                final BranchNode<?, DBSchemaNodeType> schema,
+                final BranchNode<?, TableNodeType> table,
+                final BranchNode<?, ColumnNodeType> column,
+                final ColumnTracker columnTracker,
+                final Map<String, Object> columnProperties,
+                final CheckProperties checkProperties
             )
         {
             String schemaSpecificationName = schema.getValue(DBSchemaNodeType.name);
@@ -2242,7 +2242,7 @@ public class DBSchemaUtils
                             event.setPhaseType(PhaseType.PRE);
                             event.setException(null);
                             
-                            for (BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
+                            for (final BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
                             {
                                 ExceptionCatchedConsumer<DBSchemaUtils.DBSchemaEvent> consumer = consumerNode.getValue(EventConsumerNodeType.eventConsumer);
                                 if (consumer == null)
@@ -2253,7 +2253,7 @@ public class DBSchemaUtils
                                 {
                                     consumer.acceptWithException(event);
                                 }
-                                catch (Exception e)
+                                catch (final Exception e)
                                 {
                                     dbSchemaUtils.logError(e, schema, "Table " + table.getValue(TableNodeType.name) + " Col " + column.getValue(ColumnNodeType.name) + " Error on UpdateListener.Nullable.Pre ", checkProperties);
                                 }
@@ -2289,7 +2289,7 @@ public class DBSchemaUtils
                             event.setPhaseType(PhaseType.PRE);
                             event.setException(null);
                             
-                            for (BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
+                            for (final BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
                             {
                                 ExceptionCatchedConsumer<DBSchemaUtils.DBSchemaEvent> consumer = consumerNode.getValue(EventConsumerNodeType.eventConsumer);
                                 if (consumer == null)
@@ -2300,11 +2300,11 @@ public class DBSchemaUtils
                                 {
                                     consumer.acceptWithException(event);
                                 }
-                                catch (SQLException e)
+                                catch (final SQLException e)
                                 {
                                     dbSchemaUtils.logSQLException(e);
                                 }
-                                catch (Exception e)
+                                catch (final Exception e)
                                 {
                                     dbSchemaUtils.logError(e, schema, "Table " + table.getValue(TableNodeType.name) + " Col " + column.getValue(ColumnNodeType.name) + " Error on UpdateListener.Size.Pre ", checkProperties);
                                 }
@@ -2340,7 +2340,7 @@ public class DBSchemaUtils
                             event.setPhaseType(PhaseType.PRE);
                             event.setException(null);
                             
-                            for (BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
+                            for (final BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
                             {
                                 ExceptionCatchedConsumer<DBSchemaUtils.DBSchemaEvent> consumer = consumerNode.getValue(EventConsumerNodeType.eventConsumer);
                                 if (consumer == null)
@@ -2351,11 +2351,11 @@ public class DBSchemaUtils
                                 {
                                     consumer.acceptWithException(event);
                                 }
-                                catch (SQLException e)
+                                catch (final SQLException e)
                                 {
                                     dbSchemaUtils.logSQLException(e);
                                 }
-                                catch (Exception e)
+                                catch (final Exception e)
                                 {
                                     dbSchemaUtils.logError(e, schema, "Table " + table.getValue(TableNodeType.name) + " Col " + column.getValue(ColumnNodeType.name) + " Error on UpdateListener.Type.Pre ", checkProperties);
                                 }
@@ -2392,7 +2392,7 @@ public class DBSchemaUtils
                             event.setPhaseType(PhaseType.PRE);
                             event.setException(null);
                             
-                            for (BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
+                            for (final BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
                             {
                                 ExceptionCatchedConsumer<DBSchemaUtils.DBSchemaEvent> consumer = consumerNode.getValue(EventConsumerNodeType.eventConsumer);
                                 if (consumer == null)
@@ -2403,11 +2403,11 @@ public class DBSchemaUtils
                                 {
                                     consumer.acceptWithException(event);
                                 }
-                                catch (SQLException e)
+                                catch (final SQLException e)
                                 {
                                     dbSchemaUtils.logSQLException(e);
                                 }
-                                catch (Exception e)
+                                catch (final Exception e)
                                 {
                                     dbSchemaUtils.logError(e, schema, "Table " + table.getValue(TableNodeType.name) + " Col " + column.getValue(ColumnNodeType.name) + " Error on UpdateListener.defaultvalue.Pre ", checkProperties);
                                 }
@@ -2432,12 +2432,12 @@ public class DBSchemaUtils
                     {
                         driver.setValidColumnProperties(connection, schema, table, column, columnProperties);
                     }
-                    catch (SQLException e)
+                    catch (final SQLException e)
                     {
                         exc = e;
                         dbSchemaUtils.logSQLException(e);
                     }
-                    catch (Exception e)
+                    catch (final Exception e)
                     {
                         exc = e;
                         dbSchemaUtils.logError(e, schema, "Column properties for " + table.getValue(TableNodeType.name) + " Col " + column.getValue(ColumnNodeType.name) + " can not update", checkProperties);
@@ -2463,7 +2463,7 @@ public class DBSchemaUtils
                             event.setPhaseType(PhaseType.POST);
                             event.setException(exc);
                             
-                            for (BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
+                            for (final BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
                             {
                                 ExceptionCatchedConsumer<DBSchemaUtils.DBSchemaEvent> consumer = consumerNode.getValue(EventConsumerNodeType.eventConsumer);
                                 if (consumer == null)
@@ -2474,7 +2474,7 @@ public class DBSchemaUtils
                                 {
                                     consumer.acceptWithException(event);
                                 }
-                                catch (Exception e)
+                                catch (final Exception e)
                                 {
                                     dbSchemaUtils.logError(e, schema, "Table " + table.getValue(TableNodeType.name) + " Col " + column.getValue(ColumnNodeType.name) + " Error on UpdateListener.Nullable.Post ", checkProperties);
                                 }
@@ -2505,7 +2505,7 @@ public class DBSchemaUtils
                             event.setPhaseType(PhaseType.POST);
                             event.setException(exc);
                             
-                            for (BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
+                            for (final BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
                             {
                                 ExceptionCatchedConsumer<DBSchemaUtils.DBSchemaEvent> consumer = consumerNode.getValue(EventConsumerNodeType.eventConsumer);
                                 if (consumer == null)
@@ -2516,11 +2516,11 @@ public class DBSchemaUtils
                                 {
                                     consumer.acceptWithException(event);
                                 }
-                                catch (SQLException e)
+                                catch (final SQLException e)
                                 {
                                     dbSchemaUtils.logSQLException(e);
                                 }
-                                catch (Exception e)
+                                catch (final Exception e)
                                 {
                                     dbSchemaUtils.logError(e, schema, "Table " + table.getValue(TableNodeType.name) + " Col " + column.getValue(ColumnNodeType.name) + " Error on UpdateListener.Size.Post ", checkProperties);
                                 }
@@ -2551,7 +2551,7 @@ public class DBSchemaUtils
                             event.setPhaseType(PhaseType.POST);
                             event.setException(exc);
                             
-                            for (BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
+                            for (final BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
                             {
                                 ExceptionCatchedConsumer<DBSchemaUtils.DBSchemaEvent> consumer = consumerNode.getValue(EventConsumerNodeType.eventConsumer);
                                 if (consumer == null)
@@ -2562,11 +2562,11 @@ public class DBSchemaUtils
                                 {
                                     consumer.acceptWithException(event);
                                 }
-                                catch (SQLException e)
+                                catch (final SQLException e)
                                 {
                                     dbSchemaUtils.logSQLException(e);
                                 }
-                                catch (Exception e)
+                                catch (final Exception e)
                                 {
                                     dbSchemaUtils.logError(e, schema, "Table " + table.getValue(TableNodeType.name) + " Col " + column.getValue(ColumnNodeType.name) + " Error on UpdateListener.Type.Post ", checkProperties);
                                 }
@@ -2597,7 +2597,7 @@ public class DBSchemaUtils
                             event.setPhaseType(PhaseType.POST);
                             event.setException(exc);
                             
-                            for (BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
+                            for (final BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
                             {
                                 ExceptionCatchedConsumer<DBSchemaUtils.DBSchemaEvent> consumer = consumerNode.getValue(EventConsumerNodeType.eventConsumer);
                                 if (consumer == null)
@@ -2608,11 +2608,11 @@ public class DBSchemaUtils
                                 {
                                     consumer.acceptWithException(event);
                                 }
-                                catch (SQLException e)
+                                catch (final SQLException e)
                                 {
                                     dbSchemaUtils.logSQLException(e);
                                 }
-                                catch (Exception e)
+                                catch (final Exception e)
                                 {
                                     dbSchemaUtils.logError(e, schema, "Table " + table.getValue(TableNodeType.name) + " Col " + column.getValue(ColumnNodeType.name) + " Error on UpdateListener.defaultvalu.Post ", checkProperties);
                                 }
@@ -2633,7 +2633,7 @@ public class DBSchemaUtils
                     
                 }
             }
-            catch (SQLException e)
+            catch (final SQLException e)
             {
                 dbSchemaUtils.logSQLException(e);
             }
@@ -2647,14 +2647,14 @@ public class DBSchemaUtils
                 }
                 connection.clearWarnings();
             }
-            catch (SQLException e)
+            catch (final SQLException e)
             {
                 dbSchemaUtils.logSQLException(e);
                 try
                 {
                     connection.clearWarnings();
                 }
-                catch (Exception e2) { }
+                catch (final Exception e2) { }
             }
             
             event.setConnection(null);
@@ -2664,13 +2664,13 @@ public class DBSchemaUtils
         
         public static void createColumnKeys
             (
-                DBSchemaUtils dbSchemaUtils,
-                Connection connection,
-                IDBSchemaUtilsDriver driver,
-                BranchNode<?, DBSchemaNodeType> schema,
-                BranchNode<?, TableNodeType> table,
-                ColumnTracker columnTracker,
-                CheckProperties checkProperties
+                final DBSchemaUtils dbSchemaUtils,
+                final Connection connection,
+                final IDBSchemaUtilsDriver driver,
+                final BranchNode<?, DBSchemaNodeType> schema,
+                final BranchNode<?, TableNodeType> table,
+                final ColumnTracker columnTracker,
+                final CheckProperties checkProperties
             )
         {
             if (!columnTracker.isExits())
@@ -2706,7 +2706,7 @@ public class DBSchemaUtils
                         event.setPhaseType(PhaseType.PRE);
                         event.setException(null);
                         
-                        for (BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
+                        for (final BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
                         {
                             ExceptionCatchedConsumer<DBSchemaUtils.DBSchemaEvent> consumer = consumerNode.getValue(EventConsumerNodeType.eventConsumer);
                             if (consumer == null)
@@ -2717,11 +2717,11 @@ public class DBSchemaUtils
                             {
                                 consumer.acceptWithException(event);
                             }
-                            catch (SQLException e)
+                            catch (final SQLException e)
                             {
                                 dbSchemaUtils.logSQLException(e);
                             }
-                            catch (Exception e)
+                            catch (final Exception e)
                             {
                                 dbSchemaUtils.logError(e, schema, "Table " + table.getValue(TableNodeType.name) + " Col " + column.getValue(ColumnNodeType.name) + " Error on UpdateListener.FK.Pre ", checkProperties);
                             }
@@ -2745,12 +2745,12 @@ public class DBSchemaUtils
                     {
                         driver.setValidForeignKey(connection, schema, table, column, columnProperties);
                     }
-                    catch (SQLException e)
+                    catch (final SQLException e)
                     {
                         exc = e;
                         dbSchemaUtils.logSQLException(e);
                     }
-                    catch (Exception e)
+                    catch (final Exception e)
                     {
                         exc = e;
                         dbSchemaUtils.logError(e, schema, "Column foreign key for " + table.getValue(TableNodeType.name) + " Col " + column.getValue(ColumnNodeType.name) + " can not update", checkProperties);
@@ -2774,7 +2774,7 @@ public class DBSchemaUtils
                         event.setPhaseType(PhaseType.POST);
                         event.setException(exc);
                         
-                        for (BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
+                        for (final BranchNode<TableNodeType, EventConsumerNodeType> consumerNode : table.getUnmodifiableNodeList(TableNodeType.consumers))
                         {
                             ExceptionCatchedConsumer<DBSchemaUtils.DBSchemaEvent> consumer = consumerNode.getValue(EventConsumerNodeType.eventConsumer);
                             if (consumer == null)
@@ -2785,11 +2785,11 @@ public class DBSchemaUtils
                             {
                                 consumer.acceptWithException(event);
                             }
-                            catch (SQLException e)
+                            catch (final SQLException e)
                             {
                                 dbSchemaUtils.logSQLException(e);
                             }
-                            catch (Exception e)
+                            catch (final Exception e)
                             {
                                 dbSchemaUtils.logError(e, schema, "Table " + table.getValue(TableNodeType.name) + " Col " + column.getValue(ColumnNodeType.name) + " Error on UpdateListener.FK.Post", checkProperties);
                             }
@@ -2809,7 +2809,7 @@ public class DBSchemaUtils
                 }
                 
             }
-            catch (SQLException e)
+            catch (final SQLException e)
             {
                 dbSchemaUtils.logSQLException(e);
             }
@@ -2823,14 +2823,14 @@ public class DBSchemaUtils
                 }
                 connection.clearWarnings();
             }
-            catch (SQLException e)
+            catch (final SQLException e)
             {
                 dbSchemaUtils.logSQLException(e);
                 try
                 {
                     connection.clearWarnings();
                 }
-                catch (Exception e2) { }
+                catch (final Exception e2) { }
             }
             
             event.setConnection(null);
@@ -2839,36 +2839,36 @@ public class DBSchemaUtils
         }
     }
     
-    public static String getSchema(Connection connection) throws SQLException
+    public static String getSchema(final Connection connection) throws SQLException
     {
         try
         {
             return connection.getSchema();
         }
-        catch (NoSuchMethodError e) // Android
+        catch (final NoSuchMethodError e) // Android
         {
             try
             {
                 return (String) connection.getClass().getMethod("getSchema").invoke(connection);
             }
-            catch (Exception e2) { }
+            catch (final Exception e2) { }
             throw e;
         }
     }
     
-    public static void setSchema(Connection connection, String schema) throws SQLException
+    public static void setSchema(final Connection connection, final String schema) throws SQLException
     {
         try
         {
             connection.setSchema(schema);
         }
-        catch (NoSuchMethodError e) // Android
+        catch (final NoSuchMethodError e) // Android
         {
             try
             {
                 connection.getClass().getMethod("setSchema", String.class).invoke(connection, schema);
             }
-            catch (Exception e2) { }
+            catch (final Exception e2) { }
             throw e;
         }
     }

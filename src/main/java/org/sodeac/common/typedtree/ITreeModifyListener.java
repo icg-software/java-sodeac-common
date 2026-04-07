@@ -31,11 +31,8 @@ public interface ITreeModifyListener
      * @param newValue
      * @param doit
      */
-    public default <C extends INodeType<?, ?>, T> void beforeModify(BranchNode<?, ?> parentNode, Object staticNodeTypeInstance, T oldValue, T newValue, ConplierBean<Boolean> doit) { }
+    default <C extends INodeType<?, ?>, T> void beforeModify(final BranchNode<?, ?> parentNode, final Object staticNodeTypeInstance, final T oldValue, final T newValue, final ConplierBean<Boolean> doit) { }
     
-    ;
+    default <C extends INodeType<?, ?>, T> void afterModify(final BranchNode<?, ?> parentNode, final Object staticNodeTypeInstance, final T oldValue, final T newValue) { }
     
-    public default <C extends INodeType<?, ?>, T> void afterModify(BranchNode<?, ?> parentNode, Object staticNodeTypeInstance, T oldValue, T newValue) { }
-    
-    ;
 }

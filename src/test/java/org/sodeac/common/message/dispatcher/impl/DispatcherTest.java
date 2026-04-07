@@ -72,24 +72,24 @@ public class DispatcherTest
         
         private TaskDoneNotifier taskDoneNotifier = null;
         
-        public SimpleManagerTest001(TaskDoneNotifier taskDoneNotifier)
+        public SimpleManagerTest001(final TaskDoneNotifier taskDoneNotifier)
         {
             super();
             this.taskDoneNotifier = taskDoneNotifier;
         }
         
         @Override
-        public void configureChannelManagerPolicy(IChannelManagerPolicy configurationPolicy)
+        public void configureChannelManagerPolicy(final IChannelManagerPolicy configurationPolicy)
         {
             configurationPolicy.addConfigurationDetail(new ComponentBindingSetup.BoundedByChannelId(CHANNEL_ID).setChannelMaster(true).setName("Test SimpleManagerTest001"));
         }
         
         @Override
-        public void onMessageStore(IMessage message)
+        public void onMessageStore(final IMessage message)
         {
             if (MSG.equals(message.getPayload()))
             {
-                taskDoneNotifier.setTaskDone();
+                this.taskDoneNotifier.setTaskDone();
             }
             message.removeFromChannel();
         }

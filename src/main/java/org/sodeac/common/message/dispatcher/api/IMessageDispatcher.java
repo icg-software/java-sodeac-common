@@ -32,21 +32,21 @@ public interface IMessageDispatcher
      * @throws ChannelNotFoundException
      * @throws CapacityExceededException
      */
-    public <T> void sendMessage(String channelId, T message) throws ChannelNotFoundException, CapacityExceededException;
+    <T> void sendMessage(String channelId, T message) throws ChannelNotFoundException, CapacityExceededException;
     
     /**
      * factory-methode creating instance of {@link IPropertyBlock}
      *
      * @return instance of {@link IPropertyBlock}
      */
-    public IPropertyBlock createPropertyBlock();
+    IPropertyBlock createPropertyBlock();
     
     /**
      * request for all {@link IDispatcherChannel}-IDs
      *
      * @return {@link java.util.List} with queueIds
      */
-    public List<String> getChannelIdList();
+    List<String> getChannelIdList();
     
     /**
      * getter to request for {@link IDispatcherChannel} with given id
@@ -55,34 +55,34 @@ public interface IMessageDispatcher
      *
      * @return instance of {@link IDispatcherChannel} registered with {@code queueId}
      */
-    public IDispatcherChannel<?> getChannel(String channelId);
+    IDispatcherChannel<?> getChannel(String channelId);
     
-    public <T> IDispatcherChannel<T> getTypedChannel(String channelId, Class<T> messageType);
+    <T> IDispatcherChannel<T> getTypedChannel(String channelId, Class<T> messageType);
     
     /**
      * getter for propertyblock of dispatcher
      *
      * @return {@link IPropertyBlock} of dispatcher
      */
-    public IPropertyBlock getPropertyBlock();
+    IPropertyBlock getPropertyBlock();
     
     /**
      * getter for id of dispatcher.
      *
      * @return id of dispatcher
      */
-    public String getId();
+    String getId();
     
     /**
      * Remove all workers and clean resources. After shutdown the dispatcher is not usable anymore.
      */
-    public void shutdown();
+    void shutdown();
     
-    public void registerChannelManager(IDispatcherChannelManager channelManager);
+    void registerChannelManager(IDispatcherChannelManager channelManager);
     
-    public void registerChannelService(IDispatcherChannelService channelService);
+    void registerChannelService(IDispatcherChannelService channelService);
     
-    public void unregisterChannelManager(IDispatcherChannelManager channelManager);
+    void unregisterChannelManager(IDispatcherChannelManager channelManager);
     
-    public void unregisterChannelService(IDispatcherChannelService channelService);
+    void unregisterChannelService(IDispatcherChannelService channelService);
 }

@@ -27,10 +27,10 @@ public class ServiceContainer
 {
     protected ServiceContainer
         (
-            MessageDispatcherImpl dispatcher,
-            List<ComponentBindingSetup.BoundedByChannelId> boundByIdList,
-            List<ComponentBindingSetup.BoundedByChannelConfiguration> boundedByQueueConfigurationList,
-            List<ComponentBindingSetup.ChannelServiceConfiguration> serviceConfigurationList
+            final MessageDispatcherImpl dispatcher,
+            final List<ComponentBindingSetup.BoundedByChannelId> boundByIdList,
+            final List<ComponentBindingSetup.BoundedByChannelConfiguration> boundedByQueueConfigurationList,
+            final List<ComponentBindingSetup.ChannelServiceConfiguration> serviceConfigurationList
         )
     {
         super();
@@ -65,7 +65,7 @@ public class ServiceContainer
         List<ServiceFilterObjects> list = new ArrayList<ServiceFilterObjects>();
         if (this.boundedByQueueConfigurationList != null)
         {
-            for (ComponentBindingSetup.BoundedByChannelConfiguration boundedByQueueConfiguration : boundedByQueueConfigurationList)
+            for (final ComponentBindingSetup.BoundedByChannelConfiguration boundedByQueueConfiguration : this.boundedByQueueConfigurationList)
             {
                 if (boundedByQueueConfiguration.getLdapFilter() == null)
                 {
@@ -98,19 +98,19 @@ public class ServiceContainer
                     
                     list.add(serviceFilterObjects);
                 }
-                catch (Exception e)
+                catch (final Exception e)
                 {
-                    dispatcher.logError("parse bounded channel configuration " + boundedByQueueConfiguration.getLdapFilter(), e);
+                    this.dispatcher.logError("parse bounded channel configuration " + boundedByQueueConfiguration.getLdapFilter(), e);
                 }
             }
         }
         this.filterObjectList = list;
         this.filterAttributes = new HashSet<String>();
-        for (ServiceFilterObjects controllerFilterObjects : this.filterObjectList)
+        for (final ServiceFilterObjects controllerFilterObjects : this.filterObjectList)
         {
             if (controllerFilterObjects.attributes != null)
             {
-                for (String attribute : controllerFilterObjects.attributes)
+                for (final String attribute : controllerFilterObjects.attributes)
                 {
                     this.filterAttributes.add(attribute);
                 }
@@ -120,20 +120,20 @@ public class ServiceContainer
     
     public IDispatcherChannelService getChannelService()
     {
-        return queueService;
+        return this.queueService;
     }
     
-    public void setChannelService(IDispatcherChannelService queueService)
+    public void setChannelService(final IDispatcherChannelService queueService)
     {
         this.queueService = queueService;
     }
     
     public boolean isRegistered()
     {
-        return registered;
+        return this.registered;
     }
     
-    public void setRegistered(boolean registered)
+    public void setRegistered(final boolean registered)
     {
         this.registered = registered;
     }
@@ -151,27 +151,27 @@ public class ServiceContainer
     
     public List<ServiceFilterObjects> getFilterObjectList()
     {
-        return filterObjectList;
+        return this.filterObjectList;
     }
     
     public List<ComponentBindingSetup.BoundedByChannelId> getBoundByIdList()
     {
-        return boundByIdList;
+        return this.boundByIdList;
     }
     
     public List<ComponentBindingSetup.BoundedByChannelConfiguration> getBoundedByChannelConfigurationList()
     {
-        return boundedByQueueConfigurationList;
+        return this.boundedByQueueConfigurationList;
     }
     
     public ComponentBindingSetup.ChannelServiceConfiguration getServiceConfiguration()
     {
-        return serviceConfiguration;
+        return this.serviceConfiguration;
     }
     
     public Set<String> getFilterAttributeSet()
     {
-        return filterAttributes;
+        return this.filterAttributes;
     }
     
     public class ServiceFilterObjects

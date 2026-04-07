@@ -17,9 +17,9 @@ public class LocalServiceProviderImpl<S> implements IServiceProvider<S>
     private List<IFilterItem> filterList = null;
     private Map<Long, List<IFilterItem>> preferencesList = null;
     private Lock lock = null;
-    private volatile RegisteredService registeredService = null;
+    private final RegisteredService registeredService = null;
     
-    protected LocalServiceProviderImpl(ServiceController serviceController, List<IFilterItem> filterList, Map<Long, List<IFilterItem>> preferencesList)
+    protected LocalServiceProviderImpl(final ServiceController serviceController, final List<IFilterItem> filterList, final Map<Long, List<IFilterItem>> preferencesList)
     {
         super();
         this.serviceController = serviceController;
@@ -40,7 +40,7 @@ public class LocalServiceProviderImpl<S> implements IServiceProvider<S>
                 registeredService = this.registeredService;
                 if (registeredService == null)
                 {
-                    registeredService = serviceController.getRegisteredService(filterList, preferencesList);
+                    registeredService = this.serviceController.getRegisteredService(this.filterList, this.preferencesList);
                 }
             }
             finally
@@ -53,7 +53,7 @@ public class LocalServiceProviderImpl<S> implements IServiceProvider<S>
     }
     
     @Override
-    public IServiceProvider<S> setAutoDisconnectTime(long ms)
+    public IServiceProvider<S> setAutoDisconnectTime(final long ms)
     {
         // TODO Auto-generated method stub
         return null;
@@ -70,7 +70,7 @@ public class LocalServiceProviderImpl<S> implements IServiceProvider<S>
     {
         private S service = null;
         
-        protected ServiceReference(S service)
+        protected ServiceReference(final S service)
         {
             super();
             this.service = service;

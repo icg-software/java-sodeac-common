@@ -25,5 +25,6 @@ public interface IPropertyBlockAtomicProcedure extends Consumer<IPropertyBlock>
      *
      * @param propertyBlock wrapper to origin blocked property block.
      */
-    public void accept(IPropertyBlock propertyBlock);
+    @Override
+    void accept(IPropertyBlock propertyBlock);
 }

@@ -26,5 +26,5 @@ public interface IOnChannelDetach<T> extends IDispatcherChannelManager
      *
      * @param channel is detach from {@link IDispatcherChannelManager}
      */
-    public void onChannelDetach(IDispatcherChannel<T> channel);
+    void onChannelDetach(IDispatcherChannel<T> channel);
 }

@@ -41,7 +41,7 @@ public class NodeConfigurationImpl implements INodeConfiguration
     protected static class LocalServiceFactory implements Function<IFactoryEnvironment<?, ?>, INodeConfiguration>
     {
         @Override
-        public INodeConfiguration apply(IFactoryEnvironment<?, ?> t)
+        public INodeConfiguration apply(final IFactoryEnvironment<?, ?> t)
         {
             NodeConfigurationImpl nodeConfigurationImpl = new NodeConfigurationImpl();
             return nodeConfigurationImpl;

@@ -25,7 +25,7 @@ public class TestConnection
         super();
     }
     
-    public TestConnection(boolean enabled)
+    public TestConnection(final boolean enabled)
     {
         super();
         this.enabled = enabled;
@@ -52,10 +52,10 @@ public class TestConnection
         }
         
         @Override
-        public void setLogWriter(PrintWriter out) throws SQLException { }
+        public void setLogWriter(final PrintWriter out) throws SQLException { }
         
         @Override
-        public void setLoginTimeout(int seconds) throws SQLException { }
+        public void setLoginTimeout(final int seconds) throws SQLException { }
         
         @Override
         public int getLoginTimeout() throws SQLException
@@ -70,13 +70,13 @@ public class TestConnection
         }
         
         @Override
-        public <T> T unwrap(Class<T> iface) throws SQLException
+        public <T> T unwrap(final Class<T> iface) throws SQLException
         {
             return null;
         }
         
         @Override
-        public boolean isWrapperFor(Class<?> iface) throws SQLException
+        public boolean isWrapperFor(final Class<?> iface) throws SQLException
         {
             return false;
         }
@@ -88,7 +88,7 @@ public class TestConnection
         }
         
         @Override
-        public Connection getConnection(String username, String password) throws SQLException
+        public Connection getConnection(final String username, final String password) throws SQLException
         {
             return TestConnection.this.connection;
         }

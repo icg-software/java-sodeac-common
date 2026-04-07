@@ -27,31 +27,31 @@ public interface INodeType<P extends BranchNodeMetaModel, T>
      *
      * @return type of node.
      */
-    public Class<T> getTypeClass();
+    Class<T> getTypeClass();
     
     /**
      * Getter for type of parent node.
      *
      * @return type of parent node
      */
-    public Class<P> getParentNodeClass();
+    Class<P> getParentNodeClass();
     
     /**
      * Getter for name of node type.
      *
      * @return name of node type
      */
-    public String getNodeName();
+    String getNodeName();
     
-    public Field referencedByField();
+    Field referencedByField();
     
-    public boolean isTransient();
+    boolean isTransient();
     
     /**
      *
      * @return default instance of node value
      */
-    public default T getValueDefaultInstance()
+    default T getValueDefaultInstance()
     {
         try
         {

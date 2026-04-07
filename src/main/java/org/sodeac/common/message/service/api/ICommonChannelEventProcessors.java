@@ -17,37 +17,37 @@ import org.sodeac.common.message.service.api.IServiceChannel.IChannelEventProces
 
 public interface ICommonChannelEventProcessors
 {
-    public interface IChannelErrorProcessor extends IChannelEventProcessor
+    interface IChannelErrorProcessor extends IChannelEventProcessor
     {
-        public IChannelEventProcessor onChannelEvent(Consumer<IChannelError> consumer);
+        IChannelEventProcessor onChannelEvent(Consumer<IChannelError> consumer);
     }
     
-    public interface IChannelError extends IChannelEvent
+    interface IChannelError extends IChannelEvent
     {
-        public enum ErrorType
+        enum ErrorType
         {ON_TRANSPORT, ON_SUPPLY, ON_CONSUME, ON_TIMEOUT}
         
-        public Throwable getThrowable();
+        Throwable getThrowable();
         
-        public ErrorType getType();
+        ErrorType getType();
         
-        public IServiceChannel<?> getChannel();
+        IServiceChannel<?> getChannel();
     }
     
-    public interface IChannelCloseProcessor extends IChannelEventProcessor
+    interface IChannelCloseProcessor extends IChannelEventProcessor
     {
-        public <T> IChannelEventProcessor onChannelEvent(Consumer<IChannelClose> consumer);
+        <T> IChannelEventProcessor onChannelEvent(Consumer<IChannelClose> consumer);
     }
     
-    public interface IChannelClose extends IChannelEvent
+    interface IChannelClose extends IChannelEvent
     {
-        public enum Actor
+        enum Actor
         {SUPPLIER, CONSUMNER}
         
-        public int getCountSupplier();
+        int getCountSupplier();
         
-        public int getCountConsumer();
+        int getCountConsumer();
         
-        public IServiceChannel<?> getChannel();
+        IServiceChannel<?> getChannel();
     }
 }

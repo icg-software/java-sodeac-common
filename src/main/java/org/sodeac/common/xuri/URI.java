@@ -41,7 +41,7 @@ public class URI implements Serializable
      *
      * @param uriString complete URI string
      */
-    public URI(String uriString)
+    public URI(final String uriString)
     {
         super();
         this.uriString = uriString;
@@ -55,7 +55,7 @@ public class URI implements Serializable
      */
     public String getURIString()
     {
-        return uriString;
+        return this.uriString;
     }
     
     @Override
@@ -81,7 +81,7 @@ public class URI implements Serializable
      */
     public AuthorityComponent getAuthority()
     {
-        return authority;
+        return this.authority;
     }
     
     /**
@@ -91,7 +91,7 @@ public class URI implements Serializable
      */
     public QueryComponent getQuery()
     {
-        return query;
+        return this.query;
     }
     
     /**
@@ -101,7 +101,7 @@ public class URI implements Serializable
      */
     public PathComponent getPath()
     {
-        return path;
+        return this.path;
     }
     
     /**

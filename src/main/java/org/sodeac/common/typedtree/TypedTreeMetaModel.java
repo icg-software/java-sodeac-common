@@ -42,7 +42,7 @@ public class TypedTreeMetaModel<T extends TypedTreeMetaModel> extends BranchNode
      *
      * @return model instance
      */
-    public static <M extends TypedTreeMetaModel> M getInstance(Class<M> modelClass)
+    public static <M extends TypedTreeMetaModel> M getInstance(final Class<M> modelClass)
     {
         return ModelRegistry.DEFAULT_INSTANCE.getCachedTypedTreeMetaModel(modelClass);
     }
@@ -61,12 +61,12 @@ public class TypedTreeMetaModel<T extends TypedTreeMetaModel> extends BranchNode
      *
      * @return new root node instance
      */
-    public <F extends BranchNodeMetaModel> RootBranchNode<T, F> createRootNode(BranchNodeType<T, F> type)
+    public <F extends BranchNodeMetaModel> RootBranchNode<T, F> createRootNode(final BranchNodeType<T, F> type)
     {
         return new RootBranchNode(type, getClass());
     }
     
-    public <F extends BranchNodeMetaModel> RootBranchNode<T, F> createRootNode(Class<F> clazz)
+    public <F extends BranchNodeMetaModel> RootBranchNode<T, F> createRootNode(final Class<F> clazz)
     {
         TypedTreeModel typedTreeModel = clazz.getAnnotation(TypedTreeModel.class);
         Objects.toString(typedTreeModel, "@TypedTreeModel not defined for " + clazz);
@@ -92,7 +92,7 @@ public class TypedTreeMetaModel<T extends TypedTreeMetaModel> extends BranchNode
         return new RootBranchNode(defaultModelInstance.anonymous, getClass());
     }
     
-    public <F extends BranchNodeMetaModel> Class<RootBranchNode<T, F>> getRootBranchNodeClass(BranchNodeType<T, F> branchNodeType)
+    public <F extends BranchNodeMetaModel> Class<RootBranchNode<T, F>> getRootBranchNodeClass(final BranchNodeType<T, F> branchNodeType)
     {
         return (Class) RootBranchNode.class;
     }
@@ -126,7 +126,7 @@ public class TypedTreeMetaModel<T extends TypedTreeMetaModel> extends BranchNode
          *
          * @param type static type instance defined in model
          */
-        protected RootBranchNode(BranchNodeType<P, R> type, Class<? extends TypedTreeMetaModel<?>> modelClass)
+        protected RootBranchNode(final BranchNodeType<P, R> type, final Class<? extends TypedTreeMetaModel<?>> modelClass)
         {
             super(null, null, new NodeContainer(type, -1));
             
@@ -146,14 +146,15 @@ public class TypedTreeMetaModel<T extends TypedTreeMetaModel> extends BranchNode
         
         protected ReadLock getReadLock()
         {
-            return readLock;
+            return this.readLock;
         }
         
         protected WriteLock getWriteLock()
         {
-            return writeLock;
+            return this.writeLock;
         }
         
+        @Override
         protected void setHasChilds()
         {
             this.childs = true;
@@ -161,17 +162,17 @@ public class TypedTreeMetaModel<T extends TypedTreeMetaModel> extends BranchNode
         
         protected boolean hasChilds()
         {
-            return childs;
+            return this.childs;
         }
         
         @Override
         public boolean isDisableAllListener()
         {
-            return disableAllListener;
+            return this.disableAllListener;
         }
         
         @Override
-        public RootBranchNode<P, R> setDisableAllListener(boolean disableAllListener)
+        public RootBranchNode<P, R> setDisableAllListener(final boolean disableAllListener)
         {
             this.disableAllListener = disableAllListener;
             return this;
@@ -196,11 +197,11 @@ public class TypedTreeMetaModel<T extends TypedTreeMetaModel> extends BranchNode
         @Override
         public boolean isSynchronized()
         {
-            return nodeSynchronized;
+            return this.nodeSynchronized;
         }
         
         @Override
-        public RootBranchNode<P, R> setSynchronized(boolean nodeSynchronized)
+        public RootBranchNode<P, R> setSynchronized(final boolean nodeSynchronized)
         {
             this.nodeSynchronized = nodeSynchronized;
             return this;
@@ -209,7 +210,7 @@ public class TypedTreeMetaModel<T extends TypedTreeMetaModel> extends BranchNode
         @Override
         public boolean isImmutable()
         {
-            return immutable;
+            return this.immutable;
         }
         
         @Override
@@ -222,11 +223,11 @@ public class TypedTreeMetaModel<T extends TypedTreeMetaModel> extends BranchNode
         @Override
         public boolean isBranchNodeGetterAutoCreate()
         {
-            return branchNodeGetterAutoCreate;
+            return this.branchNodeGetterAutoCreate;
         }
         
         @Override
-        public RootBranchNode<P, R> setBranchNodeGetterAutoCreate(boolean branchNodeGetterAutoCreate)
+        public RootBranchNode<P, R> setBranchNodeGetterAutoCreate(final boolean branchNodeGetterAutoCreate)
         {
             this.branchNodeGetterAutoCreate = branchNodeGetterAutoCreate;
             return this;
@@ -235,11 +236,11 @@ public class TypedTreeMetaModel<T extends TypedTreeMetaModel> extends BranchNode
         @Override
         public boolean isBranchNodeApplyToConsumerAutoCreate()
         {
-            return branchNodeConsumeAutoCreate;
+            return this.branchNodeConsumeAutoCreate;
         }
         
         @Override
-        public RootBranchNode<P, R> setBranchNodeApplyToConsumerAutoCreate(boolean branchNodeConsumeAutoCreate)
+        public RootBranchNode<P, R> setBranchNodeApplyToConsumerAutoCreate(final boolean branchNodeConsumeAutoCreate)
         {
             this.branchNodeConsumeAutoCreate = branchNodeConsumeAutoCreate;
             return this;
@@ -256,7 +257,7 @@ public class TypedTreeMetaModel<T extends TypedTreeMetaModel> extends BranchNode
         }
         
         @Override
-        public RootBranchNode<P, R> addTreeModifyListener(ITreeModifyListener modifyListener)
+        public RootBranchNode<P, R> addTreeModifyListener(final ITreeModifyListener modifyListener)
         {
             if (modifyListener == null)
             {
@@ -271,7 +272,7 @@ public class TypedTreeMetaModel<T extends TypedTreeMetaModel> extends BranchNode
         }
         
         @Override
-        public RootBranchNode<P, R> addTreeModifyListeners(ITreeModifyListener... modifyListeners)
+        public RootBranchNode<P, R> addTreeModifyListeners(final ITreeModifyListener... modifyListeners)
         {
             if (modifyListeners == null)
             {
@@ -286,7 +287,7 @@ public class TypedTreeMetaModel<T extends TypedTreeMetaModel> extends BranchNode
                 this.modifyListeners = new CopyOnWriteArrayList<ITreeModifyListener>();
             }
             boolean hasNullItem = false;
-            for (ITreeModifyListener modifyListener : modifyListeners)
+            for (final ITreeModifyListener modifyListener : modifyListeners)
             {
                 if (modifyListener == null)
                 {
@@ -297,7 +298,7 @@ public class TypedTreeMetaModel<T extends TypedTreeMetaModel> extends BranchNode
             if (hasNullItem)
             {
                 List<ITreeModifyListener> modifyListenerList = new ArrayList<ITreeModifyListener>();
-                for (ITreeModifyListener modifyListener : modifyListeners)
+                for (final ITreeModifyListener modifyListener : modifyListeners)
                 {
                     if (modifyListener != null)
                     {
@@ -318,7 +319,7 @@ public class TypedTreeMetaModel<T extends TypedTreeMetaModel> extends BranchNode
         }
         
         @Override
-        public RootBranchNode<P, R> removeTreeModifyListener(ITreeModifyListener modifyListener)
+        public RootBranchNode<P, R> removeTreeModifyListener(final ITreeModifyListener modifyListener)
         {
             if (modifyListener == null)
             {
@@ -333,7 +334,7 @@ public class TypedTreeMetaModel<T extends TypedTreeMetaModel> extends BranchNode
             return this;
         }
         
-        protected <C extends INodeType<?, ?>, T> boolean notifyBeforeModify(BranchNode<?, ?> parentNode, NodeContainer nodeContainer, T oldValue, T newValue)
+        protected <C extends INodeType<?, ?>, T> boolean notifyBeforeModify(final BranchNode<?, ?> parentNode, final NodeContainer nodeContainer, final T oldValue, final T newValue)
         {
             if (this.disableAllListener)
             {
@@ -341,9 +342,9 @@ public class TypedTreeMetaModel<T extends TypedTreeMetaModel> extends BranchNode
             }
             ConplierBean<Boolean> doit = null;
             
-            if ((modifyListeners != null) && (!modifyListeners.isEmpty()))
+            if ((this.modifyListeners != null) && (!this.modifyListeners.isEmpty()))
             {
-                for (ITreeModifyListener modifyListener : this.modifyListeners)
+                for (final ITreeModifyListener modifyListener : this.modifyListeners)
                 {
                     if (doit == null)
                     {
@@ -365,15 +366,15 @@ public class TypedTreeMetaModel<T extends TypedTreeMetaModel> extends BranchNode
             return true;
         }
         
-        protected <C extends INodeType<?, ?>, T> void notifyAfterModify(BranchNode<?, ?> parentNode, NodeContainer nodeContainer, T oldValue, T newValue)
+        protected <C extends INodeType<?, ?>, T> void notifyAfterModify(final BranchNode<?, ?> parentNode, final NodeContainer nodeContainer, final T oldValue, final T newValue)
         {
             if (this.disableAllListener)
             {
                 return;
             }
-            if ((modifyListeners != null) && (!modifyListeners.isEmpty()))
+            if ((this.modifyListeners != null) && (!this.modifyListeners.isEmpty()))
             {
-                for (ITreeModifyListener modifyListener : this.modifyListeners)
+                for (final ITreeModifyListener modifyListener : this.modifyListeners)
                 {
                     modifyListener.afterModify(parentNode, nodeContainer.getNodeType(), oldValue, newValue);
                 }
@@ -382,14 +383,14 @@ public class TypedTreeMetaModel<T extends TypedTreeMetaModel> extends BranchNode
             {
                 if (nodeContainer.getNodeType() instanceof LeafNodeType)
                 {
-                    for (IChildNodeListener listener : nodeContainer.getNodeListenerList())
+                    for (final IChildNodeListener listener : nodeContainer.getNodeListenerList())
                     {
                         listener.accept(nodeContainer.getNode(), oldValue);
                     }
                 }
-                else
+                else // FIXME: remove this wrong else statement?
                 {
-                    for (IChildNodeListener listener : nodeContainer.getNodeListenerList())
+                    for (final IChildNodeListener listener : nodeContainer.getNodeListenerList())
                     {
                         listener.accept(newValue, oldValue);
                     }

@@ -26,5 +26,5 @@ public interface IOnChannelAttach<T> extends IDispatcherChannelManager
      *
      * @param channel is attached with {@link IDispatcherChannelManager}
      */
-    public void onChannelAttach(IDispatcherChannel<T> channel);
+    void onChannelAttach(IDispatcherChannel<T> channel);
 }

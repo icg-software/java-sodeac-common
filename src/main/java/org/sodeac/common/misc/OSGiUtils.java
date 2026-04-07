@@ -48,15 +48,15 @@ public class OSGiUtils
                 return true;
             }
         }
-        catch (Error e) { }
-        catch (Exception e) { }
+        catch (final Error e) { }
+        catch (final Exception e) { }
         
         OSGiUtils.TESTER_CONFIGURATION.isOSGI = false;
         
         return false;
     }
     
-    public static String getSymbolicName(Class<?> clazz)
+    public static String getSymbolicName(final Class<?> clazz)
     {
         if (!isOSGi())
         {
@@ -66,7 +66,7 @@ public class OSGiUtils
         return InternalUtils.getSymbolicName(clazz);
     }
     
-    public static String getVersion(Class<?> clazz)
+    public static String getVersion(final Class<?> clazz)
     {
         if (!isOSGi())
         {
@@ -76,7 +76,7 @@ public class OSGiUtils
         return InternalUtils.getVersion(clazz);
     }
     
-    public static String loadPackageFileAsString(String fileName, Class<?> packageClass) throws IOException
+    public static String loadPackageFileAsString(final String fileName, final Class<?> packageClass) throws IOException
     {
         if (!isOSGi())
         {
@@ -86,7 +86,7 @@ public class OSGiUtils
         return InternalUtils.loadPackageFileAsString(fileName, packageClass);
     }
     
-    public static InputStream loadPackageInputStream(String fileName, Class<?> packageClass) throws IOException
+    public static InputStream loadPackageInputStream(final String fileName, final Class<?> packageClass) throws IOException
     {
         if (!isOSGi())
         {
@@ -96,7 +96,7 @@ public class OSGiUtils
         return InternalUtils.loadPackageInputStream(fileName, packageClass);
     }
     
-    public static Class loadClass(String canonicalName, String bundleSymbolicName, String bundleVersion)
+    public static Class loadClass(final String canonicalName, final String bundleSymbolicName, final String bundleVersion)
     {
         if (!isOSGi())
         {
@@ -123,7 +123,7 @@ public class OSGiUtils
             return bundle.getState() == org.osgi.framework.Bundle.ACTIVE;
         }
         
-        private static String getSymbolicName(Class<?> clazz)
+        private static String getSymbolicName(final Class<?> clazz)
         {
             org.osgi.framework.Bundle bundle = org.osgi.framework.FrameworkUtil.getBundle(clazz);
             if (bundle == null)
@@ -133,7 +133,7 @@ public class OSGiUtils
             return bundle.getSymbolicName();
         }
         
-        private static String getVersion(Class<?> clazz)
+        private static String getVersion(final Class<?> clazz)
         {
             org.osgi.framework.Bundle bundle = org.osgi.framework.FrameworkUtil.getBundle(clazz);
             if (bundle == null)
@@ -148,7 +148,7 @@ public class OSGiUtils
             return bundle.getVersion().toString();
         }
         
-        private static Class loadClass(String canonicalName, String bundleSymbolicName, String bundleVersion)
+        private static Class loadClass(final String canonicalName, final String bundleSymbolicName, final String bundleVersion)
         {
             Version version = null;
             try
@@ -158,7 +158,7 @@ public class OSGiUtils
                     version = Version.fromString(bundleVersion);
                 }
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
             
             if ((bundleSymbolicName == null) || bundleSymbolicName.isEmpty())
             {
@@ -166,7 +166,7 @@ public class OSGiUtils
                 {
                     return Class.forName(canonicalName);
                 }
-                catch (ClassNotFoundException e)
+                catch (final ClassNotFoundException e)
                 {
                     throw new RuntimeWrappedException(e);
                 }
@@ -193,16 +193,17 @@ public class OSGiUtils
                         classExists = false;
                         Collection<String> localResources = wiring.listResources("/", "*class", BundleWiring.LISTRESOURCES_RECURSE | BundleWiring.LISTRESOURCES_LOCAL);
                         
-                        for (String resource : localResources)
+                        for (final String resource : localResources)
                         {
                             if (canonicalName.equals(resource.substring(0, resource.length() - ".class".length()).replace('$', '.').replace('/', '.')))
                             {
                                 classExists = true;
+                                break;
                             }
                         }
                     }
                 }
-                catch (Exception e) { }
+                catch (final Exception e) { }
                 
                 if (!classExists)
                 {
@@ -228,7 +229,7 @@ public class OSGiUtils
                 {
                     return bestBundle.loadClass(canonicalName);
                 }
-                catch (ClassNotFoundException e)
+                catch (final ClassNotFoundException e)
                 {
                     throw new RuntimeWrappedException(e);
                 }
@@ -236,7 +237,7 @@ public class OSGiUtils
             return null;
         }
         
-        private static String loadPackageFileAsString(String fileName, Class<?> packageClass) throws IOException
+        private static String loadPackageFileAsString(final String fileName, final Class<?> packageClass) throws IOException
         {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             InputStream inputStream = loadPackageInputStream(fileName, packageClass);
@@ -264,22 +265,22 @@ public class OSGiUtils
                         inputStream = null;
                     }
                 }
-                catch (Exception e) { }
+                catch (final Exception e) { }
                 try
                 {
                     baos.flush();
                 }
-                catch (Exception e) { }
+                catch (final Exception e) { }
                 try
                 {
                     baos.close();
                 }
-                catch (Exception e) { }
+                catch (final Exception e) { }
             }
             return baos.toString();
         }
         
-        private static InputStream loadPackageInputStream(String fileName, Class<?> packageClass) throws IOException
+        private static InputStream loadPackageInputStream(final String fileName, final Class<?> packageClass) throws IOException
         {
             Bundle bundle = FrameworkUtil.getBundle(packageClass);
             if (bundle == null)
@@ -291,7 +292,7 @@ public class OSGiUtils
         }
     }
     
-    public static <T extends IDriver> T getSingleDriver(Class<T> driverClass, Map<String, Object> properties)
+    public static <T extends IDriver> T getSingleDriver(final Class<T> driverClass, final Map<String, Object> properties)
     {
         if (OSGiDriverRegistry.INSTANCE == null)
         {
@@ -300,7 +301,7 @@ public class OSGiUtils
         return OSGiDriverRegistry.INSTANCE.getSingleDriver(driverClass, properties);
     }
     
-    public static <T extends IDriver> List<T> getDriverList(Class<T> driverClass, Map<String, Object> properties)
+    public static <T extends IDriver> List<T> getDriverList(final Class<T> driverClass, final Map<String, Object> properties)
     {
         if (OSGiDriverRegistry.INSTANCE == null)
         {
@@ -310,7 +311,7 @@ public class OSGiUtils
         return OSGiDriverRegistry.INSTANCE.getDriverList(driverClass, properties);
     }
     
-    public static <T extends IDriver> boolean addDriverUpdateListener(Class<T> driverClass, BiConsumer<T, T> updateListener)
+    public static <T extends IDriver> boolean addDriverUpdateListener(final Class<T> driverClass, final BiConsumer<T, T> updateListener)
     {
         if (OSGiDriverRegistry.INSTANCE == null)
         {
@@ -319,7 +320,7 @@ public class OSGiUtils
         return OSGiDriverRegistry.INSTANCE.addDriverUpdateListener(driverClass, updateListener);
     }
     
-    public static <T extends IDriver> boolean removeDriverUpdateListener(Class<T> driverClass, BiConsumer<T, T> updateListener)
+    public static <T extends IDriver> boolean removeDriverUpdateListener(final Class<T> driverClass, final BiConsumer<T, T> updateListener)
     {
         if (OSGiDriverRegistry.INSTANCE == null)
         {

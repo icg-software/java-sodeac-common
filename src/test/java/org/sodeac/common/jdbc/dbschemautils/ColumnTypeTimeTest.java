@@ -54,21 +54,21 @@ import org.sodeac.common.typedtree.BranchNode;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ColumnTypeTimeTest
 {
-    private EasyMockSupport support = new EasyMockSupport();
+    private final EasyMockSupport support = new EasyMockSupport();
     
     public static List<Object[]> connectionList = null;
     public static final Map<String, Boolean> createdSchema = new HashMap<String, Boolean>();
     
-    private String databaseID = "TESTDOMAIN";
-    private String table1Name = "TableColTime";
-    private String columnTimeName = "col_time";
-    private String columnDateName = "col_date";
-    private String columnTimestampName = "col_ts";
+    private final String databaseID = "TESTDOMAIN";
+    private final String table1Name = "TableColTime";
+    private final String columnTimeName = "col_time";
+    private final String columnDateName = "col_date";
+    private final String columnTimestampName = "col_ts";
     
-    private String tableDfltName = "TableColDflt";
-    private String columnDfltTimeName = "col_time";
-    private String columnDfltDateName = "col_date";
-    private String columnDfltTimestampName = "col_ts";
+    private final String tableDfltName = "TableColDflt";
+    private final String columnDfltTimeName = "col_time";
+    private final String columnDfltDateName = "col_date";
+    private final String columnDfltTimestampName = "col_ts";
     
     @Parameters
     public static List<Object[]> connections()
@@ -80,7 +80,7 @@ public class ColumnTypeTimeTest
         return connectionList = Statics.connections(createdSchema, "dbschema");
     }
     
-    public ColumnTypeTimeTest(Callable<TestConnection> connectionFactory)
+    public ColumnTypeTimeTest(final Callable<TestConnection> connectionFactory)
     {
         this.testConnectionFactory = connectionFactory;
     }
@@ -91,7 +91,7 @@ public class ColumnTypeTimeTest
     @Before
     public void setUp() throws Exception
     {
-        this.testConnection = testConnectionFactory.call();
+        this.testConnection = this.testConnectionFactory.call();
     }
     
     @After
@@ -107,35 +107,35 @@ public class ColumnTypeTimeTest
             {
                 this.testConnection.connection.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
     }
     
     @Test
     public void test000600time() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(databaseID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(this.databaseID, this.testConnection.dbmsSchemaName);
         
         // prepare spec for simulation
         Dictionary<ObjectType, Object> schemaDictionary = new Hashtable<>();
         schemaDictionary.put(ObjectType.SCHEMA, schema);
         DBSchemaNodeType.addConsumer(schema, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, table1Name);
+        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, this.table1Name);
         
         // prepare table for simulation
         Dictionary<ObjectType, Object> table1Dictionary = new Hashtable<>();
@@ -143,7 +143,7 @@ public class ColumnTypeTimeTest
         table1Dictionary.put(ObjectType.TABLE, table1);
         TableNodeType.addConsumer(table1, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createTimeColumn(table1, columnTimeName, true);
+        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createTimeColumn(table1, this.columnTimeName, true);
         
         // prepare column for simulation
         
@@ -154,30 +154,30 @@ public class ColumnTypeTimeTest
         
         // simulate listener
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.PRE, connection, databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.PRE, connection, this.databaseID, schemaDictionary, driver, null);
         
         // table creation
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.PRE, connection, databaseID, table1Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.TABLE, PhaseType.PRE, connection, databaseID, table1Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.TABLE, PhaseType.POST, connection, databaseID, table1Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.POST, connection, databaseID, table1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.PRE, connection, this.databaseID, table1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.TABLE, PhaseType.PRE, connection, this.databaseID, table1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.TABLE, PhaseType.POST, connection, this.databaseID, table1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.POST, connection, this.databaseID, table1Dictionary, driver, null);
         
         // table1 column creation
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table1Column1Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table1Column1Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table1Column1Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table1Column1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table1Column1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table1Column1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table1Column1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table1Column1Dictionary, driver, null);
         
         // convert schema
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, databaseID, schemaDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, databaseID, schemaDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, databaseID, schemaDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, this.databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, this.databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, this.databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, this.databaseID, schemaDictionary, driver, null);
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.POST, connection, databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.POST, connection, this.databaseID, schemaDictionary, driver, null);
         
         ctrl.replay();
         
@@ -191,7 +191,7 @@ public class ColumnTypeTimeTest
         {
             connection.setAutoCommit(false);
             
-            prepStat = connection.prepareStatement("select " + columnTimeName + " from " + table1Name);
+            prepStat = connection.prepareStatement("select " + this.columnTimeName + " from " + this.table1Name);
             rset = prepStat.executeQuery();
             assertFalse("rset should contains no more entries", rset.next());
             rset.close();
@@ -199,14 +199,14 @@ public class ColumnTypeTimeTest
             
             Time time = new Time(0, 12, 00);
             
-            prepStat = connection.prepareStatement("insert into " + table1Name + " (" + columnTimeName + ") values (?)");
+            prepStat = connection.prepareStatement("insert into " + this.table1Name + " (" + this.columnTimeName + ") values (?)");
             prepStat.setTime(1, time);
             prepStat.executeUpdate();
             prepStat.close();
             connection.commit();
             
             int count = 0;
-            prepStat = connection.prepareStatement("select " + columnTimeName + " from " + table1Name);
+            prepStat = connection.prepareStatement("select " + this.columnTimeName + " from " + this.table1Name);
             rset = prepStat.executeQuery();
             while (rset.next())
             {
@@ -224,40 +224,40 @@ public class ColumnTypeTimeTest
             {
                 rset.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
             try
             {
                 prepStat.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
     }
     
     @Test
     public void test000601timeAgain() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(databaseID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(this.databaseID, this.testConnection.dbmsSchemaName);
         
         // prepare spec for simulation
         Dictionary<ObjectType, Object> schemaDictionary = new Hashtable<>();
         schemaDictionary.put(ObjectType.SCHEMA, schema);
         DBSchemaNodeType.addConsumer(schema, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, table1Name);
+        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, this.table1Name);
         
         // prepare table for simulation
         Dictionary<ObjectType, Object> table1Dictionary = new Hashtable<>();
@@ -265,7 +265,7 @@ public class ColumnTypeTimeTest
         table1Dictionary.put(ObjectType.TABLE, table1);
         TableNodeType.addConsumer(table1, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createTimeColumn(table1, columnTimeName, true);
+        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createTimeColumn(table1, this.columnTimeName, true);
         
         // prepare column for simulation
         
@@ -276,26 +276,26 @@ public class ColumnTypeTimeTest
         
         // simulate listener
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.PRE, connection, databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.PRE, connection, this.databaseID, schemaDictionary, driver, null);
         
         // table creation
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.PRE, connection, databaseID, table1Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.POST, connection, databaseID, table1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.PRE, connection, this.databaseID, table1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.POST, connection, this.databaseID, table1Dictionary, driver, null);
         
         // table1 column creation
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table1Column1Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table1Column1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table1Column1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table1Column1Dictionary, driver, null);
         
         // convert schema
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, databaseID, schemaDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, databaseID, schemaDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, databaseID, schemaDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, this.databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, this.databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, this.databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, this.databaseID, schemaDictionary, driver, null);
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.POST, connection, databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.POST, connection, this.databaseID, schemaDictionary, driver, null);
         
         ctrl.replay();
         
@@ -310,7 +310,7 @@ public class ColumnTypeTimeTest
             Time time = new Time(0, 12, 00);
             
             int count = 0;
-            prepStat = connection.prepareStatement("select " + columnTimeName + " from " + table1Name);
+            prepStat = connection.prepareStatement("select " + this.columnTimeName + " from " + this.table1Name);
             rset = prepStat.executeQuery();
             while (rset.next())
             {
@@ -328,23 +328,23 @@ public class ColumnTypeTimeTest
             {
                 rset.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
             try
             {
                 prepStat.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
     }
     
     @Test
     public void test000603TimeUpdate() throws SQLException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         
         PreparedStatement prepStat = null;
         ResultSet rset = null;
@@ -354,14 +354,14 @@ public class ColumnTypeTimeTest
             
             connection.setAutoCommit(false);
             
-            prepStat = connection.prepareStatement("update " + table1Name + " set " + columnTimeName + " = ? ");
+            prepStat = connection.prepareStatement("update " + this.table1Name + " set " + this.columnTimeName + " = ? ");
             prepStat.setTime(1, time);
             prepStat.executeUpdate();
             prepStat.close();
             connection.commit();
             
             int count = 0;
-            prepStat = connection.prepareStatement("select " + columnTimeName + " from " + table1Name);
+            prepStat = connection.prepareStatement("select " + this.columnTimeName + " from " + this.table1Name);
             rset = prepStat.executeQuery();
             while (rset.next())
             {
@@ -374,7 +374,7 @@ public class ColumnTypeTimeTest
             assertEquals("rset should contains correct counts of entries", 1, count);
             
         }
-        catch (SQLException e)
+        catch (final SQLException e)
         {
             e.printStackTrace();
         }
@@ -384,40 +384,40 @@ public class ColumnTypeTimeTest
             {
                 rset.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
             try
             {
                 prepStat.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
     }
     
     @Test
     public void test000610date() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(databaseID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(this.databaseID, this.testConnection.dbmsSchemaName);
         
         // prepare spec for simulation
         Dictionary<ObjectType, Object> schemaDictionary = new Hashtable<>();
         schemaDictionary.put(ObjectType.SCHEMA, schema);
         DBSchemaNodeType.addConsumer(schema, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, table1Name);
+        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, this.table1Name);
         
         // prepare table for simulation
         Dictionary<ObjectType, Object> table1Dictionary = new Hashtable<>();
@@ -425,7 +425,7 @@ public class ColumnTypeTimeTest
         table1Dictionary.put(ObjectType.TABLE, table1);
         TableNodeType.addConsumer(table1, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createDateColumn(table1, columnDateName, true);
+        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createDateColumn(table1, this.columnDateName, true);
         
         // prepare column for simulation
         
@@ -436,28 +436,28 @@ public class ColumnTypeTimeTest
         
         // simulate listener
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.PRE, connection, databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.PRE, connection, this.databaseID, schemaDictionary, driver, null);
         
         // table creation
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.PRE, connection, databaseID, table1Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.POST, connection, databaseID, table1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.PRE, connection, this.databaseID, table1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.POST, connection, this.databaseID, table1Dictionary, driver, null);
         
         // table1 column creation
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table1Column1Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table1Column1Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table1Column1Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table1Column1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table1Column1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table1Column1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table1Column1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table1Column1Dictionary, driver, null);
         
         // convert schema
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, databaseID, schemaDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, databaseID, schemaDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, databaseID, schemaDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, this.databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, this.databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, this.databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, this.databaseID, schemaDictionary, driver, null);
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.POST, connection, databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.POST, connection, this.databaseID, schemaDictionary, driver, null);
         
         ctrl.replay();
         
@@ -473,14 +473,14 @@ public class ColumnTypeTimeTest
             
             java.sql.Date date = new java.sql.Date(118, 0, 1);
             
-            prepStat = connection.prepareStatement("update " + table1Name + " set " + columnDateName + " = ?");
+            prepStat = connection.prepareStatement("update " + this.table1Name + " set " + this.columnDateName + " = ?");
             prepStat.setDate(1, date);
             prepStat.executeUpdate();
             prepStat.close();
             connection.commit();
             
             int count = 0;
-            prepStat = connection.prepareStatement("select " + columnDateName + " from " + table1Name);
+            prepStat = connection.prepareStatement("select " + this.columnDateName + " from " + this.table1Name);
             rset = prepStat.executeQuery();
             while (rset.next())
             {
@@ -498,40 +498,40 @@ public class ColumnTypeTimeTest
             {
                 rset.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
             try
             {
                 prepStat.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
     }
     
     @Test
     public void test000611dateAgain() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(databaseID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(this.databaseID, this.testConnection.dbmsSchemaName);
         
         // prepare spec for simulation
         Dictionary<ObjectType, Object> schemaDictionary = new Hashtable<>();
         schemaDictionary.put(ObjectType.SCHEMA, schema);
         DBSchemaNodeType.addConsumer(schema, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, table1Name);
+        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, this.table1Name);
         
         // prepare table for simulation
         Dictionary<ObjectType, Object> table1Dictionary = new Hashtable<>();
@@ -539,7 +539,7 @@ public class ColumnTypeTimeTest
         table1Dictionary.put(ObjectType.TABLE, table1);
         TableNodeType.addConsumer(table1, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createDateColumn(table1, columnDateName, true);
+        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createDateColumn(table1, this.columnDateName, true);
         
         // prepare column for simulation
         
@@ -550,26 +550,26 @@ public class ColumnTypeTimeTest
         
         // simulate listener
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.PRE, connection, databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.PRE, connection, this.databaseID, schemaDictionary, driver, null);
         
         // table creation
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.PRE, connection, databaseID, table1Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.POST, connection, databaseID, table1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.PRE, connection, this.databaseID, table1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.POST, connection, this.databaseID, table1Dictionary, driver, null);
         
         // table1 column creation
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table1Column1Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table1Column1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table1Column1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table1Column1Dictionary, driver, null);
         
         // convert schema
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, databaseID, schemaDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, databaseID, schemaDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, databaseID, schemaDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, this.databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, this.databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, this.databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, this.databaseID, schemaDictionary, driver, null);
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.POST, connection, databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.POST, connection, this.databaseID, schemaDictionary, driver, null);
         
         ctrl.replay();
         
@@ -584,7 +584,7 @@ public class ColumnTypeTimeTest
             java.sql.Date date = new java.sql.Date(118, 0, 1);
             
             int count = 0;
-            prepStat = connection.prepareStatement("select " + columnDateName + " from " + table1Name);
+            prepStat = connection.prepareStatement("select " + this.columnDateName + " from " + this.table1Name);
             rset = prepStat.executeQuery();
             while (rset.next())
             {
@@ -602,23 +602,23 @@ public class ColumnTypeTimeTest
             {
                 rset.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
             try
             {
                 prepStat.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
     }
     
     @Test
     public void test000613DateUpdate() throws SQLException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         
         PreparedStatement prepStat = null;
         ResultSet rset = null;
@@ -628,14 +628,14 @@ public class ColumnTypeTimeTest
             
             connection.setAutoCommit(false);
             
-            prepStat = connection.prepareStatement("update " + table1Name + " set " + columnDateName + " = ? ");
+            prepStat = connection.prepareStatement("update " + this.table1Name + " set " + this.columnDateName + " = ? ");
             prepStat.setDate(1, date);
             prepStat.executeUpdate();
             prepStat.close();
             connection.commit();
             
             int count = 0;
-            prepStat = connection.prepareStatement("select " + columnDateName + " from " + table1Name);
+            prepStat = connection.prepareStatement("select " + this.columnDateName + " from " + this.table1Name);
             rset = prepStat.executeQuery();
             while (rset.next())
             {
@@ -648,7 +648,7 @@ public class ColumnTypeTimeTest
             assertEquals("rset should contains correct counts of entries", 1, count);
             
         }
-        catch (SQLException e)
+        catch (final SQLException e)
         {
             e.printStackTrace();
         }
@@ -658,40 +658,40 @@ public class ColumnTypeTimeTest
             {
                 rset.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
             try
             {
                 prepStat.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
     }
     
     @Test
     public void test000620timestamp() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(databaseID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(this.databaseID, this.testConnection.dbmsSchemaName);
         
         // prepare spec for simulation
         Dictionary<ObjectType, Object> schemaDictionary = new Hashtable<>();
         schemaDictionary.put(ObjectType.SCHEMA, schema);
         DBSchemaNodeType.addConsumer(schema, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, table1Name);
+        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, this.table1Name);
         
         // prepare table for simulation
         Dictionary<ObjectType, Object> table1Dictionary = new Hashtable<>();
@@ -699,7 +699,7 @@ public class ColumnTypeTimeTest
         table1Dictionary.put(ObjectType.TABLE, table1);
         TableNodeType.addConsumer(table1, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createTimestampColumn(table1, columnTimestampName, true);
+        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createTimestampColumn(table1, this.columnTimestampName, true);
         
         // prepare column for simulation
         
@@ -710,28 +710,28 @@ public class ColumnTypeTimeTest
         
         // simulate listener
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.PRE, connection, databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.PRE, connection, this.databaseID, schemaDictionary, driver, null);
         
         // table creation
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.PRE, connection, databaseID, table1Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.POST, connection, databaseID, table1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.PRE, connection, this.databaseID, table1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.POST, connection, this.databaseID, table1Dictionary, driver, null);
         
         // table1 column creation
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table1Column1Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table1Column1Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table1Column1Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table1Column1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table1Column1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table1Column1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table1Column1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table1Column1Dictionary, driver, null);
         
         // convert schema
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, databaseID, schemaDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, databaseID, schemaDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, databaseID, schemaDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, this.databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, this.databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, this.databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, this.databaseID, schemaDictionary, driver, null);
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.POST, connection, databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.POST, connection, this.databaseID, schemaDictionary, driver, null);
         
         ctrl.replay();
         
@@ -747,14 +747,14 @@ public class ColumnTypeTimeTest
             
             java.sql.Timestamp date = new java.sql.Timestamp(118, 0, 1, 12, 0, 0, 0);
             
-            prepStat = connection.prepareStatement("update " + table1Name + " set " + columnTimestampName + " = ?");
+            prepStat = connection.prepareStatement("update " + this.table1Name + " set " + this.columnTimestampName + " = ?");
             prepStat.setTimestamp(1, date);
             prepStat.executeUpdate();
             prepStat.close();
             connection.commit();
             
             int count = 0;
-            prepStat = connection.prepareStatement("select " + columnTimestampName + " from " + table1Name);
+            prepStat = connection.prepareStatement("select " + this.columnTimestampName + " from " + this.table1Name);
             rset = prepStat.executeQuery();
             while (rset.next())
             {
@@ -772,40 +772,40 @@ public class ColumnTypeTimeTest
             {
                 rset.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
             try
             {
                 prepStat.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
     }
     
     @Test
     public void test000621TimestampAgain() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(databaseID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(this.databaseID, this.testConnection.dbmsSchemaName);
         
         // prepare spec for simulation
         Dictionary<ObjectType, Object> schemaDictionary = new Hashtable<>();
         schemaDictionary.put(ObjectType.SCHEMA, schema);
         DBSchemaNodeType.addConsumer(schema, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, table1Name);
+        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, this.table1Name);
         
         // prepare table for simulation
         Dictionary<ObjectType, Object> table1Dictionary = new Hashtable<>();
@@ -813,7 +813,7 @@ public class ColumnTypeTimeTest
         table1Dictionary.put(ObjectType.TABLE, table1);
         TableNodeType.addConsumer(table1, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createTimestampColumn(table1, columnTimestampName, true);
+        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createTimestampColumn(table1, this.columnTimestampName, true);
         
         // prepare column for simulation
         
@@ -824,26 +824,26 @@ public class ColumnTypeTimeTest
         
         // simulate listener
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.PRE, connection, databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.PRE, connection, this.databaseID, schemaDictionary, driver, null);
         
         // table creation
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.PRE, connection, databaseID, table1Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.POST, connection, databaseID, table1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.PRE, connection, this.databaseID, table1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.POST, connection, this.databaseID, table1Dictionary, driver, null);
         
         // table1 column creation
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table1Column1Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table1Column1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table1Column1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table1Column1Dictionary, driver, null);
         
         // convert schema
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, databaseID, schemaDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, databaseID, schemaDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, databaseID, schemaDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, this.databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, this.databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, this.databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, this.databaseID, schemaDictionary, driver, null);
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.POST, connection, databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.POST, connection, this.databaseID, schemaDictionary, driver, null);
         
         ctrl.replay();
         
@@ -858,7 +858,7 @@ public class ColumnTypeTimeTest
             java.sql.Timestamp date = new java.sql.Timestamp(118, 0, 1, 12, 0, 0, 0);
             
             int count = 0;
-            prepStat = connection.prepareStatement("select " + columnTimestampName + " from " + table1Name);
+            prepStat = connection.prepareStatement("select " + this.columnTimestampName + " from " + this.table1Name);
             rset = prepStat.executeQuery();
             while (rset.next())
             {
@@ -876,23 +876,23 @@ public class ColumnTypeTimeTest
             {
                 rset.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
             try
             {
                 prepStat.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
     }
     
     @Test
     public void test000623TimestampUpdate() throws SQLException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         
         PreparedStatement prepStat = null;
         ResultSet rset = null;
@@ -902,14 +902,14 @@ public class ColumnTypeTimeTest
             
             connection.setAutoCommit(false);
             
-            prepStat = connection.prepareStatement("update " + table1Name + " set " + columnTimestampName + " = ? ");
+            prepStat = connection.prepareStatement("update " + this.table1Name + " set " + this.columnTimestampName + " = ? ");
             prepStat.setTimestamp(1, date);
             prepStat.executeUpdate();
             prepStat.close();
             connection.commit();
             
             int count = 0;
-            prepStat = connection.prepareStatement("select " + columnTimestampName + " from " + table1Name);
+            prepStat = connection.prepareStatement("select " + this.columnTimestampName + " from " + this.table1Name);
             rset = prepStat.executeQuery();
             while (rset.next())
             {
@@ -922,7 +922,7 @@ public class ColumnTypeTimeTest
             assertEquals("rset should contains correct counts of entries", 1, count);
             
         }
-        catch (SQLException e)
+        catch (final SQLException e)
         {
             e.printStackTrace();
         }
@@ -932,32 +932,32 @@ public class ColumnTypeTimeTest
             {
                 rset.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
             try
             {
                 prepStat.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
     }
     
     @Test
     public void test000630timedefaults() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(databaseID, testConnection.dbmsSchemaName);
-        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, tableDfltName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(this.databaseID, this.testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, this.tableDfltName);
         
         TableNodeType.createCharColumn(table1, "id", false, 36);
-        TableNodeType.createTimeColumnDefaultCurrent(table1, columnDfltTimeName);
-        TableNodeType.createDateColumnDefaultCurrent(table1, columnDfltDateName);
-        TableNodeType.createTimestampColumnDefaultCurrent(table1, columnDfltTimestampName);
+        TableNodeType.createTimeColumnDefaultCurrent(table1, this.columnDfltTimeName);
+        TableNodeType.createDateColumnDefaultCurrent(table1, this.columnDfltDateName);
+        TableNodeType.createTimestampColumnDefaultCurrent(table1, this.columnDfltTimestampName);
         
         dbSchemaUtils.adaptSchema(schema);
         
@@ -967,7 +967,7 @@ public class ColumnTypeTimeTest
         {
             connection.setAutoCommit(false);
             
-            prepStat = connection.prepareStatement("insert into " + tableDfltName + " (id) values (?)");
+            prepStat = connection.prepareStatement("insert into " + this.tableDfltName + " (id) values (?)");
             prepStat.setString(1, UUID.randomUUID().toString());
             prepStat.executeUpdate();
             prepStat.close();
@@ -980,12 +980,12 @@ public class ColumnTypeTimeTest
             {
                 rset.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
             try
             {
                 prepStat.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
     }
 }

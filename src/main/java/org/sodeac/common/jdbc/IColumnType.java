@@ -27,7 +27,7 @@ import org.sodeac.common.typedtree.BranchNode;
  */
 public interface IColumnType extends IDriver
 {
-    public static enum ColumnType
+    enum ColumnType
     {CHAR, VARCHAR, CLOB, UUID, BOOLEAN, SMALLINT, INTEGER, BIGINT, REAL, DOUBLE, TIMESTAMP, DATE, TIME, BINARY, BLOB}
     
     /**
@@ -44,7 +44,7 @@ public interface IColumnType extends IDriver
      *
      * @throws SQLException
      */
-    public String getTypeExpression
+    String getTypeExpression
     (
         Connection connection,
         BranchNode<?, DBSchemaNodeType> schema,
@@ -68,7 +68,7 @@ public interface IColumnType extends IDriver
      *
      * @throws SQLException
      */
-    public String getDefaultValueExpression
+    String getDefaultValueExpression
     (
         Connection connection,
         BranchNode<?, DBSchemaNodeType> schema,

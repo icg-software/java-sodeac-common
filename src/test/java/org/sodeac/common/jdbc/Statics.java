@@ -25,7 +25,7 @@ public class Statics
     
     // TODO mvn -DmyVariable=someValue for DB Config
     
-    public static List<Object[]> connections(Map<String, Boolean> createdSchema, String dbName)
+    public static List<Object[]> connections(final Map<String, Boolean> createdSchema, final String dbName)
     {
         final String schemaName = "S_" + TestTools.getSchemaName();
         return Arrays.asList
@@ -48,7 +48,7 @@ public class Statics
                                              {
                                                  Class.forName("org.h2.Driver").newInstance();
                                              }
-                                             catch (Exception e) { }
+                                             catch (final Exception e) { }
                                              testConnection.connection = DriverManager.getConnection("jdbc:h2:./target/" + dbName, "sa", "sa");
                                              
                                              if (createdSchema.get("H2_" + schemaName) == null)
@@ -100,7 +100,7 @@ public class Statics
                                              {
                                                  Class.forName("org.postgresql.Driver").newInstance();
                                              }
-                                             catch (Exception e) { }
+                                             catch (final Exception e) { }
                                              testConnection.connection = DriverManager.getConnection("jdbc:postgresql://192.168.178.19:5432/sodeac", "sodeac", "sodeac");
                                              
                                              if (createdSchema.get("POSTGRES_" + schemaName) == null)

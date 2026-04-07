@@ -12,32 +12,32 @@ package org.sodeac.common.snapdeque;
 
 public class CapacityExceededException extends IllegalStateException
 {
-    private long capacity;
+    private final long capacity;
     
     /**
      *
      */
     private static final long serialVersionUID = -4229386960263853604L;
     
-    public CapacityExceededException(long capacity)
+    public CapacityExceededException(final long capacity)
     {
         super();
         this.capacity = capacity;
     }
     
-    public CapacityExceededException(long capacity, String message, Throwable cause)
+    public CapacityExceededException(final long capacity, final String message, final Throwable cause)
     {
         super(message, cause);
         this.capacity = capacity;
     }
     
-    public CapacityExceededException(long capacity, String s)
+    public CapacityExceededException(final long capacity, final String s)
     {
         super(s);
         this.capacity = capacity;
     }
     
-    public CapacityExceededException(long capacity, Throwable cause)
+    public CapacityExceededException(final long capacity, final Throwable cause)
     {
         super(cause);
         this.capacity = capacity;
@@ -45,6 +45,6 @@ public class CapacityExceededException extends IllegalStateException
     
     public long getCapacity()
     {
-        return capacity;
+        return this.capacity;
     }
 }

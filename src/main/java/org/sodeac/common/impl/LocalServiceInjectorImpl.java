@@ -6,7 +6,7 @@ public class LocalServiceInjectorImpl implements IInjector
 {
     
     @Override
-    public void injectMembers(Object instance)
+    public void injectMembers(final Object instance)
     {
         // TODO Auto-generated method stub
         

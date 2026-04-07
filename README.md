@@ -18,13 +18,13 @@ karaf
 
 # Prerequisites
 install -s mvn:org.osgi/org.osgi.service.component/1.5.1
-feature:install scr
+feature:install scr log
 
 install -s mvn:org.osgi/org.osgi.service.component.annotations/1.5.1
 
 # --- project bundle
 install -s mvn:org.sodeac/org.sodeac.common/2.0.0-SNAPSHOT
 
-# Debug: SNAPSHOT + 'karaf debug' (not 'karaf')
-# bundle:watch org.sodeac.common 
+# Enable auto-repackage for SNAPSHOT bundles.
+#bundle:watch org.sodeac.common
 ```

@@ -36,14 +36,14 @@ public interface IDispatcherChannel<T>
      *
      * @return id of channel
      */
-    public String getId();
+    String getId();
     
     /**
      * getter for scope name
      *
      * @return human readable name of this channel (or null if not defined)
      */
-    public String getChannelName();
+    String getChannelName();
     
     /**
      * send a message with default header
@@ -52,7 +52,7 @@ public interface IDispatcherChannel<T>
      *
      * @throws CapacityExceededException is thrown if message channel exceeds max allowed message size
      */
-    public default void sendMessage(T messagePayload) throws CapacityExceededException
+    default void sendMessage(final T messagePayload) throws CapacityExceededException
     {
         this.sendMessage(messagePayload, null);
     }
@@ -65,14 +65,14 @@ public interface IDispatcherChannel<T>
      *
      * @throws CapacityExceededException is thrown if message channel exceeds max allowed message size
      */
-    public void sendMessage(T messagePayload, MessageHeader messageHeader) throws CapacityExceededException;
+    void sendMessage(T messagePayload, MessageHeader messageHeader) throws CapacityExceededException;
     
     /**
      * send messages
      *
      * @param messagePayloadCollection payload collection of messages to store in channel
      */
-    public default void sendMessages(Collection<T> messagePayloadCollection)
+    default void sendMessages(final Collection<T> messagePayloadCollection)
     {
         sendMessages(messagePayloadCollection, null);
     }
@@ -83,7 +83,7 @@ public interface IDispatcherChannel<T>
      * @param messagePayloadCollection payload collection of messages to store in channel
      * @param messageHeaderTemplate    template of message header properties
      */
-    public void sendMessages(Collection<T> messagePayloadCollection, MessageHeader messageHeaderTemplate);
+    void sendMessages(Collection<T> messagePayloadCollection, MessageHeader messageHeaderTemplate);
     
     /**
      * store a message with result
@@ -94,7 +94,7 @@ public interface IDispatcherChannel<T>
      *
      * @throws CapacityExceededException
      */
-    public default Future<IOnMessageStoreResult> sendMessageWithResult(T messagePayload) throws CapacityExceededException
+    default Future<IOnMessageStoreResult> sendMessageWithResult(final T messagePayload) throws CapacityExceededException
     {
         return this.sendMessageWithResult(messagePayload, null);
     }
@@ -109,28 +109,28 @@ public interface IDispatcherChannel<T>
      *
      * @throws CapacityExceededException
      */
-    public Future<IOnMessageStoreResult> sendMessageWithResult(T messagePayload, MessageHeader messageHeader) throws CapacityExceededException;
+    Future<IOnMessageStoreResult> sendMessageWithResult(T messagePayload, MessageHeader messageHeader) throws CapacityExceededException;
     
     /**
      * getter for configuration propertyblock of queue
      *
      * @return {@link IPropertyBlock} of queue for configuration details
      */
-    public IPropertyBlock getConfigurationPropertyBlock();
+    IPropertyBlock getConfigurationPropertyBlock();
     
     /**
      * getter for state propertyblock of queue
      *
      * @return {@link IPropertyBlock} of queue  for work state
      */
-    public IPropertyBlock getStatePropertyBlock();
+    IPropertyBlock getStatePropertyBlock();
     
     /**
      * getter for global dispatchter service
      *
      * @return {@link IMessageDispatcher}
      */
-    public IMessageDispatcher getDispatcher();
+    IMessageDispatcher getDispatcher();
     
     /**
      * returns {@link IMessage} queued  with {@code uuid}
@@ -139,7 +139,7 @@ public interface IDispatcherChannel<T>
      *
      * @return IQueuedEvent queued with {@code uuid} or null if not present
      */
-    public IMessage<T> getMessage(UUID uuid);
+    IMessage<T> getMessage(UUID uuid);
     
     /**
      * remove {@link IMessage} queued  with {@code uuid}
@@ -148,21 +148,21 @@ public interface IDispatcherChannel<T>
      *
      * @return true if {@link IMessage} was found and remove, otherwise false
      */
-    public boolean removeMessage(UUID uuid);
+    boolean removeMessage(UUID uuid);
     
     /**
      * return message snapshot
      *
      * @return snapshot for chain
      */
-    public DequeSnapshot<IMessage<T>> getMessageSnapshot();
+    DequeSnapshot<IMessage<T>> getMessageSnapshot();
     
     /**
      * return message snapshot-poll (remove returned elements from channel)
      *
      * @return snapshot for chain
      */
-    public DequeSnapshot<IMessage<T>> getMessageSnapshotPoll();
+    DequeSnapshot<IMessage<T>> getMessageSnapshotPoll();
     
     /**
      * register an adapter for purpose of channel configuration
@@ -172,7 +172,7 @@ public interface IDispatcherChannel<T>
      *
      * @throws PropertyIsLockedException
      */
-    public default <A> void setConfigurationAdapter(Class<A> adapterClass, A adapter) throws PropertyIsLockedException
+    default <A> void setConfigurationAdapter(final Class<A> adapterClass, final A adapter) throws PropertyIsLockedException
     {
         getConfigurationPropertyBlock().setAdapter(adapterClass, adapter);
     }
@@ -184,7 +184,7 @@ public interface IDispatcherChannel<T>
      *
      * @return registered adapter with specified adapterClass
      */
-    public default <A> A getConfigurationAdapter(Class<A> adapterClass)
+    default <A> A getConfigurationAdapter(final Class<A> adapterClass)
     {
         return getConfigurationPropertyBlock().getAdapter(adapterClass);
     }
@@ -197,7 +197,7 @@ public interface IDispatcherChannel<T>
      *
      * @return registered adapter with specified adapterClass
      */
-    public default <A> A getConfigurationAdapter(Class<A> adapterClass, Supplier<A> adapterFactoryIfNotExists)
+    default <A> A getConfigurationAdapter(final Class<A> adapterClass, final Supplier<A> adapterFactoryIfNotExists)
     {
         return getConfigurationPropertyBlock().getAdapter(adapterClass, adapterFactoryIfNotExists);
     }
@@ -209,7 +209,7 @@ public interface IDispatcherChannel<T>
      *
      * @throws PropertyIsLockedException
      */
-    public default <A> void removeConfigruationAdapter(Class<A> adapterClass) throws PropertyIsLockedException
+    default <A> void removeConfigruationAdapter(final Class<A> adapterClass) throws PropertyIsLockedException
     {
         getConfigurationPropertyBlock().removeAdapter(adapterClass);
     }
@@ -222,7 +222,7 @@ public interface IDispatcherChannel<T>
      *
      * @throws PropertyIsLockedException
      */
-    public default <A> void setStateAdapter(Class<A> adapterClass, A adapter) throws PropertyIsLockedException
+    default <A> void setStateAdapter(final Class<A> adapterClass, final A adapter) throws PropertyIsLockedException
     {
         getStatePropertyBlock().setAdapter(adapterClass, adapter);
     }
@@ -234,7 +234,7 @@ public interface IDispatcherChannel<T>
      *
      * @return registered adapter with specified adapterClass
      */
-    public default <A> A getStateAdapter(Class<A> adapterClass)
+    default <A> A getStateAdapter(final Class<A> adapterClass)
     {
         return getStatePropertyBlock().getAdapter(adapterClass);
     }
@@ -247,7 +247,7 @@ public interface IDispatcherChannel<T>
      *
      * @return registered adapter with specified adapterClass
      */
-    public default <A> A getStateAdapter(Class<A> adapterClass, Supplier<A> adapterFactoryIfNotExists)
+    default <A> A getStateAdapter(final Class<A> adapterClass, final Supplier<A> adapterFactoryIfNotExists)
     {
         return getStatePropertyBlock().getAdapter(adapterClass, adapterFactoryIfNotExists);
     }
@@ -259,7 +259,7 @@ public interface IDispatcherChannel<T>
      *
      * @throws PropertyIsLockedException
      */
-    public default <A> void removeStateAdapter(Class<A> adapterClass) throws PropertyIsLockedException
+    default <A> void removeStateAdapter(final Class<A> adapterClass) throws PropertyIsLockedException
     {
         getStatePropertyBlock().removeAdapter(adapterClass);
     }
@@ -271,7 +271,7 @@ public interface IDispatcherChannel<T>
      *
      * @return true if one of {@link IMessage} was found and remove, otherwise false
      */
-    public boolean removeMessageList(List<UUID> uuidList);
+    boolean removeMessageList(List<UUID> uuidList);
     
     // TODO getTaskList/Index by Predicate
     
@@ -284,7 +284,7 @@ public interface IDispatcherChannel<T>
      *
      * @return generated taskid
      */
-    public String scheduleTask(IDispatcherChannelTask task);
+    String scheduleTask(IDispatcherChannelTask task);
     
     /**
      * schedule a {@link IDispatcherChannelTask} to {@link IDispatcherChannel}.
@@ -294,7 +294,7 @@ public interface IDispatcherChannel<T>
      *
      * @return taskid (generated, if parameter id is null)
      */
-    public String scheduleTask(String id, IDispatcherChannelTask task);
+    String scheduleTask(String id, IDispatcherChannelTask task);
     
     /**
      * schedule a {@link IDispatcherChannelTask} to {@link IDispatcherChannel}.
@@ -308,7 +308,7 @@ public interface IDispatcherChannel<T>
      *
      * @return taskid (generated, in parameter id is null)
      */
-    public String scheduleTask(String id, IDispatcherChannelTask task, IPropertyBlock propertyBlock, long executionTimeStamp, long timeOutValue, long heartBeatTimeOut);
+    String scheduleTask(String id, IDispatcherChannelTask task, IPropertyBlock propertyBlock, long executionTimeStamp, long timeOutValue, long heartBeatTimeOut);
     
     /**
      * schedule a {@link IDispatcherChannelTask} to {@link IDispatcherChannel}.
@@ -323,7 +323,7 @@ public interface IDispatcherChannel<T>
      *
      * @return taskid (generated, in parameter id is null)
      */
-    public String scheduleTask(String id, IDispatcherChannelTask task, IPropertyBlock propertyBlock, long executionTimeStamp, long timeOutValue, long heartBeatTimeOut, boolean stopOnTimeOut);
+    String scheduleTask(String id, IDispatcherChannelTask task, IPropertyBlock propertyBlock, long executionTimeStamp, long timeOutValue, long heartBeatTimeOut, boolean stopOnTimeOut);
     
     /**
      * reset execution plan for an existing {@link IDispatcherChannelTask}
@@ -338,7 +338,7 @@ public interface IDispatcherChannel<T>
      *
      * @return affected {@link IDispatcherChannelTask} or null if not found
      */
-    public IDispatcherChannelTask rescheduleTask(String id, long executionTimeStamp, long timeOutValue, long heartBeatTimeOut);
+    IDispatcherChannelTask rescheduleTask(String id, long executionTimeStamp, long timeOutValue, long heartBeatTimeOut);
     
     /**
      * returns {@link IDispatcherChannelTask} scheduled under registration {@code id}
@@ -347,7 +347,7 @@ public interface IDispatcherChannel<T>
      *
      * @return {@link IDispatcherChannelTask} scheduled under registration {@code id}
      */
-    public IDispatcherChannelTask getTask(String id);
+    IDispatcherChannelTask getTask(String id);
     
     /**
      * remove{@link IDispatcherChannelTask} scheduled under registration {@code id}
@@ -356,7 +356,7 @@ public interface IDispatcherChannel<T>
      *
      * @return removed {@link IDispatcherChannelTask} or null if no scheduled with {@code id} found
      */
-    public IDispatcherChannelTask removeTask(String id);
+    IDispatcherChannelTask removeTask(String id);
     
     /**
      * returns properties of {@link IDispatcherChannelTask} scheduled under registration {@code id}
@@ -365,21 +365,21 @@ public interface IDispatcherChannel<T>
      *
      * @return properties of {@link IDispatcherChannelTask} scheduled under registration {@code id}
      */
-    public IPropertyBlock getTaskPropertyBlock(String id);
+    IPropertyBlock getTaskPropertyBlock(String id);
     
     /**
      * Sends a signal. All {@link IDispatcherChannelManager} manage this {@link IDispatcherChannel} and implements {@link IOnChannelSignal} will notify asynchronously by queueworker.
      *
      * @param signal
      */
-    public void signal(String signal);
+    void signal(String signal);
     
     /**
      * returns root scope
      *
      * @return global scope
      */
-    public IDispatcherChannel<Object> getRootChannel();
+    IDispatcherChannel<Object> getRootChannel();
     
     /**
      * returns root scope
@@ -389,7 +389,7 @@ public interface IDispatcherChannel<T>
      * @return global scope
      */
     @SuppressWarnings("unchecked")
-    public default <R> IDispatcherChannel<R> getRootChannel(Class<R> rootType)
+    default <R> IDispatcherChannel<R> getRootChannel(final Class<R> rootType)
     {
         return (IDispatcherChannel<R>) getRootChannel();
     }
@@ -399,7 +399,7 @@ public interface IDispatcherChannel<T>
      *
      * @return parentChannel or null
      */
-    public IDispatcherChannel<Object> getParentChannel();
+    IDispatcherChannel<Object> getParentChannel();
     
     /**
      * getter for parent scope, if exists.
@@ -409,7 +409,7 @@ public interface IDispatcherChannel<T>
      * @return parentChannel or null
      */
     @SuppressWarnings("unchecked")
-    public default <P> IDispatcherChannel<P> getParentChannel(Class<P> parentType)
+    default <P> IDispatcherChannel<P> getParentChannel(final Class<P> parentType)
     {
         return (IDispatcherChannel<P>) getParentChannel();
     }
@@ -424,7 +424,7 @@ public interface IDispatcherChannel<T>
      *
      * @return new scope, or null, if scope already exists
      */
-    public default ISubChannel<?> createChildScope(UUID scopeId, String scopeName, Map<String, Object> configurationProperties, Map<String, Object> stateProperties)
+    default ISubChannel<?> createChildScope(final UUID scopeId, final String scopeName, final Map<String, Object> configurationProperties, final Map<String, Object> stateProperties)
     {
         return this.createChildScope(scopeId, scopeName, configurationProperties, stateProperties, false, false);
     }
@@ -441,14 +441,14 @@ public interface IDispatcherChannel<T>
      *
      * @return new scope, or null, if scope already exists
      */
-    public ISubChannel createChildScope(UUID scopeId, String scopeName, Map<String, Object> configurationProperties, Map<String, Object> stateProperties, boolean adoptContoller, boolean adoptServices);
+    ISubChannel createChildScope(UUID scopeId, String scopeName, Map<String, Object> configurationProperties, Map<String, Object> stateProperties, boolean adoptContoller, boolean adoptServices);
     
     /**
      * getter for child scope list. The child scopes list is defined by virtual tree structure.
      *
      * @return immutable list of child scopes
      */
-    public List<ISubChannel> getChildScopes();
+    List<ISubChannel> getChildScopes();
     
     /**
      * returns scopelist of queue with positiv match result for {@code filter}
@@ -468,11 +468,11 @@ public interface IDispatcherChannel<T>
      *
      * @return scope with given {@code scopeId} or null, if scope not found
      */
-    public ISubChannel getChildScope(UUID scopeId);
+    ISubChannel getChildScope(UUID scopeId);
     
-    public interface IDispatcherChannelReference extends Closeable
+    interface IDispatcherChannelReference extends Closeable
     {
-        public <T> IDispatcherChannel<T> getChannel(Class<T> type);
+        <T> IDispatcherChannel<T> getChannel(Class<T> type);
     }
     
 }

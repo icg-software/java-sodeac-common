@@ -16,11 +16,11 @@ import org.sodeac.common.message.dispatcher.api.IPropertyLock;
 
 public class PropertyLockImpl implements IPropertyLock
 {
-    private PropertyBlockImpl block;
-    private String key;
-    private UUID pin;
+    private final PropertyBlockImpl block;
+    private final String key;
+    private final UUID pin;
     
-    protected PropertyLockImpl(PropertyBlockImpl block, String key, UUID pin)
+    protected PropertyLockImpl(final PropertyBlockImpl block, final String key, final UUID pin)
     {
         super();
         this.block = block;
@@ -31,22 +31,22 @@ public class PropertyLockImpl implements IPropertyLock
     @Override
     public boolean unlock()
     {
-        return block.unlockProperty(this);
+        return this.block.unlockProperty(this);
     }
     
     protected PropertyBlockImpl getBlock()
     {
-        return block;
+        return this.block;
     }
     
     protected String getKey()
     {
-        return key;
+        return this.key;
     }
     
     protected UUID getPin()
     {
-        return pin;
+        return this.pin;
     }
     
 }

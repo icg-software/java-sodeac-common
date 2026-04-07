@@ -12,18 +12,18 @@ package org.sodeac.common.message;
 
 public interface IMessageType
 {
-    public static String OID_PREFIX_SDC_MESSAGE_TYPE = "1.3.6.1.4.1.53777.1.";
+    String OID_PREFIX_SDC_MESSAGE_TYPE = "1.3.6.1.4.1.53777.1.";
     
-    public interface Payload
+    interface Payload
     {
-        public static String OID_CAT = "1.";
+        String OID_CAT = "1.";
         
-        public interface Configuration
+        interface Configuration
         {
         
         }
         
-        public interface Flow
+        interface Flow
         {
             // Windowing
             // Stop / Pause
@@ -40,27 +40,27 @@ public interface IMessageType
         }
     }
     
-    public interface Channel
+    interface Channel
     {
-        public static String OID_CAT = "2.";
+        String OID_CAT = "2.";
         
         // heartbeat ?
         
     }
     
-    public interface Service
+    interface Service
     {
     
     }
     
-    public interface Notification
+    interface Notification
     {
-        public interface Validation
+        interface Validation
         {
         
         }
         
-        public interface Permission
+        interface Permission
         {
             // not allowd
             // token timeout
@@ -68,20 +68,20 @@ public interface IMessageType
             // token request
         }
         
-        public interface Progress
+        interface Progress
         {
         
         }
     }
     
-    public interface Cluster
+    interface Cluster
     {
         // wait to provide resources
         // schedule service shutdown
         // wait sync / repl
     }
     
-    public interface Command
+    interface Command
     {
         // skip command queue
         
@@ -97,7 +97,7 @@ public interface IMessageType
         
     }
     
-    public interface Permission
+    interface Permission
     {
         // granted
         // denied

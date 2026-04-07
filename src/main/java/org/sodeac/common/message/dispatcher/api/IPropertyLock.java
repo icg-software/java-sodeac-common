@@ -23,5 +23,5 @@ public interface IPropertyLock
      *
      * @return property is unlocked now
      */
-    public boolean unlock();
+    boolean unlock();
 }

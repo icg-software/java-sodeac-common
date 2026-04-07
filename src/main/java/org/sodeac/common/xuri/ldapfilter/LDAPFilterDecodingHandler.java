@@ -33,7 +33,7 @@ public class LDAPFilterDecodingHandler implements IDecodingExtensionHandler<IFil
      */
     private static final long serialVersionUID = -9187580171255086052L;
     
-    private transient static volatile LDAPFilterDecodingHandler INSTANCE = null;
+    private static volatile LDAPFilterDecodingHandler INSTANCE = null;
     
     public static final char OPENER = IFilterItem.OPENER;
     public static final char CLOSER = IFilterItem.CLOSER;
@@ -63,7 +63,7 @@ public class LDAPFilterDecodingHandler implements IDecodingExtensionHandler<IFil
     }
     
     @Override
-    public int parseRawExtensionString(ExtensionHandleObject extensionHandleObject)
+    public int parseRawExtensionString(final ExtensionHandleObject extensionHandleObject)
     {
         char c;
         int openerCount = 0;
@@ -105,13 +105,13 @@ public class LDAPFilterDecodingHandler implements IDecodingExtensionHandler<IFil
     }
     
     @Override
-    public int openerCharactersMatched(ExtensionHandleObject extensionHandleObject)
+    public int openerCharactersMatched(final ExtensionHandleObject extensionHandleObject)
     {
         return extensionHandleObject.fullPath.charAt(extensionHandleObject.position) == OPENER ? extensionHandleObject.position + 1 : -1;
     }
     
     @Override
-    public IFilterItem decodeFromString(String raw)
+    public IFilterItem decodeFromString(final String raw)
     {
         IFilterItem rootFilter = null;
         IFilterItem currentFilter = null;
@@ -521,7 +521,7 @@ public class LDAPFilterDecodingHandler implements IDecodingExtensionHandler<IFil
      *
      * @return opener characters
      */
-    public char[] getOpenerCharacters(ComponentType component)
+    public char[] getOpenerCharacters(final ComponentType component)
     {
         return OPENER_CHARACTERS;
     }
@@ -533,7 +533,7 @@ public class LDAPFilterDecodingHandler implements IDecodingExtensionHandler<IFil
      *
      * @return closer characters
      */
-    public char[] getCloserCharacters(ComponentType component)
+    public char[] getCloserCharacters(final ComponentType component)
     {
         return CLOSER_CHARACTERS;
     }

@@ -38,7 +38,7 @@ public class MessageImpl<T> implements IMessage<T>
     private volatile Boolean consumed = null;
     private volatile Boolean processed = null;
     
-    protected MessageImpl(T payload, ChannelImpl channel, MessageHeader messageHeader)
+    protected MessageImpl(final T payload, final ChannelImpl channel, final MessageHeader messageHeader)
     {
         super();
         this.payload = payload;
@@ -48,10 +48,10 @@ public class MessageImpl<T> implements IMessage<T>
     
     public DequeNode<MessageImpl<T>> getNode()
     {
-        return node;
+        return this.node;
     }
     
-    protected void setNode(DequeNode<MessageImpl<T>> node)
+    protected void setNode(final DequeNode<MessageImpl<T>> node)
     {
         if (node != null)
         {
@@ -74,7 +74,7 @@ public class MessageImpl<T> implements IMessage<T>
         return this.scheduleResult;
     }
     
-    protected void setScheduleResultObject(PublishMessageResultImpl scheduleResult)
+    protected void setScheduleResultObject(final PublishMessageResultImpl scheduleResult)
     {
         this.scheduleResult = scheduleResult;
     }
@@ -82,23 +82,23 @@ public class MessageImpl<T> implements IMessage<T>
     @Override
     public UUID getId()
     {
-        return channelMessageId;
+        return this.channelMessageId;
     }
     
     @Override
     public Long getCreateTimestamp()
     {
-        return channelMessageTimestamp;
+        return this.channelMessageTimestamp;
     }
     
     @Override
     public Long getSequence()
     {
-        return channelMessageSequence;
+        return this.channelMessageSequence;
     }
     
     @Override
-    public Object setProperty(String key, Object value)
+    public Object setProperty(final String key, final Object value)
     {
         if (this.propertyBlock == null)
         {
@@ -108,7 +108,7 @@ public class MessageImpl<T> implements IMessage<T>
             {
                 if (this.propertyBlock == null)
                 {
-                    this.propertyBlock = (PropertyBlockImpl) channel.getDispatcher().createPropertyBlock();
+                    this.propertyBlock = (PropertyBlockImpl) this.channel.getDispatcher().createPropertyBlock();
                 }
             }
             finally
@@ -121,7 +121,7 @@ public class MessageImpl<T> implements IMessage<T>
     }
     
     @Override
-    public Object getProperty(String key)
+    public Object getProperty(final String key)
     {
         if (this.propertyBlock == null)
         {
@@ -131,6 +131,7 @@ public class MessageImpl<T> implements IMessage<T>
         return this.propertyBlock.getProperty(key);
     }
     
+    @Override
     public MessageHeader getMessageHeader()
     {
         return this.messageHeader;
@@ -158,7 +159,7 @@ public class MessageImpl<T> implements IMessage<T>
     
     @SuppressWarnings("unchecked")
     @Override
-    public <A> A getAdapter(Class<A> adapterClass)
+    public <A> A getAdapter(final Class<A> adapterClass)
     {
         if (adapterClass == IPropertyBlock.class)
         {
@@ -170,7 +171,7 @@ public class MessageImpl<T> implements IMessage<T>
                 {
                     if (this.propertyBlock == null)
                     {
-                        this.propertyBlock = (PropertyBlockImpl) channel.getDispatcher().createPropertyBlock();
+                        this.propertyBlock = (PropertyBlockImpl) this.channel.getDispatcher().createPropertyBlock();
                     }
                 }
                 finally
@@ -192,9 +193,9 @@ public class MessageImpl<T> implements IMessage<T>
     @Override
     public void removeFromChannel()
     {
-        if (channel != null)
+        if (this.channel != null)
         {
-            channel.removeMessage(this);
+            this.channel.removeMessage(this);
         }
     }
     
@@ -206,7 +207,7 @@ public class MessageImpl<T> implements IMessage<T>
             {
                 this.scheduleResult.dispose();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
         this.scheduleResult = null;
         this.channel = null;
@@ -217,7 +218,7 @@ public class MessageImpl<T> implements IMessage<T>
             {
                 this.messageHeader.dispose();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
             this.messageHeader = null;
         }
         if (this.propertyBlock != null)
@@ -226,7 +227,7 @@ public class MessageImpl<T> implements IMessage<T>
             {
                 this.propertyBlock.dispose();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
         this.propertyBlock = null;
         this.node = null;
@@ -251,11 +252,11 @@ public class MessageImpl<T> implements IMessage<T>
     @Override
     public Boolean getConsumed()
     {
-        return consumed;
+        return this.consumed;
     }
     
     @Override
-    public void setConsumed(Boolean consumed)
+    public void setConsumed(final Boolean consumed)
     {
         this.consumed = consumed;
     }
@@ -263,11 +264,11 @@ public class MessageImpl<T> implements IMessage<T>
     @Override
     public Boolean getProcessed()
     {
-        return processed;
+        return this.processed;
     }
     
     @Override
-    public void setProcessed(Boolean processed)
+    public void setProcessed(final Boolean processed)
     {
         this.processed = processed;
     }

@@ -16,17 +16,17 @@ public interface IChildNodeListener<T extends BranchNodeMetaModel> extends BiCon
 {
     
     @Override
-    public void accept(Node<T, ?> node, Object oldValue);
+    void accept(Node<T, ?> node, Object oldValue);
     
-    public interface ILeafNodeListener<T extends BranchNodeMetaModel, X> extends IChildNodeListener<T>
+    interface ILeafNodeListener<T extends BranchNodeMetaModel, X> extends IChildNodeListener<T>
     {
         @Override
-        public default void accept(Node<T, ?> node, Object oldValue)
+        default void accept(final Node<T, ?> node, final Object oldValue)
         {
             this.onUpdate((LeafNode) node, (X) oldValue);
         }
         
-        public void onUpdate(LeafNode<T, X> node, X oldValue);
+        void onUpdate(LeafNode<T, X> node, X oldValue);
     }
     
 }

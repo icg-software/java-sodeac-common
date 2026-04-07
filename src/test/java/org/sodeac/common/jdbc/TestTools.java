@@ -27,7 +27,7 @@ public class TestTools
             Thread.sleep(2000);
             return String.format("%09X", diff);
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             if (e instanceof RuntimeException)
             {

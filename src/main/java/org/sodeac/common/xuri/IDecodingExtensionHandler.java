@@ -28,14 +28,14 @@ public interface IDecodingExtensionHandler<T>
      *
      * @return decoded extension data object
      */
-    public T decodeFromString(String raw);
+    T decodeFromString(String raw);
     
     /**
      * extension type of decoding extension handler
      *
      * @return
      */
-    public String getType();
+    String getType();
     
     /**
      * parse a string encoded extension and set an extension object in {@code extensionHandleObject}
@@ -44,7 +44,7 @@ public interface IDecodingExtensionHandler<T>
      *
      * @return position after extension ends
      */
-    public int parseRawExtensionString(ExtensionHandleObject extensionHandleObject);
+    int parseRawExtensionString(ExtensionHandleObject extensionHandleObject);
     
     /**
      * check if current position of parsed URI worker object is an special start sequence of extension
@@ -53,11 +53,11 @@ public interface IDecodingExtensionHandler<T>
      *
      * @return -1, if current position is not special start sequence, otherwise first position of
      */
-    public int openerCharactersMatched(ExtensionHandleObject extensionHandleObject);
+    int openerCharactersMatched(ExtensionHandleObject extensionHandleObject);
     
     /**
      *
      * @return applicable components for extension
      */
-    public ComponentType[] getApplicableComponents();
+    ComponentType[] getApplicableComponents();
 }

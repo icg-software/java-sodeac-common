@@ -25,25 +25,25 @@ public interface IExtension<T> extends IDriver
      *
      * @return type of extension
      */
-    public String getType();
+    String getType();
     
     /**
      *
      * @return representative expression string for extension
      */
-    public String getExpression();
+    String getExpression();
     
     /**
      * getter for default decoder instance
      *
      * @return default decoder instance
      */
-    public IDecodingExtensionHandler<T> getDecoder();
+    IDecodingExtensionHandler<T> getDecoder();
     
     /**
      * getter for default encoder instance
      *
      * @return default encoder instance
      */
-    public IEncodingExtensionHandler<T> getEncoder();
+    IEncodingExtensionHandler<T> getEncoder();
 }

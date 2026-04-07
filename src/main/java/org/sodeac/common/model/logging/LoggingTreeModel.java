@@ -41,13 +41,13 @@ public class LoggingTreeModel extends TypedTreeMetaModel<LoggingTreeModel>
     @XmlElement(name = "LogEventListChunk")
     public static volatile BranchNodeType<LoggingTreeModel, LogEventListChunkNodeType> logEventListChunk;
     
-    public static RootBranchNode<LoggingTreeModel, LogEventListChunkNodeType> createLogEventListChunk(long listSize, long chunkSize, long chunkSequence, boolean last)
+    public static RootBranchNode<LoggingTreeModel, LogEventListChunkNodeType> createLogEventListChunk(final long listSize, final long chunkSize, final long chunkSequence, final boolean last)
     {
         return createLogEventListChunk(listSize, chunkSize, chunkSequence, last, null);
     }
     
     @BowMethod(convertReturnValueToBow = true, returnBowMode = ReturnBowMode.UNDEFINED_PARENT_TYPE)
-    protected static RootBranchNode<LoggingTreeModel, LogEventListChunkNodeType> createLogEventListChunk(long listSize, long chunkSize, long chunkSequence, boolean last, @BowParameter(automaticConsumerMode = AutomaticConsumer.NEW_BOW_BY_RETURNTYPE) Consumer<RootBranchNode<LoggingTreeModel, LogEventListChunkNodeType>> onRootNodeCreated)
+    protected static RootBranchNode<LoggingTreeModel, LogEventListChunkNodeType> createLogEventListChunk(final long listSize, final long chunkSize, final long chunkSequence, final boolean last, @BowParameter(automaticConsumerMode = AutomaticConsumer.NEW_BOW_BY_RETURNTYPE) final Consumer<RootBranchNode<LoggingTreeModel, LogEventListChunkNodeType>> onRootNodeCreated)
     {
         RootBranchNode<LoggingTreeModel, LogEventListChunkNodeType> chunk = ModelRegistry.getTypedTreeMetaModel(LoggingTreeModel.class).createRootNode(LoggingTreeModel.logEventListChunk);
         

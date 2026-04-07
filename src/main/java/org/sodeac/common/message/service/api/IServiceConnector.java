@@ -15,7 +15,7 @@ import org.sodeac.common.xuri.URI;
 
 public interface IServiceConnector extends IDriver
 {
-    public static final String TYPE_LOCAL = "LOCAL";
+    String TYPE_LOCAL = "LOCAL";
     
-    public IServiceConnection lookup(URI serviceURI);
+    IServiceConnection lookup(URI serviceURI);
 }

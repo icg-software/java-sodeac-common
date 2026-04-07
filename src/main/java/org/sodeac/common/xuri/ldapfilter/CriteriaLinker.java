@@ -47,7 +47,7 @@ public class CriteriaLinker implements IFilterItem, Serializable
     private volatile LogicalOperator operator = LogicalOperator.AND;
     private Lock lock = null;
     
-    private List<IFilterItem> linkedItemList = new ArrayList<IFilterItem>();
+    private final List<IFilterItem> linkedItemList = new ArrayList<IFilterItem>();
     private List<IFilterItem> linkedItemListCopy = null;
     
     /**
@@ -62,7 +62,7 @@ public class CriteriaLinker implements IFilterItem, Serializable
         {
             return itemList;
         }
-        lock.lock();
+        this.lock.lock();
         try
         {
             itemList = this.linkedItemListCopy;
@@ -76,7 +76,7 @@ public class CriteriaLinker implements IFilterItem, Serializable
         }
         finally
         {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
     
@@ -87,9 +87,9 @@ public class CriteriaLinker implements IFilterItem, Serializable
      *
      * @return criteria linker
      */
-    protected CriteriaLinker addItem(IFilterItem item)
+    protected CriteriaLinker addItem(final IFilterItem item)
     {
-        lock.lock();
+        this.lock.lock();
         try
         {
             this.linkedItemList.add(item);
@@ -97,7 +97,7 @@ public class CriteriaLinker implements IFilterItem, Serializable
         }
         finally
         {
-            lock.unlock();
+            this.lock.unlock();
         }
         
         return this;
@@ -106,10 +106,10 @@ public class CriteriaLinker implements IFilterItem, Serializable
     @Override
     public boolean isInvert()
     {
-        return invert;
+        return this.invert;
     }
     
-    protected CriteriaLinker setInvert(boolean invert)
+    protected CriteriaLinker setInvert(final boolean invert)
     {
         this.invert = invert;
         return this;
@@ -122,7 +122,7 @@ public class CriteriaLinker implements IFilterItem, Serializable
      */
     public LogicalOperator getOperator()
     {
-        return operator;
+        return this.operator;
     }
     
     /**
@@ -132,7 +132,7 @@ public class CriteriaLinker implements IFilterItem, Serializable
      *
      * @return this
      */
-    protected CriteriaLinker setOperator(LogicalOperator operator)
+    protected CriteriaLinker setOperator(final LogicalOperator operator)
     {
         this.operator = operator;
         return this;
@@ -145,22 +145,22 @@ public class CriteriaLinker implements IFilterItem, Serializable
         
         stringBuilder.append("(");
         
-        if (invert)
+        if (this.invert)
         {
             stringBuilder.append("!(");
         }
         
-        stringBuilder.append(operator.getAbbreviation());
+        stringBuilder.append(this.operator.getAbbreviation());
         
         if (this.linkedItemList != null)
         {
-            for (IFilterItem filterItem : this.linkedItemList)
+            for (final IFilterItem filterItem : this.linkedItemList)
             {
                 stringBuilder.append(filterItem.toString());
             }
         }
         
-        if (invert)
+        if (this.invert)
         {
             stringBuilder.append(")");
         }
@@ -170,27 +170,27 @@ public class CriteriaLinker implements IFilterItem, Serializable
     }
     
     @Override
-    public boolean matches(Map<String, IMatchable> properties)
+    public boolean matches(final Map<String, IMatchable> properties)
     {
-        if (operator == LogicalOperator.OR)
+        if (this.operator == LogicalOperator.OR)
         {
-            for (IFilterItem filterItem : getLinkedItemList())
+            for (final IFilterItem filterItem : getLinkedItemList())
             {
                 if (filterItem.matches(properties))
                 {
-                    return !invert;
+                    return !this.invert;
                 }
             }
-            return invert;
+            return this.invert;
         }
         
-        for (IFilterItem filterItem : getLinkedItemList())
+        for (final IFilterItem filterItem : getLinkedItemList())
         {
             if (!filterItem.matches(properties))
             {
-                return invert;
+                return this.invert;
             }
         }
-        return !invert;
+        return !this.invert;
     }
 }

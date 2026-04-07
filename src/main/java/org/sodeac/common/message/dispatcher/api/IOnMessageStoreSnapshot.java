@@ -32,5 +32,5 @@ public interface IOnMessageStoreSnapshot<T> extends IDispatcherChannelManager
      *
      * @param messageStoreSnapshot new messageSnapshot
      */
-    public void onMessageStoreSnapshot(DequeSnapshot<IMessage<T>> messageStoreSnapshot);
+    void onMessageStoreSnapshot(DequeSnapshot<IMessage<T>> messageStoreSnapshot);
 }

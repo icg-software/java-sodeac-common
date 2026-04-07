@@ -28,5 +28,5 @@ public interface IOnTaskError<T> extends IDispatcherChannelManager
      * @param task      task which throws the exception
      * @param throwable throwed exception or error
      */
-    public void onTaskError(IDispatcherChannel<T> queue, IDispatcherChannelTask<T> task, Throwable throwable);
+    void onTaskError(IDispatcherChannel<T> queue, IDispatcherChannelTask<T> task, Throwable throwable);
 }

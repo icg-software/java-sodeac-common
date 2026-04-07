@@ -29,22 +29,22 @@ public class FormatException extends RuntimeException
         super();
     }
     
-    public FormatException(String message)
+    public FormatException(final String message)
     {
         super(message);
     }
     
-    public FormatException(String message, Throwable cause)
+    public FormatException(final String message, final Throwable cause)
     {
         super(message, cause);
     }
     
-    public FormatException(Throwable cause)
+    public FormatException(final Throwable cause)
     {
         super(cause);
     }
     
-    public FormatException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace)
+    public FormatException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace)
     {
         super(message, cause, enableSuppression, writableStackTrace);
     }

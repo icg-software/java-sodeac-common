@@ -38,7 +38,7 @@ public interface IPropertyBlock
      *
      * @throws PropertyIsLockedException
      */
-    public Object setProperty(String key, Object value) throws PropertyIsLockedException;
+    Object setProperty(String key, Object value) throws PropertyIsLockedException;
     
     /**
      * register a set of properties
@@ -50,7 +50,7 @@ public interface IPropertyBlock
      *
      * @throws PropertyIsLockedException
      */
-    public Map<String, Object> setPropertyEntrySet(Set<Entry<String, Object>> propertyEntrySet, boolean ignoreIfEquals) throws PropertyIsLockedException;
+    Map<String, Object> setPropertyEntrySet(Set<Entry<String, Object>> propertyEntrySet, boolean ignoreIfEquals) throws PropertyIsLockedException;
     
     /**
      * getter for registered property with associated {@code key}
@@ -59,7 +59,7 @@ public interface IPropertyBlock
      *
      * @return the property with specified key, or null if property does not exists
      */
-    public Object getProperty(String key);
+    Object getProperty(String key);
     
     /**
      * typed getter for registered property with associated {@code key}
@@ -69,7 +69,7 @@ public interface IPropertyBlock
      *
      * @return the property with specified key
      */
-    public <T> T getProperty(String key, Class<T> resultClass);
+    <T> T getProperty(String key, Class<T> resultClass);
     
     /**
      * typed getter for registered property with associated {@code key}
@@ -80,7 +80,7 @@ public interface IPropertyBlock
      *
      * @return the property with specified key, or {@code defaultValue} if property does not exists
      */
-    public <T> T getPropertyOrDefault(String key, Class<T> resultClass, T defaultValue);
+    <T> T getPropertyOrDefault(String key, Class<T> resultClass, T defaultValue);
     
     /**
      * typed getter for registered property with associated {@code key}
@@ -90,7 +90,7 @@ public interface IPropertyBlock
      *
      * @return the property with specified key
      */
-    public default <T> T getPropertyOrSupply(String key, Supplier<T> propertySupplierIfNotExists)
+    default <T> T getPropertyOrSupply(final String key, final Supplier<T> propertySupplierIfNotExists)
     {
         ConplierBean<T> valueContainer = new ConplierBean<T>();
         
@@ -98,7 +98,7 @@ public interface IPropertyBlock
         {
             @SuppressWarnings("unchecked")
             @Override
-            public void accept(IPropertyBlock propertyBlock)
+            public void accept(final IPropertyBlock propertyBlock)
             {
                 if (propertyBlock.containsKey(key))
                 {
@@ -123,7 +123,7 @@ public interface IPropertyBlock
      *
      * @return the property with specified key, or {@code defaultValue} if property does not exists
      */
-    public String getPropertyOrDefaultAsString(String key, String defaultValue);
+    String getPropertyOrDefaultAsString(String key, String defaultValue);
     
     /**
      * remove registered property with associated {@code key}
@@ -134,28 +134,28 @@ public interface IPropertyBlock
      *
      * @throws PropertyIsLockedException
      */
-    public Object removeProperty(String key) throws PropertyIsLockedException;
+    Object removeProperty(String key) throws PropertyIsLockedException;
     
     /**
      * returns an immutable deep copy of property-container as {@link java.util.Map}
      *
      * @return {@link java.util.Map} with properties
      */
-    public Map<String, Object> getProperties();
+    Map<String, Object> getProperties();
     
     /**
      * returns an immutable  {@link java.util.Set} of all registered property keys
      *
      * @return
      */
-    public Set<String> getPropertyKeySet();
+    Set<String> getPropertyKeySet();
     
     /**
      * Returns true if this propertyblock contains no entries
      *
      * @return true if this propertyblock contains no entries
      */
-    public boolean isEmpty();
+    boolean isEmpty();
     
     /**
      * returns true if this propertyblock contains entry with {@code key}  ( key==null ? k==null : key.equals(k)).
@@ -164,7 +164,7 @@ public interface IPropertyBlock
      *
      * @return true if this propertyblock contains a entrymapped with specified key
      */
-    public boolean containsKey(Object key);
+    boolean containsKey(Object key);
     
     /**
      * remove all property entries
@@ -173,7 +173,7 @@ public interface IPropertyBlock
      *
      * @throws PropertyIsLockedException
      */
-    public Map<String, Object> clear() throws PropertyIsLockedException;
+    Map<String, Object> clear() throws PropertyIsLockedException;
     
     /**
      * register an adapter
@@ -183,7 +183,7 @@ public interface IPropertyBlock
      *
      * @throws PropertyIsLockedException
      */
-    public default <T> void setAdapter(Class<T> adapterClass, T adapter) throws PropertyIsLockedException
+    default <T> void setAdapter(final Class<T> adapterClass, final T adapter) throws PropertyIsLockedException
     {
         setProperty(adapterClass.getCanonicalName(), adapter);
     }
@@ -195,7 +195,7 @@ public interface IPropertyBlock
      *
      * @return registered adapter with specified adapterClass
      */
-    public default <T> T getAdapter(Class<T> adapterClass)
+    default <T> T getAdapter(final Class<T> adapterClass)
     {
         return getProperty(adapterClass.getCanonicalName(), adapterClass);
     }
@@ -208,7 +208,7 @@ public interface IPropertyBlock
      *
      * @return registered adapter with specified adapterClass
      */
-    public default <T> T getAdapter(Class<T> adapterClass, Supplier<T> adapterFactoryIfNotExists)
+    default <T> T getAdapter(final Class<T> adapterClass, final Supplier<T> adapterFactoryIfNotExists)
     {
         return getPropertyOrSupply(adapterClass.getCanonicalName(), adapterFactoryIfNotExists);
     }
@@ -220,7 +220,7 @@ public interface IPropertyBlock
      *
      * @throws PropertyIsLockedException
      */
-    public default <T> void removeAdapter(Class<T> adapterClass) throws PropertyIsLockedException
+    default <T> void removeAdapter(final Class<T> adapterClass) throws PropertyIsLockedException
     {
         removeProperty(adapterClass.getCanonicalName());
     }
@@ -232,7 +232,7 @@ public interface IPropertyBlock
      *
      * @return a {@link IPropertyBlock} or null, if property is already locked
      */
-    public IPropertyLock lockProperty(String key);
+    IPropertyLock lockProperty(String key);
     
     /**
      * Enables complex editing in locked mode with {@link IPropertyBlockAtomicProcedure}.
@@ -241,7 +241,7 @@ public interface IPropertyBlock
      *
      * @return audit trail of modified property items
      */
-    public Supplier<List<PropertyBlockModifyItem>> computeProcedure(IPropertyBlockAtomicProcedure operationHandler);
+    Supplier<List<PropertyBlockModifyItem>> computeProcedure(IPropertyBlockAtomicProcedure operationHandler);
     
     /**
      * helper to build a map in static way
@@ -249,7 +249,7 @@ public interface IPropertyBlock
      * @author Sebastian Palarus
      *
      */
-    public static interface IMapBuilder<K, V>
+    interface IMapBuilder<K, V>
     {
         /**
          * put key-value pair to map
@@ -259,7 +259,7 @@ public interface IPropertyBlock
          *
          * @return builder
          */
-        public IMapBuilder<K, V> put(K key, V value);
+        IMapBuilder<K, V> put(K key, V value);
         
         /**
          * put all mapping to map
@@ -268,35 +268,35 @@ public interface IPropertyBlock
          *
          * @return builder
          */
-        public IMapBuilder<K, V> putAll(Map<? extends K, ? extends V> m);
+        IMapBuilder<K, V> putAll(Map<? extends K, ? extends V> m);
         
         /**
          * create immutable map
          *
          * @return immutableMap
          */
-        public Map<K, V> buildImmutableMap();
+        Map<K, V> buildImmutableMap();
         
         /**
          * creates builder to build a map
          *
          * @return builder to build a map
          */
-        public static <K, V> IMapBuilder<K, V> newBuilderInstance()
+        static <K, V> IMapBuilder<K, V> newBuilderInstance()
         {
             IMapBuilder<K, V> builder = new IMapBuilder<K, V>()
             {
-                Map<K, V> map = new HashMap<K, V>();
+                final Map<K, V> map = new HashMap<K, V>();
                 
                 @Override
-                public IMapBuilder<K, V> put(K key, V value)
+                public IMapBuilder<K, V> put(final K key, final V value)
                 {
-                    map.put(key, value);
+                    this.map.put(key, value);
                     return this;
                 }
                 
                 @Override
-                public IMapBuilder<K, V> putAll(Map<? extends K, ? extends V> m)
+                public IMapBuilder<K, V> putAll(final Map<? extends K, ? extends V> m)
                 {
                     this.map.putAll(m);
                     return this;
@@ -305,7 +305,7 @@ public interface IPropertyBlock
                 @Override
                 public Map<K, V> buildImmutableMap()
                 {
-                    return Collections.unmodifiableMap(map);
+                    return Collections.unmodifiableMap(this.map);
                 }
             };
             
@@ -313,9 +313,9 @@ public interface IPropertyBlock
         }
     }
     
-    public void addModifyListener(IPropertyBlockModifyListener listener);
+    void addModifyListener(IPropertyBlockModifyListener listener);
     
-    public void removeModifyListener(IPropertyBlockModifyListener listener);
+    void removeModifyListener(IPropertyBlockModifyListener listener);
     
-    public void dispose();
+    void dispose();
 }

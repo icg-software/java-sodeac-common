@@ -17,26 +17,26 @@ public class UnclosableOutputStream extends OutputStream
 {
     private OutputStream out = null;
     
-    public UnclosableOutputStream(OutputStream out)
+    public UnclosableOutputStream(final OutputStream out)
     {
         super();
         this.out = out;
     }
     
     @Override
-    public void write(int b) throws IOException
+    public void write(final int b) throws IOException
     {
         this.out.write(b);
     }
     
     @Override
-    public void write(byte[] b) throws IOException
+    public void write(final byte[] b) throws IOException
     {
         this.out.write(b);
     }
     
     @Override
-    public void write(byte[] b, int off, int len) throws IOException
+    public void write(final byte[] b, final int off, final int len) throws IOException
     {
         this.out.write(b, off, len);
     }
@@ -53,12 +53,12 @@ public class UnclosableOutputStream extends OutputStream
     @Override
     public String toString()
     {
-        return "Unclosable " + out.toString();
+        return "Unclosable " + this.out.toString();
     }
     
     public OutputStream unwrap()
     {
-        return out;
+        return this.out;
     }
     
 }

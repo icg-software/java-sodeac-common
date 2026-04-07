@@ -149,7 +149,7 @@ public class JDBCToolbox
     
     public class DataSourceConnectionWrapper implements DataSource
     {
-        public DataSourceConnectionWrapper(String url, String user, String password)
+        public DataSourceConnectionWrapper(final String url, final String user, final String password)
         {
             super();
             this.url = url;
@@ -168,19 +168,19 @@ public class JDBCToolbox
         }
         
         @Override
-        public Connection getConnection(String username, String password) throws SQLException
+        public Connection getConnection(final String username, final String password) throws SQLException
         {
             return DriverManager.getConnection(this.url, username, password);
         }
         
         @Override
-        public <T> T unwrap(Class<T> iface) throws SQLException
+        public <T> T unwrap(final Class<T> iface) throws SQLException
         {
             return null;
         }
         
         @Override
-        public boolean isWrapperFor(Class<?> iface) throws SQLException
+        public boolean isWrapperFor(final Class<?> iface) throws SQLException
         {
             return false;
         }
@@ -192,13 +192,13 @@ public class JDBCToolbox
         }
         
         @Override
-        public void setLogWriter(PrintWriter out) throws SQLException
+        public void setLogWriter(final PrintWriter out) throws SQLException
         {
         
         }
         
         @Override
-        public void setLoginTimeout(int seconds) throws SQLException
+        public void setLoginTimeout(final int seconds) throws SQLException
         {
         
         }

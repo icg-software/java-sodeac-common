@@ -29,7 +29,7 @@ public class DummyPublishMessageResult extends PublishMessageResultImpl
     }
     
     @Override
-    public void addError(Throwable throwable) { }
+    public void addError(final Throwable throwable) { }
     
     @Override
     public boolean hasErrors()
@@ -50,7 +50,7 @@ public class DummyPublishMessageResult extends PublishMessageResultImpl
     }
     
     @Override
-    public void setDetailResultObject(Object detailResultObject) { }
+    public void setDetailResultObject(final Object detailResultObject) { }
     
     @Override
     public List<Object> getDetailResultObjectList()
@@ -65,7 +65,7 @@ public class DummyPublishMessageResult extends PublishMessageResultImpl
     }
     
     @Override
-    public void addDetailResultObjectList(Object detailResultObject)
+    public void addDetailResultObjectList(final Object detailResultObject)
     {
     }
     

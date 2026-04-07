@@ -25,10 +25,10 @@ public class DispatcherGuardian extends Thread
 {
     public static final long DEFAULT_WAIT_TIME = 108 * 108 * 13;
     
-    protected DispatcherGuardian(MessageDispatcherImpl dispatcher)
+    protected DispatcherGuardian(final MessageDispatcherImpl dispatcher)
     {
         super();
-        this.eventDispatcher = eventDispatcher;
+        this.eventDispatcher = this.eventDispatcher;
         this.taskTimeOutIndex = new HashMap<ChannelImpl<?>, TaskObservable>();
         
         this.taskTimeOutIndexLock = new ReentrantLock();
@@ -39,13 +39,13 @@ public class DispatcherGuardian extends Thread
     private volatile MessageDispatcherImpl eventDispatcher = null;
     private volatile boolean go = true;
     private volatile boolean isUpdateNotified = false;
-    private volatile Object waitMonitor = new Object();
+    private final Object waitMonitor = new Object();
     private volatile Map<ChannelImpl<?>, TaskObservable> taskTimeOutIndex = null;
-    private volatile Lock taskTimeOutIndexLock;
+    private final Lock taskTimeOutIndexLock;
     
     private volatile long currentWait = -1;
     
-    private Logger logger = LoggerFactory.getLogger(DispatcherGuardian.class);
+    private final Logger logger = LoggerFactory.getLogger(DispatcherGuardian.class);
     
     @Override
     public void run()
@@ -58,7 +58,7 @@ public class DispatcherGuardian extends Thread
         long timeOutListLastAccess = System.currentTimeMillis();
         long removeTaskObservableAccess = System.currentTimeMillis();
         
-        while (go)
+        while (this.go)
         {
             nextTimeOutTimeStamp = -1;
             if (timeOutList != null)
@@ -70,7 +70,7 @@ public class DispatcherGuardian extends Thread
                 removeTaskObservableList.clear();
             }
             
-            taskTimeOutIndexLock.lock();
+            this.taskTimeOutIndexLock.lock();
             try
             {
                 long currentTimeStamp = System.currentTimeMillis();
@@ -85,7 +85,7 @@ public class DispatcherGuardian extends Thread
                 
                 // Task TimeOut
                 
-                for (TaskObservable taskObservable : this.taskTimeOutIndex.values())
+                for (final TaskObservable taskObservable : this.taskTimeOutIndex.values())
                 {
                     inTimeOut = false;
                     observableTaskTimeOut = taskObservable.taskTimeOut;
@@ -178,9 +178,9 @@ public class DispatcherGuardian extends Thread
                                     }
                                 }
                             }
-                            catch (Exception e)
+                            catch (final Exception e)
                             {
-                                logger.error("Error while check heartbeat timeout", e);
+                                this.logger.error("Error while check heartbeat timeout", e);
                             }
                         }
                     }
@@ -193,16 +193,16 @@ public class DispatcherGuardian extends Thread
             }
             catch (Exception | Error e)
             {
-                logger.error("Error running DispatcherGuardian", e);
+                this.logger.error("Error running DispatcherGuardian", e);
             }
             finally
             {
-                taskTimeOutIndexLock.unlock();
+                this.taskTimeOutIndexLock.unlock();
             }
             
             if (timeOutList != null)
             {
-                for (ChannelImpl<?> channel : timeOutList)
+                for (final ChannelImpl<?> channel : timeOutList)
                 {
                     channel.checkTimeOut();
                 }
@@ -210,10 +210,10 @@ public class DispatcherGuardian extends Thread
             
             if ((removeTaskObservableList != null) && (!removeTaskObservableList.isEmpty()))
             {
-                taskTimeOutIndexLock.lock();
+                this.taskTimeOutIndexLock.lock();
                 try
                 {
-                    for (TaskObservable taskObservable : removeTaskObservableList)
+                    for (final TaskObservable taskObservable : removeTaskObservableList)
                     {
                         TaskObservable toRemoveObservable = this.taskTimeOutIndex.get(taskObservable.channel);
                         if (toRemoveObservable == null)
@@ -234,11 +234,11 @@ public class DispatcherGuardian extends Thread
                 }
                 catch (Exception | Error e)
                 {
-                    logger.error("Error running DispatcherGuardian", e);
+                    this.logger.error("Error running DispatcherGuardian", e);
                 }
                 finally
                 {
-                    taskTimeOutIndexLock.unlock();
+                    this.taskTimeOutIndexLock.unlock();
                 }
             }
             
@@ -258,11 +258,11 @@ public class DispatcherGuardian extends Thread
             {
                 synchronized (this.waitMonitor)
                 {
-                    if (go)
+                    if (this.go)
                     {
-                        if (isUpdateNotified)
+                        if (this.isUpdateNotified)
                         {
-                            isUpdateNotified = false;
+                            this.isUpdateNotified = false;
                         }
                         else
                         {
@@ -274,22 +274,22 @@ public class DispatcherGuardian extends Thread
                             if (waitTime > 0)
                             {
                                 this.currentWait = System.currentTimeMillis() + waitTime;
-                                waitMonitor.wait(waitTime);
+                                this.waitMonitor.wait(waitTime);
                                 this.currentWait = -1;
                             }
                         }
                     }
                 }
             }
-            catch (InterruptedException e) { }
+            catch (final InterruptedException e) { }
             catch (Error | Exception e)
             {
-                logger.error("Error running Dispatcher DispatcherGuardian", e);
+                this.logger.error("Error running Dispatcher DispatcherGuardian", e);
             }
         }
     }
     
-    public void registerTimeOut(ChannelImpl<?> channel, TaskContainer taskContainer)
+    public void registerTimeOut(final ChannelImpl<?> channel, final TaskContainer taskContainer)
     {
         TaskControlImpl taskControl = taskContainer.getTaskControl();
         if (taskControl == null)
@@ -299,7 +299,7 @@ public class DispatcherGuardian extends Thread
         
         long timeOutTimeStamp = taskControl.getTimeout() < 0L ? -1 : taskControl.getTimeout() + System.currentTimeMillis();
         
-        taskTimeOutIndexLock.lock();
+        this.taskTimeOutIndexLock.lock();
         try
         {
             TaskObservable taskObservable = this.taskTimeOutIndex.get(channel);
@@ -346,7 +346,7 @@ public class DispatcherGuardian extends Thread
         }
         finally
         {
-            taskTimeOutIndexLock.unlock();
+            this.taskTimeOutIndexLock.unlock();
         }
         
         boolean notify = false;
@@ -377,9 +377,9 @@ public class DispatcherGuardian extends Thread
                                 
                             }
                         }
-                        catch (Exception e)
+                        catch (final Exception e)
                         {
-                            logger.error("Error while check heartbeat timeout", e);
+                            this.logger.error("Error while check heartbeat timeout", e);
                         }
                     }
                 }
@@ -389,7 +389,7 @@ public class DispatcherGuardian extends Thread
             {
                 try
                 {
-                    waitMonitor.notify();
+                    this.waitMonitor.notify();
                 }
                 catch (Exception | Error e) { }
             }
@@ -397,9 +397,9 @@ public class DispatcherGuardian extends Thread
         
     }
     
-    public void unregisterTimeOut(ChannelImpl<?> channel, TaskContainer task)
+    public void unregisterTimeOut(final ChannelImpl<?> channel, final TaskContainer task)
     {
-        taskTimeOutIndexLock.lock();
+        this.taskTimeOutIndexLock.lock();
         try
         {
             TaskObservable taskObservable = this.taskTimeOutIndex.get(channel);
@@ -416,7 +416,7 @@ public class DispatcherGuardian extends Thread
         }
         finally
         {
-            taskTimeOutIndexLock.unlock();
+            this.taskTimeOutIndexLock.unlock();
         }
     }
     
@@ -429,9 +429,9 @@ public class DispatcherGuardian extends Thread
             {
                 this.waitMonitor.notify();
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
-                logger.error("Error stopping DispatcherGuardian", e);
+                this.logger.error("Error stopping DispatcherGuardian", e);
             }
         }
     }

@@ -28,7 +28,7 @@ public enum LogicalOperator
     AND(1, IFilterItem.AND),
     OR(2, IFilterItem.OR);
     
-    private LogicalOperator(int intValue, char abbreviation)
+    LogicalOperator(final int intValue, final char abbreviation)
     {
         this.intValue = intValue;
         this.abbreviation = abbreviation;
@@ -36,17 +36,17 @@ public enum LogicalOperator
     
     private static volatile Set<LogicalOperator> ALL = null;
     
-    private int intValue;
-    private char abbreviation;
+    private final int intValue;
+    private final char abbreviation;
     
     public int getIntValue()
     {
-        return intValue;
+        return this.intValue;
     }
     
     public char getAbbreviation()
     {
-        return abbreviation;
+        return this.abbreviation;
     }
     
     public static Set<LogicalOperator> getAll()
@@ -59,9 +59,9 @@ public enum LogicalOperator
         return LogicalOperator.ALL;
     }
     
-    public static LogicalOperator findByInteger(int value)
+    public static LogicalOperator findByInteger(final int value)
     {
-        for (LogicalOperator operation : getAll())
+        for (final LogicalOperator operation : getAll())
         {
             if (operation.intValue == value)
             {
@@ -71,9 +71,9 @@ public enum LogicalOperator
         return null;
     }
     
-    public static LogicalOperator findByAbbreviation(char abbreviation)
+    public static LogicalOperator findByAbbreviation(final char abbreviation)
     {
-        for (LogicalOperator operation : getAll())
+        for (final LogicalOperator operation : getAll())
         {
             if (operation.abbreviation == abbreviation)
             {
@@ -83,9 +83,9 @@ public enum LogicalOperator
         return null;
     }
     
-    public static LogicalOperator findByName(String name)
+    public static LogicalOperator findByName(final String name)
     {
-        for (LogicalOperator operation : getAll())
+        for (final LogicalOperator operation : getAll())
         {
             if (operation.name().equalsIgnoreCase(name))
             {

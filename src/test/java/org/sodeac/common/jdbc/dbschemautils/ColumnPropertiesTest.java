@@ -57,15 +57,15 @@ public class ColumnPropertiesTest
     
     public static final String DATATBASE_ID = "TESTDOMAIN";
     
-    private EasyMockSupport support = new EasyMockSupport();
+    private final EasyMockSupport support = new EasyMockSupport();
     
     public static List<Object[]> connectionList = null;
     public static final Map<String, Boolean> createdSchema = new HashMap<String, Boolean>();
     
-    private String table1Name = "TableColChar";
-    private String columnIdName = "id";
-    private String columnCharName = "column_char";
-    private String columnNumberName = "column_number";
+    private final String table1Name = "TableColChar";
+    private final String columnIdName = "id";
+    private final String columnCharName = "column_char";
+    private final String columnNumberName = "column_number";
     
     @Parameters
     public static List<Object[]> connections()
@@ -77,7 +77,7 @@ public class ColumnPropertiesTest
         return connectionList = Statics.connections(createdSchema, "dbschema");
     }
     
-    public ColumnPropertiesTest(Callable<TestConnection> connectionFactory)
+    public ColumnPropertiesTest(final Callable<TestConnection> connectionFactory)
     {
         this.testConnectionFactory = connectionFactory;
     }
@@ -88,7 +88,7 @@ public class ColumnPropertiesTest
     @Before
     public void setUp() throws Exception
     {
-        this.testConnection = testConnectionFactory.call();
+        this.testConnection = this.testConnectionFactory.call();
     }
     
     @After
@@ -104,36 +104,36 @@ public class ColumnPropertiesTest
             {
                 this.testConnection.connection.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
     }
     
     @Test
     public void test001100CreateCharColumn() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
         
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATATBASE_ID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATATBASE_ID, this.testConnection.dbmsSchemaName);
         
         // prepare spec for simulation
         Dictionary<ObjectType, Object> schemaDictionary = new Hashtable<>();
         schemaDictionary.put(ObjectType.SCHEMA, schema);
         DBSchemaNodeType.addConsumer(schema, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, table1Name);
+        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, this.table1Name);
         
         // prepare table for simulation
         Dictionary<ObjectType, Object> table1Dictionary = new Hashtable<>();
@@ -141,7 +141,7 @@ public class ColumnPropertiesTest
         table1Dictionary.put(ObjectType.TABLE, table1);
         TableNodeType.addConsumer(table1, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, columnIdName, false, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, this.columnIdName, false, 36);
         columnPK.create(ColumnNodeType.primaryKey);
         
         Dictionary<ObjectType, Object> table1ColumnPKDictionary = new Hashtable<>();
@@ -149,7 +149,7 @@ public class ColumnPropertiesTest
         table1ColumnPKDictionary.put(ObjectType.TABLE, table1);
         table1ColumnPKDictionary.put(ObjectType.COLUMN, columnPK);
         
-        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createVarcharColumn(table1, columnCharName, false, 21);
+        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createVarcharColumn(table1, this.columnCharName, false, 21);
         
         // prepare column for simulation
         
@@ -210,28 +210,28 @@ public class ColumnPropertiesTest
     @Test
     public void test001101CreateCharColumnAgain() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATATBASE_ID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATATBASE_ID, this.testConnection.dbmsSchemaName);
         
         // prepare spec for simulation
         Dictionary<ObjectType, Object> schemaDictionary = new Hashtable<>();
         schemaDictionary.put(ObjectType.SCHEMA, schema);
         DBSchemaNodeType.addConsumer(schema, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, table1Name);
+        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, this.table1Name);
         
         // prepare table for simulation
         Dictionary<ObjectType, Object> table1Dictionary = new Hashtable<>();
@@ -239,7 +239,7 @@ public class ColumnPropertiesTest
         table1Dictionary.put(ObjectType.TABLE, table1);
         TableNodeType.addConsumer(table1, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, columnIdName, false, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, this.columnIdName, false, 36);
         columnPK.create(ColumnNodeType.primaryKey);
         
         Dictionary<ObjectType, Object> table1ColumnPKDictionary = new Hashtable<>();
@@ -247,7 +247,7 @@ public class ColumnPropertiesTest
         table1ColumnPKDictionary.put(ObjectType.TABLE, table1);
         table1ColumnPKDictionary.put(ObjectType.COLUMN, columnPK);
         
-        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createVarcharColumn(table1, columnCharName, false, 21);
+        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createVarcharColumn(table1, this.columnCharName, false, 21);
         
         // prepare column for simulation
         
@@ -292,11 +292,11 @@ public class ColumnPropertiesTest
     @Test
     public void test001102InsertFailed() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         
         PreparedStatement prepStat = null;
         ResultSet rset = null;
@@ -304,14 +304,14 @@ public class ColumnPropertiesTest
         {
             connection.setAutoCommit(false);
             
-            prepStat = connection.prepareStatement("insert into " + table1Name + " (" + columnIdName + ") values (?)");
+            prepStat = connection.prepareStatement("insert into " + this.table1Name + " (" + this.columnIdName + ") values (?)");
             prepStat.setString(1, UUID.randomUUID().toString());
             prepStat.executeUpdate();
             prepStat.close();
             connection.commit();
             
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             connection.rollback();
             return;
@@ -322,12 +322,12 @@ public class ColumnPropertiesTest
             {
                 rset.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
             try
             {
                 prepStat.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
         
         fail("Expected an SQLException to be thrown");
@@ -336,28 +336,28 @@ public class ColumnPropertiesTest
     @Test
     public void test001103SetDefaultToCharColumn() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATATBASE_ID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATATBASE_ID, this.testConnection.dbmsSchemaName);
         
         // prepare spec for simulation
         Dictionary<ObjectType, Object> schemaDictionary = new Hashtable<>();
         schemaDictionary.put(ObjectType.SCHEMA, schema);
         DBSchemaNodeType.addConsumer(schema, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, table1Name);
+        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, this.table1Name);
         
         // prepare table for simulation
         Dictionary<ObjectType, Object> table1Dictionary = new Hashtable<>();
@@ -365,7 +365,7 @@ public class ColumnPropertiesTest
         table1Dictionary.put(ObjectType.TABLE, table1);
         TableNodeType.addConsumer(table1, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, columnIdName, false, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, this.columnIdName, false, 36);
         columnPK.create(ColumnNodeType.primaryKey);
         
         Dictionary<ObjectType, Object> table1ColumnPKDictionary = new Hashtable<>();
@@ -373,7 +373,7 @@ public class ColumnPropertiesTest
         table1ColumnPKDictionary.put(ObjectType.TABLE, table1);
         table1ColumnPKDictionary.put(ObjectType.COLUMN, columnPK);
         
-        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createVarcharColumn(table1, columnCharName, false, 21);
+        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createVarcharColumn(table1, this.columnCharName, false, 21);
         column1.setValue(ColumnNodeType.defaultStaticValue, "'defaultvalue1'");
         column1.setValue(ColumnNodeType.defaultValueClass, IDefaultStaticValue.class);
         
@@ -419,7 +419,7 @@ public class ColumnPropertiesTest
         {
             dbSchemaUtils.adaptSchema(schema);
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             e.printStackTrace();
             throw e;
@@ -430,28 +430,28 @@ public class ColumnPropertiesTest
     @Test
     public void test001104SetDefaultToCharColumnAgain() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATATBASE_ID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATATBASE_ID, this.testConnection.dbmsSchemaName);
         
         // prepare spec for simulation
         Dictionary<ObjectType, Object> schemaDictionary = new Hashtable<>();
         schemaDictionary.put(ObjectType.SCHEMA, schema);
         DBSchemaNodeType.addConsumer(schema, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, table1Name);
+        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, this.table1Name);
         
         // prepare table for simulation
         Dictionary<ObjectType, Object> table1Dictionary = new Hashtable<>();
@@ -459,7 +459,7 @@ public class ColumnPropertiesTest
         table1Dictionary.put(ObjectType.TABLE, table1);
         TableNodeType.addConsumer(table1, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, columnIdName, false, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, this.columnIdName, false, 36);
         columnPK.create(ColumnNodeType.primaryKey);
         
         Dictionary<ObjectType, Object> table1ColumnPKDictionary = new Hashtable<>();
@@ -467,7 +467,7 @@ public class ColumnPropertiesTest
         table1ColumnPKDictionary.put(ObjectType.TABLE, table1);
         table1ColumnPKDictionary.put(ObjectType.COLUMN, columnPK);
         
-        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createVarcharColumn(table1, columnCharName, false, 21);
+        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createVarcharColumn(table1, this.columnCharName, false, 21);
         column1.setValue(ColumnNodeType.defaultStaticValue, "'defaultvalue1'");
         column1.setValue(ColumnNodeType.defaultValueClass, IDefaultStaticValue.class);
         
@@ -514,11 +514,11 @@ public class ColumnPropertiesTest
     @Test
     public void test001105InsertSuccess() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         
         PreparedStatement prepStat = null;
         ResultSet rset = null;
@@ -526,14 +526,14 @@ public class ColumnPropertiesTest
         {
             connection.setAutoCommit(false);
             
-            prepStat = connection.prepareStatement("insert into " + table1Name + " (" + columnIdName + ") values (?)");
+            prepStat = connection.prepareStatement("insert into " + this.table1Name + " (" + this.columnIdName + ") values (?)");
             prepStat.setString(1, UUID.randomUUID().toString());
             prepStat.executeUpdate();
             prepStat.close();
             connection.commit();
             
             int count = 0;
-            prepStat = connection.prepareStatement("select " + columnCharName + " from " + table1Name);
+            prepStat = connection.prepareStatement("select " + this.columnCharName + " from " + this.table1Name);
             rset = prepStat.executeQuery();
             while (rset.next())
             {
@@ -545,7 +545,7 @@ public class ColumnPropertiesTest
             
             assertEquals("rset should contains correct counts of entries", 1, count);
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             e.printStackTrace();
             connection.rollback();
@@ -557,40 +557,40 @@ public class ColumnPropertiesTest
             {
                 rset.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
             try
             {
                 prepStat.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
     }
     
     @Test
     public void test001106UnsetDefaultToCharColumn() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATATBASE_ID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATATBASE_ID, this.testConnection.dbmsSchemaName);
         
         // prepare spec for simulation
         Dictionary<ObjectType, Object> schemaDictionary = new Hashtable<>();
         schemaDictionary.put(ObjectType.SCHEMA, schema);
         DBSchemaNodeType.addConsumer(schema, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, table1Name);
+        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, this.table1Name);
         
         // prepare table for simulation
         Dictionary<ObjectType, Object> table1Dictionary = new Hashtable<>();
@@ -598,7 +598,7 @@ public class ColumnPropertiesTest
         table1Dictionary.put(ObjectType.TABLE, table1);
         TableNodeType.addConsumer(table1, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, columnIdName, false, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, this.columnIdName, false, 36);
         columnPK.create(ColumnNodeType.primaryKey);
         
         Dictionary<ObjectType, Object> table1ColumnPKDictionary = new Hashtable<>();
@@ -606,7 +606,7 @@ public class ColumnPropertiesTest
         table1ColumnPKDictionary.put(ObjectType.TABLE, table1);
         table1ColumnPKDictionary.put(ObjectType.COLUMN, columnPK);
         
-        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createVarcharColumn(table1, columnCharName, false, 21);
+        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createVarcharColumn(table1, this.columnCharName, false, 21);
         
         // prepare column for simulation
         
@@ -654,28 +654,28 @@ public class ColumnPropertiesTest
     @Test
     public void test001107UnsetDefaultToCharColumnAgain() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATATBASE_ID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATATBASE_ID, this.testConnection.dbmsSchemaName);
         
         // prepare spec for simulation
         Dictionary<ObjectType, Object> schemaDictionary = new Hashtable<>();
         schemaDictionary.put(ObjectType.SCHEMA, schema);
         DBSchemaNodeType.addConsumer(schema, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, table1Name);
+        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, this.table1Name);
         
         // prepare table for simulation
         Dictionary<ObjectType, Object> table1Dictionary = new Hashtable<>();
@@ -683,7 +683,7 @@ public class ColumnPropertiesTest
         table1Dictionary.put(ObjectType.TABLE, table1);
         TableNodeType.addConsumer(table1, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, columnIdName, false, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, this.columnIdName, false, 36);
         columnPK.create(ColumnNodeType.primaryKey);
         
         Dictionary<ObjectType, Object> table1ColumnPKDictionary = new Hashtable<>();
@@ -691,7 +691,7 @@ public class ColumnPropertiesTest
         table1ColumnPKDictionary.put(ObjectType.TABLE, table1);
         table1ColumnPKDictionary.put(ObjectType.COLUMN, columnPK);
         
-        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createVarcharColumn(table1, columnCharName, false, 21);
+        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createVarcharColumn(table1, this.columnCharName, false, 21);
         
         // prepare column for simulation
         
@@ -736,11 +736,11 @@ public class ColumnPropertiesTest
     @Test
     public void test001108InsertFailedAgain() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         
         PreparedStatement prepStat = null;
         ResultSet rset = null;
@@ -748,14 +748,14 @@ public class ColumnPropertiesTest
         {
             connection.setAutoCommit(false);
             
-            prepStat = connection.prepareStatement("insert into " + table1Name + " (" + columnIdName + ") values (?)");
+            prepStat = connection.prepareStatement("insert into " + this.table1Name + " (" + this.columnIdName + ") values (?)");
             prepStat.setString(1, UUID.randomUUID().toString());
             prepStat.executeUpdate();
             prepStat.close();
             connection.commit();
             
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             connection.rollback();
             return;
@@ -766,12 +766,12 @@ public class ColumnPropertiesTest
             {
                 rset.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
             try
             {
                 prepStat.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
         
         fail("Expected an SQLException to be thrown");
@@ -780,11 +780,11 @@ public class ColumnPropertiesTest
     @Test
     public void test001120InsertFailedLength() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         
         PreparedStatement prepStat = null;
         ResultSet rset = null;
@@ -792,7 +792,7 @@ public class ColumnPropertiesTest
         {
             connection.setAutoCommit(false);
             
-            prepStat = connection.prepareStatement("insert into " + table1Name + " (" + columnIdName + "," + columnCharName + ") values (?,?)");
+            prepStat = connection.prepareStatement("insert into " + this.table1Name + " (" + this.columnIdName + "," + this.columnCharName + ") values (?,?)");
             prepStat.setString(1, UUID.randomUUID().toString());
             prepStat.setString(2, "aaaaaaaaaabbbbbbbbbbcccccccccc");
             prepStat.executeUpdate();
@@ -800,7 +800,7 @@ public class ColumnPropertiesTest
             connection.commit();
             
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             connection.rollback();
             return;
@@ -811,12 +811,12 @@ public class ColumnPropertiesTest
             {
                 rset.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
             try
             {
                 prepStat.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
         
         fail("Expected an SQLException to be thrown");
@@ -825,28 +825,28 @@ public class ColumnPropertiesTest
     @Test
     public void test001121CharColumnNewLength() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATATBASE_ID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATATBASE_ID, this.testConnection.dbmsSchemaName);
         
         // prepare spec for simulation
         Dictionary<ObjectType, Object> schemaDictionary = new Hashtable<>();
         schemaDictionary.put(ObjectType.SCHEMA, schema);
         DBSchemaNodeType.addConsumer(schema, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, table1Name);
+        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, this.table1Name);
         
         // prepare table for simulation
         Dictionary<ObjectType, Object> table1Dictionary = new Hashtable<>();
@@ -854,7 +854,7 @@ public class ColumnPropertiesTest
         table1Dictionary.put(ObjectType.TABLE, table1);
         TableNodeType.addConsumer(table1, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, columnIdName, false, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, this.columnIdName, false, 36);
         columnPK.create(ColumnNodeType.primaryKey);
         
         Dictionary<ObjectType, Object> table1ColumnPKDictionary = new Hashtable<>();
@@ -862,7 +862,7 @@ public class ColumnPropertiesTest
         table1ColumnPKDictionary.put(ObjectType.TABLE, table1);
         table1ColumnPKDictionary.put(ObjectType.COLUMN, columnPK);
         
-        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createVarcharColumn(table1, columnCharName, false, 42);
+        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createVarcharColumn(table1, this.columnCharName, false, 42);
         
         // prepare column for simulation
         
@@ -910,28 +910,28 @@ public class ColumnPropertiesTest
     @Test
     public void test001122CharColumnNewLengthAgain() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATATBASE_ID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATATBASE_ID, this.testConnection.dbmsSchemaName);
         
         // prepare spec for simulation
         Dictionary<ObjectType, Object> schemaDictionary = new Hashtable<>();
         schemaDictionary.put(ObjectType.SCHEMA, schema);
         DBSchemaNodeType.addConsumer(schema, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, table1Name);
+        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, this.table1Name);
         
         // prepare table for simulation
         Dictionary<ObjectType, Object> table1Dictionary = new Hashtable<>();
@@ -939,7 +939,7 @@ public class ColumnPropertiesTest
         table1Dictionary.put(ObjectType.TABLE, table1);
         TableNodeType.addConsumer(table1, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, columnIdName, false, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, this.columnIdName, false, 36);
         columnPK.create(ColumnNodeType.primaryKey);
         
         Dictionary<ObjectType, Object> table1ColumnPKDictionary = new Hashtable<>();
@@ -947,7 +947,7 @@ public class ColumnPropertiesTest
         table1ColumnPKDictionary.put(ObjectType.TABLE, table1);
         table1ColumnPKDictionary.put(ObjectType.COLUMN, columnPK);
         
-        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createVarcharColumn(table1, columnCharName, false, 42);
+        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createVarcharColumn(table1, this.columnCharName, false, 42);
         
         // prepare column for simulation
         
@@ -992,11 +992,11 @@ public class ColumnPropertiesTest
     @Test
     public void test001123InsertSuccessLength() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         
         PreparedStatement prepStat = null;
         ResultSet rset = null;
@@ -1004,7 +1004,7 @@ public class ColumnPropertiesTest
         {
             connection.setAutoCommit(false);
             
-            prepStat = connection.prepareStatement("insert into " + table1Name + " (" + columnIdName + "," + columnCharName + ") values (?,?)");
+            prepStat = connection.prepareStatement("insert into " + this.table1Name + " (" + this.columnIdName + "," + this.columnCharName + ") values (?,?)");
             prepStat.setString(1, UUID.randomUUID().toString());
             prepStat.setString(2, "aaaaaaaaaabbbbbbbbbbcccccccccc");
             prepStat.executeUpdate();
@@ -1012,7 +1012,7 @@ public class ColumnPropertiesTest
             connection.commit();
             
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             connection.rollback();
             throw e;
@@ -1023,12 +1023,12 @@ public class ColumnPropertiesTest
             {
                 rset.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
             try
             {
                 prepStat.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
         
     }
@@ -1036,28 +1036,28 @@ public class ColumnPropertiesTest
     @Test
     public void test001130CreateNumberColumn() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATATBASE_ID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATATBASE_ID, this.testConnection.dbmsSchemaName);
         
         // prepare spec for simulation
         Dictionary<ObjectType, Object> schemaDictionary = new Hashtable<>();
         schemaDictionary.put(ObjectType.SCHEMA, schema);
         DBSchemaNodeType.addConsumer(schema, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, table1Name);
+        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, this.table1Name);
         
         // prepare table for simulation
         Dictionary<ObjectType, Object> table1Dictionary = new Hashtable<>();
@@ -1065,7 +1065,7 @@ public class ColumnPropertiesTest
         table1Dictionary.put(ObjectType.TABLE, table1);
         TableNodeType.addConsumer(table1, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, columnIdName, false, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, this.columnIdName, false, 36);
         columnPK.create(ColumnNodeType.primaryKey);
         
         Dictionary<ObjectType, Object> table1ColumnPKDictionary = new Hashtable<>();
@@ -1073,7 +1073,7 @@ public class ColumnPropertiesTest
         table1ColumnPKDictionary.put(ObjectType.TABLE, table1);
         table1ColumnPKDictionary.put(ObjectType.COLUMN, columnPK);
         
-        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createSmallIntColumn(table1, columnNumberName, true);
+        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createSmallIntColumn(table1, this.columnNumberName, true);
         
         // prepare column for simulation
         
@@ -1121,28 +1121,28 @@ public class ColumnPropertiesTest
     @Test
     public void test001131CreateNumberColumnAgain() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATATBASE_ID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATATBASE_ID, this.testConnection.dbmsSchemaName);
         
         // prepare spec for simulation
         Dictionary<ObjectType, Object> schemaDictionary = new Hashtable<>();
         schemaDictionary.put(ObjectType.SCHEMA, schema);
         DBSchemaNodeType.addConsumer(schema, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, table1Name);
+        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, this.table1Name);
         
         // prepare table for simulation
         Dictionary<ObjectType, Object> table1Dictionary = new Hashtable<>();
@@ -1150,7 +1150,7 @@ public class ColumnPropertiesTest
         table1Dictionary.put(ObjectType.TABLE, table1);
         TableNodeType.addConsumer(table1, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, columnIdName, false, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, this.columnIdName, false, 36);
         columnPK.create(ColumnNodeType.primaryKey);
         
         Dictionary<ObjectType, Object> table1ColumnPKDictionary = new Hashtable<>();
@@ -1158,7 +1158,7 @@ public class ColumnPropertiesTest
         table1ColumnPKDictionary.put(ObjectType.TABLE, table1);
         table1ColumnPKDictionary.put(ObjectType.COLUMN, columnPK);
         
-        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createSmallIntColumn(table1, columnNumberName, true);
+        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createSmallIntColumn(table1, this.columnNumberName, true);
         
         // prepare column for simulation
         
@@ -1204,28 +1204,28 @@ public class ColumnPropertiesTest
     @Test
     public void test001133UpdateNumberColumn() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATATBASE_ID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATATBASE_ID, this.testConnection.dbmsSchemaName);
         
         // prepare spec for simulation
         Dictionary<ObjectType, Object> schemaDictionary = new Hashtable<>();
         schemaDictionary.put(ObjectType.SCHEMA, schema);
         DBSchemaNodeType.addConsumer(schema, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, table1Name);
+        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, this.table1Name);
         
         // prepare table for simulation
         Dictionary<ObjectType, Object> table1Dictionary = new Hashtable<>();
@@ -1233,7 +1233,7 @@ public class ColumnPropertiesTest
         table1Dictionary.put(ObjectType.TABLE, table1);
         TableNodeType.addConsumer(table1, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, columnIdName, false, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, this.columnIdName, false, 36);
         columnPK.create(ColumnNodeType.primaryKey);
         
         Dictionary<ObjectType, Object> table1ColumnPKDictionary = new Hashtable<>();
@@ -1241,7 +1241,7 @@ public class ColumnPropertiesTest
         table1ColumnPKDictionary.put(ObjectType.TABLE, table1);
         table1ColumnPKDictionary.put(ObjectType.COLUMN, columnPK);
         
-        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createBigIntColumn(table1, columnNumberName, true);
+        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createBigIntColumn(table1, this.columnNumberName, true);
         
         // prepare column for simulation
         
@@ -1290,28 +1290,28 @@ public class ColumnPropertiesTest
     @Test
     public void test001134UpdateNumberColumnAgain() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATATBASE_ID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATATBASE_ID, this.testConnection.dbmsSchemaName);
         
         // prepare spec for simulation
         Dictionary<ObjectType, Object> schemaDictionary = new Hashtable<>();
         schemaDictionary.put(ObjectType.SCHEMA, schema);
         DBSchemaNodeType.addConsumer(schema, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, table1Name);
+        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, this.table1Name);
         
         // prepare table for simulation
         Dictionary<ObjectType, Object> table1Dictionary = new Hashtable<>();
@@ -1319,7 +1319,7 @@ public class ColumnPropertiesTest
         table1Dictionary.put(ObjectType.TABLE, table1);
         TableNodeType.addConsumer(table1, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, columnIdName, false, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, this.columnIdName, false, 36);
         columnPK.create(ColumnNodeType.primaryKey);
         
         Dictionary<ObjectType, Object> table1ColumnPKDictionary = new Hashtable<>();
@@ -1327,7 +1327,7 @@ public class ColumnPropertiesTest
         table1ColumnPKDictionary.put(ObjectType.TABLE, table1);
         table1ColumnPKDictionary.put(ObjectType.COLUMN, columnPK);
         
-        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createBigIntColumn(table1, columnNumberName, true);
+        BranchNode<TableNodeType, ColumnNodeType> column1 = TableNodeType.createBigIntColumn(table1, this.columnNumberName, true);
         
         // prepare column for simulation
         

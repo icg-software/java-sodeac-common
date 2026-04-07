@@ -24,54 +24,54 @@ import java.util.function.Consumer;
 public interface IModifyListener<T> extends BiConsumer<T, T>
 {
     @Override
-    public void accept(T newValue, T oldValue);
+    void accept(T newValue, T oldValue);
     
-    public default boolean isEnabled()
+    default boolean isEnabled()
     {
         return true;
     }
     
-    public default String getNotifyBufferId()
+    default String getNotifyBufferId()
     {
         return null;
     }
     
-    public default void onListenStart(T value) { }
+    default void onListenStart(final T value) { }
     
-    public default void onListenStop(T value) { }
+    default void onListenStop(final T value) { }
     
-    public static <T> IModifyListener<T> onRemove(Consumer<T> consumer)
+    static <T> IModifyListener<T> onRemove(final Consumer<T> consumer)
     {
         return new RemoveListener<T>(consumer);
     }
     
-    public static <T> IModifyListener<T> onCreate(Consumer<T> consumer)
+    static <T> IModifyListener<T> onCreate(final Consumer<T> consumer)
     {
         return new CreateListener<T>(consumer);
     }
     
-    public static <T> IModifyListener<T> onModify(Consumer<T> consumer)
+    static <T> IModifyListener<T> onModify(final Consumer<T> consumer)
     {
         return new ModifyListener<T>(consumer);
     }
     
-    public static <T> IModifyListener<T> onUpdate(BiConsumer<T, T> consumer)
+    static <T> IModifyListener<T> onUpdate(final BiConsumer<T, T> consumer)
     {
         return new UpdateListener<T>(consumer);
     }
     
-    public class RemoveListener<T> implements IModifyListener<T>
+    class RemoveListener<T> implements IModifyListener<T>
     {
         private Consumer<T> consumer = null;
         
-        private RemoveListener(Consumer<T> consumer)
+        private RemoveListener(final Consumer<T> consumer)
         {
             super();
             this.consumer = consumer;
         }
         
         @Override
-        public void accept(T newValue, T oldValue)
+        public void accept(final T newValue, final T oldValue)
         {
             if ((oldValue != null) && (newValue == null))
             {
@@ -84,12 +84,12 @@ public interface IModifyListener<T> extends BiConsumer<T, T>
         {
             final int prime = 31;
             int result = 1;
-            result = prime * result + ((consumer == null) ? 0 : consumer.hashCode());
+            result = prime * result + ((this.consumer == null) ? 0 : this.consumer.hashCode());
             return result;
         }
         
         @Override
-        public boolean equals(Object obj)
+        public boolean equals(final Object obj)
         {
             if (this == obj)
             {
@@ -104,33 +104,29 @@ public interface IModifyListener<T> extends BiConsumer<T, T>
                 return false;
             }
             RemoveListener other = (RemoveListener) obj;
-            if (consumer == null)
+            if (this.consumer == null)
             {
-                if (other.consumer != null)
-                {
-                    return false;
-                }
+                return other.consumer == null;
             }
-            else if (!consumer.equals(other.consumer))
+            else
             {
-                return false;
+                return this.consumer.equals(other.consumer);
             }
-            return true;
         }
     }
     
-    public class CreateListener<T> implements IModifyListener<T>
+    class CreateListener<T> implements IModifyListener<T>
     {
         private Consumer<T> consumer = null;
         
-        private CreateListener(Consumer<T> consumer)
+        private CreateListener(final Consumer<T> consumer)
         {
             super();
             this.consumer = consumer;
         }
         
         @Override
-        public void accept(T newValue, T oldValue)
+        public void accept(final T newValue, final T oldValue)
         {
             if ((oldValue == null) && (newValue != null))
             {
@@ -143,12 +139,12 @@ public interface IModifyListener<T> extends BiConsumer<T, T>
         {
             final int prime = 31;
             int result = 1;
-            result = prime * result + ((consumer == null) ? 0 : consumer.hashCode());
+            result = prime * result + ((this.consumer == null) ? 0 : this.consumer.hashCode());
             return result;
         }
         
         @Override
-        public boolean equals(Object obj)
+        public boolean equals(final Object obj)
         {
             if (this == obj)
             {
@@ -163,33 +159,29 @@ public interface IModifyListener<T> extends BiConsumer<T, T>
                 return false;
             }
             CreateListener other = (CreateListener) obj;
-            if (consumer == null)
+            if (this.consumer == null)
             {
-                if (other.consumer != null)
-                {
-                    return false;
-                }
+                return other.consumer == null;
             }
-            else if (!consumer.equals(other.consumer))
+            else
             {
-                return false;
+                return this.consumer.equals(other.consumer);
             }
-            return true;
         }
     }
     
-    public class UpdateListener<T> implements IModifyListener<T>
+    class UpdateListener<T> implements IModifyListener<T>
     {
         private BiConsumer<T, T> consumer = null;
         
-        private UpdateListener(BiConsumer<T, T> consumer)
+        private UpdateListener(final BiConsumer<T, T> consumer)
         {
             super();
             this.consumer = consumer;
         }
         
         @Override
-        public void accept(T newValue, T oldValue)
+        public void accept(final T newValue, final T oldValue)
         {
             if ((oldValue != null) && (newValue != null) && (!oldValue.equals(newValue)))
             {
@@ -202,12 +194,12 @@ public interface IModifyListener<T> extends BiConsumer<T, T>
         {
             final int prime = 31;
             int result = 1;
-            result = prime * result + ((consumer == null) ? 0 : consumer.hashCode());
+            result = prime * result + ((this.consumer == null) ? 0 : this.consumer.hashCode());
             return result;
         }
         
         @Override
-        public boolean equals(Object obj)
+        public boolean equals(final Object obj)
         {
             if (this == obj)
             {
@@ -222,33 +214,29 @@ public interface IModifyListener<T> extends BiConsumer<T, T>
                 return false;
             }
             UpdateListener other = (UpdateListener) obj;
-            if (consumer == null)
+            if (this.consumer == null)
             {
-                if (other.consumer != null)
-                {
-                    return false;
-                }
+                return other.consumer == null;
             }
-            else if (!consumer.equals(other.consumer))
+            else
             {
-                return false;
+                return this.consumer.equals(other.consumer);
             }
-            return true;
         }
     }
     
-    public class ModifyListener<T> implements IModifyListener<T>
+    class ModifyListener<T> implements IModifyListener<T>
     {
         private Consumer<T> consumer = null;
         
-        private ModifyListener(Consumer<T> consumer)
+        private ModifyListener(final Consumer<T> consumer)
         {
             super();
             this.consumer = consumer;
         }
         
         @Override
-        public void accept(T newValue, T oldValue)
+        public void accept(final T newValue, final T oldValue)
         {
             this.consumer.accept(newValue);
         }
@@ -258,12 +246,12 @@ public interface IModifyListener<T> extends BiConsumer<T, T>
         {
             final int prime = 31;
             int result = 1;
-            result = prime * result + ((consumer == null) ? 0 : consumer.hashCode());
+            result = prime * result + ((this.consumer == null) ? 0 : this.consumer.hashCode());
             return result;
         }
         
         @Override
-        public boolean equals(Object obj)
+        public boolean equals(final Object obj)
         {
             if (this == obj)
             {
@@ -278,18 +266,14 @@ public interface IModifyListener<T> extends BiConsumer<T, T>
                 return false;
             }
             ModifyListener other = (ModifyListener) obj;
-            if (consumer == null)
+            if (this.consumer == null)
             {
-                if (other.consumer != null)
-                {
-                    return false;
-                }
+                return other.consumer == null;
             }
-            else if (!consumer.equals(other.consumer))
+            else
             {
-                return false;
+                return this.consumer.equals(other.consumer);
             }
-            return true;
         }
     }
 }

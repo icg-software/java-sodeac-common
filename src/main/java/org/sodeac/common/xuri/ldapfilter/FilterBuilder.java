@@ -44,7 +44,7 @@ public class FilterBuilder
         private Linker parent = null;
         private CriteriaLinker criteriaLinker = null;
         
-        private Linker(Linker parent, LogicalOperator operator, boolean invert)
+        private Linker(final Linker parent, final LogicalOperator operator, final boolean invert)
         {
             super();
             this.parent = parent;
@@ -56,7 +56,7 @@ public class FilterBuilder
         }
         
         @Override
-        public IOperand criteriaWithName(String criteriaName)
+        public IOperand criteriaWithName(final String criteriaName)
         {
             return new Operand(criteriaName);
         }
@@ -89,14 +89,14 @@ public class FilterBuilder
         {
             private String criteriaName = null;
             
-            private Operand(String criteriaName)
+            private Operand(final String criteriaName)
             {
                 super();
                 this.criteriaName = criteriaName;
             }
             
             @Override
-            public ISatisfiedLinkerBuilder eq(String criteriaValue)
+            public ISatisfiedLinkerBuilder eq(final String criteriaValue)
             {
                 Linker.this.criteriaLinker.addItem
                                               (
@@ -107,7 +107,7 @@ public class FilterBuilder
             }
             
             @Override
-            public ISatisfiedLinkerBuilder notEq(String criteriaValue)
+            public ISatisfiedLinkerBuilder notEq(final String criteriaValue)
             {
                 Linker.this.criteriaLinker.addItem
                                               (
@@ -118,7 +118,7 @@ public class FilterBuilder
             }
             
             @Override
-            public ISatisfiedLinkerBuilder approx(String criteriaValue)
+            public ISatisfiedLinkerBuilder approx(final String criteriaValue)
             {
                 Linker.this.criteriaLinker.addItem
                                               (
@@ -129,7 +129,7 @@ public class FilterBuilder
             }
             
             @Override
-            public ISatisfiedLinkerBuilder notApprox(String criteriaValue)
+            public ISatisfiedLinkerBuilder notApprox(final String criteriaValue)
             {
                 Linker.this.criteriaLinker.addItem
                                               (
@@ -140,7 +140,7 @@ public class FilterBuilder
             }
             
             @Override
-            public ISatisfiedLinkerBuilder gte(String criteriaValue)
+            public ISatisfiedLinkerBuilder gte(final String criteriaValue)
             {
                 Linker.this.criteriaLinker.addItem
                                               (
@@ -151,7 +151,7 @@ public class FilterBuilder
             }
             
             @Override
-            public ISatisfiedLinkerBuilder notGte(String criteriaValue)
+            public ISatisfiedLinkerBuilder notGte(final String criteriaValue)
             {
                 Linker.this.criteriaLinker.addItem
                                               (
@@ -162,7 +162,7 @@ public class FilterBuilder
             }
             
             @Override
-            public ISatisfiedLinkerBuilder lte(String criteriaValue)
+            public ISatisfiedLinkerBuilder lte(final String criteriaValue)
             {
                 Linker.this.criteriaLinker.addItem
                                               (
@@ -173,7 +173,7 @@ public class FilterBuilder
             }
             
             @Override
-            public ISatisfiedLinkerBuilder notLte(String criteriaValue)
+            public ISatisfiedLinkerBuilder notLte(final String criteriaValue)
             {
                 Linker.this.criteriaLinker.addItem
                                               (
@@ -183,7 +183,7 @@ public class FilterBuilder
                 return Linker.this;
             }
             
-            private String escape(String criteriaValue)
+            private String escape(final String criteriaValue)
             {
                 if (criteriaValue == null)
                 {
@@ -216,10 +216,9 @@ public class FilterBuilder
             if
             (
                 (criteriaLinker.getLinkedItemList().size() == 1) &&
-                (criteriaLinker.getLinkedItemList().get(0) instanceof Criteria)
+                (criteriaLinker.getLinkedItemList().get(0) instanceof final Criteria criteria)
             )
             {
-                Criteria criteria = (Criteria) criteriaLinker.getLinkedItemList().get(0);
                 if (criteriaLinker.isInvert())
                 {
                     criteria.setInvert(!criteria.isInvert());
@@ -250,40 +249,40 @@ public class FilterBuilder
     
     public interface ISatisfiedLinkerBuilder extends ILinkerBuilder
     {
-        public ISatisfiedLinkerBuilder closeLinker();
+        ISatisfiedLinkerBuilder closeLinker();
         
-        public IFilterItem build();
+        IFilterItem build();
     }
     
     public interface ILinkerBuilder
     {
-        public IOperand criteriaWithName(String criteriaName);
+        IOperand criteriaWithName(String criteriaName);
         
-        public ILinkerBuilder nestedAndLinker();
+        ILinkerBuilder nestedAndLinker();
         
-        public ILinkerBuilder nestedNandLinker();
+        ILinkerBuilder nestedNandLinker();
         
-        public ILinkerBuilder nestedOrLinker();
+        ILinkerBuilder nestedOrLinker();
         
-        public ILinkerBuilder nestedNorLinker();
+        ILinkerBuilder nestedNorLinker();
         
-        public interface IOperand
+        interface IOperand
         {
-            public ISatisfiedLinkerBuilder eq(String criteriaValue);
+            ISatisfiedLinkerBuilder eq(String criteriaValue);
             
-            public ISatisfiedLinkerBuilder notEq(String criteriaValue);
+            ISatisfiedLinkerBuilder notEq(String criteriaValue);
             
-            public ISatisfiedLinkerBuilder approx(String criteriaValue);
+            ISatisfiedLinkerBuilder approx(String criteriaValue);
             
-            public ISatisfiedLinkerBuilder notApprox(String criteriaValue);
+            ISatisfiedLinkerBuilder notApprox(String criteriaValue);
             
-            public ISatisfiedLinkerBuilder gte(String criteriaValue);
+            ISatisfiedLinkerBuilder gte(String criteriaValue);
             
-            public ISatisfiedLinkerBuilder notGte(String criteriaValue);
+            ISatisfiedLinkerBuilder notGte(String criteriaValue);
             
-            public ISatisfiedLinkerBuilder lte(String criteriaValue);
+            ISatisfiedLinkerBuilder lte(String criteriaValue);
             
-            public ISatisfiedLinkerBuilder notLte(String criteriaValue);
+            ISatisfiedLinkerBuilder notLte(String criteriaValue);
         }
     }
 }

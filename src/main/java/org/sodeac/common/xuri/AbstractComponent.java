@@ -39,7 +39,7 @@ public abstract class AbstractComponent<T> implements IComponent<T>, Serializabl
      *
      * @param componentType type of component
      */
-    protected AbstractComponent(ComponentType componentType)
+    protected AbstractComponent(final ComponentType componentType)
     {
         super();
         this.componentType = componentType;
@@ -58,7 +58,7 @@ public abstract class AbstractComponent<T> implements IComponent<T>, Serializabl
      *
      * @return
      */
-    protected AbstractComponent<T> addSubComponent(T subComponent)
+    protected AbstractComponent<T> addSubComponent(final T subComponent)
     {
         this.subComponents.add(subComponent);
         this.subComponentsImmutable = null;
@@ -108,7 +108,7 @@ public abstract class AbstractComponent<T> implements IComponent<T>, Serializabl
      */
     public String getExpression()
     {
-        return expression;
+        return this.expression;
     }
     
     /**
@@ -116,7 +116,7 @@ public abstract class AbstractComponent<T> implements IComponent<T>, Serializabl
      *
      * @param expression string represents this component part of URI
      */
-    protected void setExpression(String expression)
+    protected void setExpression(final String expression)
     {
         this.expression = expression;
     }
@@ -128,7 +128,7 @@ public abstract class AbstractComponent<T> implements IComponent<T>, Serializabl
      */
     public T getFirst()
     {
-        return first;
+        return this.first;
     }
     
     /**
@@ -138,6 +138,6 @@ public abstract class AbstractComponent<T> implements IComponent<T>, Serializabl
      */
     public T getLast()
     {
-        return last;
+        return this.last;
     }
 }

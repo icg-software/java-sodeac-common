@@ -23,5 +23,5 @@ public interface IPeriodicChannelTask extends IDispatcherChannelTask
      *
      * @return
      */
-    public long getPeriodicRepetitionInterval();
+    long getPeriodicRepetitionInterval();
 }

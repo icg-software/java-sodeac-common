@@ -18,13 +18,13 @@ public interface ExceptionCatchedFunction<T, R> extends Function<T, R>
 {
     
     @Override
-    default R apply(T t)
+    default R apply(final T t)
     {
         try
         {
             return applyWithException(t);
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             if (e instanceof RuntimeException)
             {
@@ -32,7 +32,7 @@ public interface ExceptionCatchedFunction<T, R> extends Function<T, R>
             }
             throw new RuntimeWrappedException(e);
         }
-        catch (Error e)
+        catch (final Error e)
         {
             throw new RuntimeWrappedException(e);
         }
@@ -47,14 +47,14 @@ public interface ExceptionCatchedFunction<T, R> extends Function<T, R>
      *
      * @throws Exception
      */
-    public R applyWithException(T t) throws Exception, Error;
+    R applyWithException(T t) throws Exception, Error;
     
-    public static <T, R> Function<T, R> wrap(ExceptionCatchedFunction<T, R> function)
+    static <T, R> Function<T, R> wrap(final ExceptionCatchedFunction<T, R> function)
     {
         return new Function<T, R>()
         {
             @Override
-            public R apply(T t)
+            public R apply(final T t)
             {
                 return function.apply(t);
             }

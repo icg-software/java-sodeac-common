@@ -80,7 +80,7 @@ public class TaskControlImpl implements ITaskControl
     @Override
     public boolean isInTimeout()
     {
-        return inTimeOut;
+        return this.inTimeOut;
     }
     
     @Override
@@ -95,7 +95,7 @@ public class TaskControlImpl implements ITaskControl
         return this.executionTimeStampSource;
     }
     
-    public void setExecutionTimeStampSource(ExecutionTimestampSource executionTimeStampSource)
+    public void setExecutionTimeStampSource(final ExecutionTimestampSource executionTimeStampSource)
     {
         this.executionTimeStampSource = executionTimeStampSource;
     }
@@ -107,18 +107,18 @@ public class TaskControlImpl implements ITaskControl
     
     protected Object getTaskState()
     {
-        return taskState;
+        return this.taskState;
     }
     
-    protected void setTaskState(Object taskState)
+    protected void setTaskState(final Object taskState)
     {
         this.taskState = taskState;
     }
     
     @Override
-    public boolean setExecutionTimestamp(long executionTimeStamp, boolean force)
+    public boolean setExecutionTimestamp(final long executionTimeStamp, final boolean force)
     {
-        executionTimestampLock.lock();
+        this.executionTimestampLock.lock();
         try
         {
             long old = this.executionTimeStamp;
@@ -135,7 +135,7 @@ public class TaskControlImpl implements ITaskControl
                 this.executionTimeStamp = executionTimeStamp;
                 this.executionTimeStampSource = ITaskControl.ExecutionTimestampSource.WORKER;
                 
-                if (inRun)
+                if (this.inRun)
                 {
                     this.done = false;
                 }
@@ -155,13 +155,13 @@ public class TaskControlImpl implements ITaskControl
         }
         finally
         {
-            executionTimestampLock.unlock();
+            this.executionTimestampLock.unlock();
         }
     }
     
-    public boolean setExecutionTimeStamp(long executionTimeStamp, ITaskControl.ExecutionTimestampSource type, Predicate<SetTimestampRequest> predicate)
+    public boolean setExecutionTimeStamp(final long executionTimeStamp, final ITaskControl.ExecutionTimestampSource type, final Predicate<SetTimestampRequest> predicate)
     {
-        executionTimestampLock.lock();
+        this.executionTimestampLock.lock();
         try
         {
             this.setTimestampRequest.setTimestamp(executionTimeStamp);
@@ -177,7 +177,7 @@ public class TaskControlImpl implements ITaskControl
         }
         finally
         {
-            executionTimestampLock.unlock();
+            this.executionTimestampLock.unlock();
         }
         
     }
@@ -189,7 +189,7 @@ public class TaskControlImpl implements ITaskControl
     }
     
     @Override
-    public long setTimeout(long timeOut)
+    public long setTimeout(final long timeOut)
     {
         long old = this.timeOutValue;
         this.timeOutValue = timeOut;
@@ -202,7 +202,8 @@ public class TaskControlImpl implements ITaskControl
         return this.heartBeatTimeOut;
     }
     
-    public long setHeartbeatTimeout(long heartBeatTimeOut)
+    @Override
+    public long setHeartbeatTimeout(final long heartBeatTimeOut)
     {
         long old = this.heartBeatTimeOut;
         this.heartBeatTimeOut = heartBeatTimeOut;
@@ -216,13 +217,14 @@ public class TaskControlImpl implements ITaskControl
     }
     
     @Override
-    public boolean setStopOnTimeoutFlag(boolean value)
+    public boolean setStopOnTimeoutFlag(final boolean value)
     {
         boolean oldValue = this.stopTaskOnTimeout;
         this.stopTaskOnTimeout = value;
         return oldValue;
     }
     
+    @Override
     public boolean getStopOnTimeoutFlag()
     {
         return this.stopTaskOnTimeout;
@@ -237,7 +239,7 @@ public class TaskControlImpl implements ITaskControl
             return this.timestamp;
         }
         
-        private void setTimestamp(long timestamp)
+        private void setTimestamp(final long timestamp)
         {
             this.timestamp = timestamp;
         }
@@ -259,7 +261,7 @@ public class TaskControlImpl implements ITaskControl
         public static final RescheduleTimestampPredicate INSTANCE = new TaskControlImpl.RescheduleTimestampPredicate();
         
         @Override
-        public boolean test(SetTimestampRequest setTimestampRequest)
+        public boolean test(final SetTimestampRequest setTimestampRequest)
         {
             long old = setTimestampRequest.getTaskControl().getExecutionTimestamp();
             long executionTimeStamp = setTimestampRequest.getTimestamp();
@@ -299,7 +301,7 @@ public class TaskControlImpl implements ITaskControl
         public static final ScheduleTimestampPredicate INSTANCE = new TaskControlImpl.ScheduleTimestampPredicate();
         
         @Override
-        public boolean test(SetTimestampRequest setTimestampRequest)
+        public boolean test(final SetTimestampRequest setTimestampRequest)
         {
             return true;
         }
@@ -321,7 +323,7 @@ public class TaskControlImpl implements ITaskControl
         public static final PeriodicServiceTimestampPredicate INSTANCE = new PeriodicServiceTimestampPredicate();
         
         @Override
-        public boolean test(SetTimestampRequest setTimestampRequest)
+        public boolean test(final SetTimestampRequest setTimestampRequest)
         {
             long old = setTimestampRequest.getTaskControl().getExecutionTimestamp();
             long executionTimeStamp = setTimestampRequest.getTimestamp();

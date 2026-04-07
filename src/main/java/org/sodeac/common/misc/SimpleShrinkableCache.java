@@ -34,25 +34,25 @@ public class SimpleShrinkableCache<K, V>
     private Map<K, Long> accessIndex = null;
     private Map<K, V> view = null;
     
-    public V put(K key, V value)
+    public V put(final K key, final V value)
     {
         this.accessIndex.put(key, this.accessSequence++);
         return this.map.put(key, value);
     }
     
-    public V get(K key)
+    public V get(final K key)
     {
         this.accessIndex.put(key, this.accessSequence++);
         return this.map.get(key);
     }
     
-    public V remove(K key)
+    public V remove(final K key)
     {
         this.accessIndex.remove(key);
         return this.map.remove(key);
     }
     
-    public boolean containsKey(K key)
+    public boolean containsKey(final K key)
     {
         return this.map.containsKey(key);
     }
@@ -66,10 +66,10 @@ public class SimpleShrinkableCache<K, V>
     
     public Map<K, V> getView()
     {
-        return view;
+        return this.view;
     }
     
-    public void shrink(int maxSize, BiConsumer<K, V> removedEntriesConsumer)
+    public void shrink(int maxSize, final BiConsumer<K, V> removedEntriesConsumer)
     {
         if (maxSize < 0)
         {
@@ -84,7 +84,7 @@ public class SimpleShrinkableCache<K, V>
         
         Collections.sort(entries, (e1, e2) -> Long.compare(e2.getValue(), e1.getValue()));
         
-        for (Map.Entry<K, Long> entry : entries)
+        for (final Map.Entry<K, Long> entry : entries)
         {
             if (maxSize-- > 0)
             {
@@ -107,7 +107,7 @@ public class SimpleShrinkableCache<K, V>
         {
             entries.clear();
         }
-        catch (Exception e) { }
+        catch (final Exception e) { }
     }
     
     public static class ThreadSafeShrinkableCache<K, V> extends SimpleShrinkableCache<K, V>
@@ -120,81 +120,87 @@ public class SimpleShrinkableCache<K, V>
         
         private Lock lock = null;
         
-        public V put(K key, V value)
+        @Override
+        public V put(final K key, final V value)
         {
-            lock.lock();
+            this.lock.lock();
             try
             {
                 return super.put(key, value);
             }
             finally
             {
-                lock.unlock();
+                this.lock.unlock();
             }
         }
         
-        public V get(K key)
+        @Override
+        public V get(final K key)
         {
-            lock.lock();
+            this.lock.lock();
             try
             {
                 return super.get(key);
             }
             finally
             {
-                lock.unlock();
+                this.lock.unlock();
             }
         }
         
-        public V remove(K key)
+        @Override
+        public V remove(final K key)
         {
-            lock.lock();
+            this.lock.lock();
             try
             {
                 return super.remove(key);
             }
             finally
             {
-                lock.unlock();
+                this.lock.unlock();
             }
         }
         
+        @Override
         public void clear()
         {
-            lock.lock();
+            this.lock.lock();
             try
             {
                 super.clear();
             }
             finally
             {
-                lock.unlock();
+                this.lock.unlock();
             }
         }
         
-        public boolean containsKey(K key)
+        @Override
+        public boolean containsKey(final K key)
         {
-            lock.lock();
+            this.lock.lock();
             try
             {
                 return super.containsKey(key);
             }
             finally
             {
-                lock.unlock();
+                this.lock.unlock();
             }
         }
         
-        public void shrink(int maxSize, BiConsumer<K, V> removedEntriesConsumer)
+        @Override
+        public void shrink(final int maxSize, final BiConsumer<K, V> removedEntriesConsumer)
         {
-            lock.lock();
+            this.lock.lock();
             try
             {
                 super.shrink(maxSize, removedEntriesConsumer);
             }
             finally
             {
-                lock.unlock();
+                this.lock.unlock();
             }
         }
     }

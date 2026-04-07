@@ -11,6 +11,7 @@
 package org.sodeac.common.jdbc;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -45,9 +46,7 @@ public class TypedTreeJDBCHelper
     public enum MASK
     {ALL, PK_COLUMN, COLUMNS, LEAFNODE_COLUMNS, BRANCHNODE_COLUMNS}
     
-    ;
-    
-    public static TableNode parseTableNode(INodeType nodeType, MASK... masks)
+    public static TableNode parseTableNode(final INodeType nodeType, final MASK... masks)
     {
         TableNode tableNode = new TypedTreeJDBCHelper().new TableNode();
         tableNode.nodeType = nodeType;
@@ -62,19 +61,16 @@ public class TypedTreeJDBCHelper
         {
             maskIndex.add(MASK.ALL);
         }
-        for (int i = 0; i < masks.length; i++)
-        {
-            maskIndex.add(masks[i]);
-        }
+        Collections.addAll(maskIndex, masks);
         
         BranchNodeMetaModel defaultInstance = (BranchNodeMetaModel) nodeType.getValueDefaultInstance();
         
         SQLTable table = (SQLTable) nodeType.getTypeClass().getAnnotation(SQLTable.class);
-        SQLReplace[] replaces = (SQLReplace[]) nodeType.referencedByField().getAnnotationsByType(SQLReplace.class);
+        SQLReplace[] replaces = nodeType.referencedByField().getAnnotationsByType(SQLReplace.class);
         
-        for (SQLReplace replace : replaces)
+        for (final SQLReplace replace : replaces)
         {
-            for (SQLTable replacedTable : replace.table())
+            for (final SQLTable replacedTable : replace.table())
             {
                 table = replacedTable;
             }
@@ -105,7 +101,7 @@ public class TypedTreeJDBCHelper
             ColumnNode parentPKColumnNode = null;
             BranchNodeMetaModel defaultInstanceParent = ModelRegistry.getBranchNodeMetaModel(nodeType.getParentNodeClass());
             SQLTable tableParent = (SQLTable) nodeType.getParentNodeClass().getAnnotation(SQLTable.class);
-            for (LeafNodeType<BranchNodeMetaModel, ?> leafNodeType : defaultInstanceParent.getLeafNodeTypeList())
+            for (final LeafNodeType<BranchNodeMetaModel, ?> leafNodeType : defaultInstanceParent.getLeafNodeTypeList())
             {
                 SQLColumn sqlColumn = leafNodeType.referencedByField().getAnnotation(SQLColumn.class);
                 SQLPrimaryKey primaryKey = leafNodeType.referencedByField().getAnnotation(SQLPrimaryKey.class);
@@ -116,7 +112,7 @@ public class TypedTreeJDBCHelper
                         throw new IllegalArgumentException("Multiple PKs not suppoerted");
                     }
                     
-                    SQLSequence sequence = (SQLSequence) leafNodeType.referencedByField().getAnnotation(SQLSequence.class);
+                    SQLSequence sequence = leafNodeType.referencedByField().getAnnotation(SQLSequence.class);
                     
                     parentPKColumnNode = tableNode.new ColumnNode();
                     
@@ -260,7 +256,7 @@ public class TypedTreeJDBCHelper
                     resolveAutoColumn(tableNode.referencedByColumnNode);
                 }
                 
-                for (SQLIndex sqlIndex : nodeType.referencedByField().getAnnotationsByType(SQLIndex.class))
+                for (final SQLIndex sqlIndex : nodeType.referencedByField().getAnnotationsByType(SQLIndex.class))
                 {
                     if (tableNode.referencedByColumnNode.indexSet == null)
                     {
@@ -276,7 +272,7 @@ public class TypedTreeJDBCHelper
                     }
                 }
                 
-                for (SQLUniqueIndex sqlIndex : nodeType.referencedByField().getAnnotationsByType(SQLUniqueIndex.class))
+                for (final SQLUniqueIndex sqlIndex : nodeType.referencedByField().getAnnotationsByType(SQLUniqueIndex.class))
                 {
                     if (tableNode.referencedByColumnNode.uniqueIndexSet == null)
                     {
@@ -298,30 +294,30 @@ public class TypedTreeJDBCHelper
         
         if ((maskIndex.contains(MASK.ALL) || maskIndex.contains(MASK.COLUMNS) || maskIndex.contains(MASK.LEAFNODE_COLUMNS) || maskIndex.contains(MASK.PK_COLUMN)))
         {
-            for (LeafNodeType leafNodeType : defaultInstance.getLeafNodeTypeList())
+            for (final LeafNodeType leafNodeType : defaultInstance.getLeafNodeTypeList())
             {
-                SQLColumn sqlColumn = (SQLColumn) leafNodeType.referencedByField().getAnnotation(SQLColumn.class);
-                SQLPrimaryKey primaryKey = (SQLPrimaryKey) leafNodeType.referencedByField().getAnnotation(SQLPrimaryKey.class);
-                SQLSequence sequence = (SQLSequence) leafNodeType.referencedByField().getAnnotation(SQLSequence.class);
+                SQLColumn sqlColumn = leafNodeType.referencedByField().getAnnotation(SQLColumn.class);
+                SQLPrimaryKey primaryKey = leafNodeType.referencedByField().getAnnotation(SQLPrimaryKey.class);
+                SQLSequence sequence = leafNodeType.referencedByField().getAnnotation(SQLSequence.class);
                 
-                for (SQLReplace replace : replaces)
+                for (final SQLReplace replace : replaces)
                 {
                     if (!leafNodeType.getNodeName().equals(replace.nodeName()))
                     {
                         continue;
                     }
-                    for (SQLColumn replacedColumn : replace.column())
+                    for (final SQLColumn replacedColumn : replace.column())
                     {
                         
                         sqlColumn = replacedColumn;
                         break;
                     }
-                    for (SQLPrimaryKey replacedPrimaryKey : replace.primaryKey())
+                    for (final SQLPrimaryKey replacedPrimaryKey : replace.primaryKey())
                     {
                         primaryKey = replacedPrimaryKey;
                         break;
                     }
-                    for (SQLSequence replacedSequence : replace.sequence())
+                    for (final SQLSequence replacedSequence : replace.sequence())
                     {
                         sequence = replacedSequence;
                         break;
@@ -389,7 +385,7 @@ public class TypedTreeJDBCHelper
                 
                 resolveAutoColumn(columnNode);
                 
-                for (SQLIndex sqlIndex : leafNodeType.referencedByField().getAnnotationsByType(SQLIndex.class))
+                for (final SQLIndex sqlIndex : leafNodeType.referencedByField().getAnnotationsByType(SQLIndex.class))
                 {
                     if (columnNode.indexSet == null)
                     {
@@ -405,7 +401,7 @@ public class TypedTreeJDBCHelper
                     }
                 }
                 
-                for (SQLUniqueIndex sqlIndex : leafNodeType.referencedByField().getAnnotationsByType(SQLUniqueIndex.class))
+                for (final SQLUniqueIndex sqlIndex : leafNodeType.referencedByField().getAnnotationsByType(SQLUniqueIndex.class))
                 {
                     if (columnNode.uniqueIndexSet == null)
                     {
@@ -460,19 +456,19 @@ public class TypedTreeJDBCHelper
         
         if ((maskIndex.contains(MASK.ALL) || maskIndex.contains(MASK.COLUMNS) || maskIndex.contains(MASK.BRANCHNODE_COLUMNS)))
         {
-            for (BranchNodeType branchNodeType : defaultInstance.getBranchNodeTypeList())
+            for (final BranchNodeType branchNodeType : defaultInstance.getBranchNodeTypeList())
             {
                 
-                SQLColumn sqlColumn = (SQLColumn) branchNodeType.referencedByField().getAnnotation(SQLColumn.class);
-                SQLReferencedByColumn sqlReferencedByColumn = (SQLReferencedByColumn) branchNodeType.referencedByField().getAnnotation(SQLReferencedByColumn.class);
+                SQLColumn sqlColumn = branchNodeType.referencedByField().getAnnotation(SQLColumn.class);
+                SQLReferencedByColumn sqlReferencedByColumn = branchNodeType.referencedByField().getAnnotation(SQLReferencedByColumn.class);
                 
-                for (SQLReplace replace : replaces)
+                for (final SQLReplace replace : replaces)
                 {
                     if (!branchNodeType.getNodeName().equals(replace.nodeName()))
                     {
                         continue;
                     }
-                    for (SQLColumn replacedColumn : replace.column())
+                    for (final SQLColumn replacedColumn : replace.column())
                     {
                         sqlColumn = replacedColumn;
                         break;
@@ -567,7 +563,7 @@ public class TypedTreeJDBCHelper
                 
                 resolveAutoColumn(columnNode);
                 
-                for (SQLIndex sqlIndex : branchNodeType.referencedByField().getAnnotationsByType(SQLIndex.class))
+                for (final SQLIndex sqlIndex : branchNodeType.referencedByField().getAnnotationsByType(SQLIndex.class))
                 {
                     if (columnNode.indexSet == null)
                     {
@@ -583,7 +579,7 @@ public class TypedTreeJDBCHelper
                     }
                 }
                 
-                for (SQLUniqueIndex sqlIndex : branchNodeType.referencedByField().getAnnotationsByType(SQLUniqueIndex.class))
+                for (final SQLUniqueIndex sqlIndex : branchNodeType.referencedByField().getAnnotationsByType(SQLUniqueIndex.class))
                 {
                     if (columnNode.uniqueIndexSet == null)
                     {
@@ -618,68 +614,68 @@ public class TypedTreeJDBCHelper
         private boolean tableInsertable = true;
         private boolean tableUpdatable = true;
         private ColumnNode primaryKeyNode = null;
-        private List<ColumnNode> columnList = new ArrayList<TypedTreeJDBCHelper.TableNode.ColumnNode>();
+        private final List<ColumnNode> columnList = new ArrayList<TypedTreeJDBCHelper.TableNode.ColumnNode>();
         
         private ColumnNode referencedByColumnNode = null;
         
         public INodeType getNodeType()
         {
-            return nodeType;
+            return this.nodeType;
         }
         
         public String getTableName()
         {
-            return tableName;
+            return this.tableName;
         }
         
         public String getTableCatalog()
         {
-            return tableCatalog;
+            return this.tableCatalog;
         }
         
         public String getTableSchema()
         {
-            return tableSchema;
+            return this.tableSchema;
         }
         
         public boolean isTableReadable()
         {
-            return tableReadable;
+            return this.tableReadable;
         }
         
         public boolean isTableInsertable()
         {
-            return tableInsertable;
+            return this.tableInsertable;
         }
         
         public boolean isTableUpdatable()
         {
-            return tableUpdatable;
+            return this.tableUpdatable;
         }
         
         public ColumnNode getPrimaryKeyNode()
         {
-            return primaryKeyNode;
+            return this.primaryKeyNode;
         }
         
         public List<ColumnNode> getColumnList()
         {
-            return columnList;
+            return this.columnList;
         }
         
         public ColumnNode getReferencedByColumnNode()
         {
-            return referencedByColumnNode;
+            return this.referencedByColumnNode;
         }
         
         public boolean isTableSkipSchemaGeneration()
         {
-            return tableSkipSchemaGeneration;
+            return this.tableSkipSchemaGeneration;
         }
         
         public Class<? extends TypedTreeMetaModel<?>> getModelClass()
         {
-            return modelClass;
+            return this.modelClass;
         }
         
         public class ColumnNode
@@ -732,182 +728,182 @@ public class TypedTreeJDBCHelper
             
             public String getTableName()
             {
-                return tableName;
+                return this.tableName;
             }
             
             public String getTableCatalog()
             {
-                return tableCatalog;
+                return this.tableCatalog;
             }
             
             public String getTableSchema()
             {
-                return tableSchema;
+                return this.tableSchema;
             }
             
             public boolean isTableReadable()
             {
-                return tableReadable;
+                return this.tableReadable;
             }
             
             public boolean isTableInsertable()
             {
-                return tableInsertable;
+                return this.tableInsertable;
             }
             
             public boolean isTableUpdatable()
             {
-                return tableUpdatable;
+                return this.tableUpdatable;
             }
             
             public LeafNodeType getLeafNodeType()
             {
-                return leafNodeType;
+                return this.leafNodeType;
             }
             
             public BranchNodeType getBranchNodeType()
             {
-                return branchNodeType;
+                return this.branchNodeType;
             }
             
             public BranchNodeListType getBranchNodeListType()
             {
-                return branchNodeListType;
+                return this.branchNodeListType;
             }
             
             public Class getJavaType()
             {
-                return javaType;
+                return this.javaType;
             }
             
             public String getColumnName()
             {
-                return name;
+                return this.name;
             }
             
             public boolean isNullable()
             {
-                return nullable;
+                return this.nullable;
             }
             
             public SQLColumnType getSqlType()
             {
-                return sqlType;
+                return this.sqlType;
             }
             
             public int getLength()
             {
-                return length;
+                return this.length;
             }
             
             public boolean isReadable()
             {
-                return readable;
+                return this.readable;
             }
             
             public boolean isInsertable()
             {
-                return insertable;
+                return this.insertable;
             }
             
             public boolean isUpdatable()
             {
-                return updatable;
+                return this.updatable;
             }
             
             public String getStaticDefaultValue()
             {
-                return staticDefaultValue;
+                return this.staticDefaultValue;
             }
             
             public Class<? extends IDefaultValueExpressionDriver> getDefaultValueExpressionDriver()
             {
-                return defaultValueExpressionDriver;
+                return this.defaultValueExpressionDriver;
             }
             
             public Class<? extends Consumer<TypedTreeJDBCCruder.ConvertEvent>> getOnInsert()
             {
-                return onInsert;
+                return this.onInsert;
             }
             
             public Class<? extends Consumer<TypedTreeJDBCCruder.ConvertEvent>> getOnUpdate()
             {
-                return onUpdate;
+                return this.onUpdate;
             }
             
             public Class<? extends Consumer<TypedTreeJDBCCruder.ConvertEvent>> getOnUpsert()
             {
-                return onUpsert;
+                return this.onUpsert;
             }
             
             public Class<? extends Function<?, ?>> getNode2JDBC()
             {
-                return node2JDBC;
+                return this.node2JDBC;
             }
             
             public Class<? extends Function<?, ?>> getJDBC2Node()
             {
-                return JDBC2Node;
+                return this.JDBC2Node;
             }
             
             public boolean isPrimaryKey()
             {
-                return isPrimaryKey;
+                return this.isPrimaryKey;
             }
             
             public boolean isPrimaryKeyAutoGenerated()
             {
-                return primaryKeyAutoGenerated;
+                return this.primaryKeyAutoGenerated;
             }
             
             public boolean isSequence()
             {
-                return isSequence;
+                return this.isSequence;
             }
             
             public String getSequenceName()
             {
-                return sequenceName;
+                return this.sequenceName;
             }
             
             public Long getSequenceMinValue()
             {
-                return sequenceMinValue;
+                return this.sequenceMinValue;
             }
             
             public Long getSequenceMaxValue()
             {
-                return sequenceMaxValue;
+                return this.sequenceMaxValue;
             }
             
             public Long getSequenceCache()
             {
-                return sequenceCache;
+                return this.sequenceCache;
             }
             
             public Boolean getSequenceCycle()
             {
-                return sequenceCycle;
+                return this.sequenceCycle;
             }
             
             public ColumnNode getReferencedPrimaryKey()
             {
-                return referencedPrimaryKey;
+                return this.referencedPrimaryKey;
             }
             
             public Set<String> getIndexSet()
             {
-                return indexSet;
+                return this.indexSet;
             }
             
             public Set<String> getUniqueIndexSet()
             {
-                return uniqueIndexSet;
+                return this.uniqueIndexSet;
             }
             
             public Consumer<TypedTreeJDBCCruder.ConvertEvent> getOnInsertInstance() throws InstantiationException, IllegalAccessException
             {
-                if (onInsert == null)
+                if (this.onInsert == null)
                 {
                     return null;
                 }
@@ -918,7 +914,7 @@ public class TypedTreeJDBCHelper
                     return instance;
                 }
                 
-                instance = onInsert.newInstance();
+                instance = this.onInsert.newInstance();
                 this.onInsertInstance = instance;
                 
                 return instance;
@@ -926,7 +922,7 @@ public class TypedTreeJDBCHelper
             
             public Consumer<TypedTreeJDBCCruder.ConvertEvent> getOnUpdateInstance() throws InstantiationException, IllegalAccessException
             {
-                if (onUpdate == null)
+                if (this.onUpdate == null)
                 {
                     return null;
                 }
@@ -937,7 +933,7 @@ public class TypedTreeJDBCHelper
                     return instance;
                 }
                 
-                instance = onUpdate.newInstance();
+                instance = this.onUpdate.newInstance();
                 this.onUpdateInstance = instance;
                 
                 return instance;
@@ -945,7 +941,7 @@ public class TypedTreeJDBCHelper
             
             public Consumer<TypedTreeJDBCCruder.ConvertEvent> getOnUpsertInstance() throws InstantiationException, IllegalAccessException
             {
-                if (onUpsert == null)
+                if (this.onUpsert == null)
                 {
                     return null;
                 }
@@ -956,7 +952,7 @@ public class TypedTreeJDBCHelper
                     return instance;
                 }
                 
-                instance = onUpsert.newInstance();
+                instance = this.onUpsert.newInstance();
                 this.onUpsertInstance = instance;
                 
                 return instance;
@@ -964,7 +960,7 @@ public class TypedTreeJDBCHelper
             
             public Function<Object, Object> getNode2JDBCInstance() throws InstantiationException, IllegalAccessException
             {
-                if (node2JDBC == null)
+                if (this.node2JDBC == null)
                 {
                     return null;
                 }
@@ -974,14 +970,14 @@ public class TypedTreeJDBCHelper
                     return instance;
                 }
                 
-                instance = (Function) node2JDBC.newInstance();
+                instance = (Function) this.node2JDBC.newInstance();
                 this.node2JDBCInstance = instance;
                 return instance;
             }
             
             public Function<Object, Object> getJDBC2NodeInstance() throws InstantiationException, IllegalAccessException
             {
-                if (JDBC2Node == null)
+                if (this.JDBC2Node == null)
                 {
                     return null;
                 }
@@ -991,14 +987,14 @@ public class TypedTreeJDBCHelper
                     return instance;
                 }
                 
-                instance = (Function) JDBC2Node.newInstance();
+                instance = (Function) this.JDBC2Node.newInstance();
                 this.JDBC2NodeInstance = instance;
                 return instance;
             }
         }
     }
     
-    protected static void resolveAutoColumn(ColumnNode columnNode)
+    protected static void resolveAutoColumn(final ColumnNode columnNode)
     {
         if (columnNode.sqlType == SQLColumnType.AUTO)
         {
@@ -1038,7 +1034,7 @@ public class TypedTreeJDBCHelper
         }
     }
     
-    public static ColumnType getColumnType(SQLColumnType type, Class clazz)
+    public static ColumnType getColumnType(SQLColumnType type, final Class clazz)
     {
         if (type == SQLColumnType.AUTO)
         {

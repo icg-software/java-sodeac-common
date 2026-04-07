@@ -34,7 +34,7 @@ public class CloseableCollector implements AutoCloseable
     private LinkedList<AutoCloseable> closeableList = null;
     private Lock lock = null;
     
-    public <T extends AutoCloseable> T register(T closeable)
+    public <T extends AutoCloseable> T register(final T closeable)
     {
         if (closeable == null)
         {
@@ -43,24 +43,24 @@ public class CloseableCollector implements AutoCloseable
         
         try
         {
-            lock.lock();
+            this.lock.lock();
             try
             {
                 this.closeableList.add(closeable);
             }
             finally
             {
-                lock.unlock();
+                this.lock.unlock();
             }
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             try
             {
                 closeable.close();
             }
-            catch (Exception e2) { }
-            catch (Error e2) { }
+            catch (final Exception e2) { }
+            catch (final Error e2) { }
             
             throw e;
         }
@@ -85,7 +85,7 @@ public class CloseableCollector implements AutoCloseable
      *
      * @return closable to close
      */
-    public <T extends AutoCloseable> T close(T closeable)
+    public <T extends AutoCloseable> T close(final T closeable)
     {
         if (closeable == null)
         {
@@ -113,8 +113,8 @@ public class CloseableCollector implements AutoCloseable
             {
                 closeable.close();
             }
-            catch (Exception e) { }
-            catch (Error e) { }
+            catch (final Exception e) { }
+            catch (final Error e) { }
         }
         
         return closeable;
@@ -132,8 +132,8 @@ public class CloseableCollector implements AutoCloseable
                     AutoCloseable closeable = this.closeableList.removeLast();
                     closeable.close();
                 }
-                catch (Exception e) { }
-                catch (Error e) { }
+                catch (final Exception e) { }
+                catch (final Error e) { }
             }
         }
         finally

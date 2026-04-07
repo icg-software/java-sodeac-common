@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,20 +49,20 @@ import jakarta.xml.bind.annotation.XmlElement;
 // quick and dirty - poc
 public class XMLMarshaller
 {
-    private String mainNamespace;
+    private final String mainNamespace;
     
-    private Map<Class<? extends BranchNodeMetaModel>, XMLNodeMarshaller> nodeMarshallerIndex;
-    private Map<String, Function<Object, String>> toStringIndex = StringConverter.toStringIndex();
-    private Map<String, Function<String, Object>> fromStringIndex = StringConverter.fromStringIndex();
+    private final Map<Class<? extends BranchNodeMetaModel>, XMLNodeMarshaller> nodeMarshallerIndex;
+    private final Map<String, Function<Object, String>> toStringIndex = StringConverter.toStringIndex();
+    private final Map<String, Function<String, Object>> fromStringIndex = StringConverter.fromStringIndex();
     
-    protected XMLMarshaller(String namespace)
+    protected XMLMarshaller(final String namespace)
     {
         super();
         this.mainNamespace = namespace;
         this.nodeMarshallerIndex = new HashMap<Class<? extends BranchNodeMetaModel>, XMLMarshaller.XMLNodeMarshaller>();
     }
     
-    protected void publish(BranchNodeMetaModel model)
+    protected void publish(final BranchNodeMetaModel model)
     {
         Class<? extends BranchNodeMetaModel> nodeModelClass = model.getClass();
         if (this.nodeMarshallerIndex.containsKey(nodeModelClass))
@@ -77,10 +78,10 @@ public class XMLMarshaller
     protected void build()
     {
         
-        for (Entry<Class<? extends BranchNodeMetaModel>, XMLNodeMarshaller> entry : this.nodeMarshallerIndex.entrySet())
+        for (final Entry<Class<? extends BranchNodeMetaModel>, XMLNodeMarshaller> entry : this.nodeMarshallerIndex.entrySet())
         {
             BranchNodeMetaModel metaModel = ModelRegistry.getBranchNodeMetaModel(entry.getValue().nodeModelClass);
-            for (INodeType<?, ?> nodeType : metaModel.getNodeTypeList())
+            for (final INodeType<?, ?> nodeType : metaModel.getNodeTypeList())
             {
                 if (nodeType instanceof LeafNodeType)
                 {
@@ -97,7 +98,7 @@ public class XMLMarshaller
                     unmarshalContainer.nodeType = nodeType;
                     unmarshalContainer.parseTextOnly = true;
                     unmarshalContainer.nodeName = nodeType.getNodeName();
-                    unmarshalContainer.stringToValue = fromStringIndex.get(nodeType.getTypeClass().getCanonicalName());
+                    unmarshalContainer.stringToValue = this.fromStringIndex.get(nodeType.getTypeClass().getCanonicalName());
                     unmarshalContainer.marshaller = this.nodeMarshallerIndex.get(nodeType.getTypeClass());
                     
                     if (unmarshalContainer.stringToValue == null)
@@ -107,7 +108,7 @@ public class XMLMarshaller
                     
                     SubMarshallerContainer marshalContainer = new SubMarshallerContainer();
                     marshalContainer.nodeType = nodeType;
-                    marshalContainer.valueToString = toStringIndex.get(nodeType.getTypeClass().getCanonicalName());
+                    marshalContainer.valueToString = this.toStringIndex.get(nodeType.getTypeClass().getCanonicalName());
                     
                     marshalContainer.ignoreIfNull = nodeType.referencedByField().getAnnotation(IgnoreIfNull.class) != null;
                     
@@ -270,7 +271,7 @@ public class XMLMarshaller
         }
     }
     
-    public void marshal(BranchNode<?, ?> node, OutputStream os, boolean closeStream) throws IOException, XMLStreamException, FactoryConfigurationError
+    public void marshal(final BranchNode<?, ?> node, final OutputStream os, final boolean closeStream) throws IOException, XMLStreamException, FactoryConfigurationError
     {
         try
         {
@@ -279,7 +280,7 @@ public class XMLMarshaller
             {
                 throw new IllegalStateException("Marshaller not found for " + node.getNodeType().getTypeClass());
             }
-            XMLStreamWriter out = XMLOutputFactory.newInstance().createXMLStreamWriter(new OutputStreamWriter(os, "UTF-8"));
+            XMLStreamWriter out = XMLOutputFactory.newInstance().createXMLStreamWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8));
             try
             {
                 String rootName = node.getNodeType().getNodeName();
@@ -312,7 +313,7 @@ public class XMLMarshaller
         }
     }
     
-    public void unmarshal(BranchNode<?, ?> node, InputStream is, boolean closeStream) throws IOException, XMLStreamException, FactoryConfigurationError
+    public void unmarshal(final BranchNode<?, ?> node, final InputStream is, final boolean closeStream) throws IOException, XMLStreamException, FactoryConfigurationError
     {
         try
         {
@@ -372,7 +373,7 @@ public class XMLMarshaller
     
     private class XMLNodeMarshaller
     {
-        protected XMLNodeMarshaller(Class<? extends BranchNodeMetaModel> nodeModelClass)
+        protected XMLNodeMarshaller(final Class<? extends BranchNodeMetaModel> nodeModelClass)
         {
             super();
             this.nodeModelClass = nodeModelClass;
@@ -385,19 +386,19 @@ public class XMLMarshaller
         protected Map<String, SubUnmarshallerContainer> attributeSubUnmarshallerIndex = new HashMap<>();
         protected Map<String, SubUnmarshallerContainer> elementSubUnmarshallerIndex = new HashMap<>();
         
-        protected void marshal(XMLStreamWriter out, BranchNode<? extends BranchNodeMetaModel, ? extends BranchNodeMetaModel> node) throws XMLStreamException
+        protected void marshal(final XMLStreamWriter out, final BranchNode<? extends BranchNodeMetaModel, ? extends BranchNodeMetaModel> node) throws XMLStreamException
         {
-            for (SubMarshallerContainer container : attributeSubMarshallerList)
+            for (final SubMarshallerContainer container : this.attributeSubMarshallerList)
             {
                 container.runner.accept(out, node);
             }
-            for (SubMarshallerContainer container : elementMarshallerList)
+            for (final SubMarshallerContainer container : this.elementMarshallerList)
             {
                 container.runner.accept(out, node);
             }
         }
         
-        protected void unmarshal(ReaderInput readerInput, BranchNode<?, ?> node) throws XMLStreamException
+        protected void unmarshal(final ReaderInput readerInput, final BranchNode<?, ?> node) throws XMLStreamException
         {
             SubUnmarshallerContainer unmarshallerContainerForText = null;
             boolean isNull = false;
@@ -439,7 +440,7 @@ public class XMLMarshaller
                     unmarshallerContainerForText = null;
                     String name = readerInput.getReader().getLocalName();
                     
-                    SubUnmarshallerContainer unmarshallerContainer = elementSubUnmarshallerIndex.get(name);
+                    SubUnmarshallerContainer unmarshallerContainer = this.elementSubUnmarshallerIndex.get(name);
                     if (unmarshallerContainer != null)
                     {
                         if (unmarshallerContainer.parseTextOnly)
@@ -546,17 +547,17 @@ public class XMLMarshaller
         protected String singleName = null;
         protected boolean listElement = true;
         
-        protected void runLeafNodeAsAttribute(ReaderInput readerInput, BranchNode<?, ?> node)
+        protected void runLeafNodeAsAttribute(final ReaderInput readerInput, final BranchNode<?, ?> node)
         {
-            node.setValue((LeafNodeType) nodeType, stringToValue.apply(readerInput.getValue()));
+            node.setValue((LeafNodeType) this.nodeType, this.stringToValue.apply(readerInput.getValue()));
         }
         
-        protected void runLeafNodeAsElement(ReaderInput readerInput, BranchNode node)
+        protected void runLeafNodeAsElement(final ReaderInput readerInput, final BranchNode node)
         {
-            node.setValue((LeafNodeType) nodeType, stringToValue.apply(readerInput.getValue()));
+            node.setValue((LeafNodeType) this.nodeType, this.stringToValue.apply(readerInput.getValue()));
         }
         
-        protected void runBranchNode(ReaderInput readerInput, BranchNode node)
+        protected void runBranchNode(final ReaderInput readerInput, final BranchNode node)
         {
             try
             {
@@ -593,15 +594,15 @@ public class XMLMarshaller
                         return;
                     }
                 }
-                BranchNode child = node.create((BranchNodeType) nodeType);
-                marshaller.defaultSetterUnmarshalling.forEach(d -> d.accept(child));
+                BranchNode child = node.create((BranchNodeType) this.nodeType);
+                this.marshaller.defaultSetterUnmarshalling.forEach(d -> d.accept(child));
                 
                 for (int i = 0; i < attributeCount; i++)
                 {
                     String attributeName = readerInput.getReader().getAttributeLocalName(i);
                     String attributeValue = readerInput.getReader().getAttributeValue(i);
                     
-                    SubUnmarshallerContainer unmarshallerContainer = marshaller.attributeSubUnmarshallerIndex.get(attributeName);
+                    SubUnmarshallerContainer unmarshallerContainer = this.marshaller.attributeSubUnmarshallerIndex.get(attributeName);
                     if (unmarshallerContainer != null)
                     {
                         readerInput.setValue(attributeValue);
@@ -609,15 +610,15 @@ public class XMLMarshaller
                     }
                 }
                 readerInput.setValue(null);
-                marshaller.unmarshal(readerInput, child);
+                this.marshaller.unmarshal(readerInput, child);
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
-                throw new RuntimeException("" + nodeType + " " + e.getMessage(), e);
+                throw new RuntimeException(this.nodeType + " " + e.getMessage(), e);
             }
         }
         
-        protected void runBranchNodeListWithListElement(ReaderInput readerInput, BranchNode node)
+        protected void runBranchNodeListWithListElement(final ReaderInput readerInput, final BranchNode node)
         {
             try
             {
@@ -626,15 +627,15 @@ public class XMLMarshaller
                     switch (readerInput.getReader().next())
                     {
                     case XMLStreamConstants.START_ELEMENT:
-                        BranchNode child = node.create((BranchNodeListType) nodeType);
-                        marshaller.defaultSetterUnmarshalling.forEach(d -> d.accept(child));
+                        BranchNode child = node.create((BranchNodeListType) this.nodeType);
+                        this.marshaller.defaultSetterUnmarshalling.forEach(d -> d.accept(child));
                         int attributeCount = readerInput.getReader().getAttributeCount();
                         for (int i = 0; i < attributeCount; i++)
                         {
                             String attributeName = readerInput.getReader().getAttributeLocalName(i);
                             String attributeValue = readerInput.getReader().getAttributeValue(i);
                             
-                            SubUnmarshallerContainer unmarshallerContainer = marshaller.attributeSubUnmarshallerIndex.get(attributeName);
+                            SubUnmarshallerContainer unmarshallerContainer = this.marshaller.attributeSubUnmarshallerIndex.get(attributeName);
                             if (unmarshallerContainer != null)
                             {
                                 readerInput.setValue(attributeValue);
@@ -642,7 +643,7 @@ public class XMLMarshaller
                             }
                         }
                         readerInput.setValue(null);
-                        marshaller.unmarshal(readerInput, child);
+                        this.marshaller.unmarshal(readerInput, child);
                         break;
                     
                     case XMLStreamConstants.END_ELEMENT:
@@ -651,25 +652,25 @@ public class XMLMarshaller
                     }
                 }
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
-                throw new RuntimeException("" + nodeType + " " + e.getMessage(), e);
+                throw new RuntimeException(this.nodeType + " " + e.getMessage(), e);
             }
         }
         
-        protected void runBranchNodeListWithoutListElement(ReaderInput readerInput, BranchNode<?, ?> node)
+        protected void runBranchNodeListWithoutListElement(final ReaderInput readerInput, final BranchNode<?, ?> node)
         {
             try
             {
-                BranchNode child = node.create((BranchNodeListType) nodeType);
-                marshaller.defaultSetterUnmarshalling.forEach(d -> d.accept(child));
+                BranchNode child = node.create((BranchNodeListType) this.nodeType);
+                this.marshaller.defaultSetterUnmarshalling.forEach(d -> d.accept(child));
                 int attributeCount = readerInput.getReader().getAttributeCount();
                 for (int i = 0; i < attributeCount; i++)
                 {
                     String attributeName = readerInput.getReader().getAttributeLocalName(i);
                     String attributeValue = readerInput.getReader().getAttributeValue(i);
                     
-                    SubUnmarshallerContainer unmarshallerContainer = marshaller.attributeSubUnmarshallerIndex.get(attributeName);
+                    SubUnmarshallerContainer unmarshallerContainer = this.marshaller.attributeSubUnmarshallerIndex.get(attributeName);
                     if (unmarshallerContainer != null)
                     {
                         readerInput.setValue(attributeValue);
@@ -677,11 +678,11 @@ public class XMLMarshaller
                     }
                 }
                 readerInput.setValue(null);
-                marshaller.unmarshal(readerInput, child);
+                this.marshaller.unmarshal(readerInput, child);
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
-                throw new RuntimeException("" + nodeType + " " + e.getMessage(), e);
+                throw new RuntimeException(this.nodeType + " " + e.getMessage(), e);
             }
         }
     }
@@ -700,52 +701,52 @@ public class XMLMarshaller
         boolean ignoreIfFalse = false;
         boolean ignoreIfEmpty = false;
         
-        protected void runLeafNodeAsElement(XMLStreamWriter out, BranchNode<?, ?> node)
+        protected void runLeafNodeAsElement(final XMLStreamWriter out, final BranchNode<?, ?> node)
         {
             try
             {
                 
-                LeafNode<?, ?> leafNode = node.get((LeafNodeType) nodeType);
+                LeafNode<?, ?> leafNode = node.get((LeafNodeType) this.nodeType);
                 if (leafNode.getValue() == null)
                 {
-                    if (ignoreIfNull)
+                    if (this.ignoreIfNull)
                     {
                         return;
                     }
-                    out.writeStartElement(nodeName);
+                    out.writeStartElement(this.nodeName);
                     out.writeAttribute("null", Boolean.TRUE.toString());
                     out.writeEndElement();
                 }
                 else
                 {
-                    if ((ignoreIfFalse) && (!((Boolean) leafNode.getValue()).booleanValue()))
+                    if ((this.ignoreIfFalse) && (!((Boolean) leafNode.getValue()).booleanValue()))
                     {
                         return;
                     }
-                    if ((ignoreIfTrue) && ((Boolean) leafNode.getValue()).booleanValue())
+                    if ((this.ignoreIfTrue) && ((Boolean) leafNode.getValue()).booleanValue())
                     {
                         return;
                     }
-                    out.writeStartElement(nodeName);
+                    out.writeStartElement(this.nodeName);
                     out.writeCharacters(this.valueToString.apply(leafNode.getValue()));
                     out.writeEndElement();
                 }
                 
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
-                throw new RuntimeException("" + nodeType + " " + e.getMessage(), e);
+                throw new RuntimeException(this.nodeType + " " + e.getMessage(), e);
             }
         }
         
-        protected void runLeafNodeAsAttribute(XMLStreamWriter out, BranchNode<?, ?> node)
+        protected void runLeafNodeAsAttribute(final XMLStreamWriter out, final BranchNode<?, ?> node)
         {
             try
             {
-                LeafNode<?, ?> leafNode = node.get((LeafNodeType) nodeType);
+                LeafNode<?, ?> leafNode = node.get((LeafNodeType) this.nodeType);
                 if (leafNode.getValue() == null)
                 {
-                    if (ignoreIfNull)
+                    if (this.ignoreIfNull)
                     {
                         return;
                     }
@@ -753,72 +754,72 @@ public class XMLMarshaller
                 }
                 else
                 {
-                    if ((ignoreIfFalse) && (!((Boolean) leafNode.getValue()).booleanValue()))
+                    if ((this.ignoreIfFalse) && (!((Boolean) leafNode.getValue()).booleanValue()))
                     {
                         return;
                     }
-                    if ((ignoreIfTrue) && ((Boolean) leafNode.getValue()).booleanValue())
+                    if ((this.ignoreIfTrue) && ((Boolean) leafNode.getValue()).booleanValue())
                     {
                         return;
                     }
                     out.writeAttribute(this.nodeName, this.valueToString.apply(leafNode.getValue()));
                 }
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
-                throw new RuntimeException("" + nodeType + " " + e.getMessage(), e);
+                throw new RuntimeException(this.nodeType + " " + e.getMessage(), e);
             }
         }
         
-        protected void runBranchNode(XMLStreamWriter out, BranchNode<?, ?> node)
+        protected void runBranchNode(final XMLStreamWriter out, final BranchNode<?, ?> node)
         {
             try
             {
-                BranchNode<?, ?> branchNode = node.get((BranchNodeType) nodeType);
+                BranchNode<?, ?> branchNode = node.get((BranchNodeType) this.nodeType);
                 if (branchNode == null)
                 {
-                    if (ignoreIfNull)
+                    if (this.ignoreIfNull)
                     {
                         return;
                     }
-                    out.writeStartElement(nodeName);
+                    out.writeStartElement(this.nodeName);
                     out.writeAttribute("null", Boolean.TRUE.toString());
                     out.writeEndElement();
                 }
                 else
                 {
-                    out.writeStartElement(nodeName);
+                    out.writeStartElement(this.nodeName);
                     this.marshaller.marshal(out, branchNode);
                     out.writeEndElement();
                 }
                 
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
-                throw new RuntimeException("" + nodeType + " " + e.getMessage(), e);
+                throw new RuntimeException(this.nodeType + " " + e.getMessage(), e);
             }
         }
         
-        protected void runBranchNodeList(XMLStreamWriter out, BranchNode<?, ?> node)
+        protected void runBranchNodeList(final XMLStreamWriter out, final BranchNode<?, ?> node)
         {
             try
             {
-                List<BranchNode<?, ?>> branchNodeList = node.getUnmodifiableNodeList((BranchNodeListType) nodeType);
+                List<BranchNode<?, ?>> branchNodeList = node.getUnmodifiableNodeList((BranchNodeListType) this.nodeType);
                 
-                if (ignoreIfEmpty && branchNodeList.isEmpty())
+                if (this.ignoreIfEmpty && branchNodeList.isEmpty())
                 {
                     return;
                 }
                 
-                if (listElement)
+                if (this.listElement)
                 {
                     
-                    out.writeStartElement(nodeName);
+                    out.writeStartElement(this.nodeName);
                 }
                 
-                for (BranchNode<?, ?> branchNode : branchNodeList)
+                for (final BranchNode<?, ?> branchNode : branchNodeList)
                 {
-                    out.writeStartElement(singleName);
+                    out.writeStartElement(this.singleName);
                     if (branchNode == null)
                     {
                         out.writeAttribute("null", Boolean.TRUE.toString());
@@ -829,20 +830,20 @@ public class XMLMarshaller
                     }
                     out.writeEndElement();
                 }
-                if (listElement)
+                if (this.listElement)
                 {
                     out.writeEndElement();
                 }
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
-                throw new RuntimeException("" + nodeType + " " + e.getMessage(), e);
+                throw new RuntimeException(this.nodeType + " " + e.getMessage(), e);
             }
         }
         
     }
     
-    public static XMLMarshaller getForTreeModel(Class<? extends TypedTreeMetaModel<?>> modelClass)
+    public static XMLMarshaller getForTreeModel(final Class<? extends TypedTreeMetaModel<?>> modelClass)
     {
         ParseXMLMarshallerHandler xmlMarsallerHandler = new ParseXMLMarshallerHandler(modelClass);
         
@@ -857,7 +858,7 @@ public class XMLMarshaller
         private XMLMarshaller marshaller = null;
         private volatile boolean buildDone = false;
         
-        public ParseXMLMarshallerHandler(Class<? extends TypedTreeMetaModel<?>> modelClass)
+        public ParseXMLMarshallerHandler(final Class<? extends TypedTreeMetaModel<?>> modelClass)
         {
             super();
             
@@ -866,7 +867,7 @@ public class XMLMarshaller
             Domain domain = modelClass.getDeclaredAnnotation(Domain.class);
             if (domain != null)
             {
-                namespace = "http://" + domain.name() + "/xmlns/" + domain.module() + "/v" + versionString;
+                this.namespace = "http://" + domain.name() + "/xmlns/" + domain.module() + "/v" + versionString;
             }
             else
             {
@@ -881,33 +882,33 @@ public class XMLMarshaller
                     }
                     domainName = domainName + packageSplit[i - 1];
                 }
-                namespace = "http://" + domainName + "/xmlns/" + modelClass.getSimpleName().toLowerCase() + "/v" + versionString;
+                this.namespace = "http://" + domainName + "/xmlns/" + modelClass.getSimpleName().toLowerCase() + "/v" + versionString;
             }
             
-            this.marshaller = new XMLMarshaller(namespace);
+            this.marshaller = new XMLMarshaller(this.namespace);
         }
         
         @Override
-        public void startModel(BranchNodeMetaModel model, Set<INodeType<BranchNodeMetaModel, ?>> references)
+        public void startModel(final BranchNodeMetaModel model, final Set<INodeType<BranchNodeMetaModel, ?>> references)
         {
             ITypedTreeModelParserHandler.super.startModel(model, references);
-            marshaller.publish(model);
+            this.marshaller.publish(model);
         }
         
         @Override
-        public void endModel(BranchNodeMetaModel model, Set<INodeType<BranchNodeMetaModel, ?>> references)
+        public void endModel(final BranchNodeMetaModel model, final Set<INodeType<BranchNodeMetaModel, ?>> references)
         {
             ITypedTreeModelParserHandler.super.endModel(model, references);
         }
         
         @Override
-        public void onNodeType(BranchNodeMetaModel model, INodeType<BranchNodeMetaModel, ?> nodeType) { }
+        public void onNodeType(final BranchNodeMetaModel model, final INodeType<BranchNodeMetaModel, ?> nodeType) { }
         
         public XMLMarshaller getXMLMarshaller()
         {
-            if (!buildDone)
+            if (!this.buildDone)
             {
-                buildDone = true;
+                this.buildDone = true;
                 this.marshaller.build();
             }
             return this.marshaller;
@@ -922,20 +923,20 @@ public class XMLMarshaller
         
         protected XMLStreamReader getReader()
         {
-            return reader;
+            return this.reader;
         }
         
-        protected void setReader(XMLStreamReader reader)
+        protected void setReader(final XMLStreamReader reader)
         {
             this.reader = reader;
         }
         
         protected String getValue()
         {
-            return value;
+            return this.value;
         }
         
-        protected void setValue(String value)
+        protected void setValue(final String value)
         {
             this.value = value;
         }

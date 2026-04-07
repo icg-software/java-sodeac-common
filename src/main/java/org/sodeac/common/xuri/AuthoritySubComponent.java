@@ -37,10 +37,10 @@ public class AuthoritySubComponent implements IExtensible, Serializable
     private char prefixDelimiter = ':';
     private char postfixDelimiter = ':';
     
-    protected AuthoritySubComponent(String expression, String value)
+    protected AuthoritySubComponent(final String expression, final String value)
     {
         super();
-        extensions = new ArrayList<IExtension<?>>();
+        this.extensions = new ArrayList<IExtension<?>>();
         this.expression = expression;
         this.value = value;
     }
@@ -50,7 +50,7 @@ public class AuthoritySubComponent implements IExtensible, Serializable
      *
      * @param expression
      */
-    protected void setExpression(String expression)
+    protected void setExpression(final String expression)
     {
         this.expression = expression;
     }
@@ -60,7 +60,7 @@ public class AuthoritySubComponent implements IExtensible, Serializable
      *
      * @param delimiter
      */
-    protected void setPrefixDelimiter(char delimiter)
+    protected void setPrefixDelimiter(final char delimiter)
     {
         this.prefixDelimiter = delimiter;
     }
@@ -72,7 +72,7 @@ public class AuthoritySubComponent implements IExtensible, Serializable
      */
     public char getPrefixDelimiter()
     {
-        return prefixDelimiter;
+        return this.prefixDelimiter;
     }
     
     /**
@@ -80,7 +80,7 @@ public class AuthoritySubComponent implements IExtensible, Serializable
      *
      * @param postfixDelimiter
      */
-    protected void setPostfixDelimiter(char postfixDelimiter)
+    protected void setPostfixDelimiter(final char postfixDelimiter)
     {
         this.postfixDelimiter = postfixDelimiter;
     }
@@ -92,7 +92,7 @@ public class AuthoritySubComponent implements IExtensible, Serializable
      */
     public char getPostfixDelimiter()
     {
-        return postfixDelimiter;
+        return this.postfixDelimiter;
     }
     
     /**
@@ -100,7 +100,7 @@ public class AuthoritySubComponent implements IExtensible, Serializable
      *
      * @param extension
      */
-    protected void addExtension(IExtension<?> extension)
+    protected void addExtension(final IExtension<?> extension)
     {
         if (this.extensions == null)
         {
@@ -112,7 +112,7 @@ public class AuthoritySubComponent implements IExtensible, Serializable
     }
     
     @Override
-    public IExtension<?> getExtension(String type)
+    public IExtension<?> getExtension(final String type)
     {
         List<IExtension<?>> extensionList = getExtensionList();
         
@@ -120,7 +120,7 @@ public class AuthoritySubComponent implements IExtensible, Serializable
         {
             return extensionList.get(0);
         }
-        for (IExtension<?> extension : extensionList)
+        for (final IExtension<?> extension : extensionList)
         {
             if (type.equals(extension.getType()))
             {
@@ -133,7 +133,7 @@ public class AuthoritySubComponent implements IExtensible, Serializable
     @Override
     public List<IExtension<?>> getExtensionList()
     {
-        List<IExtension<?>> extensionList = extensionsImmutable;
+        List<IExtension<?>> extensionList = this.extensionsImmutable;
         if (extensionList == null)
         {
             extensionList = this.extensionsImmutable;
@@ -148,10 +148,10 @@ public class AuthoritySubComponent implements IExtensible, Serializable
     }
     
     @Override
-    public List<IExtension<?>> getExtensionList(String type)
+    public List<IExtension<?>> getExtensionList(final String type)
     {
         List<IExtension<?>> extensionList = new ArrayList<IExtension<?>>();
-        for (IExtension<?> extension : getExtensionList())
+        for (final IExtension<?> extension : getExtensionList())
         {
             if (type.equals(extension.getType()))
             {
@@ -168,7 +168,7 @@ public class AuthoritySubComponent implements IExtensible, Serializable
      */
     public String getExpression()
     {
-        return expression;
+        return this.expression;
     }
     
     /**
@@ -178,7 +178,7 @@ public class AuthoritySubComponent implements IExtensible, Serializable
      */
     public String getValue()
     {
-        return value;
+        return this.value;
     }
     
 }

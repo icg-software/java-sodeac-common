@@ -14,7 +14,7 @@ import org.sodeac.common.xuri.URI;
 
 public interface ISessionDrivenConnectionFactory
 {
-    public URI getServiceURI();
+    URI getServiceURI();
     
-    public void setup(IServiceConnection connection);
+    void setup(IServiceConnection connection);
 }

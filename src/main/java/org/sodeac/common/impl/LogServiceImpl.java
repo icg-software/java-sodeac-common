@@ -71,20 +71,22 @@ public class LogServiceImpl implements ILogService
         this.xmlMarshaller = ModelRegistry.getTypedTreeMetaModel(CoreTreeModel.class).getXMLMarshaller();
     }
     
-    public LogServiceImpl addLoggerBackend(Consumer<BranchNode<?, LogEventNodeType>> logger)
+    @Override
+    public LogServiceImpl addLoggerBackend(final Consumer<BranchNode<?, LogEventNodeType>> logger)
     {
-        if (!backendList.contains(logger))
+        if (!this.backendList.contains(logger))
         {
-            backendList.add(logger);
+            this.backendList.add(logger);
         }
         return this;
     }
     
-    public LogServiceImpl removeLoggerBackend(Consumer<BranchNode<?, LogEventNodeType>> logger)
+    @Override
+    public LogServiceImpl removeLoggerBackend(final Consumer<BranchNode<?, LogEventNodeType>> logger)
     {
-        while (backendList.contains(logger))
+        while (this.backendList.contains(logger))
         {
-            backendList.remove(logger);
+            this.backendList.remove(logger);
         }
         return this;
     }
@@ -107,35 +109,35 @@ public class LogServiceImpl implements ILogService
     }
     
     @Override
-    public ILogService setDefaultDomain(String domain)
+    public ILogService setDefaultDomain(final String domain)
     {
         this.defaultDomain = domain;
         return this;
     }
     
     @Override
-    public ILogService setDefaultModule(String module)
+    public ILogService setDefaultModule(final String module)
     {
         this.defaultModule = module;
         return this;
     }
     
     @Override
-    public ILogService setDefaultTask(String task)
+    public ILogService setDefaultTask(final String task)
     {
         this.defaultTask = task;
         return this;
     }
     
     @Override
-    public ILogService setDefaultNode(UUID node)
+    public ILogService setDefaultNode(final UUID node)
     {
         this.defaultNode = node;
         return this;
     }
     
     @Override
-    public ILogService setDefaultSource(String source)
+    public ILogService setDefaultSource(final String source)
     {
         this.defaultSource = source;
         return this;
@@ -153,7 +155,7 @@ public class LogServiceImpl implements ILogService
     }
     
     @Override
-    public ILogService setAutoDispose(boolean autoDispose)
+    public ILogService setAutoDispose(final boolean autoDispose)
     {
         this.autoDispose = autoDispose;
         return this;
@@ -224,7 +226,7 @@ public class LogServiceImpl implements ILogService
         }
         
         @Override
-        public ILogEventBuilder setDomain(String domain)
+        public ILogEventBuilder setDomain(final String domain)
         {
             Objects.nonNull(this.logEventType);
             this.domain = domain;
@@ -232,7 +234,7 @@ public class LogServiceImpl implements ILogService
         }
         
         @Override
-        public ILogEventBuilder setModule(String module)
+        public ILogEventBuilder setModule(final String module)
         {
             Objects.nonNull(this.logEventType);
             this.module = module;
@@ -240,28 +242,28 @@ public class LogServiceImpl implements ILogService
         }
         
         @Override
-        public ILogEventBuilder setTask(String task)
+        public ILogEventBuilder setTask(final String task)
         {
             this.task = task;
             return this;
         }
         
         @Override
-        public ILogEventBuilder setURI(String uri)
+        public ILogEventBuilder setURI(final String uri)
         {
             this.uri = uri;
             return this;
         }
         
         @Override
-        public ILogEventBuilder setNode(UUID node)
+        public ILogEventBuilder setNode(final UUID node)
         {
             this.node = node;
             return this;
         }
         
         @Override
-        public ILogEventBuilder setSource(String source)
+        public ILogEventBuilder setSource(final String source)
         {
             Objects.nonNull(this.logEventType);
             this.source = source;
@@ -269,7 +271,7 @@ public class LogServiceImpl implements ILogService
         }
         
         @Override
-        public ILogEventBuilder setFormat(String format)
+        public ILogEventBuilder setFormat(final String format)
         {
             Objects.nonNull(this.logEventType);
             this.format = format;
@@ -277,7 +279,7 @@ public class LogServiceImpl implements ILogService
         }
         
         @Override
-        public ILogEventBuilder setMessage(String message)
+        public ILogEventBuilder setMessage(final String message)
         {
             Objects.nonNull(this.logEventType);
             this.messageString = message;
@@ -285,7 +287,7 @@ public class LogServiceImpl implements ILogService
         }
         
         @Override
-        public ILogEventBuilder addProperty(String key, String value)
+        public ILogEventBuilder addProperty(final String key, final String value)
         {
             Objects.nonNull(this.logEventType);
             LogPropertyBuilder property = new LogPropertyBuilder();
@@ -297,7 +299,7 @@ public class LogServiceImpl implements ILogService
         }
         
         @Override
-        public ILogEventBuilder addProperty(String key, String value, String format)
+        public ILogEventBuilder addProperty(final String key, final String value, final String format)
         {
             Objects.nonNull(this.logEventType);
             LogPropertyBuilder property = new LogPropertyBuilder();
@@ -310,7 +312,7 @@ public class LogServiceImpl implements ILogService
         }
         
         @Override
-        public ILogEventBuilder addProperty(String key, String value, String format, String domain)
+        public ILogEventBuilder addProperty(final String key, final String value, final String format, final String domain)
         {
             Objects.nonNull(this.logEventType);
             LogPropertyBuilder property = new LogPropertyBuilder();
@@ -324,7 +326,7 @@ public class LogServiceImpl implements ILogService
         }
         
         @Override
-        public ILogEventBuilder addTag(String tag)
+        public ILogEventBuilder addTag(final String tag)
         {
             Objects.nonNull(this.logEventType);
             LogPropertyBuilder property = new LogPropertyBuilder();
@@ -335,7 +337,7 @@ public class LogServiceImpl implements ILogService
         }
         
         @Override
-        public ILogEventBuilder addComment(String comment)
+        public ILogEventBuilder addComment(final String comment)
         {
             Objects.nonNull(this.logEventType);
             LogPropertyBuilder property = new LogPropertyBuilder();
@@ -346,7 +348,7 @@ public class LogServiceImpl implements ILogService
         }
         
         @Override
-        public ILogEventBuilder addComment(String comment, String id, String format)
+        public ILogEventBuilder addComment(final String comment, final String id, final String format)
         {
             Objects.nonNull(this.logEventType);
             LogPropertyBuilder property = new LogPropertyBuilder();
@@ -359,7 +361,7 @@ public class LogServiceImpl implements ILogService
         }
         
         @Override
-        public ILogEventBuilder addThrowable(Throwable throwable)
+        public ILogEventBuilder addThrowable(final Throwable throwable)
         {
             Objects.nonNull(this.logEventType);
             LogPropertyBuilder property = new LogPropertyBuilder();
@@ -372,7 +374,7 @@ public class LogServiceImpl implements ILogService
         }
         
         @Override
-        public ILogEventBuilder addStacktrace(StackTraceElement[] stacktrace)
+        public ILogEventBuilder addStacktrace(final StackTraceElement[] stacktrace)
         {
             Objects.nonNull(this.logEventType);
             LogPropertyBuilder property = new LogPropertyBuilder();
@@ -387,10 +389,7 @@ public class LogServiceImpl implements ILogService
         {
             StackTraceElement[] fullStacktrace = Thread.currentThread().getStackTrace();
             StackTraceElement[] stacktrace = new StackTraceElement[fullStacktrace.length - 2];
-            for (int i = 0; i < stacktrace.length; i++)
-            {
-                stacktrace[i] = fullStacktrace[i + 2];
-            }
+            System.arraycopy(fullStacktrace, 2, stacktrace, 0, stacktrace.length);
             return this.addStacktrace(stacktrace);
         }
         
@@ -401,23 +400,23 @@ public class LogServiceImpl implements ILogService
             
             if (LogServiceImpl.this.getWriteLogLevel().getIntValue() > this.logLevel.getIntValue())
             {
-                if (properties != null)
+                if (this.properties != null)
                 {
-                    for (LogPropertyBuilder propertyBuilder : properties)
+                    for (final LogPropertyBuilder propertyBuilder : this.properties)
                     {
                         propertyBuilder.dispose();
                     }
-                    properties.clear();
+                    this.properties.clear();
                 }
                 
-                domain = null;
-                module = null;
-                source = null;
-                format = null;
-                logEventType = null;
-                logLevel = null;
-                messageString = null;
-                properties = null;
+                this.domain = null;
+                this.module = null;
+                this.source = null;
+                this.format = null;
+                this.logEventType = null;
+                this.logLevel = null;
+                this.messageString = null;
+                this.properties = null;
                 
                 return LogServiceImpl.this;
             }
@@ -434,26 +433,26 @@ public class LogServiceImpl implements ILogService
             cal.set(Calendar.MILLISECOND, 0);
             
             logEvent
-                .setValue(LogEventNodeType.type, logEventType.name())
-                .setValue(LogEventNodeType.logLevelName, logLevel.name())
-                .setValue(LogEventNodeType.logLevelValue, logLevel.getIntValue())
-                .setValue(LogEventNodeType.domain, domain)
-                .setValue(LogEventNodeType.module, module)
-                .setValue(LogEventNodeType.task, task)
-                .setValue(LogEventNodeType.uri, uri)
+                .setValue(LogEventNodeType.type, this.logEventType.name())
+                .setValue(LogEventNodeType.logLevelName, this.logLevel.name())
+                .setValue(LogEventNodeType.logLevelValue, this.logLevel.getIntValue())
+                .setValue(LogEventNodeType.domain, this.domain)
+                .setValue(LogEventNodeType.module, this.module)
+                .setValue(LogEventNodeType.task, this.task)
+                .setValue(LogEventNodeType.uri, this.uri)
                 .setValue(LogEventNodeType.createNodeId, this.node)
                 .setValue(LogEventNodeType.persistNodeId, this.node)
-                .setValue(LogEventNodeType.createClientURI, source)
-                .setValue(LogEventNodeType.persistClientURI, source)
-                .setValue(LogEventNodeType.format, format)
+                .setValue(LogEventNodeType.createClientURI, this.source)
+                .setValue(LogEventNodeType.persistClientURI, this.source)
+                .setValue(LogEventNodeType.format, this.format)
                 .setValue(LogEventNodeType.timestamp, now)
                 .setValue(LogEventNodeType.date, cal.getTime())
                 .setValue(LogEventNodeType.time, now);
             
             logEvent.setValue(LogEventNodeType.message, this.messageString);
-            if (properties != null)
+            if (this.properties != null)
             {
-                for (LogPropertyBuilder propertyBuilder : properties)
+                for (final LogPropertyBuilder propertyBuilder : this.properties)
                 {
                     BranchNode<LogEventNodeType, LogPropertyNodeType> property = logEvent.create(LogEventNodeType.properties)
                                                                                          .setValue(LogPropertyNodeType.type, propertyBuilder.type.name())
@@ -470,11 +469,11 @@ public class LogServiceImpl implements ILogService
                         try
                         {
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                            xmlMarshaller.marshal(nodeFromThrowable, baos, true);
+                            LogServiceImpl.this.xmlMarshaller.marshal(nodeFromThrowable, baos, true);
                             property.setValue(LogPropertyNodeType.value, baos.toString());
                             baos = null;
                         }
-                        catch (Exception e)
+                        catch (final Exception e)
                         {
                             throw new RuntimeException(e);
                         }
@@ -488,11 +487,11 @@ public class LogServiceImpl implements ILogService
                         try
                         {
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                            xmlMarshaller.marshal(nodeFromStacktrace, baos, true);
+                            LogServiceImpl.this.xmlMarshaller.marshal(nodeFromStacktrace, baos, true);
                             property.setValue(LogPropertyNodeType.value, baos.toString());
                             baos = null;
                         }
-                        catch (Exception e)
+                        catch (final Exception e)
                         {
                             throw new RuntimeException(e);
                         }
@@ -502,23 +501,23 @@ public class LogServiceImpl implements ILogService
                     
                     propertyBuilder.dispose();
                 }
-                properties.clear();
+                this.properties.clear();
             }
             
-            domain = null;
-            source = null;
-            format = null;
-            logEventType = null;
-            logLevel = null;
-            messageString = null;
-            properties = null;
+            this.domain = null;
+            this.source = null;
+            this.format = null;
+            this.logEventType = null;
+            this.logLevel = null;
+            this.messageString = null;
+            this.properties = null;
             
-            for (Consumer<BranchNode<?, LogEventNodeType>> backend : LogServiceImpl.this.backendList)
+            for (final Consumer<BranchNode<?, LogEventNodeType>> backend : LogServiceImpl.this.backendList)
             {
                 backend.accept(logEvent);
             }
             
-            if (autoDispose)
+            if (LogServiceImpl.this.autoDispose)
             {
                 logEvent.dispose();
             }
@@ -555,14 +554,14 @@ public class LogServiceImpl implements ILogService
     {
         private Logger logger = null;
         
-        public SystemLogger(Class<?> clazz)
+        public SystemLogger(final Class<?> clazz)
         {
             super();
-            logger = LoggerFactory.getLogger(clazz);
+            this.logger = LoggerFactory.getLogger(clazz);
         }
         
         @Override
-        public void accept(BranchNode<?, LogEventNodeType> logEvent)
+        public void accept(final BranchNode<?, LogEventNodeType> logEvent)
         {
             if (!LogEventType.SYSTEM_LOG.name().equals(logEvent.getValue(LogEventNodeType.type)))
             {
@@ -578,7 +577,7 @@ public class LogServiceImpl implements ILogService
             
             Throwable throwable = null;
             
-            for (BranchNode<LogEventNodeType, LogPropertyNodeType> property : logEvent.getUnmodifiableNodeList(LogEventNodeType.properties))
+            for (final BranchNode<LogEventNodeType, LogPropertyNodeType> property : logEvent.getUnmodifiableNodeList(LogEventNodeType.properties))
             {
                 if (!LogPropertyType.THROWABLE.name().equals(property.getValue(LogPropertyNodeType.type)))
                 {
@@ -627,12 +626,12 @@ public class LogServiceImpl implements ILogService
         private Supplier<DataSource> dataSourceProvider = null;
         private TypedTreeJDBCCruder cruder = null;
         
-        public LogServiceDatasourceBackend setDataSource(Supplier<DataSource> dataSourceProvider, String schema) throws SQLException
+        public LogServiceDatasourceBackend setDataSource(final Supplier<DataSource> dataSourceProvider, final String schema) throws SQLException
         {
             return setDataSource(dataSourceProvider, schema, true);
         }
         
-        public LogServiceDatasourceBackend setDataSource(Supplier<DataSource> dataSourceProvider, String schema, boolean schemaCheck) throws SQLException
+        public LogServiceDatasourceBackend setDataSource(final Supplier<DataSource> dataSourceProvider, final String schema, final boolean schemaCheck) throws SQLException
         {
             Connection connection = dataSourceProvider.get().getConnection();
             
@@ -672,7 +671,8 @@ public class LogServiceImpl implements ILogService
             return this;
         }
         
-        public void accept(BranchNode<?, LogEventNodeType> logEvent)
+        @Override
+        public void accept(final BranchNode<?, LogEventNodeType> logEvent)
         {
             this.heartBeatLogger();
             
@@ -688,7 +688,7 @@ public class LogServiceImpl implements ILogService
             
             try
             {
-                Session session = cruder.openSession(dataSourceProvider.get());
+                Session session = this.cruder.openSession(this.dataSourceProvider.get());
                 try
                 {
                     session.persist(logEvent);
@@ -705,11 +705,11 @@ public class LogServiceImpl implements ILogService
                     session.close();
                 }
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
                 e.printStackTrace();
             }
-            catch (Error e)
+            catch (final Error e)
             {
                 e.printStackTrace();
             }
@@ -727,7 +727,7 @@ public class LogServiceImpl implements ILogService
             {
                 this.cruder.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
             this.cruder = null;
             this.dataSourceProvider = null;
         }
@@ -738,7 +738,7 @@ public class LogServiceImpl implements ILogService
     {
         if (this.backendList != null)
         {
-            for (Consumer<BranchNode<?, LogEventNodeType>> backend : this.backendList)
+            for (final Consumer<BranchNode<?, LogEventNodeType>> backend : this.backendList)
             {
                 if (backend instanceof AutoCloseable)
                 {

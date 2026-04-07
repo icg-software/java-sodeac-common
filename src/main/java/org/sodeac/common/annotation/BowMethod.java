@@ -22,10 +22,8 @@ import java.lang.annotation.Target;
 @Target(METHOD)
 public @interface BowMethod
 {
-    public enum ReturnBowMode
+    enum ReturnBowMode
     {DEFAULT, SELF, UNDEFINED_PARENT_TYPE, NESTED_BOW}
-    
-    ;
     
     boolean convertReturnValueToBow() default false;
     

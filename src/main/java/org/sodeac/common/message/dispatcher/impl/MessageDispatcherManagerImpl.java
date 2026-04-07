@@ -60,12 +60,12 @@ public class MessageDispatcherManagerImpl implements IMessageDispatcherManager
     
     protected IMessageDispatcher newUnmanagedMessageDispatcher()
     {
-        MessageDispatcherImpl messageDispatcher = new MessageDispatcherImpl("anonym-" + UUID.randomUUID().toString());
-        for (IDispatcherChannelSystemManager channelManager : Driver.getDriverList(IDispatcherChannelSystemManager.class, null))
+        MessageDispatcherImpl messageDispatcher = new MessageDispatcherImpl("anonym-" + UUID.randomUUID());
+        for (final IDispatcherChannelSystemManager channelManager : Driver.getDriverList(IDispatcherChannelSystemManager.class, null))
         {
             messageDispatcher.registerChannelManager(channelManager);
         }
-        for (IDispatcherChannelSystemService<?> channelService : Driver.getDriverList(IDispatcherChannelSystemService.class, null))
+        for (final IDispatcherChannelSystemService<?> channelService : Driver.getDriverList(IDispatcherChannelSystemService.class, null))
         {
             messageDispatcher.registerChannelService(channelService);
         }
@@ -73,9 +73,9 @@ public class MessageDispatcherManagerImpl implements IMessageDispatcherManager
     }
     
     @Override
-    public IMessageDispatcher createDispatcher(String id)
+    public IMessageDispatcher createDispatcher(final String id)
     {
-        lock.lock();
+        this.lock.lock();
         try
         {
             if (this.registeredDispatcher.containsKey(id))
@@ -83,11 +83,11 @@ public class MessageDispatcherManagerImpl implements IMessageDispatcherManager
                 return null;
             }
             MessageDispatcherImpl messageDispatcher = new MessageDispatcherImpl(id);
-            for (IDispatcherChannelSystemManager channelManager : Driver.getDriverList(IDispatcherChannelSystemManager.class, null))
+            for (final IDispatcherChannelSystemManager channelManager : Driver.getDriverList(IDispatcherChannelSystemManager.class, null))
             {
                 messageDispatcher.registerChannelManager(channelManager);
             }
-            for (IDispatcherChannelSystemService<?> channelService : Driver.getDriverList(IDispatcherChannelSystemService.class, null))
+            for (final IDispatcherChannelSystemService<?> channelService : Driver.getDriverList(IDispatcherChannelSystemService.class, null))
             {
                 messageDispatcher.registerChannelService(channelService);
             }
@@ -96,14 +96,14 @@ public class MessageDispatcherManagerImpl implements IMessageDispatcherManager
         }
         finally
         {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
     
     @Override
-    public IMessageDispatcher getOrCreateDispatcher(String id)
+    public IMessageDispatcher getOrCreateDispatcher(final String id)
     {
-        lock.lock();
+        this.lock.lock();
         try
         {
             if (this.registeredDispatcher.containsKey(id))
@@ -111,11 +111,11 @@ public class MessageDispatcherManagerImpl implements IMessageDispatcherManager
                 return this.registeredDispatcher.get(id);
             }
             MessageDispatcherImpl messageDispatcher = new MessageDispatcherImpl(id);
-            for (IDispatcherChannelSystemManager channelManager : Driver.getDriverList(IDispatcherChannelSystemManager.class, null))
+            for (final IDispatcherChannelSystemManager channelManager : Driver.getDriverList(IDispatcherChannelSystemManager.class, null))
             {
                 messageDispatcher.registerChannelManager(channelManager);
             }
-            for (IDispatcherChannelSystemService<?> channelService : Driver.getDriverList(IDispatcherChannelSystemService.class, null))
+            for (final IDispatcherChannelSystemService<?> channelService : Driver.getDriverList(IDispatcherChannelSystemService.class, null))
             {
                 messageDispatcher.registerChannelService(channelService);
             }
@@ -124,116 +124,117 @@ public class MessageDispatcherManagerImpl implements IMessageDispatcherManager
         }
         finally
         {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
     
-    public IMessageDispatcher getDispatcher(String id)
+    @Override
+    public IMessageDispatcher getDispatcher(final String id)
     {
-        lock.lock();
+        this.lock.lock();
         try
         {
             return this.registeredDispatcher.get(id);
         }
         finally
         {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
     
-    protected void remove(String id)
+    protected void remove(final String id)
     {
-        lock.lock();
+        this.lock.lock();
         try
         {
             this.registeredDispatcher.remove(id);
         }
         finally
         {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
     
     protected void shutdownAllDispatcher()
     {
         List<MessageDispatcherImpl> toRemove = null;
-        lock.lock();
+        this.lock.lock();
         try
         {
             toRemove = new ArrayList<MessageDispatcherImpl>(this.registeredDispatcher.values());
         }
         finally
         {
-            lock.unlock();
+            this.lock.unlock();
         }
         
-        for (MessageDispatcherImpl dispatcher : toRemove)
+        for (final MessageDispatcherImpl dispatcher : toRemove)
         {
             dispatcher.shutdown();
         }
     }
     
-    protected void registerSystemChannelManager(IDispatcherChannelSystemManager channelManager)
+    protected void registerSystemChannelManager(final IDispatcherChannelSystemManager channelManager)
     {
-        lock.lock();
+        this.lock.lock();
         try
         {
-            for (MessageDispatcherImpl messageDispatcherImpl : this.registeredDispatcher.values())
+            for (final MessageDispatcherImpl messageDispatcherImpl : this.registeredDispatcher.values())
             {
                 messageDispatcherImpl.registerChannelManager(channelManager);
             }
         }
         finally
         {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
     
-    protected void unregisterSystemChannelManager(IDispatcherChannelSystemManager channelManager)
+    protected void unregisterSystemChannelManager(final IDispatcherChannelSystemManager channelManager)
     {
-        lock.lock();
+        this.lock.lock();
         try
         {
-            for (MessageDispatcherImpl messageDispatcherImpl : this.registeredDispatcher.values())
+            for (final MessageDispatcherImpl messageDispatcherImpl : this.registeredDispatcher.values())
             {
                 messageDispatcherImpl.unregisterChannelManager(channelManager);
             }
         }
         finally
         {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
     
-    protected void registerSystemChannelService(IDispatcherChannelSystemService<?> channelService)
+    protected void registerSystemChannelService(final IDispatcherChannelSystemService<?> channelService)
     {
-        lock.lock();
+        this.lock.lock();
         try
         {
-            for (MessageDispatcherImpl messageDispatcherImpl : this.registeredDispatcher.values())
+            for (final MessageDispatcherImpl messageDispatcherImpl : this.registeredDispatcher.values())
             {
                 messageDispatcherImpl.registerChannelService(channelService);
             }
         }
         finally
         {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
     
-    protected void unregisterSystemChannelService(IDispatcherChannelSystemService<?> channelService)
+    protected void unregisterSystemChannelService(final IDispatcherChannelSystemService<?> channelService)
     {
-        lock.lock();
+        this.lock.lock();
         try
         {
-            for (MessageDispatcherImpl messageDispatcherImpl : this.registeredDispatcher.values())
+            for (final MessageDispatcherImpl messageDispatcherImpl : this.registeredDispatcher.values())
             {
                 messageDispatcherImpl.unregisterChannelService(channelService);
             }
         }
         finally
         {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
 }

@@ -39,7 +39,7 @@ public class PGDBUtilDriver implements IDBSchemaUtilsDriver
     protected volatile OSGiDriverRegistry internalBootstrapDep;
     
     @Override
-    public int driverIsApplicableFor(Map<String, Object> properties)
+    public int driverIsApplicableFor(final Map<String, Object> properties)
     {
         try
         {
@@ -49,16 +49,16 @@ public class PGDBUtilDriver implements IDBSchemaUtilsDriver
                 return IDriver.APPLICABLE_DEFAULT;
             }
         }
-        catch (Exception e) { }
+        catch (final Exception e) { }
         return IDriver.APPLICABLE_NONE;
     }
     
     @Override
     public boolean columnExists
         (
-            Connection connection, BranchNode<?, DBSchemaNodeType> schema,
-            BranchNode<?, TableNodeType> table, BranchNode<?, ColumnNodeType> column,
-            Map<String, Object> columnProperties
+            final Connection connection, final BranchNode<?, DBSchemaNodeType> schema,
+            final BranchNode<?, TableNodeType> table, final BranchNode<?, ColumnNodeType> column,
+            final Map<String, Object> columnProperties
         ) throws SQLException
     {
         boolean columnExists = IDBSchemaUtilsDriver.super.columnExists(connection, schema, table, column, columnProperties);
@@ -82,9 +82,9 @@ public class PGDBUtilDriver implements IDBSchemaUtilsDriver
     @Override
     public String determineColumnType
         (
-            Connection connection, BranchNode<?, DBSchemaNodeType> schema,
-            BranchNode<?, TableNodeType> table, BranchNode<?, ColumnNodeType> column,
-            Map<String, Object> columnProperties
+            final Connection connection, final BranchNode<?, DBSchemaNodeType> schema,
+            final BranchNode<?, TableNodeType> table, final BranchNode<?, ColumnNodeType> column,
+            final Map<String, Object> columnProperties
         ) throws SQLException
     {
         if (columnProperties == null)
@@ -114,9 +114,9 @@ public class PGDBUtilDriver implements IDBSchemaUtilsDriver
     @Override
     public void setValidColumnProperties
         (
-            Connection connection, BranchNode<?, DBSchemaNodeType> schema,
-            BranchNode<?, TableNodeType> table, BranchNode<?, ColumnNodeType> column,
-            Map<String, Object> columnProperties
+            final Connection connection, final BranchNode<?, DBSchemaNodeType> schema,
+            final BranchNode<?, TableNodeType> table, final BranchNode<?, ColumnNodeType> column,
+            final Map<String, Object> columnProperties
         ) throws SQLException
     {
         String schemaName = DBSchemaUtils.getSchema(connection);
@@ -141,14 +141,14 @@ public class PGDBUtilDriver implements IDBSchemaUtilsDriver
         }
         
         String tablePart = tableQuoted ?
-            " " + schemaName + "." + quotedChar() + "" + table.getValue(TableNodeType.name) + "" + quotedChar() + " " :
+            " " + schemaName + "." + quotedChar() + table.getValue(TableNodeType.name) + quotedChar() + " " :
             " " + schemaName + "." + objectNameGuidelineFormat(schema, connection, table.getValue(TableNodeType.name), "TABLE") + " ";
         
         String columnPart = columnQuoted ?
-            " " + quotedChar() + "" + column.getValue(ColumnNodeType.name) + "" + quotedChar() + " " :
+            " " + quotedChar() + column.getValue(ColumnNodeType.name) + quotedChar() + " " :
             " " + objectNameGuidelineFormat(schema, connection, column.getValue(ColumnNodeType.name), "COLUMN") + " ";
         
-        boolean nullable = column.getValue(ColumnNodeType.nullable) == null ? true : column.getValue(ColumnNodeType.nullable).booleanValue();
+        boolean nullable = column.getValue(ColumnNodeType.nullable) == null || column.getValue(ColumnNodeType.nullable).booleanValue();
         
         if (columnProperties.get("INVALID_NULLABLE") != null)
         {
@@ -167,7 +167,7 @@ public class PGDBUtilDriver implements IDBSchemaUtilsDriver
                     {
                         updateNullableStatment.close();
                     }
-                    catch (Exception e) { }
+                    catch (final Exception e) { }
                 }
             }
         }
@@ -210,7 +210,7 @@ public class PGDBUtilDriver implements IDBSchemaUtilsDriver
                     {
                         createColumnStatement.close();
                     }
-                    catch (Exception e) { }
+                    catch (final Exception e) { }
                 }
             }
         }
@@ -260,7 +260,7 @@ public class PGDBUtilDriver implements IDBSchemaUtilsDriver
                     {
                         createColumnStatement.close();
                     }
-                    catch (Exception e) { }
+                    catch (final Exception e) { }
                 }
             }
         }
@@ -269,8 +269,8 @@ public class PGDBUtilDriver implements IDBSchemaUtilsDriver
     @Override
     public String objectNameGuidelineFormat
         (
-            BranchNode<?, DBSchemaNodeType> schema, Connection connection,
-            String name, String type
+            final BranchNode<?, DBSchemaNodeType> schema, final Connection connection,
+            final String name, final String type
         )
     {
         return name == null ? name : name.toLowerCase();
@@ -279,9 +279,9 @@ public class PGDBUtilDriver implements IDBSchemaUtilsDriver
     @Override
     public String tableSpaceAppendix
         (
-            Connection connection, BranchNode<?, DBSchemaNodeType> schema,
-            BranchNode<?, TableNodeType> table, Map<String, Object> properties,
-            String tableSpace, String type
+            final Connection connection, final BranchNode<?, DBSchemaNodeType> schema,
+            final BranchNode<?, TableNodeType> table, final Map<String, Object> properties,
+            final String tableSpace, final String type
         )
     {
         if ("PRIMARYKEY".equals(type))
@@ -293,13 +293,13 @@ public class PGDBUtilDriver implements IDBSchemaUtilsDriver
     }
     
     @Override
-    public String getFunctionExpression(String function)
+    public String getFunctionExpression(final String function)
     {
         return function;
     }
     
     @Override
-    public boolean isSequenceExists(String schema, String sequenceName, Connection connection) throws SQLException
+    public boolean isSequenceExists(final String schema, final String sequenceName, final Connection connection) throws SQLException
     {
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT count(*) FROM pg_sequences where lower(schemaname) = ? and lower(sequencename) = ?");
         try
@@ -324,12 +324,11 @@ public class PGDBUtilDriver implements IDBSchemaUtilsDriver
     }
     
     @Override
-    public void createSequence(String schema, String sequenceName, Connection connection, long min, long max, boolean cycle, Long cache) throws SQLException
+    public void createSequence(final String schema, final String sequenceName, final Connection connection, final long min, final long max, final boolean cycle, final Long cache) throws SQLException
     {
-        StringBuilder sqlBuilder = new StringBuilder("create sequence " + schema + "." + sequenceName + " minvalue " + min + " maxvalue " + max + " ");
-        sqlBuilder.append(cycle ? "cycle" : "no cycle");
-        sqlBuilder.append(cache == null ? " " : " cache " + cache + " ");
-        PreparedStatement preparedStatement = connection.prepareStatement(sqlBuilder.toString());
+        final String sqlBuilder = "create sequence " + schema + "." + sequenceName + " minvalue " + min + " maxvalue " + max + " " + (cycle ? "cycle" : "no cycle")
+                                  + (cache == null ? " " : " cache " + cache + " ");
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlBuilder);
         try
         {
             preparedStatement.executeUpdate();
@@ -342,7 +341,7 @@ public class PGDBUtilDriver implements IDBSchemaUtilsDriver
     }
     
     @Override
-    public void dropSquence(String schema, String sequenceName, Connection connection) throws SQLException
+    public void dropSquence(final String schema, final String sequenceName, final Connection connection) throws SQLException
     {
         PreparedStatement preparedStatement = connection.prepareStatement("drop sequence " + schema + "." + sequenceName);
         try
@@ -356,7 +355,7 @@ public class PGDBUtilDriver implements IDBSchemaUtilsDriver
     }
     
     @Override
-    public long nextFromSequence(String schema, String sequenceName, Connection connection) throws SQLException
+    public long nextFromSequence(final String schema, final String sequenceName, final Connection connection) throws SQLException
     {
         PreparedStatement preparedStatement = connection.prepareStatement("select nextval('" + schema + "." + sequenceName + "'::regclass)");
         try

@@ -32,7 +32,7 @@ public class ExtensionRegistrationTest
         {
             
             @Override
-            public int driverIsApplicableFor(Map<String, Object> properties)
+            public int driverIsApplicableFor(final Map<String, Object> properties)
             {
                 // TODO Auto-generated method stub
                 return 0;
@@ -64,13 +64,13 @@ public class ExtensionRegistrationTest
                     }
                     
                     @Override
-                    public int parseRawExtensionString(ExtensionHandleObject extensionHandleObject)
+                    public int parseRawExtensionString(final ExtensionHandleObject extensionHandleObject)
                     {
                         return -1;
                     }
                     
                     @Override
-                    public int openerCharactersMatched(ExtensionHandleObject extensionHandleObject)
+                    public int openerCharactersMatched(final ExtensionHandleObject extensionHandleObject)
                     {
                         return -1;
                     }
@@ -82,7 +82,7 @@ public class ExtensionRegistrationTest
                     }
                     
                     @Override
-                    public String decodeFromString(String raw)
+                    public String decodeFromString(final String raw)
                     {
                         return raw;
                     }

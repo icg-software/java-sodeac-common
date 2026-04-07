@@ -32,7 +32,7 @@ public class H2DefaultUUID implements IDefaultUUID
     protected volatile OSGiDriverRegistry internalBootstrapDep;
     
     @Override
-    public int driverIsApplicableFor(Map<String, Object> properties)
+    public int driverIsApplicableFor(final Map<String, Object> properties)
     {
         try
         {
@@ -42,23 +42,24 @@ public class H2DefaultUUID implements IDefaultUUID
                 return IDriver.APPLICABLE_DEFAULT;
             }
         }
-        catch (Exception e) { }
+        catch (final Exception e) { }
         return IDriver.APPLICABLE_NONE;
     }
     
     @Override
     public String createExpression
         (
-            BranchNode<?, ColumnNodeType> column,
-            Connection connection, String schemaName,
-            Dictionary<String, Object> properties,
-            IDBSchemaUtilsDriver driver
+            final BranchNode<?, ColumnNodeType> column,
+            final Connection connection, final String schemaName,
+            final Dictionary<String, Object> properties,
+            final IDBSchemaUtilsDriver driver
         )
     {
         return driver.getFunctionExpression("RANDOM_UUID");
     }
     
-    public boolean updateRequired(BranchNode<?, ColumnNodeType> column, Connection connection, String schema, Dictionary<String, Object> properties, IDBSchemaUtilsDriver driver, String currentValue)
+    @Override
+    public boolean updateRequired(final BranchNode<?, ColumnNodeType> column, final Connection connection, final String schema, final Dictionary<String, Object> properties, final IDBSchemaUtilsDriver driver, final String currentValue)
     {
         String defaultValue = createExpression(column, connection, schema, properties, driver).replace("\"", "").toUpperCase().trim();
         String currentValue2 = currentValue.replace("\"", "").trim();

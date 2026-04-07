@@ -45,7 +45,7 @@ public class ConplierBean<T> implements Supplier<T>, Consumer<T>
      *
      * @param initialValue initial value
      */
-    public ConplierBean(T initialValue)
+    public ConplierBean(final T initialValue)
     {
         super();
         this.value = initialValue;
@@ -56,7 +56,7 @@ public class ConplierBean<T> implements Supplier<T>, Consumer<T>
     private volatile boolean equalsBySameValue = false;
     
     @Override
-    public void accept(T t)
+    public void accept(final T t)
     {
         this.setValue(t);
     }
@@ -72,9 +72,9 @@ public class ConplierBean<T> implements Supplier<T>, Consumer<T>
      *
      * @see java.beans.PropertyChangeSupport#addPropertyChangeListener(PropertyChangeListener)
      */
-    public void addPropertyChangeListener(PropertyChangeListener propertyChangeListener)
+    public void addPropertyChangeListener(final PropertyChangeListener propertyChangeListener)
     {
-        changes.addPropertyChangeListener(propertyChangeListener);
+        this.changes.addPropertyChangeListener(propertyChangeListener);
     }
     
     /**
@@ -82,9 +82,9 @@ public class ConplierBean<T> implements Supplier<T>, Consumer<T>
      *
      * @param propertyChangeListener
      */
-    public void removePropertyChangeListener(PropertyChangeListener propertyChangeListener)
+    public void removePropertyChangeListener(final PropertyChangeListener propertyChangeListener)
     {
-        changes.removePropertyChangeListener(propertyChangeListener);
+        this.changes.removePropertyChangeListener(propertyChangeListener);
     }
     
     /**
@@ -102,11 +102,11 @@ public class ConplierBean<T> implements Supplier<T>, Consumer<T>
      *
      * @param value
      */
-    public void setValue(T value)
+    public void setValue(final T value)
     {
         T oldValue = this.value;
         this.value = value;
-        changes.firePropertyChange("value", oldValue, this.value);
+        this.changes.firePropertyChange("value", oldValue, this.value);
     }
     
     /**
@@ -127,7 +127,7 @@ public class ConplierBean<T> implements Supplier<T>, Consumer<T>
      *
      * @return conplier
      */
-    public ConplierBean<T> supply(Consumer<T> consumer)
+    public ConplierBean<T> supply(final Consumer<T> consumer)
     {
         consumer.accept(this.value);
         return this;
@@ -138,7 +138,7 @@ public class ConplierBean<T> implements Supplier<T>, Consumer<T>
      *
      * @param supplier supplies to set new value
      */
-    public ConplierBean<T> consume(Supplier<T> supplier)
+    public ConplierBean<T> consume(final Supplier<T> supplier)
     {
         this.setValue(supplier.get());
         return this;
@@ -151,9 +151,9 @@ public class ConplierBean<T> implements Supplier<T>, Consumer<T>
      *
      * @return result of operator
      */
-    public T unaryOperate(UnaryOperator<T> operator)
+    public T unaryOperate(final UnaryOperator<T> operator)
     {
-        this.value = operator.apply(value);
+        this.value = operator.apply(this.value);
         return this.value;
     }
     
@@ -165,9 +165,9 @@ public class ConplierBean<T> implements Supplier<T>, Consumer<T>
      *
      * @return result of operator
      */
-    public T binaryOperate(BinaryOperator<T> operator, T secondOperand)
+    public T binaryOperate(final BinaryOperator<T> operator, final T secondOperand)
     {
-        this.value = operator.apply(value, secondOperand);
+        this.value = operator.apply(this.value, secondOperand);
         return this.value;
     }
     
@@ -178,9 +178,9 @@ public class ConplierBean<T> implements Supplier<T>, Consumer<T>
      *
      * @return result of predicate test
      */
-    public boolean test(Predicate<T> predicate)
+    public boolean test(final Predicate<T> predicate)
     {
-        return predicate.test(value);
+        return predicate.test(this.value);
     }
     
     /**
@@ -190,7 +190,7 @@ public class ConplierBean<T> implements Supplier<T>, Consumer<T>
      *
      * @return {@link ConplierBean.ConsumeOnChangeListener} to be able to stop consuming by {@link ConplierBean.ConsumeOnChangeListener#unregister()}
      */
-    public ConsumeOnChangeListener consumeOnChange(Consumer<T> consumer)
+    public ConsumeOnChangeListener consumeOnChange(final Consumer<T> consumer)
     {
         ConsumeOnChangeListener listener = new ConsumeOnChangeListener(consumer);
         this.addPropertyChangeListener(listener);
@@ -205,14 +205,14 @@ public class ConplierBean<T> implements Supplier<T>, Consumer<T>
      */
     public class ConsumeOnChangeListener implements PropertyChangeListener
     {
-        private Consumer<T> consumer;
+        private final Consumer<T> consumer;
         
         /**
          * constructor with parameterized {@link Consumer} to delegate all value changes
          *
          * @param consumer {@link Consumer} to delegate all value changes
          */
-        public ConsumeOnChangeListener(Consumer<T> consumer)
+        public ConsumeOnChangeListener(final Consumer<T> consumer)
         {
             super();
             this.consumer = consumer;
@@ -220,9 +220,9 @@ public class ConplierBean<T> implements Supplier<T>, Consumer<T>
         
         @SuppressWarnings("unchecked")
         @Override
-        public void propertyChange(PropertyChangeEvent evt)
+        public void propertyChange(final PropertyChangeEvent evt)
         {
-            consumer.accept((T) evt.getNewValue());
+            this.consumer.accept((T) evt.getNewValue());
         }
         
         /**
@@ -239,9 +239,9 @@ public class ConplierBean<T> implements Supplier<T>, Consumer<T>
      */
     public void dispose()
     {
-        if (changes != null)
+        if (this.changes != null)
         {
-            for (PropertyChangeListener listener : changes.getPropertyChangeListeners())
+            for (final PropertyChangeListener listener : this.changes.getPropertyChangeListeners())
             {
                 this.changes.removePropertyChangeListener(listener);
             }
@@ -258,7 +258,7 @@ public class ConplierBean<T> implements Supplier<T>, Consumer<T>
      *
      * @return this conplier bean
      */
-    public ConplierBean<T> setEqualsBySameValue(boolean equalsBySameValue)
+    public ConplierBean<T> setEqualsBySameValue(final boolean equalsBySameValue)
     {
         this.equalsBySameValue = equalsBySameValue;
         return this;
@@ -269,12 +269,12 @@ public class ConplierBean<T> implements Supplier<T>, Consumer<T>
     {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((value == null) ? 0 : value.hashCode());
+        result = prime * result + ((this.value == null) ? 0 : this.value.hashCode());
         return result;
     }
     
     @Override
-    public boolean equals(Object obj)
+    public boolean equals(final Object obj)
     {
         if (this == obj)
         {
@@ -295,18 +295,14 @@ public class ConplierBean<T> implements Supplier<T>, Consumer<T>
             return this.value == other.value;
         }
         
-        if (value == null)
+        if (this.value == null)
         {
-            if (other.value != null)
-            {
-                return false;
-            }
+            return other.value == null;
         }
-        else if (!value.equals(other.value))
+        else
         {
-            return false;
+            return this.value.equals(other.value);
         }
-        return true;
     }
     
 }

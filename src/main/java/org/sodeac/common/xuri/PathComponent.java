@@ -29,14 +29,14 @@ public class PathComponent extends AbstractComponent<PathSegment>
      */
     private static final long serialVersionUID = 2578881338528861330L;
     
-    private boolean absolute;
+    private final boolean absolute;
     
     /**
      * constructor for path component
      *
      * @param absolute path is absolute (starts with / )
      */
-    protected PathComponent(boolean absolute)
+    protected PathComponent(final boolean absolute)
     {
         super(ComponentType.PATH);
         this.absolute = absolute;
@@ -48,6 +48,6 @@ public class PathComponent extends AbstractComponent<PathSegment>
      */
     public boolean isAbsolute()
     {
-        return absolute;
+        return this.absolute;
     }
 }

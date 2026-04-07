@@ -49,18 +49,18 @@ import org.sodeac.common.typedtree.BranchNode;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DisableChecksTest
 {
-    private EasyMockSupport support = new EasyMockSupport();
+    private final EasyMockSupport support = new EasyMockSupport();
     
     public static List<Object[]> connectionList = null;
     public static final Map<String, Boolean> createdSchema = new HashMap<String, Boolean>();
     
-    private String databaseID = "TESTDOMAIN";
-    private String table1Name = "TableDisableCheck1";
-    private String table2Name = "TableDisableCheck2";
+    private final String databaseID = "TESTDOMAIN";
+    private final String table1Name = "TableDisableCheck1";
+    private final String table2Name = "TableDisableCheck2";
     
-    private String columnIdName = "id";
-    private String columnFKName = "fk";
-    private String columnUniqueName = "unq1";
+    private final String columnIdName = "id";
+    private final String columnFKName = "fk";
+    private final String columnUniqueName = "unq1";
     
     @Parameters
     public static List<Object[]> connections()
@@ -72,7 +72,7 @@ public class DisableChecksTest
         return connectionList = Statics.connections(createdSchema, "dbschema");
     }
     
-    public DisableChecksTest(Callable<TestConnection> connectionFactory)
+    public DisableChecksTest(final Callable<TestConnection> connectionFactory)
     {
         this.testConnectionFactory = connectionFactory;
     }
@@ -83,7 +83,7 @@ public class DisableChecksTest
     @Before
     public void setUp() throws Exception
     {
-        this.testConnection = testConnectionFactory.call();
+        this.testConnection = this.testConnectionFactory.call();
     }
     
     @After
@@ -99,28 +99,28 @@ public class DisableChecksTest
             {
                 this.testConnection.connection.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
     }
     
     @Test
     public void test001200generateWithDisabledChecks() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(databaseID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(this.databaseID, this.testConnection.dbmsSchemaName);
         schema.setValue(DBSchemaNodeType.skipChecks, true);
         
         // prepare spec for simulation
@@ -128,7 +128,7 @@ public class DisableChecksTest
         schemaDictionary.put(ObjectType.SCHEMA, schema);
         DBSchemaNodeType.addConsumer(schema, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, table1Name);
+        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, this.table1Name);
         
         // prepare table for simulation
         Dictionary<ObjectType, Object> table1Dictionary = new Hashtable<>();
@@ -136,7 +136,7 @@ public class DisableChecksTest
         table1Dictionary.put(ObjectType.TABLE, table1);
         TableNodeType.addConsumer(table1, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, columnIdName, false, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, this.columnIdName, false, 36);
         columnPK.create(ColumnNodeType.primaryKey);
         
         Dictionary<ObjectType, Object> table1ColumnPKDictionary = new Hashtable<>();
@@ -144,11 +144,11 @@ public class DisableChecksTest
         table1ColumnPKDictionary.put(ObjectType.TABLE, table1);
         table1ColumnPKDictionary.put(ObjectType.COLUMN, columnPK);
         
-        BranchNode<TableNodeType, ColumnNodeType> columnFKTable1 = TableNodeType.createCharColumn(table1, columnFKName, true, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnFKTable1 = TableNodeType.createCharColumn(table1, this.columnFKName, true, 36);
         columnFKTable1.create(ColumnNodeType.foreignKey)
                       .setValue(ForeignKeyNodeType.constraintName, "fk1_tbl_dis_check")
-                      .setValue(ForeignKeyNodeType.referencedTableName, table2Name)
-                      .setValue(ForeignKeyNodeType.referencedColumnName, columnIdName);
+                      .setValue(ForeignKeyNodeType.referencedTableName, this.table2Name)
+                      .setValue(ForeignKeyNodeType.referencedColumnName, this.columnIdName);
         
         // prepare column for simulation
         
@@ -157,7 +157,7 @@ public class DisableChecksTest
         table1ColumnFKDictionary.put(ObjectType.TABLE, table1);
         table1ColumnFKDictionary.put(ObjectType.COLUMN, columnFKTable1);
         
-        BranchNode<TableNodeType, ColumnNodeType> columnUnqTable1 = TableNodeType.createCharColumn(table1, columnUniqueName, true, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnUnqTable1 = TableNodeType.createCharColumn(table1, this.columnUniqueName, true, 36);
         
         // prepare column for simulation
         
@@ -166,9 +166,9 @@ public class DisableChecksTest
         table1ColumnUnqDictionary.put(ObjectType.TABLE, table1);
         table1ColumnUnqDictionary.put(ObjectType.COLUMN, columnUnqTable1);
         
-        TableNodeType.createIndex(table1, true, "unq1_tbl1_dis_check", columnUniqueName);
+        TableNodeType.createIndex(table1, true, "unq1_tbl1_dis_check", this.columnUniqueName);
         
-        BranchNode<DBSchemaNodeType, TableNodeType> table2 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, table2Name);
+        BranchNode<DBSchemaNodeType, TableNodeType> table2 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, this.table2Name);
         
         // prepare table for simulation
         Dictionary<ObjectType, Object> table2Dictionary = new Hashtable<>();
@@ -176,7 +176,7 @@ public class DisableChecksTest
         table2Dictionary.put(ObjectType.TABLE, table2);
         TableNodeType.addConsumer(table2, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<TableNodeType, ColumnNodeType> columnPkTable2 = TableNodeType.createCharColumn(table2, columnIdName, false, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnPkTable2 = TableNodeType.createCharColumn(table2, this.columnIdName, false, 36);
         columnPkTable2.create(ColumnNodeType.primaryKey);
         
         // prepare column for simulation
@@ -186,7 +186,7 @@ public class DisableChecksTest
         table2ColumnPKDictionary.put(ObjectType.TABLE, table2);
         table2ColumnPKDictionary.put(ObjectType.COLUMN, columnPkTable2);
         
-        BranchNode<TableNodeType, ColumnNodeType> columnUnqTable2 = TableNodeType.createCharColumn(table2, columnUniqueName, true, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnUnqTable2 = TableNodeType.createCharColumn(table2, this.columnUniqueName, true, 36);
         
         // prepare column for simulation
         
@@ -195,61 +195,61 @@ public class DisableChecksTest
         table2ColumnUnqDictionary.put(ObjectType.TABLE, table2);
         table2ColumnUnqDictionary.put(ObjectType.COLUMN, columnUnqTable2);
         
-        TableNodeType.createIndex(table2, true, "unq1_tbl2_dis_check", columnUniqueName);
+        TableNodeType.createIndex(table2, true, "unq1_tbl2_dis_check", this.columnUniqueName);
         
         // simulate listener
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.PRE, connection, databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.PRE, connection, this.databaseID, schemaDictionary, driver, null);
         
         // table creation
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.PRE, connection, databaseID, table1Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.TABLE, PhaseType.PRE, connection, databaseID, table1Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.TABLE, PhaseType.POST, connection, databaseID, table1Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.POST, connection, databaseID, table1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.PRE, connection, this.databaseID, table1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.TABLE, PhaseType.PRE, connection, this.databaseID, table1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.TABLE, PhaseType.POST, connection, this.databaseID, table1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.POST, connection, this.databaseID, table1Dictionary, driver, null);
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.PRE, connection, databaseID, table2Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.TABLE, PhaseType.PRE, connection, databaseID, table2Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.TABLE, PhaseType.POST, connection, databaseID, table2Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.POST, connection, databaseID, table2Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.PRE, connection, this.databaseID, table2Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.TABLE, PhaseType.PRE, connection, this.databaseID, table2Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.TABLE, PhaseType.POST, connection, this.databaseID, table2Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.POST, connection, this.databaseID, table2Dictionary, driver, null);
         
         // table1 column creation
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table1ColumnPKDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table1ColumnPKDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table1ColumnPKDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table1ColumnPKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table1ColumnPKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table1ColumnPKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table1ColumnPKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table1ColumnPKDictionary, driver, null);
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table1ColumnFKDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table1ColumnFKDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table1ColumnFKDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table1ColumnFKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table1ColumnFKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table1ColumnFKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table1ColumnFKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table1ColumnFKDictionary, driver, null);
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table1ColumnUnqDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table1ColumnUnqDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table1ColumnUnqDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table1ColumnUnqDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table1ColumnUnqDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table1ColumnUnqDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table1ColumnUnqDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table1ColumnUnqDictionary, driver, null);
         
         // table2 column creation
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table2ColumnPKDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table2ColumnPKDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table2ColumnPKDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table2ColumnPKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table2ColumnPKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table2ColumnPKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table2ColumnPKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table2ColumnPKDictionary, driver, null);
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table2ColumnUnqDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table2ColumnUnqDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table2ColumnUnqDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table2ColumnUnqDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table2ColumnUnqDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table2ColumnUnqDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table2ColumnUnqDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table2ColumnUnqDictionary, driver, null);
         
         // convert schema
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, databaseID, schemaDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, databaseID, schemaDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, databaseID, schemaDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, this.databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, this.databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, this.databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, this.databaseID, schemaDictionary, driver, null);
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.POST, connection, databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.POST, connection, this.databaseID, schemaDictionary, driver, null);
         
         ctrl.replay();
         
@@ -261,21 +261,21 @@ public class DisableChecksTest
     @Test
     public void test001201generateWithDisabledChecksAgain() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(databaseID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(this.databaseID, this.testConnection.dbmsSchemaName);
         schema.setValue(DBSchemaNodeType.skipChecks, true);
         
         // prepare spec for simulation
@@ -283,7 +283,7 @@ public class DisableChecksTest
         schemaDictionary.put(ObjectType.SCHEMA, schema);
         DBSchemaNodeType.addConsumer(schema, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, table1Name);
+        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, this.table1Name);
         
         // prepare table for simulation
         Dictionary<ObjectType, Object> table1Dictionary = new Hashtable<>();
@@ -291,7 +291,7 @@ public class DisableChecksTest
         table1Dictionary.put(ObjectType.TABLE, table1);
         TableNodeType.addConsumer(table1, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, columnIdName, false, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, this.columnIdName, false, 36);
         columnPK.create(ColumnNodeType.primaryKey);
         
         Dictionary<ObjectType, Object> table1ColumnPKDictionary = new Hashtable<>();
@@ -299,11 +299,11 @@ public class DisableChecksTest
         table1ColumnPKDictionary.put(ObjectType.TABLE, table1);
         table1ColumnPKDictionary.put(ObjectType.COLUMN, columnPK);
         
-        BranchNode<TableNodeType, ColumnNodeType> columnFKTable1 = TableNodeType.createCharColumn(table1, columnFKName, true, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnFKTable1 = TableNodeType.createCharColumn(table1, this.columnFKName, true, 36);
         columnFKTable1.create(ColumnNodeType.foreignKey)
                       .setValue(ForeignKeyNodeType.constraintName, "fk1_tbl_dis_check")
-                      .setValue(ForeignKeyNodeType.referencedTableName, table2Name)
-                      .setValue(ForeignKeyNodeType.referencedColumnName, columnIdName);
+                      .setValue(ForeignKeyNodeType.referencedTableName, this.table2Name)
+                      .setValue(ForeignKeyNodeType.referencedColumnName, this.columnIdName);
         
         // prepare column for simulation
         
@@ -312,7 +312,7 @@ public class DisableChecksTest
         table1ColumnFKDictionary.put(ObjectType.TABLE, table1);
         table1ColumnFKDictionary.put(ObjectType.COLUMN, columnFKTable1);
         
-        BranchNode<TableNodeType, ColumnNodeType> columnUnqTable1 = TableNodeType.createCharColumn(table1, columnUniqueName, true, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnUnqTable1 = TableNodeType.createCharColumn(table1, this.columnUniqueName, true, 36);
         
         // prepare column for simulation
         
@@ -321,9 +321,9 @@ public class DisableChecksTest
         table1ColumnUnqDictionary.put(ObjectType.TABLE, table1);
         table1ColumnUnqDictionary.put(ObjectType.COLUMN, columnUnqTable1);
         
-        TableNodeType.createIndex(table1, true, "unq1_tbl1_dis_check", columnUniqueName);
+        TableNodeType.createIndex(table1, true, "unq1_tbl1_dis_check", this.columnUniqueName);
         
-        BranchNode<DBSchemaNodeType, TableNodeType> table2 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, table2Name);
+        BranchNode<DBSchemaNodeType, TableNodeType> table2 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, this.table2Name);
         
         // prepare table for simulation
         Dictionary<ObjectType, Object> table2Dictionary = new Hashtable<>();
@@ -331,7 +331,7 @@ public class DisableChecksTest
         table2Dictionary.put(ObjectType.TABLE, table2);
         TableNodeType.addConsumer(table2, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<TableNodeType, ColumnNodeType> columnPkTable2 = TableNodeType.createCharColumn(table2, columnIdName, false, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnPkTable2 = TableNodeType.createCharColumn(table2, this.columnIdName, false, 36);
         columnPkTable2.create(ColumnNodeType.primaryKey);
         
         // prepare column for simulation
@@ -341,7 +341,7 @@ public class DisableChecksTest
         table2ColumnPKDictionary.put(ObjectType.TABLE, table2);
         table2ColumnPKDictionary.put(ObjectType.COLUMN, columnPkTable2);
         
-        BranchNode<TableNodeType, ColumnNodeType> columnUnqTable2 = TableNodeType.createCharColumn(table2, columnUniqueName, true, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnUnqTable2 = TableNodeType.createCharColumn(table2, this.columnUniqueName, true, 36);
         
         // prepare column for simulation
         
@@ -350,47 +350,47 @@ public class DisableChecksTest
         table2ColumnUnqDictionary.put(ObjectType.TABLE, table2);
         table2ColumnUnqDictionary.put(ObjectType.COLUMN, columnUnqTable2);
         
-        TableNodeType.createIndex(table2, true, "unq1_tbl2_dis_check", columnUniqueName);
+        TableNodeType.createIndex(table2, true, "unq1_tbl2_dis_check", this.columnUniqueName);
         
         // simulate listener
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.PRE, connection, databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.PRE, connection, this.databaseID, schemaDictionary, driver, null);
         
         // table creation
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.PRE, connection, databaseID, table1Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.POST, connection, databaseID, table1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.PRE, connection, this.databaseID, table1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.POST, connection, this.databaseID, table1Dictionary, driver, null);
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.PRE, connection, databaseID, table2Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.POST, connection, databaseID, table2Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.PRE, connection, this.databaseID, table2Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.POST, connection, this.databaseID, table2Dictionary, driver, null);
         
         // table1 column creation
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table1ColumnPKDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table1ColumnPKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table1ColumnPKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table1ColumnPKDictionary, driver, null);
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table1ColumnFKDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table1ColumnFKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table1ColumnFKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table1ColumnFKDictionary, driver, null);
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table1ColumnUnqDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table1ColumnUnqDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table1ColumnUnqDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table1ColumnUnqDictionary, driver, null);
         
         // table2 column creation
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table2ColumnPKDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table2ColumnPKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table2ColumnPKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table2ColumnPKDictionary, driver, null);
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table2ColumnUnqDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table2ColumnUnqDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table2ColumnUnqDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table2ColumnUnqDictionary, driver, null);
         
         // convert schema
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, databaseID, schemaDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, databaseID, schemaDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, databaseID, schemaDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, this.databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, this.databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, this.databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, this.databaseID, schemaDictionary, driver, null);
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.POST, connection, databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.POST, connection, this.databaseID, schemaDictionary, driver, null);
         
         ctrl.replay();
         
@@ -402,28 +402,28 @@ public class DisableChecksTest
     @Test
     public void test001250generateWithEnabledChecks() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(databaseID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(this.databaseID, this.testConnection.dbmsSchemaName);
         
         // prepare spec for simulation
         Dictionary<ObjectType, Object> schemaDictionary = new Hashtable<>();
         schemaDictionary.put(ObjectType.SCHEMA, schema);
         DBSchemaNodeType.addConsumer(schema, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, table1Name);
+        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, this.table1Name);
         
         // prepare table for simulation
         Dictionary<ObjectType, Object> table1Dictionary = new Hashtable<>();
@@ -431,7 +431,7 @@ public class DisableChecksTest
         table1Dictionary.put(ObjectType.TABLE, table1);
         TableNodeType.addConsumer(table1, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, columnIdName, false, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, this.columnIdName, false, 36);
         columnPK.create(ColumnNodeType.primaryKey);
         
         Dictionary<ObjectType, Object> table1ColumnPKDictionary = new Hashtable<>();
@@ -439,11 +439,11 @@ public class DisableChecksTest
         table1ColumnPKDictionary.put(ObjectType.TABLE, table1);
         table1ColumnPKDictionary.put(ObjectType.COLUMN, columnPK);
         
-        BranchNode<TableNodeType, ColumnNodeType> columnFKTable1 = TableNodeType.createCharColumn(table1, columnFKName, true, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnFKTable1 = TableNodeType.createCharColumn(table1, this.columnFKName, true, 36);
         columnFKTable1.create(ColumnNodeType.foreignKey)
                       .setValue(ForeignKeyNodeType.constraintName, "fk1_tbl_dis_check")
-                      .setValue(ForeignKeyNodeType.referencedTableName, table2Name)
-                      .setValue(ForeignKeyNodeType.referencedColumnName, columnIdName);
+                      .setValue(ForeignKeyNodeType.referencedTableName, this.table2Name)
+                      .setValue(ForeignKeyNodeType.referencedColumnName, this.columnIdName);
         
         // prepare column for simulation
         
@@ -452,7 +452,7 @@ public class DisableChecksTest
         table1ColumnFKDictionary.put(ObjectType.TABLE, table1);
         table1ColumnFKDictionary.put(ObjectType.COLUMN, columnFKTable1);
         
-        BranchNode<TableNodeType, ColumnNodeType> columnUnqTable1 = TableNodeType.createCharColumn(table1, columnUniqueName, true, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnUnqTable1 = TableNodeType.createCharColumn(table1, this.columnUniqueName, true, 36);
         
         // prepare column for simulation
         
@@ -461,14 +461,14 @@ public class DisableChecksTest
         table1ColumnUnqDictionary.put(ObjectType.TABLE, table1);
         table1ColumnUnqDictionary.put(ObjectType.COLUMN, columnUnqTable1);
         
-        BranchNode<TableNodeType, IndexNodeType> index1Table1 = TableNodeType.createIndex(table1, true, "unq1_tbl1_dis_check", columnUniqueName);
+        BranchNode<TableNodeType, IndexNodeType> index1Table1 = TableNodeType.createIndex(table1, true, "unq1_tbl1_dis_check", this.columnUniqueName);
         
         Dictionary<ObjectType, Object> table1index1Dictionary = new Hashtable<>();
         table1index1Dictionary.put(ObjectType.SCHEMA, schema);
         table1index1Dictionary.put(ObjectType.TABLE, table1);
         table1index1Dictionary.put(ObjectType.TABLE_INDEX, index1Table1);
         
-        BranchNode<DBSchemaNodeType, TableNodeType> table2 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, table2Name);
+        BranchNode<DBSchemaNodeType, TableNodeType> table2 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, this.table2Name);
         
         // prepare table for simulation
         Dictionary<ObjectType, Object> table2Dictionary = new Hashtable<>();
@@ -476,7 +476,7 @@ public class DisableChecksTest
         table2Dictionary.put(ObjectType.TABLE, table2);
         TableNodeType.addConsumer(table2, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<TableNodeType, ColumnNodeType> columnPkTable2 = TableNodeType.createCharColumn(table2, columnIdName, false, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnPkTable2 = TableNodeType.createCharColumn(table2, this.columnIdName, false, 36);
         columnPkTable2.create(ColumnNodeType.primaryKey);
         
         // prepare column for simulation
@@ -486,7 +486,7 @@ public class DisableChecksTest
         table2ColumnPKDictionary.put(ObjectType.TABLE, table2);
         table2ColumnPKDictionary.put(ObjectType.COLUMN, columnPkTable2);
         
-        BranchNode<TableNodeType, ColumnNodeType> columnUnqTable2 = TableNodeType.createCharColumn(table2, columnUniqueName, true, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnUnqTable2 = TableNodeType.createCharColumn(table2, this.columnUniqueName, true, 36);
         
         // prepare column for simulation
         
@@ -495,7 +495,7 @@ public class DisableChecksTest
         table2ColumnUnqDictionary.put(ObjectType.TABLE, table2);
         table2ColumnUnqDictionary.put(ObjectType.COLUMN, columnUnqTable2);
         
-        BranchNode<TableNodeType, IndexNodeType> index1Table2 = TableNodeType.createIndex(table2, true, "unq1_tbl2_dis_check", columnUniqueName);
+        BranchNode<TableNodeType, IndexNodeType> index1Table2 = TableNodeType.createIndex(table2, true, "unq1_tbl2_dis_check", this.columnUniqueName);
         
         Dictionary<ObjectType, Object> table2index1Dictionary = new Hashtable<>();
         table2index1Dictionary.put(ObjectType.SCHEMA, schema);
@@ -504,74 +504,74 @@ public class DisableChecksTest
         
         // simulate listener
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.PRE, connection, databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.PRE, connection, this.databaseID, schemaDictionary, driver, null);
         
         // table creation
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.PRE, connection, databaseID, table1Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.POST, connection, databaseID, table1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.PRE, connection, this.databaseID, table1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.POST, connection, this.databaseID, table1Dictionary, driver, null);
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.PRE, connection, databaseID, table2Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.POST, connection, databaseID, table2Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.PRE, connection, this.databaseID, table2Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.POST, connection, this.databaseID, table2Dictionary, driver, null);
         
         // table1 column creation
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table1ColumnPKDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table1ColumnPKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table1ColumnPKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table1ColumnPKDictionary, driver, null);
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table1ColumnFKDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table1ColumnFKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table1ColumnFKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table1ColumnFKDictionary, driver, null);
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table1ColumnUnqDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table1ColumnUnqDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table1ColumnUnqDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table1ColumnUnqDictionary, driver, null);
         
         // table2 column creation
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table2ColumnPKDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table2ColumnPKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table2ColumnPKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table2ColumnPKDictionary, driver, null);
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table2ColumnUnqDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table2ColumnUnqDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table2ColumnUnqDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table2ColumnUnqDictionary, driver, null);
         
         // convert schema
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, databaseID, schemaDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, databaseID, schemaDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, databaseID, schemaDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, this.databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, this.databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, this.databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, this.databaseID, schemaDictionary, driver, null);
         
         // table1 column properties
         
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN_NULLABLE, PhaseType.PRE, connection, databaseID, table1ColumnPKDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN_NULLABLE, PhaseType.POST, connection, databaseID, table1ColumnPKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN_NULLABLE, PhaseType.PRE, connection, this.databaseID, table1ColumnPKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN_NULLABLE, PhaseType.POST, connection, this.databaseID, table1ColumnPKDictionary, driver, null);
         
         // table2 column properties
         
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN_NULLABLE, PhaseType.PRE, connection, databaseID, table2ColumnPKDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN_NULLABLE, PhaseType.POST, connection, databaseID, table2ColumnPKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN_NULLABLE, PhaseType.PRE, connection, this.databaseID, table2ColumnPKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN_NULLABLE, PhaseType.POST, connection, this.databaseID, table2ColumnPKDictionary, driver, null);
         
         // table1 create keys/indices
         
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.TABLE_PRIMARY_KEY, PhaseType.PRE, connection, databaseID, table1Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.TABLE_PRIMARY_KEY, PhaseType.POST, connection, databaseID, table1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.TABLE_PRIMARY_KEY, PhaseType.PRE, connection, this.databaseID, table1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.TABLE_PRIMARY_KEY, PhaseType.POST, connection, this.databaseID, table1Dictionary, driver, null);
         
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.TABLE_INDEX, PhaseType.PRE, connection, databaseID, table1index1Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.TABLE_INDEX, PhaseType.POST, connection, databaseID, table1index1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.TABLE_INDEX, PhaseType.PRE, connection, this.databaseID, table1index1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.TABLE_INDEX, PhaseType.POST, connection, this.databaseID, table1index1Dictionary, driver, null);
         
         // table2 create keys/indices
         
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.TABLE_PRIMARY_KEY, PhaseType.PRE, connection, databaseID, table2Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.TABLE_PRIMARY_KEY, PhaseType.POST, connection, databaseID, table2Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.TABLE_PRIMARY_KEY, PhaseType.PRE, connection, this.databaseID, table2Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.TABLE_PRIMARY_KEY, PhaseType.POST, connection, this.databaseID, table2Dictionary, driver, null);
         
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.TABLE_INDEX, PhaseType.PRE, connection, databaseID, table2index1Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.TABLE_INDEX, PhaseType.POST, connection, databaseID, table2index1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.TABLE_INDEX, PhaseType.PRE, connection, this.databaseID, table2index1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.TABLE_INDEX, PhaseType.POST, connection, this.databaseID, table2index1Dictionary, driver, null);
         
         // table1 column foreign keys
         
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN_FOREIGN_KEY, PhaseType.PRE, connection, databaseID, table1ColumnFKDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN_FOREIGN_KEY, PhaseType.POST, connection, databaseID, table1ColumnFKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN_FOREIGN_KEY, PhaseType.PRE, connection, this.databaseID, table1ColumnFKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.COLUMN_FOREIGN_KEY, PhaseType.POST, connection, this.databaseID, table1ColumnFKDictionary, driver, null);
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.POST, connection, databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.POST, connection, this.databaseID, schemaDictionary, driver, null);
         
         ctrl.replay();
         
@@ -583,28 +583,28 @@ public class DisableChecksTest
     @Test
     public void test001251generateWithEnabledChecksAgain() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(databaseID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(this.databaseID, this.testConnection.dbmsSchemaName);
         
         // prepare spec for simulation
         Dictionary<ObjectType, Object> schemaDictionary = new Hashtable<>();
         schemaDictionary.put(ObjectType.SCHEMA, schema);
         DBSchemaNodeType.addConsumer(schema, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, table1Name);
+        BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, this.table1Name);
         
         // prepare table for simulation
         Dictionary<ObjectType, Object> table1Dictionary = new Hashtable<>();
@@ -612,7 +612,7 @@ public class DisableChecksTest
         table1Dictionary.put(ObjectType.TABLE, table1);
         TableNodeType.addConsumer(table1, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, columnIdName, false, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnPK = TableNodeType.createCharColumn(table1, this.columnIdName, false, 36);
         columnPK.create(ColumnNodeType.primaryKey);
         
         Dictionary<ObjectType, Object> table1ColumnPKDictionary = new Hashtable<>();
@@ -620,11 +620,11 @@ public class DisableChecksTest
         table1ColumnPKDictionary.put(ObjectType.TABLE, table1);
         table1ColumnPKDictionary.put(ObjectType.COLUMN, columnPK);
         
-        BranchNode<TableNodeType, ColumnNodeType> columnFKTable1 = TableNodeType.createCharColumn(table1, columnFKName, true, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnFKTable1 = TableNodeType.createCharColumn(table1, this.columnFKName, true, 36);
         columnFKTable1.create(ColumnNodeType.foreignKey)
                       .setValue(ForeignKeyNodeType.constraintName, "fk1_tbl_dis_check")
-                      .setValue(ForeignKeyNodeType.referencedTableName, table2Name)
-                      .setValue(ForeignKeyNodeType.referencedColumnName, columnIdName);
+                      .setValue(ForeignKeyNodeType.referencedTableName, this.table2Name)
+                      .setValue(ForeignKeyNodeType.referencedColumnName, this.columnIdName);
         
         // prepare column for simulation
         
@@ -633,7 +633,7 @@ public class DisableChecksTest
         table1ColumnFKDictionary.put(ObjectType.TABLE, table1);
         table1ColumnFKDictionary.put(ObjectType.COLUMN, columnFKTable1);
         
-        BranchNode<TableNodeType, ColumnNodeType> columnUnqTable1 = TableNodeType.createCharColumn(table1, columnUniqueName, true, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnUnqTable1 = TableNodeType.createCharColumn(table1, this.columnUniqueName, true, 36);
         
         // prepare column for simulation
         
@@ -642,14 +642,14 @@ public class DisableChecksTest
         table1ColumnUnqDictionary.put(ObjectType.TABLE, table1);
         table1ColumnUnqDictionary.put(ObjectType.COLUMN, columnUnqTable1);
         
-        BranchNode<TableNodeType, IndexNodeType> index1Table1 = TableNodeType.createIndex(table1, true, "unq1_tbl1_dis_check", columnUniqueName);
+        BranchNode<TableNodeType, IndexNodeType> index1Table1 = TableNodeType.createIndex(table1, true, "unq1_tbl1_dis_check", this.columnUniqueName);
         
         Dictionary<ObjectType, Object> table1index1Dictionary = new Hashtable<>();
         table1index1Dictionary.put(ObjectType.SCHEMA, schema);
         table1index1Dictionary.put(ObjectType.TABLE, table1);
         table1index1Dictionary.put(ObjectType.TABLE_INDEX, index1Table1);
         
-        BranchNode<DBSchemaNodeType, TableNodeType> table2 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, table2Name);
+        BranchNode<DBSchemaNodeType, TableNodeType> table2 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, this.table2Name);
         
         // prepare table for simulation
         Dictionary<ObjectType, Object> table2Dictionary = new Hashtable<>();
@@ -657,7 +657,7 @@ public class DisableChecksTest
         table2Dictionary.put(ObjectType.TABLE, table2);
         TableNodeType.addConsumer(table2, new DatabaseSchemaUpdateListener(updateListenerMock));
         
-        BranchNode<TableNodeType, ColumnNodeType> columnPkTable2 = TableNodeType.createCharColumn(table2, columnIdName, false, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnPkTable2 = TableNodeType.createCharColumn(table2, this.columnIdName, false, 36);
         columnPkTable2.create(ColumnNodeType.primaryKey);
         
         // prepare column for simulation
@@ -667,7 +667,7 @@ public class DisableChecksTest
         table2ColumnPKDictionary.put(ObjectType.TABLE, table2);
         table2ColumnPKDictionary.put(ObjectType.COLUMN, columnPkTable2);
         
-        BranchNode<TableNodeType, ColumnNodeType> columnUnqTable2 = TableNodeType.createCharColumn(table2, columnUniqueName, true, 36);
+        BranchNode<TableNodeType, ColumnNodeType> columnUnqTable2 = TableNodeType.createCharColumn(table2, this.columnUniqueName, true, 36);
         
         // prepare column for simulation
         
@@ -676,7 +676,7 @@ public class DisableChecksTest
         table2ColumnUnqDictionary.put(ObjectType.TABLE, table2);
         table2ColumnUnqDictionary.put(ObjectType.COLUMN, columnUnqTable2);
         
-        BranchNode<TableNodeType, IndexNodeType> index1Table2 = TableNodeType.createIndex(table2, true, "unq1_tbl2_dis_check", columnUniqueName);
+        BranchNode<TableNodeType, IndexNodeType> index1Table2 = TableNodeType.createIndex(table2, true, "unq1_tbl2_dis_check", this.columnUniqueName);
         
         Dictionary<ObjectType, Object> table2index1Dictionary = new Hashtable<>();
         table2index1Dictionary.put(ObjectType.SCHEMA, schema);
@@ -685,43 +685,43 @@ public class DisableChecksTest
         
         // simulate listener
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.PRE, connection, databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.PRE, connection, this.databaseID, schemaDictionary, driver, null);
         
         // table creation
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.PRE, connection, databaseID, table1Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.POST, connection, databaseID, table1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.PRE, connection, this.databaseID, table1Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.POST, connection, this.databaseID, table1Dictionary, driver, null);
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.PRE, connection, databaseID, table2Dictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.POST, connection, databaseID, table2Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.PRE, connection, this.databaseID, table2Dictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.TABLE, PhaseType.POST, connection, this.databaseID, table2Dictionary, driver, null);
         
         // table1 column creation
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table1ColumnPKDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table1ColumnPKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table1ColumnPKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table1ColumnPKDictionary, driver, null);
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table1ColumnFKDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table1ColumnFKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table1ColumnFKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table1ColumnFKDictionary, driver, null);
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table1ColumnUnqDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table1ColumnUnqDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table1ColumnUnqDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table1ColumnUnqDictionary, driver, null);
         
         // table2 column creation
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table2ColumnPKDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table2ColumnPKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table2ColumnPKDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table2ColumnPKDictionary, driver, null);
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, databaseID, table2ColumnUnqDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, databaseID, table2ColumnUnqDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.PRE, connection, this.databaseID, table2ColumnUnqDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.COLUMN, PhaseType.POST, connection, this.databaseID, table2ColumnUnqDictionary, driver, null);
         
         // convert schema
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, databaseID, schemaDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, databaseID, schemaDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, databaseID, schemaDictionary, driver, null);
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, this.databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.PRE, connection, this.databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.UPDATE, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, this.databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA_CONVERT_SCHEMA, PhaseType.POST, connection, this.databaseID, schemaDictionary, driver, null);
         
-        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.POST, connection, databaseID, schemaDictionary, driver, null);
+        updateListenerMock.onAction(ActionType.CHECK, ObjectType.SCHEMA, PhaseType.POST, connection, this.databaseID, schemaDictionary, driver, null);
         
         ctrl.replay();
         

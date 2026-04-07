@@ -16,7 +16,7 @@ import org.sodeac.common.function.ConplierBean;
 
 public class Variable<T> implements IExpression<T>
 {
-    public Variable(Class<T> type)
+    public Variable(final Class<T> type)
     {
         super();
         this.container = new ConplierBean<>();
@@ -24,7 +24,7 @@ public class Variable<T> implements IExpression<T>
     }
     
     @SuppressWarnings("unchecked")
-    public Variable(T initialValue)
+    public Variable(final T initialValue)
     {
         super();
         Objects.requireNonNull(initialValue);
@@ -37,7 +37,7 @@ public class Variable<T> implements IExpression<T>
     
     public ConplierBean<T> getContainer()
     {
-        return container;
+        return this.container;
     }
     
     @Override
@@ -53,7 +53,7 @@ public class Variable<T> implements IExpression<T>
     }
     
     @Override
-    public T evaluate(Context context)
+    public T evaluate(final Context context)
     {
         return this.container.get();
     }

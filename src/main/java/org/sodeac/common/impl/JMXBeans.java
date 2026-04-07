@@ -14,6 +14,6 @@ public class JMXBeans
 {
     public interface ServiceRegistrationMBean
     {
-        public String getIdString();
+        String getIdString();
     }
 }

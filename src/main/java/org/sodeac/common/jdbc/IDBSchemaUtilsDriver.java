@@ -37,11 +37,11 @@ import org.sodeac.common.typedtree.BranchNode;
 
 public interface IDBSchemaUtilsDriver extends IDriver
 {
-    public static final int HANDLE_NONE = -1;
-    public static final int HANDLE_FALLBACK = 0;
-    public static final int HANDLE_DEFAULT = 10000;
+    int HANDLE_NONE = -1;
+    int HANDLE_FALLBACK = 0;
+    int HANDLE_DEFAULT = 10000;
     
-    public static final String REQUIRED_DEFAULT_COLUMN = "SodeacDfltCol";
+    String REQUIRED_DEFAULT_COLUMN = "SodeacDfltCol";
     
     /**
      * create a new schema
@@ -52,7 +52,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
      *
      * @throws SQLException
      */
-    public default void createSchema(Connection connection, String schemaName, Map<String, Object> properties) throws SQLException
+    default void createSchema(final Connection connection, final String schemaName, final Map<String, Object> properties) throws SQLException
     {
         String sql = "CREATE SCHEMA IF NOT EXISTS " + objectNameGuidelineFormat(null, connection, schemaName, "SCHEMA") + " AUTHORIZATION " + connection.getMetaData().getUserName();
         PreparedStatement prepStat = connection.prepareStatement(sql);
@@ -70,7 +70,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
      *
      * @throws SQLException
      */
-    public default boolean schemaExists(Connection connection, String schemaName) throws SQLException
+    default boolean schemaExists(final Connection connection, final String schemaName) throws SQLException
     {
         boolean exist = false;
         DatabaseMetaData meta = connection.getMetaData();
@@ -99,7 +99,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
      *
      * @throws SQLException
      */
-    public default void dropSchema(Connection connection, String schemaName, Map<String, Object> properties) throws SQLException
+    default void dropSchema(final Connection connection, final String schemaName, final Map<String, Object> properties) throws SQLException
     {
         if (!confirmDropSchema(connection, schemaName, properties))
         {
@@ -111,7 +111,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
         
     }
     
-    public static boolean confirmDropSchema(Connection connection, String schemaName, Map<String, Object> properties) throws SQLException
+    static boolean confirmDropSchema(final Connection connection, final String schemaName, final Map<String, Object> properties) throws SQLException
     {
         if (properties == null)
         {
@@ -152,12 +152,12 @@ public interface IDBSchemaUtilsDriver extends IDriver
      *
      * @throws SQLException
      */
-    public default boolean tableExists
+    default boolean tableExists
     (
-        Connection connection,
-        BranchNode<?, DBSchemaNodeType> schema,
-        BranchNode<?, TableNodeType> table,
-        Map<String, Object> tableProperties
+        final Connection connection,
+        final BranchNode<?, DBSchemaNodeType> schema,
+        final BranchNode<?, TableNodeType> table,
+        final Map<String, Object> tableProperties
     ) throws SQLException
     {
         String catalog = connection.getCatalog();
@@ -255,7 +255,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
                 {
                     resultSet.close();
                 }
-                catch (Exception e) { }
+                catch (final Exception e) { }
             }
         }
         
@@ -328,7 +328,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
                 {
                     resultSet.close();
                 }
-                catch (Exception e) { }
+                catch (final Exception e) { }
             }
         }
         
@@ -346,12 +346,12 @@ public interface IDBSchemaUtilsDriver extends IDriver
      *
      * @throws SQLException
      */
-    public default void createTable
+    default void createTable
     (
-        Connection connection,
-        BranchNode<?, DBSchemaNodeType> schema,
-        BranchNode<?, TableNodeType> table,
-        Map<String, Object> tableProperties
+        final Connection connection,
+        final BranchNode<?, DBSchemaNodeType> schema,
+        final BranchNode<?, TableNodeType> table,
+        final Map<String, Object> tableProperties
     ) throws SQLException
     {
         String schemaName = DBSchemaUtils.getSchema(connection);
@@ -395,7 +395,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
         {
             String sql =
                 quoted ?
-                    "CREATE TABLE " + schemaName + "." + quotedChar() + "" + table.getValue(TableNodeType.name) + "" + quotedChar() + "(" + defaultColumn + ")" + tableSpaceDefinition :
+                    "CREATE TABLE " + schemaName + "." + quotedChar() + table.getValue(TableNodeType.name) + quotedChar() + "(" + defaultColumn + ")" + tableSpaceDefinition :
                     "CREATE TABLE " + schemaName + "." + objectNameGuidelineFormat(schema, connection, table.getValue(TableNodeType.name), "TABLE") + "(" + defaultColumn + ")" + tableSpaceDefinition;
             createTableStatement = connection.prepareStatement(sql);
             createTableStatement.executeUpdate();
@@ -408,7 +408,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
                 {
                     createTableStatement.close();
                 }
-                catch (Exception e) { }
+                catch (final Exception e) { }
             }
         }
     }
@@ -426,12 +426,12 @@ public interface IDBSchemaUtilsDriver extends IDriver
      *
      * @throws SQLException
      */
-    public default boolean primaryKeyExists
+    default boolean primaryKeyExists
     (
-        Connection connection,
-        BranchNode<?, DBSchemaNodeType> schema,
-        BranchNode<?, TableNodeType> table,
-        Map<String, Object> tableProperties
+        final Connection connection,
+        final BranchNode<?, DBSchemaNodeType> schema,
+        final BranchNode<?, TableNodeType> table,
+        final Map<String, Object> tableProperties
     ) throws SQLException
     {
         String catalog = connection.getCatalog();
@@ -450,7 +450,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
             tableQuoted = table.getValue(TableNodeType.quotedName).booleanValue();
         }
         BranchNode<?, ColumnNodeType> column = null;
-        for (BranchNode<TableNodeType, ColumnNodeType> columnPK : table.getUnmodifiableNodeList(TableNodeType.columns))
+        for (final BranchNode<TableNodeType, ColumnNodeType> columnPK : table.getUnmodifiableNodeList(TableNodeType.columns))
         {
             if (columnPK.get(ColumnNodeType.primaryKey) == null)
             {
@@ -566,7 +566,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
                 {
                     resultSet.close();
                 }
-                catch (Exception e) { }
+                catch (final Exception e) { }
             }
         }
         return false;
@@ -582,12 +582,12 @@ public interface IDBSchemaUtilsDriver extends IDriver
      *
      * @throws SQLException
      */
-    public default void setPrimaryKey
+    default void setPrimaryKey
     (
-        Connection connection,
-        BranchNode<?, DBSchemaNodeType> schema,
-        BranchNode<?, TableNodeType> table,
-        Map<String, Object> tableProperties
+        final Connection connection,
+        final BranchNode<?, DBSchemaNodeType> schema,
+        final BranchNode<?, TableNodeType> table,
+        final Map<String, Object> tableProperties
     ) throws SQLException
     {
         IDBSchemaUtilsDriver.setPrimaryKeyWithoutIndex(connection, schema, table, tableProperties, this);
@@ -595,11 +595,11 @@ public interface IDBSchemaUtilsDriver extends IDriver
     
     static void setPrimaryKeyWithIndex
         (
-            Connection connection,
-            BranchNode<?, DBSchemaNodeType> schema,
-            BranchNode<?, TableNodeType> table,
-            Map<String, Object> tableProperties,
-            IDBSchemaUtilsDriver dbSchemaUtilsDriver
+            final Connection connection,
+            final BranchNode<?, DBSchemaNodeType> schema,
+            final BranchNode<?, TableNodeType> table,
+            final Map<String, Object> tableProperties,
+            final IDBSchemaUtilsDriver dbSchemaUtilsDriver
         ) throws SQLException
     {
         String schemaName = DBSchemaUtils.getSchema(connection);
@@ -618,7 +618,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
         }
         
         BranchNode<?, ColumnNodeType> column = null;
-        for (BranchNode<TableNodeType, ColumnNodeType> columnPK : table.getUnmodifiableNodeList(TableNodeType.columns))
+        for (final BranchNode<TableNodeType, ColumnNodeType> columnPK : table.getUnmodifiableNodeList(TableNodeType.columns))
         {
             if (columnPK.get(ColumnNodeType.primaryKey) == null)
             {
@@ -682,11 +682,11 @@ public interface IDBSchemaUtilsDriver extends IDriver
         }
         
         String tablePart = tableQuoted ?
-            " " + schemaName + "." + dbSchemaUtilsDriver.quotedChar() + "" + table.getValue(TableNodeType.name) + "" + dbSchemaUtilsDriver.quotedChar() + " " :
+            " " + schemaName + "." + dbSchemaUtilsDriver.quotedChar() + table.getValue(TableNodeType.name) + dbSchemaUtilsDriver.quotedChar() + " " :
             " " + schemaName + "." + dbSchemaUtilsDriver.objectNameGuidelineFormat(schema, connection, table.getValue(TableNodeType.name), "TABLE") + " ";
         
         String columnPart = columnQuoted ?
-            " " + dbSchemaUtilsDriver.quotedChar() + "" + column.getValue(ColumnNodeType.name) + "" + dbSchemaUtilsDriver.quotedChar() + " " :
+            " " + dbSchemaUtilsDriver.quotedChar() + column.getValue(ColumnNodeType.name) + dbSchemaUtilsDriver.quotedChar() + " " :
             " " + dbSchemaUtilsDriver.objectNameGuidelineFormat(schema, connection, column.getValue(ColumnNodeType.name), "COLUMN") + " ";
         
         String tableSpace = dbSchemaUtilsDriver.objectNameGuidelineFormat(schema, connection, schema.getValue(DBSchemaNodeType.tableSpaceIndex), "TABLESPACE");
@@ -717,18 +717,18 @@ public interface IDBSchemaUtilsDriver extends IDriver
                 {
                     createPKStatement.close();
                 }
-                catch (Exception e) { }
+                catch (final Exception e) { }
             }
         }
     }
     
     static void setPrimaryKeyWithoutIndex
         (
-            Connection connection,
-            BranchNode<?, DBSchemaNodeType> schema,
-            BranchNode<?, TableNodeType> table,
-            Map<String, Object> tableProperties,
-            IDBSchemaUtilsDriver dbSchemaUtilsDriver
+            final Connection connection,
+            final BranchNode<?, DBSchemaNodeType> schema,
+            final BranchNode<?, TableNodeType> table,
+            final Map<String, Object> tableProperties,
+            final IDBSchemaUtilsDriver dbSchemaUtilsDriver
         ) throws SQLException
     {
         
@@ -748,7 +748,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
         }
         
         BranchNode<?, ColumnNodeType> column = null;
-        for (BranchNode<TableNodeType, ColumnNodeType> columnPK : table.getUnmodifiableNodeList(TableNodeType.columns))
+        for (final BranchNode<TableNodeType, ColumnNodeType> columnPK : table.getUnmodifiableNodeList(TableNodeType.columns))
         {
             if (columnPK.get(ColumnNodeType.primaryKey) == null)
             {
@@ -797,11 +797,11 @@ public interface IDBSchemaUtilsDriver extends IDriver
         }
         
         String tablePart = tableQuoted ?
-            " " + schemaName + "." + dbSchemaUtilsDriver.quotedChar() + "" + table.getValue(TableNodeType.name) + "" + dbSchemaUtilsDriver.quotedChar() + " " :
+            " " + schemaName + "." + dbSchemaUtilsDriver.quotedChar() + table.getValue(TableNodeType.name) + dbSchemaUtilsDriver.quotedChar() + " " :
             " " + schemaName + "." + dbSchemaUtilsDriver.objectNameGuidelineFormat(schema, connection, table.getValue(TableNodeType.name), "TABLE") + " ";
         
         String columnPart = columnQuoted ?
-            " " + dbSchemaUtilsDriver.quotedChar() + "" + column.getValue(ColumnNodeType.name) + "" + dbSchemaUtilsDriver.quotedChar() + " " :
+            " " + dbSchemaUtilsDriver.quotedChar() + column.getValue(ColumnNodeType.name) + dbSchemaUtilsDriver.quotedChar() + " " :
             " " + dbSchemaUtilsDriver.objectNameGuidelineFormat(schema, connection, column.getValue(ColumnNodeType.name), "COLUMN") + " ";
         
         String tableSpace = dbSchemaUtilsDriver.objectNameGuidelineFormat(schema, connection, schema.getValue(DBSchemaNodeType.tableSpaceIndex), "TABLESPACE");
@@ -832,7 +832,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
                 {
                     createPKStatement.close();
                 }
-                catch (Exception e) { }
+                catch (final Exception e) { }
             }
         }
     }
@@ -851,13 +851,13 @@ public interface IDBSchemaUtilsDriver extends IDriver
      *
      * @throws SQLException
      */
-    public default boolean columnExists
+    default boolean columnExists
     (
-        Connection connection,
-        BranchNode<?, DBSchemaNodeType> schema,
-        BranchNode<?, TableNodeType> table,
-        BranchNode<?, ColumnNodeType> column,
-        Map<String, Object> columnProperties
+        final Connection connection,
+        final BranchNode<?, DBSchemaNodeType> schema,
+        final BranchNode<?, TableNodeType> table,
+        final BranchNode<?, ColumnNodeType> column,
+        final Map<String, Object> columnProperties
     ) throws SQLException
     {
         String catalog = connection.getCatalog();
@@ -988,7 +988,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
                 {
                     resultSet.close();
                 }
-                catch (Exception e) { }
+                catch (final Exception e) { }
             }
         }
         
@@ -1087,7 +1087,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
                 {
                     resultSet.close();
                 }
-                catch (Exception e) { }
+                catch (final Exception e) { }
             }
         }
         return false;
@@ -1107,13 +1107,13 @@ public interface IDBSchemaUtilsDriver extends IDriver
      *
      * @throws SQLException
      */
-    public default String determineColumnType
+    default String determineColumnType
     (
-        Connection connection,
-        BranchNode<?, DBSchemaNodeType> schema,
-        BranchNode<?, TableNodeType> table,
-        BranchNode<?, ColumnNodeType> column,
-        Map<String, Object> columnProperties
+        final Connection connection,
+        final BranchNode<?, DBSchemaNodeType> schema,
+        final BranchNode<?, TableNodeType> table,
+        final BranchNode<?, ColumnNodeType> column,
+        final Map<String, Object> columnProperties
     ) throws SQLException
     {
         if (columnProperties == null)
@@ -1124,7 +1124,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
         {
             return null;
         }
-        for (IColumnType.ColumnType type : IColumnType.ColumnType.values())
+        for (final IColumnType.ColumnType type : IColumnType.ColumnType.values())
         {
             if (type.toString().equalsIgnoreCase(columnProperties.get("COLUMN_TYPE_NAME").toString()))
             {
@@ -1177,13 +1177,13 @@ public interface IDBSchemaUtilsDriver extends IDriver
      *
      * @throws SQLException
      */
-    public default void createColumn
+    default void createColumn
     (
-        Connection connection,
-        BranchNode<?, DBSchemaNodeType> schema,
-        BranchNode<?, TableNodeType> table,
-        BranchNode<?, ColumnNodeType> column,
-        Map<String, Object> columnProperties
+        final Connection connection,
+        final BranchNode<?, DBSchemaNodeType> schema,
+        final BranchNode<?, TableNodeType> table,
+        final BranchNode<?, ColumnNodeType> column,
+        final Map<String, Object> columnProperties
     ) throws SQLException
     {
         String schemaName = DBSchemaUtils.getSchema(connection);
@@ -1208,11 +1208,11 @@ public interface IDBSchemaUtilsDriver extends IDriver
         }
         
         String tablePart = tableQuoted ?
-            " " + schemaName + "." + quotedChar() + "" + table.getValue(TableNodeType.name) + "" + quotedChar() + " " :
+            " " + schemaName + "." + quotedChar() + table.getValue(TableNodeType.name) + quotedChar() + " " :
             " " + schemaName + "." + objectNameGuidelineFormat(schema, connection, table.getValue(TableNodeType.name), "TABLE") + " ";
         
         String columnPart = columnQuoted ?
-            " " + quotedChar() + "" + column.getValue(ColumnNodeType.name) + "" + quotedChar() + " " :
+            " " + quotedChar() + column.getValue(ColumnNodeType.name) + quotedChar() + " " :
             " " + objectNameGuidelineFormat(schema, connection, column.getValue(ColumnNodeType.name), "COLUMN") + " ";
         
         PreparedStatement createColumnStatement = null;
@@ -1249,7 +1249,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
                 {
                     createColumnStatement.close();
                 }
-                catch (Exception e) { }
+                catch (final Exception e) { }
             }
         }
     }
@@ -1265,13 +1265,13 @@ public interface IDBSchemaUtilsDriver extends IDriver
      *
      * @throws SQLException
      */
-    public default void dropColumn
+    default void dropColumn
     (
-        Connection connection,
-        BranchNode<?, DBSchemaNodeType> schema,
-        BranchNode<?, TableNodeType> table,
-        String columnName,
-        boolean quoted
+        final Connection connection,
+        final BranchNode<?, DBSchemaNodeType> schema,
+        final BranchNode<?, TableNodeType> table,
+        final String columnName,
+        final boolean quoted
     ) throws SQLException
     {
         String schemaName = DBSchemaUtils.getSchema(connection);
@@ -1290,19 +1290,18 @@ public interface IDBSchemaUtilsDriver extends IDriver
         }
         
         String tablePart = tableQuoted ?
-            " " + schemaName + "." + quotedChar() + "" + table.getValue(TableNodeType.name) + "" + quotedChar() + " " :
+            " " + schemaName + "." + quotedChar() + table.getValue(TableNodeType.name) + quotedChar() + " " :
             " " + schemaName + "." + objectNameGuidelineFormat(schema, connection, table.getValue(TableNodeType.name), "TABLE") + " ";
         
         String columnPart = quoted ?
-            " " + quotedChar() + "" + columnName + "" + quotedChar() + " " :
+            " " + quotedChar() + columnName + quotedChar() + " " :
             " " + objectNameGuidelineFormat(schema, connection, columnName, "COLUMN") + " ";
         
         PreparedStatement createColumnStatement = null;
         try
         {
-            StringBuilder sqlBuilder = new StringBuilder("ALTER TABLE  " + tablePart + " DROP COLUMN " + columnPart + " ");
             
-            createColumnStatement = connection.prepareStatement(sqlBuilder.toString());
+            createColumnStatement = connection.prepareStatement("ALTER TABLE  " + tablePart + " DROP COLUMN " + columnPart + " ");
             createColumnStatement.executeUpdate();
             
         }
@@ -1314,7 +1313,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
                 {
                     createColumnStatement.close();
                 }
-                catch (Exception e) { }
+                catch (final Exception e) { }
             }
         }
     }
@@ -1332,13 +1331,13 @@ public interface IDBSchemaUtilsDriver extends IDriver
      *
      * @throws SQLException
      */
-    public default boolean isValidColumnProperties
+    default boolean isValidColumnProperties
     (
-        Connection connection,
-        BranchNode<?, DBSchemaNodeType> schema,
-        BranchNode<?, TableNodeType> table,
-        BranchNode<?, ColumnNodeType> column,
-        Map<String, Object> columnProperties
+        final Connection connection,
+        final BranchNode<?, DBSchemaNodeType> schema,
+        final BranchNode<?, TableNodeType> table,
+        final BranchNode<?, ColumnNodeType> column,
+        final Map<String, Object> columnProperties
     ) throws SQLException
     {
         String schemaName = DBSchemaUtils.getSchema(connection);
@@ -1355,7 +1354,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
         
         // Nullable
         
-        boolean columnSpecNullable = column.getValue(ColumnNodeType.nullable) == null ? true : column.getValue(ColumnNodeType.nullable).booleanValue();
+        boolean columnSpecNullable = column.getValue(ColumnNodeType.nullable) == null || column.getValue(ColumnNodeType.nullable).booleanValue();
         if (columnProperties.get("COLUMN_NULLABLE") != null) // exists
         {
             boolean nullable = ((Integer) columnProperties.get("COLUMN_NULLABLE")).intValue() > 0;
@@ -1461,13 +1460,13 @@ public interface IDBSchemaUtilsDriver extends IDriver
      *
      * @throws SQLException
      */
-    public default void setValidColumnProperties
+    default void setValidColumnProperties
     (
-        Connection connection,
-        BranchNode<?, DBSchemaNodeType> schema,
-        BranchNode<?, TableNodeType> table,
-        BranchNode<?, ColumnNodeType> column,
-        Map<String, Object> columnProperties
+        final Connection connection,
+        final BranchNode<?, DBSchemaNodeType> schema,
+        final BranchNode<?, TableNodeType> table,
+        final BranchNode<?, ColumnNodeType> column,
+        final Map<String, Object> columnProperties
     ) throws SQLException
     {
         String schemaName = DBSchemaUtils.getSchema(connection);
@@ -1492,14 +1491,14 @@ public interface IDBSchemaUtilsDriver extends IDriver
         }
         
         String tablePart = tableQuoted ?
-            " " + schemaName + "." + quotedChar() + "" + table.getValue(TableNodeType.name) + "" + quotedChar() + " " :
+            " " + schemaName + "." + quotedChar() + table.getValue(TableNodeType.name) + quotedChar() + " " :
             " " + schemaName + "." + objectNameGuidelineFormat(schema, connection, table.getValue(TableNodeType.name), "TABLE") + " ";
         
         String columnPart = columnQuoted ?
-            " " + quotedChar() + "" + column.getValue(ColumnNodeType.name) + "" + quotedChar() + " " :
+            " " + quotedChar() + column.getValue(ColumnNodeType.name) + quotedChar() + " " :
             " " + objectNameGuidelineFormat(schema, connection, column.getValue(ColumnNodeType.name), "COLUMN") + " ";
         
-        boolean nullable = column.getValue(ColumnNodeType.nullable) == null ? true : column.getValue(ColumnNodeType.nullable).booleanValue();
+        boolean nullable = column.getValue(ColumnNodeType.nullable) == null || column.getValue(ColumnNodeType.nullable).booleanValue();
         
         if (columnProperties.get("INVALID_NULLABLE") != null)
         {
@@ -1518,7 +1517,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
                     {
                         updateNullableStatment.close();
                     }
-                    catch (Exception e) { }
+                    catch (final Exception e) { }
                 }
             }
         }
@@ -1563,7 +1562,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
                     {
                         createColumnStatement.close();
                     }
-                    catch (Exception e) { }
+                    catch (final Exception e) { }
                 }
             }
         }
@@ -1590,7 +1589,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
                     {
                         createColumnStatement.close();
                     }
-                    catch (Exception e) { }
+                    catch (final Exception e) { }
                 }
             }
         }
@@ -1610,13 +1609,13 @@ public interface IDBSchemaUtilsDriver extends IDriver
      *
      * @throws SQLException
      */
-    public default boolean isValidForeignKey
+    default boolean isValidForeignKey
     (
-        Connection connection,
-        BranchNode<?, DBSchemaNodeType> schema,
-        BranchNode<?, TableNodeType> table,
-        BranchNode<?, ColumnNodeType> column,
-        Map<String, Object> columnProperties
+        final Connection connection,
+        final BranchNode<?, DBSchemaNodeType> schema,
+        final BranchNode<?, TableNodeType> table,
+        final BranchNode<?, ColumnNodeType> column,
+        final Map<String, Object> columnProperties
     ) throws SQLException
     {
         String catalog = connection.getCatalog();
@@ -1747,21 +1746,13 @@ public interface IDBSchemaUtilsDriver extends IDriver
                     continue;
                 }
                 
-                boolean tableNameMatch = false;
-                if (tableQuoted && tbl.equals(table.getValue(TableNodeType.name)))
-                {
-                    tableNameMatch = true;
-                }
+                boolean tableNameMatch = tableQuoted && tbl.equals(table.getValue(TableNodeType.name));
                 if ((!tableQuoted) && tbl.equalsIgnoreCase(table.getValue(TableNodeType.name)))
                 {
                     tableNameMatch = true;
                 }
                 
-                boolean columnNameMatch = false;
-                if (columnQuoted && col.equals(column.getValue(ColumnNodeType.name)))
-                {
-                    columnNameMatch = true;
-                }
+                boolean columnNameMatch = columnQuoted && col.equals(column.getValue(ColumnNodeType.name));
                 if ((!columnQuoted) && col.equalsIgnoreCase(column.getValue(ColumnNodeType.name)))
                 {
                     columnNameMatch = true;
@@ -1779,11 +1770,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
                     continue;
                 }
                 
-                boolean keyNameMatch = false;
-                if (keyQuoted && (keyName.equals(foreignKey.getValue(ForeignKeyNodeType.constraintName) == null ? "" : foreignKey.getValue(ForeignKeyNodeType.constraintName))))
-                {
-                    keyNameMatch = true;
-                }
+                boolean keyNameMatch = keyQuoted && (keyName.equals(foreignKey.getValue(ForeignKeyNodeType.constraintName) == null ? "" : foreignKey.getValue(ForeignKeyNodeType.constraintName)));
                 if ((!keyQuoted) && (keyName.equalsIgnoreCase(foreignKey.getValue(ForeignKeyNodeType.constraintName) == null ? "" : foreignKey.getValue(ForeignKeyNodeType.constraintName))))
                 {
                     keyNameMatch = true;
@@ -1833,7 +1820,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
                 {
                     resultSet.close();
                 }
-                catch (Exception e) { }
+                catch (final Exception e) { }
             }
         }
         
@@ -1851,13 +1838,13 @@ public interface IDBSchemaUtilsDriver extends IDriver
      *
      * @throws SQLException
      */
-    public default void setValidForeignKey
+    default void setValidForeignKey
     (
-        Connection connection,
-        BranchNode<?, DBSchemaNodeType> schema,
-        BranchNode<?, TableNodeType> table,
-        BranchNode<?, ColumnNodeType> column,
-        Map<String, Object> columnProperties
+        final Connection connection,
+        final BranchNode<?, DBSchemaNodeType> schema,
+        final BranchNode<?, TableNodeType> table,
+        final BranchNode<?, ColumnNodeType> column,
+        final Map<String, Object> columnProperties
     ) throws SQLException
     {
         String schemaName = DBSchemaUtils.getSchema(connection);
@@ -1929,23 +1916,23 @@ public interface IDBSchemaUtilsDriver extends IDriver
         }
         
         String tablePart = tableQuoted ?
-            " " + schemaName + "." + quotedChar() + "" + tableName + "" + quotedChar() + " " :
+            " " + schemaName + "." + quotedChar() + tableName + quotedChar() + " " :
             " " + schemaName + "." + objectNameGuidelineFormat(schema, connection, tableName, "TABLE") + " ";
         
         String columnPart = columnQuoted ?
-            " " + quotedChar() + "" + columnName + "" + quotedChar() + " " :
+            " " + quotedChar() + columnName + quotedChar() + " " :
             " " + objectNameGuidelineFormat(schema, connection, columnName, "COLUMN") + " ";
         
         String constraintPart = keyQuoted ?
-            " " + quotedChar() + "" + constraintName + "" + quotedChar() + " " :
+            " " + quotedChar() + constraintName + quotedChar() + " " :
             " " + objectNameGuidelineFormat(schema, connection, constraintName, "FOREIGNKEY") + " ";
         
         String refTablePart = refTableQuoted ?
-            " " + schemaName + "." + quotedChar() + "" + referencedTableName + "" + quotedChar() + " " :
+            " " + schemaName + "." + quotedChar() + referencedTableName + quotedChar() + " " :
             " " + schemaName + "." + objectNameGuidelineFormat(schema, connection, referencedTableName, "TABLE") + " ";
         
         String refColumnPart = refColumnQuoted ?
-            " " + quotedChar() + "" + referencedColumName + "" + quotedChar() + " " :
+            " " + quotedChar() + referencedColumName + quotedChar() + " " :
             " " + objectNameGuidelineFormat(schema, connection, referencedColumName, "COLUMN") + " ";
         
         PreparedStatement createFKStatement = null;
@@ -1964,18 +1951,18 @@ public interface IDBSchemaUtilsDriver extends IDriver
                 {
                     createFKStatement.close();
                 }
-                catch (Exception e) { }
+                catch (final Exception e) { }
             }
         }
     }
     
     static void cleanColumnForeignKeys
         (
-            Connection connection,
-            BranchNode<?, DBSchemaNodeType> schema,
-            BranchNode<?, TableNodeType> table,
-            BranchNode<?, ColumnNodeType> column,
-            IDBSchemaUtilsDriver dbSchemaUtilsDriver
+            final Connection connection,
+            final BranchNode<?, DBSchemaNodeType> schema,
+            final BranchNode<?, TableNodeType> table,
+            final BranchNode<?, ColumnNodeType> column,
+            final IDBSchemaUtilsDriver dbSchemaUtilsDriver
         )
         throws SQLException
     {
@@ -2104,21 +2091,13 @@ public interface IDBSchemaUtilsDriver extends IDriver
                     continue;
                 }
                 
-                boolean tableNameMatch = false;
-                if (tableQuoted && tbl.equals(table.getValue(TableNodeType.name)))
-                {
-                    tableNameMatch = true;
-                }
+                boolean tableNameMatch = tableQuoted && tbl.equals(table.getValue(TableNodeType.name));
                 if ((!tableQuoted) && tbl.equalsIgnoreCase(table.getValue(TableNodeType.name)))
                 {
                     tableNameMatch = true;
                 }
                 
-                boolean columnNameMatch = false;
-                if (columnQuoted && col.equals(column.getValue(ColumnNodeType.name)))
-                {
-                    columnNameMatch = true;
-                }
+                boolean columnNameMatch = columnQuoted && col.equals(column.getValue(ColumnNodeType.name));
                 if ((!columnQuoted) && col.equalsIgnoreCase(column.getValue(ColumnNodeType.name)))
                 {
                     columnNameMatch = true;
@@ -2140,11 +2119,11 @@ public interface IDBSchemaUtilsDriver extends IDriver
                 {
                     resultSet.close();
                 }
-                catch (Exception e) { }
+                catch (final Exception e) { }
             }
         }
         
-        for (String toDeleteKey : toDelete)
+        for (final String toDeleteKey : toDelete)
         {
             dbSchemaUtilsDriver.dropForeignKey(connection, schema, table, toDeleteKey, true);
         }
@@ -2161,13 +2140,13 @@ public interface IDBSchemaUtilsDriver extends IDriver
      *
      * @throws SQLException
      */
-    public default void dropForeignKey
+    default void dropForeignKey
     (
-        Connection connection,
-        BranchNode<?, DBSchemaNodeType> schema,
-        BranchNode<?, TableNodeType> table,
-        String keyName,
-        boolean quoted
+        final Connection connection,
+        final BranchNode<?, DBSchemaNodeType> schema,
+        final BranchNode<?, TableNodeType> table,
+        final String keyName,
+        final boolean quoted
     ) throws SQLException
     {
         String schemaName = DBSchemaUtils.getSchema(connection);
@@ -2187,18 +2166,17 @@ public interface IDBSchemaUtilsDriver extends IDriver
         }
         
         String tablePart = tableQuoted ?
-            " " + schemaName + "." + quotedChar() + "" + table.getValue(TableNodeType.name) + "" + quotedChar() + " " :
+            " " + schemaName + "." + quotedChar() + table.getValue(TableNodeType.name) + quotedChar() + " " :
             " " + schemaName + "." + objectNameGuidelineFormat(schema, connection, table.getValue(TableNodeType.name), "TABLE") + " ";
         
         String keyPart = quoted ?
-            " " + quotedChar() + "" + keyName + "" + quotedChar() + " " :
+            " " + quotedChar() + keyName + quotedChar() + " " :
             " " + objectNameGuidelineFormat(schema, connection, keyName, "FOREIGNKEY") + " ";
         
         PreparedStatement createColumnStatement = null;
         try
         {
-            StringBuilder sqlBuilder = new StringBuilder("ALTER TABLE  " + tablePart + " DROP CONSTRAINT " + keyPart + " ");
-            createColumnStatement = connection.prepareStatement(sqlBuilder.toString());
+            createColumnStatement = connection.prepareStatement("ALTER TABLE  " + tablePart + " DROP CONSTRAINT " + keyPart + " ");
             createColumnStatement.executeUpdate();
             
         }
@@ -2210,7 +2188,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
                 {
                     createColumnStatement.close();
                 }
-                catch (Exception e) { }
+                catch (final Exception e) { }
             }
         }
     }
@@ -2228,13 +2206,13 @@ public interface IDBSchemaUtilsDriver extends IDriver
      *
      * @throws SQLException
      */
-    public default boolean isValidIndex
+    default boolean isValidIndex
     (
-        Connection connection,
-        BranchNode<?, DBSchemaNodeType> schema,
-        BranchNode<?, TableNodeType> table,
-        BranchNode<?, IndexNodeType> index,
-        Map<String, Object> indexProperties
+        final Connection connection,
+        final BranchNode<?, DBSchemaNodeType> schema,
+        final BranchNode<?, TableNodeType> table,
+        final BranchNode<?, IndexNodeType> index,
+        final Map<String, Object> indexProperties
     ) throws SQLException
     {
         String catalog = connection.getCatalog();
@@ -2386,11 +2364,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
                     continue;
                 }
                 
-                boolean tableNameMatch = false;
-                if (tableQuoted && tbl.equals(table.getValue(TableNodeType.name)))
-                {
-                    tableNameMatch = true;
-                }
+                boolean tableNameMatch = tableQuoted && tbl.equals(table.getValue(TableNodeType.name));
                 if ((!tableQuoted) && tbl.equalsIgnoreCase(table.getValue(TableNodeType.name)))
                 {
                     tableNameMatch = true;
@@ -2401,11 +2375,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
                     continue;
                 }
                 
-                boolean indexNameMatch = false;
-                if (indexQuoted && (idx.equals(index.getValue(IndexNodeType.name))))
-                {
-                    indexNameMatch = true;
-                }
+                boolean indexNameMatch = indexQuoted && (idx.equals(index.getValue(IndexNodeType.name)));
                 if ((!indexQuoted) && (idx.equalsIgnoreCase(index.getValue(IndexNodeType.name))))
                 {
                     indexNameMatch = true;
@@ -2424,7 +2394,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
             boolean diff = false;
             boolean keyExists = !columnExists.isEmpty();
             
-            boolean indexUnique = index.getValue(IndexNodeType.unique) == null ? false : index.getValue(IndexNodeType.unique).booleanValue();
+            boolean indexUnique = index.getValue(IndexNodeType.unique) != null && index.getValue(IndexNodeType.unique).booleanValue();
             if (unique != indexUnique)
             {
                 diff = true;
@@ -2435,7 +2405,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
             }
             else
             {
-                for (BranchNode<IndexNodeType, IndexColumnNodeType> column : columnList)
+                for (final BranchNode<IndexNodeType, IndexColumnNodeType> column : columnList)
                 {
                     if (!columnExists.containsKey(column.getValue(IndexColumnNodeType.columName).toUpperCase()))
                     {
@@ -2461,7 +2431,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
                 {
                     resultSet.close();
                 }
-                catch (Exception e) { }
+                catch (final Exception e) { }
             }
         }
     }
@@ -2477,13 +2447,13 @@ public interface IDBSchemaUtilsDriver extends IDriver
      *
      * @throws SQLException
      */
-    public default void setValidIndex
+    default void setValidIndex
     (
-        Connection connection,
-        BranchNode<?, DBSchemaNodeType> schema,
-        BranchNode<?, TableNodeType> table,
-        BranchNode<?, IndexNodeType> index,
-        Map<String, Object> indexProperties
+        final Connection connection,
+        final BranchNode<?, DBSchemaNodeType> schema,
+        final BranchNode<?, TableNodeType> table,
+        final BranchNode<?, IndexNodeType> index,
+        final Map<String, Object> indexProperties
     ) throws SQLException
     {
         String schemaName = DBSchemaUtils.getSchema(connection);
@@ -2512,15 +2482,15 @@ public interface IDBSchemaUtilsDriver extends IDriver
         
         if ((indexProperties.get("CLEAR_INDEX") != null) && ((Boolean) indexProperties.get("CLEAR_INDEX")).booleanValue())
         {
-            dropIndex(connection, schema, table, index.getValue(IndexNodeType.name), index.getValue(IndexNodeType.quotedName) == null ? false : index.getValue(IndexNodeType.quotedName).booleanValue());
+            dropIndex(connection, schema, table, index.getValue(IndexNodeType.name), index.getValue(IndexNodeType.quotedName) != null && index.getValue(IndexNodeType.quotedName).booleanValue());
         }
         
         String tablePart = tableQuoted ?
-            " " + schemaName + "." + quotedChar() + "" + table.getValue(TableNodeType.name) + "" + quotedChar() + " " :
+            " " + schemaName + "." + quotedChar() + table.getValue(TableNodeType.name) + quotedChar() + " " :
             " " + schemaName + "." + objectNameGuidelineFormat(schema, connection, table.getValue(TableNodeType.name), "TABLE") + " ";
         
         String indexPart = indexQuoted ?
-            " " + quotedChar() + "" + index.getValue(IndexNodeType.name) + "" + quotedChar() + " " :
+            " " + quotedChar() + index.getValue(IndexNodeType.name) + quotedChar() + " " :
             " " + objectNameGuidelineFormat(schema, connection, index.getValue(IndexNodeType.name), "INDEX") + " ";
         
         String tableSpace = objectNameGuidelineFormat(schema, connection, schema.getValue(DBSchemaNodeType.tableSpaceIndex), "TABLESPACE");
@@ -2536,7 +2506,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
             tableSpaceDefinition = tableSpaceAppendix(connection, schema, table, indexProperties, tableSpace, "INDEX");
         }
         
-        boolean indexUnique = index.getValue(IndexNodeType.unique) == null ? false : index.getValue(IndexNodeType.unique).booleanValue();
+        boolean indexUnique = index.getValue(IndexNodeType.unique) != null && index.getValue(IndexNodeType.unique).booleanValue();
         StringBuilder sqlBuilder = new StringBuilder();
         sqlBuilder.append("CREATE ");
         if (indexUnique)
@@ -2547,7 +2517,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
         sqlBuilder.append(indexPart + " ON ");
         sqlBuilder.append(tablePart + " (");
         String separator = "";
-        for (BranchNode<IndexNodeType, IndexColumnNodeType> column : columnList)
+        for (final BranchNode<IndexNodeType, IndexColumnNodeType> column : columnList)
         {
             boolean columnQuoted = false;
             if (column.getValue(IndexColumnNodeType.quotedName) != null)
@@ -2556,7 +2526,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
             }
             
             String columnPart = columnQuoted ?
-                " " + quotedChar() + "" + column.getValue(IndexColumnNodeType.columName) + "" + quotedChar() + " " :
+                " " + quotedChar() + column.getValue(IndexColumnNodeType.columName) + quotedChar() + " " :
                 " " + objectNameGuidelineFormat(schema, connection, column.getValue(IndexColumnNodeType.columName), "COLUMN") + " ";
             
             sqlBuilder.append(separator + columnPart);
@@ -2579,7 +2549,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
                 {
                     createIndexStatement.close();
                 }
-                catch (Exception e) { }
+                catch (final Exception e) { }
             }
         }
     }
@@ -2595,13 +2565,13 @@ public interface IDBSchemaUtilsDriver extends IDriver
      *
      * @throws SQLException
      */
-    public default void dropIndex
+    default void dropIndex
     (
-        Connection connection,
-        BranchNode<?, DBSchemaNodeType> schema,
-        BranchNode<?, TableNodeType> table,
-        String indexName,
-        boolean quoted
+        final Connection connection,
+        final BranchNode<?, DBSchemaNodeType> schema,
+        final BranchNode<?, TableNodeType> table,
+        final String indexName,
+        final boolean quoted
     ) throws SQLException
     {
         String schemaName = DBSchemaUtils.getSchema(connection);
@@ -2616,14 +2586,13 @@ public interface IDBSchemaUtilsDriver extends IDriver
         }
         
         String indexPart = quoted ?
-            " " + quotedChar() + "" + indexName + "" + quotedChar() + " " :
+            " " + quotedChar() + indexName + quotedChar() + " " :
             " " + objectNameGuidelineFormat(schema, connection, indexName, "INDEX") + " ";
         
         PreparedStatement createColumnStatement = null;
         try
         {
-            StringBuilder sqlBuilder = new StringBuilder("DROP INDEX " + schemaName + "." + indexPart + " ");
-            createColumnStatement = connection.prepareStatement(sqlBuilder.toString());
+            createColumnStatement = connection.prepareStatement("DROP INDEX " + schemaName + "." + indexPart + " ");
             createColumnStatement.executeUpdate();
         }
         finally
@@ -2634,18 +2603,18 @@ public interface IDBSchemaUtilsDriver extends IDriver
                 {
                     createColumnStatement.close();
                 }
-                catch (Exception e) { }
+                catch (final Exception e) { }
             }
         }
     }
     
-    public boolean isSequenceExists(String schema, String sequenceName, Connection connection) throws SQLException;
+    boolean isSequenceExists(String schema, String sequenceName, Connection connection) throws SQLException;
     
-    public void createSequence(String schema, String sequenceName, Connection connection, long min, long max, boolean cycle, Long cache) throws SQLException;
+    void createSequence(String schema, String sequenceName, Connection connection, long min, long max, boolean cycle, Long cache) throws SQLException;
     
-    public void dropSquence(String schema, String sequenceName, Connection connection) throws SQLException;
+    void dropSquence(String schema, String sequenceName, Connection connection) throws SQLException;
     
-    public long nextFromSequence(String schema, String sequenceName, Connection connection) throws SQLException;
+    long nextFromSequence(String schema, String sequenceName, Connection connection) throws SQLException;
     
     /**
      * clean schema from columns created with table-objects by dbms can not create tables without columns
@@ -2655,12 +2624,12 @@ public interface IDBSchemaUtilsDriver extends IDriver
      *
      * @throws SQLException
      */
-    public default void dropDummyColumns(Connection connection, BranchNode<?, DBSchemaNodeType> schema) throws SQLException
+    default void dropDummyColumns(final Connection connection, final BranchNode<?, DBSchemaNodeType> schema) throws SQLException
     {
         Map<String, BranchNode<DBSchemaNodeType, TableNodeType>> tableIndex = new HashMap<String, BranchNode<DBSchemaNodeType, TableNodeType>>();
         Map<String, Map<String, String>> colIndex = new HashMap<String, Map<String, String>>();
         
-        for (BranchNode<DBSchemaNodeType, TableNodeType> table : schema.getUnmodifiableNodeList(DBSchemaNodeType.tables))
+        for (final BranchNode<DBSchemaNodeType, TableNodeType> table : schema.getUnmodifiableNodeList(DBSchemaNodeType.tables))
         {
             tableIndex.put(table.getValue(TableNodeType.name).toUpperCase(), table);
         }
@@ -2751,16 +2720,16 @@ public interface IDBSchemaUtilsDriver extends IDriver
                 {
                     resultSet.close();
                 }
-                catch (Exception e) { }
+                catch (final Exception e) { }
             }
         }
         
-        for (Entry<String, Map<String, String>> colEntry : colIndex.entrySet())
+        for (final Entry<String, Map<String, String>> colEntry : colIndex.entrySet())
         {
             BranchNode<DBSchemaNodeType, TableNodeType> table = tableIndex.get(tbl.toUpperCase());
             
             String colName = null;
-            for (String columnName : colEntry.getValue().keySet())
+            for (final String columnName : colEntry.getValue().keySet())
             {
                 if (columnName.equalsIgnoreCase("SODEACDFLTCOL"))
                 {
@@ -2783,7 +2752,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
      *
      * @return valid function syntax
      */
-    public default String getFunctionExpression(String function)
+    default String getFunctionExpression(final String function)
     {
         if (function.trim().endsWith(")"))
         {
@@ -2797,7 +2766,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
      *
      * @return true, of dbms requires a column on table creation, otherwise false
      */
-    public default boolean tableRequiresColumn()
+    default boolean tableRequiresColumn()
     {
         return false;
     }
@@ -2810,7 +2779,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
      *
      * @return catalog filter object for jdbc meta api
      */
-    public default String catalogSearchPattern(BranchNode<?, DBSchemaNodeType> schema, Connection connection, String catalog)
+    default String catalogSearchPattern(final BranchNode<?, DBSchemaNodeType> schema, final Connection connection, final String catalog)
     {
         return catalog;
     }
@@ -2823,7 +2792,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
      *
      * @return schema filter object for jdbc meta api
      */
-    public default String schemaSearchPattern(BranchNode<?, DBSchemaNodeType> schema, Connection connection, String schemaName)
+    default String schemaSearchPattern(final BranchNode<?, DBSchemaNodeType> schema, final Connection connection, final String schemaName)
     {
         return objectNameGuidelineFormat(schema, connection, schemaName, "SCHEMA");
     }
@@ -2838,7 +2807,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
      *
      * @return filter object for jdbc meta api
      */
-    public default String objectSearchPattern(BranchNode<?, DBSchemaNodeType> schema, Connection connection, String name, boolean quoted, String type)
+    default String objectSearchPattern(final BranchNode<?, DBSchemaNodeType> schema, final Connection connection, final String name, final boolean quoted, final String type)
     {
         return quoted ? name : objectNameGuidelineFormat(schema, connection, name, type);
     }
@@ -2853,7 +2822,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
      *
      * @return jdbc specific object name
      */
-    public default String objectNameGuidelineFormat(BranchNode<?, DBSchemaNodeType> schema, Connection connection, String name, String type)
+    default String objectNameGuidelineFormat(final BranchNode<?, DBSchemaNodeType> schema, final Connection connection, final String name, final String type)
     {
         return name;
     }
@@ -2862,7 +2831,7 @@ public interface IDBSchemaUtilsDriver extends IDriver
      *
      * @return character to quote an identifier
      */
-    public default char quotedChar()
+    default char quotedChar()
     {
         return '"';
     }
@@ -2879,14 +2848,14 @@ public interface IDBSchemaUtilsDriver extends IDriver
      *
      * @return
      */
-    public default String tableSpaceAppendix
+    default String tableSpaceAppendix
     (
-        Connection connection,
-        BranchNode<?, DBSchemaNodeType> schema,
-        BranchNode<?, TableNodeType> table,
-        Map<String, Object> properties,
-        String tableSpace,
-        String type
+        final Connection connection,
+        final BranchNode<?, DBSchemaNodeType> schema,
+        final BranchNode<?, TableNodeType> table,
+        final Map<String, Object> properties,
+        final String tableSpace,
+        final String type
     )
     {
         return "";

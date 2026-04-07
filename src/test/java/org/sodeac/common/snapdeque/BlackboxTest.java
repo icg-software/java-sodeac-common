@@ -42,7 +42,7 @@ public class BlackboxTest
     public void test00002CreateSimpleDequeue() throws Exception
     {
         SnapshotableDeque<String> deque = new SnapshotableDeque<String>();
-        List<String> content = new ArrayList<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+        List<String> content = new ArrayList<String>(Arrays.asList("1", "2", "3"));
         deque.addAll(content);
         
         assertEquals("deque size should be correct ", content.size(), deque.size());
@@ -60,7 +60,7 @@ public class BlackboxTest
         Iterator<DequeNode<String>> nodeIterator = snapshot1.nodeIterable().iterator();
         Iterator<Link<String>> linkIterator = snapshot1.linkIterable().iterator();
         int index = 0;
-        for (String str : snapshot1)
+        for (final String str : snapshot1)
         {
             assertEquals("nextValue should be correct", content.get(index), str);
             assertTrue("hasNext node should be true", nodeIterator.hasNext());
@@ -90,7 +90,7 @@ public class BlackboxTest
         nodeIterator = snapshot1.nodeIterable().iterator();
         linkIterator = snapshot1.linkIterable().iterator();
         index = 0;
-        for (String str : snapshot1)
+        for (final String str : snapshot1)
         {
             assertEquals("nextValue should be correct", content.get(index), str);
             assertTrue("hasNext node should be true", nodeIterator.hasNext());
@@ -121,8 +121,8 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>())
         {
-            List<String> content = new ArrayList<String>(Arrays.asList(new String[] { "1", "2", "3" }));
-            for (String element : content)
+            List<String> content = new ArrayList<String>(Arrays.asList("1", "2", "3"));
+            for (final String element : content)
             {
                 deque.add(element);
             }
@@ -136,7 +136,7 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>())
         {
-            List<String> content = new ArrayList<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+            List<String> content = new ArrayList<String>(Arrays.asList("1", "2", "3"));
             deque.addAll(content);
             
             testEqualsCollection(content, deque);
@@ -148,7 +148,7 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>())
         {
-            List<String> content = new ArrayList<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+            List<String> content = new ArrayList<String>(Arrays.asList("1", "2", "3"));
             deque.addAll(content);
             
             testEqualsCollection(content, deque);
@@ -165,7 +165,7 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>())
         {
-            List<String> content = new ArrayList<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+            List<String> content = new ArrayList<String>(Arrays.asList("1", "2", "3"));
             deque.addAll(content);
             
             testEqualsCollection(content, deque);
@@ -199,7 +199,7 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>())
         {
-            List<String> content = new ArrayList<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+            List<String> content = new ArrayList<String>(Arrays.asList("1", "2", "3"));
             deque.addAll(content);
             
             testEqualsCollection(content, deque);
@@ -228,7 +228,7 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>())
         {
-            List<String> content = new ArrayList<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+            List<String> content = new ArrayList<String>(Arrays.asList("1", "2", "3"));
             deque.addAll(content);
             
             testEqualsCollection(content, deque);
@@ -257,7 +257,7 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>())
         {
-            List<String> content = new ArrayList<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+            List<String> content = new ArrayList<String>(Arrays.asList("1", "2", "3"));
             deque.addAll(content);
             
             testEqualsCollection(content, deque);
@@ -286,56 +286,56 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>())
         {
-            List<String> content = new ArrayList<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+            List<String> content = new ArrayList<String>(Arrays.asList("1", "2", "3"));
             deque.addAll(content);
             
             testEqualsCollection(content, deque);
             
-            List<String> compare = Arrays.asList(new String[] { "1", "2", "3" });
+            List<String> compare = Arrays.asList("1", "2", "3");
             assertEquals("collection#containsAll should return correct value", content.containsAll(compare), deque.containsAll(compare));
             testEqualsCollection(content, deque);
             
-            compare = Arrays.asList(new String[] {});
+            compare = List.of();
             assertEquals("collection#containsAll should return correct value", content.containsAll(compare), deque.containsAll(compare));
             testEqualsCollection(content, deque);
             
-            compare = Arrays.asList(new String[] { "1" });
+            compare = Arrays.asList("1");
             assertEquals("collection#containsAll should return correct value", content.containsAll(compare), deque.containsAll(compare));
             testEqualsCollection(content, deque);
             
-            compare = Arrays.asList(new String[] { "2" });
+            compare = Arrays.asList("2");
             assertEquals("collection#containsAll should return correct value", content.containsAll(compare), deque.containsAll(compare));
             testEqualsCollection(content, deque);
             
-            compare = Arrays.asList(new String[] { "3" });
+            compare = Arrays.asList("3");
             assertEquals("collection#containsAll should return correct value", content.containsAll(compare), deque.containsAll(compare));
             testEqualsCollection(content, deque);
             
-            compare = Arrays.asList(new String[] { "x" });
+            compare = Arrays.asList("x");
             assertEquals("collection#containsAll should return correct value", content.containsAll(compare), deque.containsAll(compare));
             testEqualsCollection(content, deque);
             
-            compare = Arrays.asList(new String[] { "1", "2" });
+            compare = Arrays.asList("1", "2");
             assertEquals("collection#containsAll should return correct value", content.containsAll(compare), deque.containsAll(compare));
             testEqualsCollection(content, deque);
             
-            compare = Arrays.asList(new String[] { "2", "1" });
+            compare = Arrays.asList("2", "1");
             assertEquals("collection#containsAll should return correct value", content.containsAll(compare), deque.containsAll(compare));
             testEqualsCollection(content, deque);
             
-            compare = Arrays.asList(new String[] { "1", "3" });
+            compare = Arrays.asList("1", "3");
             assertEquals("collection#containsAll should return correct value", content.containsAll(compare), deque.containsAll(compare));
             testEqualsCollection(content, deque);
             
-            compare = Arrays.asList(new String[] { "3", "1" });
+            compare = Arrays.asList("3", "1");
             assertEquals("collection#containsAll should return correct value", content.containsAll(compare), deque.containsAll(compare));
             testEqualsCollection(content, deque);
             
-            compare = Arrays.asList(new String[] { "1", "x" });
+            compare = Arrays.asList("1", "x");
             assertEquals("collection#containsAll should return correct value", content.containsAll(compare), deque.containsAll(compare));
             testEqualsCollection(content, deque);
             
-            compare = Arrays.asList(new String[] { "1", "2", "3", "x" });
+            compare = Arrays.asList("1", "2", "3", "x");
             assertEquals("collection#containsAll should return correct value", content.containsAll(compare), deque.containsAll(compare));
             testEqualsCollection(content, deque);
             
@@ -352,7 +352,7 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>())
         {
-            List<String> content = new ArrayList<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+            List<String> content = new ArrayList<String>(Arrays.asList("1", "2", "3"));
             deque.addAll(content);
             
             testEqualsCollection(content, deque);
@@ -382,7 +382,7 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>())
         {
-            List<String> content = new ArrayList<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+            List<String> content = new ArrayList<String>(Arrays.asList("1", "2", "3"));
             deque.addAll(content);
             
             testEqualsCollection(content, deque);
@@ -409,7 +409,7 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>())
         {
-            List<String> content = new ArrayList<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+            List<String> content = new ArrayList<String>(Arrays.asList("1", "2", "3"));
             deque.addAll(content);
             
             testEqualsCollection(content, deque);
@@ -436,7 +436,7 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>())
         {
-            List<String> content = new ArrayList<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+            List<String> content = new ArrayList<String>(Arrays.asList("1", "2", "3"));
             deque.addAll(content);
             
             testEqualsCollection(content, deque);
@@ -453,14 +453,14 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>())
         {
-            List<String> content = new ArrayList<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+            List<String> content = new ArrayList<String>(Arrays.asList("1", "2", "3"));
             deque.addAll(content);
             
             testEqualsCollection(content, deque);
             
-            deque.removeAll(Arrays.asList(new String[] { "1", "2" }));
+            deque.removeAll(Arrays.asList("1", "2"));
             testEqualsNotCollection(content, deque);
-            content.removeAll(Arrays.asList(new String[] { "1", "2" }));
+            content.removeAll(Arrays.asList("1", "2"));
             testEqualsCollection(content, deque);
         }
     }
@@ -470,14 +470,14 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>())
         {
-            List<String> content = new ArrayList<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+            List<String> content = new ArrayList<String>(Arrays.asList("1", "2", "3"));
             deque.addAll(content);
             
             testEqualsCollection(content, deque);
             
-            deque.removeAll(Arrays.asList(new String[] { "2", "3", "4" }));
+            deque.removeAll(Arrays.asList("2", "3", "4"));
             testEqualsNotCollection(content, deque);
-            content.removeAll(Arrays.asList(new String[] { "2", "3", "4" }));
+            content.removeAll(Arrays.asList("2", "3", "4"));
             testEqualsCollection(content, deque);
         }
     }
@@ -489,7 +489,7 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>())
         {
-            List<String> content = new ArrayList<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+            List<String> content = new ArrayList<String>(Arrays.asList("1", "2", "3"));
             deque.addAll(content);
             
             testEqualsCollection(content, deque);
@@ -506,14 +506,14 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>())
         {
-            List<String> content = new ArrayList<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+            List<String> content = new ArrayList<String>(Arrays.asList("1", "2", "3"));
             deque.addAll(content);
             
             testEqualsCollection(content, deque);
             
-            deque.retainAll(Arrays.asList(new String[] { "1", "2" }));
+            deque.retainAll(Arrays.asList("1", "2"));
             testEqualsNotCollection(content, deque);
-            content.retainAll(Arrays.asList(new String[] { "1", "2" }));
+            content.retainAll(Arrays.asList("1", "2"));
             testEqualsCollection(content, deque);
         }
     }
@@ -523,7 +523,7 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>())
         {
-            List<String> content = new ArrayList<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+            List<String> content = new ArrayList<String>(Arrays.asList("1", "2", "3"));
             deque.addAll(content);
             
             testEqualsCollection(content, deque);
@@ -531,9 +531,9 @@ public class BlackboxTest
             assertEquals("collection#isEmpty should return correct value", content.isEmpty(), deque.isEmpty());
             testEqualsCollection(content, deque);
             
-            deque.retainAll(Arrays.asList(new String[] { "2", "3", "4" }));
+            deque.retainAll(Arrays.asList("2", "3", "4"));
             testEqualsNotCollection(content, deque);
-            content.retainAll(Arrays.asList(new String[] { "2", "3", "4" }));
+            content.retainAll(Arrays.asList("2", "3", "4"));
             testEqualsCollection(content, deque);
         }
     }
@@ -543,7 +543,7 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>())
         {
-            List<String> content = new ArrayList<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+            List<String> content = new ArrayList<String>(Arrays.asList("1", "2", "3"));
             deque.addAll(content);
             
             testEqualsCollection(content, deque);
@@ -559,7 +559,7 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>())
         {
-            List<String> content = new ArrayList<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+            List<String> content = new ArrayList<String>(Arrays.asList("1", "2", "3"));
             deque.addAll(content);
             testEqualsCollection(content, deque);
             
@@ -573,7 +573,7 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>())
         {
-            List<String> content = new ArrayList<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+            List<String> content = new ArrayList<String>(Arrays.asList("1", "2", "3"));
             deque.addAll(content);
             testEqualsCollection(content, deque);
             
@@ -590,7 +590,7 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>())
         {
-            ArrayDeque<String> content = new ArrayDeque<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+            ArrayDeque<String> content = new ArrayDeque<String>(Arrays.asList("1", "2", "3"));
             deque.addAll(content);
             testEqualsCollection(content, deque);
             
@@ -622,7 +622,7 @@ public class BlackboxTest
             {
                 content.getFirst();
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
                 e1 = e;
             }
@@ -631,7 +631,7 @@ public class BlackboxTest
             {
                 deque.getFirst();
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
                 e2 = e;
             }
@@ -645,7 +645,7 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>())
         {
-            ArrayDeque<String> content = new ArrayDeque<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+            ArrayDeque<String> content = new ArrayDeque<String>(Arrays.asList("1", "2", "3"));
             deque.addAll(content);
             testEqualsCollection(content, deque);
             
@@ -677,7 +677,7 @@ public class BlackboxTest
             {
                 content.getLast();
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
                 e1 = e;
             }
@@ -686,7 +686,7 @@ public class BlackboxTest
             {
                 deque.getLast();
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
                 e2 = e;
             }
@@ -700,7 +700,7 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>())
         {
-            ArrayDeque<String> content = new ArrayDeque<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+            ArrayDeque<String> content = new ArrayDeque<String>(Arrays.asList("1", "2", "3"));
             deque.addAll(content);
             testEqualsCollection(content, deque);
             
@@ -735,7 +735,7 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>())
         {
-            ArrayDeque<String> content = new ArrayDeque<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+            ArrayDeque<String> content = new ArrayDeque<String>(Arrays.asList("1", "2", "3"));
             deque.addAll(content);
             testEqualsCollection(content, deque);
             
@@ -770,7 +770,7 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>(4))
         {
-            ArrayDeque<String> content = new ArrayDeque<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+            ArrayDeque<String> content = new ArrayDeque<String>(Arrays.asList("1", "2", "3"));
             deque.addAll(content);
             testEqualsCollection(content, deque);
             
@@ -786,14 +786,14 @@ public class BlackboxTest
             {
                 deque.addFirst("y");
             }
-            catch (IllegalStateException e)
+            catch (final IllegalStateException e)
             {
                 assertEquals("size should be correct", content.size(), deque.size());
                 assertEquals("element should be correct", content.getFirst(), deque.getFirst());
                 return;
             }
             
-            assertTrue("limit shoult throws exception", false);
+            fail("limit shoult throws exception");
             
         }
     }
@@ -803,7 +803,7 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>(4))
         {
-            ArrayDeque<String> content = new ArrayDeque<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+            ArrayDeque<String> content = new ArrayDeque<String>(Arrays.asList("1", "2", "3"));
             deque.addAll(content);
             testEqualsCollection(content, deque);
             
@@ -819,14 +819,14 @@ public class BlackboxTest
             {
                 deque.addLast("y");
             }
-            catch (IllegalStateException e)
+            catch (final IllegalStateException e)
             {
                 assertEquals("size should be correct", content.size(), deque.size());
                 assertEquals("element should be correct", content.getFirst(), deque.getFirst());
                 return;
             }
             
-            assertTrue("limit shoult throws exception", false);
+            fail("limit shoult throws exception");
             
         }
     }
@@ -836,7 +836,7 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>(4))
         {
-            ArrayDeque<String> content = new ArrayDeque<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+            ArrayDeque<String> content = new ArrayDeque<String>(Arrays.asList("1", "2", "3"));
             deque.addAll(content);
             testEqualsCollection(content, deque);
             
@@ -860,7 +860,7 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>(4))
         {
-            ArrayDeque<String> content = new ArrayDeque<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+            ArrayDeque<String> content = new ArrayDeque<String>(Arrays.asList("1", "2", "3"));
             deque.addAll(content);
             testEqualsCollection(content, deque);
             
@@ -884,7 +884,7 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>())
         {
-            ArrayDeque<String> content = new ArrayDeque<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+            ArrayDeque<String> content = new ArrayDeque<String>(Arrays.asList("1", "2", "3"));
             deque.addAll(content);
             testEqualsCollection(content, deque);
             
@@ -917,7 +917,7 @@ public class BlackboxTest
             {
                 deque.removeFirst();
             }
-            catch (NoSuchElementException e)
+            catch (final NoSuchElementException e)
             {
                 e1 = e;
             }
@@ -927,7 +927,7 @@ public class BlackboxTest
             {
                 content.removeFirst();
             }
-            catch (NoSuchElementException e)
+            catch (final NoSuchElementException e)
             {
                 e2 = e;
             }
@@ -943,7 +943,7 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>())
         {
-            ArrayDeque<String> content = new ArrayDeque<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+            ArrayDeque<String> content = new ArrayDeque<String>(Arrays.asList("1", "2", "3"));
             deque.addAll(content);
             testEqualsCollection(content, deque);
             
@@ -976,7 +976,7 @@ public class BlackboxTest
             {
                 deque.removeLast();
             }
-            catch (NoSuchElementException e)
+            catch (final NoSuchElementException e)
             {
                 e1 = e;
             }
@@ -986,7 +986,7 @@ public class BlackboxTest
             {
                 content.removeLast();
             }
-            catch (NoSuchElementException e)
+            catch (final NoSuchElementException e)
             {
                 e2 = e;
             }
@@ -1002,7 +1002,7 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>())
         {
-            ArrayDeque<String> content = new ArrayDeque<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+            ArrayDeque<String> content = new ArrayDeque<String>(Arrays.asList("1", "2", "3"));
             deque.addAll(content);
             testEqualsCollection(content, deque);
             
@@ -1046,7 +1046,7 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>())
         {
-            ArrayDeque<String> content = new ArrayDeque<String>(Arrays.asList(new String[] { "1", "2", "3" }));
+            ArrayDeque<String> content = new ArrayDeque<String>(Arrays.asList("1", "2", "3"));
             deque.addAll(content);
             testEqualsCollection(content, deque);
             
@@ -1090,7 +1090,7 @@ public class BlackboxTest
     {
         try (SnapshotableDeque<String> deque = new SnapshotableDeque<String>())
         {
-            ArrayDeque<String> content = new ArrayDeque<String>(Arrays.asList(new String[] { "1", "2", "3", "2", "6", "2", "1", "3" }));
+            ArrayDeque<String> content = new ArrayDeque<String>(Arrays.asList("1", "2", "3", "2", "6", "2", "1", "3"));
             deque.addAll(content);
             testEqualsCollection(content, deque);
             
@@ -1127,7 +1127,7 @@ public class BlackboxTest
         }
     }
     
-    private <T> void testEqualsCollection(Collection<T> collection, SnapshotableDeque<T> deque)
+    private <T> void testEqualsCollection(final Collection<T> collection, final SnapshotableDeque<T> deque)
     {
         try (DequeSnapshot<T> snapshot = deque.createSnapshot())
         {
@@ -1147,11 +1147,11 @@ public class BlackboxTest
             {
                 ((AutoCloseable) snapshotIterator).close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
     }
     
-    private <T> void testEqualsNotCollection(Collection<T> collection, SnapshotableDeque<T> deque)
+    private <T> void testEqualsNotCollection(final Collection<T> collection, final SnapshotableDeque<T> deque)
     {
         try (DequeSnapshot<T> snapshot = deque.createSnapshot())
         {
@@ -1194,10 +1194,10 @@ public class BlackboxTest
                 {
                     ((AutoCloseable) snapshotIterator).close();
                 }
-                catch (Exception e) { }
+                catch (final Exception e) { }
             }
         }
         
-        assertTrue("collection and deque should be different", false);
+        fail("collection and deque should be different");
     }
 }

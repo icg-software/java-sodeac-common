@@ -17,7 +17,7 @@ public class UnclosableInputStream extends InputStream
 {
     private InputStream in = null;
     
-    public UnclosableInputStream(InputStream in)
+    public UnclosableInputStream(final InputStream in)
     {
         super();
         this.in = in;
@@ -26,63 +26,63 @@ public class UnclosableInputStream extends InputStream
     @Override
     public int read() throws IOException
     {
-        return in.read();
+        return this.in.read();
     }
     
     @Override
-    public int read(byte[] b) throws IOException
+    public int read(final byte[] b) throws IOException
     {
-        return in.read(b);
+        return this.in.read(b);
     }
     
     @Override
-    public int read(byte[] b, int off, int len) throws IOException
+    public int read(final byte[] b, final int off, final int len) throws IOException
     {
-        return in.read(b, off, len);
+        return this.in.read(b, off, len);
     }
     
     @Override
-    public long skip(long n) throws IOException
+    public long skip(final long n) throws IOException
     {
-        return in.skip(n);
+        return this.in.skip(n);
     }
     
     @Override
     public int available() throws IOException
     {
-        return in.available();
+        return this.in.available();
     }
     
     @Override
     public void close() throws IOException { }
     
     @Override
-    public synchronized void mark(int readlimit)
+    public synchronized void mark(final int readlimit)
     {
-        in.mark(readlimit);
+        this.in.mark(readlimit);
     }
     
     @Override
     public synchronized void reset() throws IOException
     {
-        in.reset();
+        this.in.reset();
     }
     
     @Override
     public boolean markSupported()
     {
-        return in.markSupported();
+        return this.in.markSupported();
     }
     
     @Override
     public String toString()
     {
-        return "Unclosable " + in.toString();
+        return "Unclosable " + this.in.toString();
     }
     
     public InputStream unwrap()
     {
-        return in;
+        return this.in;
     }
     
 }

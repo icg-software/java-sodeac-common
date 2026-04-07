@@ -27,70 +27,70 @@ public class ChannelBindingModifyFlags
     
     public void reset()
     {
-        rootSet = false;
-        rootAdd = false;
-        rootRemove = false;
-        subSet = false;
-        subAdd = false;
-        subRemove = false;
+        this.rootSet = false;
+        this.rootAdd = false;
+        this.rootRemove = false;
+        this.subSet = false;
+        this.subAdd = false;
+        this.subRemove = false;
     }
     
     public boolean isRootSet()
     {
-        return rootSet;
+        return this.rootSet;
     }
     
-    public void setRootSet(boolean rootSet)
+    public void setRootSet(final boolean rootSet)
     {
         this.rootSet = rootSet;
     }
     
     public boolean isRootAdd()
     {
-        return rootAdd;
+        return this.rootAdd;
     }
     
-    public void setRootAdd(boolean rootAdd)
+    public void setRootAdd(final boolean rootAdd)
     {
         this.rootAdd = rootAdd;
     }
     
     public boolean isRootRemove()
     {
-        return rootRemove;
+        return this.rootRemove;
     }
     
-    public void setRootRemove(boolean rootRemove)
+    public void setRootRemove(final boolean rootRemove)
     {
         this.rootRemove = rootRemove;
     }
     
     public boolean isSubSet()
     {
-        return subSet;
+        return this.subSet;
     }
     
-    public void setSubSet(boolean subSet)
+    public void setSubSet(final boolean subSet)
     {
         this.subSet = subSet;
     }
     
     public boolean isSubAdd()
     {
-        return subAdd;
+        return this.subAdd;
     }
     
-    public void setSubAdd(boolean subAdd)
+    public void setSubAdd(final boolean subAdd)
     {
         this.subAdd = subAdd;
     }
     
     public boolean isSubRemove()
     {
-        return subRemove;
+        return this.subRemove;
     }
     
-    public void setSubRemove(boolean subRemove)
+    public void setSubRemove(final boolean subRemove)
     {
         this.subRemove = subRemove;
     }

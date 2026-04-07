@@ -30,5 +30,5 @@ public interface IOnMessageStore<T> extends IDispatcherChannelManager
      *
      * @param message new message
      */
-    public void onMessageStore(IMessage<T> message);
+    void onMessageStore(IMessage<T> message);
 }

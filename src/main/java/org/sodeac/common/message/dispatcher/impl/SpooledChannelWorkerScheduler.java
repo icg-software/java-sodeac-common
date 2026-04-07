@@ -20,7 +20,7 @@ public class SpooledChannelWorkerScheduler extends Thread
 {
     public static final long DEFAULT_WAIT_TIME = 108 * 108 * 7;
     
-    protected SpooledChannelWorkerScheduler(MessageDispatcherImpl eventDispatcher)
+    protected SpooledChannelWorkerScheduler(final MessageDispatcherImpl eventDispatcher)
     {
         super();
         this.eventDispatcher = eventDispatcher;
@@ -35,15 +35,15 @@ public class SpooledChannelWorkerScheduler extends Thread
     private volatile boolean isUpdateNotified = false;
     private volatile long currentWaitTimeStamp = -1;
     
-    private Object waitMonitor = new Object();
+    private final Object waitMonitor = new Object();
     private SnapshotableDeque<SpooledChannelWorker> scheduledChain = null;
     
-    private Logger logger = LoggerFactory.getLogger(SpooledChannelWorkerScheduler.class);
+    private final Logger logger = LoggerFactory.getLogger(SpooledChannelWorkerScheduler.class);
     
-    protected SpooledChannelWorker scheduleChannelWorker(ChannelImpl<?> channel, long wakeUpTime)
+    protected SpooledChannelWorker scheduleChannelWorker(final ChannelImpl<?> channel, final long wakeUpTime)
     {
         SpooledChannelWorker spooledChannelWorker = new SpooledChannelWorker(channel, wakeUpTime);
-        scheduledChain.addLast(spooledChannelWorker);
+        this.scheduledChain.addLast(spooledChannelWorker);
         
         synchronized (this.waitMonitor)
         {
@@ -52,7 +52,7 @@ public class SpooledChannelWorkerScheduler extends Thread
             {
                 if (wakeUpTime < this.currentWaitTimeStamp)
                 {
-                    waitMonitor.notify();
+                    this.waitMonitor.notify();
                 }
             }
         }
@@ -65,7 +65,7 @@ public class SpooledChannelWorkerScheduler extends Thread
     {
         SpooledChannelWorker worker;
         long spoolCleanRun = 0;
-        while (go)
+        while (this.go)
         {
             long minWakeUpTimestamp = -1;
             
@@ -76,15 +76,15 @@ public class SpooledChannelWorkerScheduler extends Thread
                 try
                 {
                     spoolCleanRun = now;
-                    eventDispatcher.checkTimeoutWorker();
+                    this.eventDispatcher.checkTimeoutWorker();
                 }
-                catch (Exception e)
+                catch (final Exception e)
                 {
-                    logger.error("clean worker spooler", e);
+                    this.logger.error("clean worker spooler", e);
                 }
-                catch (Error e)
+                catch (final Error e)
                 {
-                    logger.error("clean worker spooler", e);
+                    this.logger.error("clean worker spooler", e);
                 }
             }
             
@@ -93,7 +93,7 @@ public class SpooledChannelWorkerScheduler extends Thread
                 DequeSnapshot<SpooledChannelWorker> snapshot = this.scheduledChain.createSnapshot();
                 try
                 {
-                    for (DequeNode<SpooledChannelWorker> workerNode : snapshot.nodeIterable())
+                    for (final DequeNode<SpooledChannelWorker> workerNode : snapshot.nodeIterable())
                     {
                         worker = workerNode.getElement();
                         if (worker == null)
@@ -131,18 +131,18 @@ public class SpooledChannelWorkerScheduler extends Thread
             }
             catch (Exception | Error e)
             {
-                logger.error("Exception running SpooledChannelWorkerScheduler", e);
+                this.logger.error("Exception running SpooledChannelWorkerScheduler", e);
             }
             
             try
             {
                 synchronized (this.waitMonitor)
                 {
-                    if (go)
+                    if (this.go)
                     {
-                        if (isUpdateNotified)
+                        if (this.isUpdateNotified)
                         {
-                            isUpdateNotified = false;
+                            this.isUpdateNotified = false;
                         }
                         else
                         {
@@ -158,23 +158,23 @@ public class SpooledChannelWorkerScheduler extends Thread
                             if (wait > 0)
                             {
                                 this.currentWaitTimeStamp = wait + System.currentTimeMillis();
-                                waitMonitor.wait(wait);
+                                this.waitMonitor.wait(wait);
                                 this.currentWaitTimeStamp = -1;
                             }
                         }
                     }
                 }
             }
-            catch (InterruptedException e) { }
+            catch (final InterruptedException e) { }
             catch (Exception | Error e)
             {
-                logger.error("Error running SpooledChannelWorkerScheduler", e);
+                this.logger.error("Error running SpooledChannelWorkerScheduler", e);
             }
         }
         DequeSnapshot<SpooledChannelWorker> snapshot = this.scheduledChain.createSnapshot();
         try
         {
-            for (DequeNode<SpooledChannelWorker> workerNode : snapshot.nodeIterable())
+            for (final DequeNode<SpooledChannelWorker> workerNode : snapshot.nodeIterable())
             {
                 workerNode.unlink();
             }
@@ -185,9 +185,9 @@ public class SpooledChannelWorkerScheduler extends Thread
             {
                 snapshot.close();
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
-                logger.error("Error close snapshot", e);
+                this.logger.error("Error close snapshot", e);
             }
         }
         
@@ -204,7 +204,7 @@ public class SpooledChannelWorkerScheduler extends Thread
             }
             catch (Exception | Error e)
             {
-                logger.error("Exception stopping Spooled Channel Worker Scheduler", e);
+                this.logger.error("Exception stopping Spooled Channel Worker Scheduler", e);
             }
         }
     }

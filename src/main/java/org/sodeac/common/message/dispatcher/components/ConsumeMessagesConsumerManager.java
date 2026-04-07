@@ -61,13 +61,13 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
     public static final String SIGNAL_CONSUME = ConsumeMessagesConsumerManager.class.getCanonicalName() + ".Signal.Consume";
     
     @Override
-    public void configureChannelManagerPolicy(IChannelManagerPolicy componentBindingPolicy)
+    public void configureChannelManagerPolicy(final IChannelManagerPolicy componentBindingPolicy)
     {
         componentBindingPolicy.addConfigurationDetail(new ComponentBindingSetup.BoundedByChannelConfiguration(MATCH_FILTER).setName(MATCH_NAME));
     }
     
     @Override
-    public void configureChannelServicePolicy(IChannelServicePolicy componentBindingPolicy)
+    public void configureChannelServicePolicy(final IChannelServicePolicy componentBindingPolicy)
     {
         componentBindingPolicy
             .addConfigurationDetail(new ComponentBindingSetup.BoundedByChannelConfiguration(MATCH_FILTER).setName(SERVICE_NAME))
@@ -77,13 +77,13 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
     }
     
     @Override
-    public void onChannelAttach(IDispatcherChannel<Object> channel)
+    public void onChannelAttach(final IDispatcherChannel<Object> channel)
     {
         channel.getStateAdapter(ConsumeMessagesConsumerManagerAdapter.class, () -> new ConsumeMessagesConsumerManagerAdapter(channel));
     }
     
     @Override
-    public void run(IDispatcherChannelTaskContext<Object> taskContext) throws Exception
+    public void run(final IDispatcherChannelTaskContext<Object> taskContext) throws Exception
     {
         ConsumableState consumableState = taskContext.getChannel().getStateAdapter(ConsumableState.class);
         if (consumableState == null)
@@ -144,7 +144,6 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
                 
                 if (taskContext.getTaskControl().isInTimeout())
                 {
-                    return;
                 }
             }
             else
@@ -156,7 +155,7 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
                 
                 try
                 {
-                    for (IMessage<Object> message : messageConsumeHelper.messageList)
+                    for (final IMessage<Object> message : messageConsumeHelper.messageList)
                     {
                         
                         messageConsumeHelper.firstMessage = index == 0;
@@ -302,14 +301,14 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
         
     }
     
-    private static void handleError(Throwable throwable, ConsumerRule consumerRule, MessageConsumeHelperImpl messageConsumeHelper)
+    private static void handleError(Throwable throwable, final ConsumerRule consumerRule, final MessageConsumeHelperImpl messageConsumeHelper)
     {
         if (throwable instanceof RuntimeWrappedException)
         {
-            throwable = ((RuntimeWrappedException) throwable).getCause();
+            throwable = throwable.getCause();
         }
         
-        for (SpecialErrorHandlerDefinition specialErrorHandlerDefinition : consumerRule.getSpecialErrorHandler())
+        for (final SpecialErrorHandlerDefinition specialErrorHandlerDefinition : consumerRule.getSpecialErrorHandler())
         {
             if (throwable.getClass() == specialErrorHandlerDefinition.getType() && (specialErrorHandlerDefinition.getHandler() != null))
             {
@@ -324,7 +323,7 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
     }
     
     @Override
-    public void onTaskTimeout(IDispatcherChannel<Object> channel, IDispatcherChannelTask<Object> task, Object taskState, Runnable interrupter)
+    public void onTaskTimeout(final IDispatcherChannel<Object> channel, final IDispatcherChannelTask<Object> task, final Object taskState, final Runnable interrupter)
     {
         ConsumableState consumableState = (ConsumableState) taskState;
         if (consumableState == null)
@@ -342,11 +341,11 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
                                                                                  .getMessageConsumeHelperImpl()
                 );
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
                 e.printStackTrace();
             }
-            catch (Error e) { }
+            catch (final Error e) { }
         }
         
         ConsumeMessagesConsumerManagerAdapter consumerAdapter = channel.getStateAdapter(ConsumeMessagesConsumerManagerAdapter.class);
@@ -359,7 +358,7 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
     }
     
     @Override
-    public void onMessageRemoveSnapshot(DequeSnapshot<IMessage<Object>> messageRemoveSnapshot)
+    public void onMessageRemoveSnapshot(final DequeSnapshot<IMessage<Object>> messageRemoveSnapshot)
     {
         ConsumeMessagesConsumerManagerAdapter consumerAdapter = messageRemoveSnapshot.getFirstElement().getChannel().getStateAdapter(ConsumeMessagesConsumerManagerAdapter.class);
         if (consumerAdapter == null)
@@ -370,7 +369,7 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
     }
     
     @Override
-    public void onMessageStoreSnapshot(DequeSnapshot<IMessage<Object>> messageStoreSnapshot)
+    public void onMessageStoreSnapshot(final DequeSnapshot<IMessage<Object>> messageStoreSnapshot)
     {
         ConsumeMessagesConsumerManagerAdapter consumerAdapter = messageStoreSnapshot.getFirstElement().getChannel().getStateAdapter(ConsumeMessagesConsumerManagerAdapter.class);
         if (consumerAdapter == null)
@@ -381,7 +380,7 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
     }
     
     @Override
-    public void onChannelSignal(IDispatcherChannel<Object> channel, String signal)
+    public void onChannelSignal(final IDispatcherChannel<Object> channel, final String signal)
     {
         if (SIGNAL_CONSUME.equals(signal))
         {
@@ -413,11 +412,11 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
     
     public static class ConsumeMessagesConsumerManagerAdapter implements IPoolController
     {
-        protected ConsumeMessagesConsumerManagerAdapter(IDispatcherChannel<Object> channel)
+        protected ConsumeMessagesConsumerManagerAdapter(final IDispatcherChannel<Object> channel)
         {
             super();
             
-            lock = new ReentrantReadWriteLock(true);
+            this.lock = new ReentrantReadWriteLock(true);
             this.readLock = this.lock.readLock();
             this.writeLock = this.lock.writeLock();
             this.plannerList = new LinkedList<ConsumeMessagesPlannerManager.ConsumeMessagesPlannerManagerAdapter>();
@@ -436,7 +435,7 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
             lock.lock();
             try
             {
-                for (ConsumeMessagesPlannerManager.ConsumeMessagesPlannerManagerAdapter planner : plannerList)
+                for (final ConsumeMessagesPlannerManager.ConsumeMessagesPlannerManagerAdapter planner : this.plannerList)
                 {
                     ConsumableState consumableState = planner.getConsumableState(true);
                     if (consumableState == null)
@@ -457,7 +456,7 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
             return null;
         }
         
-        protected void setConsumeTimestamp(long timestamp, Set<String> members)
+        protected void setConsumeTimestamp(final long timestamp, final Set<String> members)
         {
             if (members == null)
             {
@@ -467,7 +466,7 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
             lock.lock();
             try
             {
-                for (ConsumeMessagesPlannerManager.ConsumeMessagesPlannerManagerAdapter planner : plannerList)
+                for (final ConsumeMessagesPlannerManager.ConsumeMessagesPlannerManagerAdapter planner : this.plannerList)
                 {
                     planner.setConsumeTimestamp(timestamp, members);
                 }
@@ -478,13 +477,13 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
             }
         }
         
-        protected void updateKeepMessagesState(UUID poolId)
+        protected void updateKeepMessagesState(final UUID poolId)
         {
             Lock lock = this.readLock;
             lock.lock();
             try
             {
-                for (ConsumeMessagesPlannerManager.ConsumeMessagesPlannerManagerAdapter planner : plannerList)
+                for (final ConsumeMessagesPlannerManager.ConsumeMessagesPlannerManagerAdapter planner : this.plannerList)
                 {
                     planner.updateKeepMessagesState(poolId);
                 }
@@ -495,14 +494,14 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
             }
         }
         
-        protected void addMessagesToMonitoringPools(DequeSnapshot<IMessage<Object>> snapshot)
+        protected void addMessagesToMonitoringPools(final DequeSnapshot<IMessage<Object>> snapshot)
         {
             boolean signal = false;
             Lock lock = this.readLock;
             lock.lock();
             try
             {
-                for (ConsumeMessagesPlannerManager.ConsumeMessagesPlannerManagerAdapter planner : plannerList)
+                for (final ConsumeMessagesPlannerManager.ConsumeMessagesPlannerManagerAdapter planner : this.plannerList)
                 {
                     planner.addMessagesToMonitoring(snapshot);
                     
@@ -526,7 +525,7 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
             
             if (signal)
             {
-                channel.signal(SIGNAL_CONSUME);
+                this.channel.signal(SIGNAL_CONSUME);
             }
         }
         
@@ -537,7 +536,7 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
             lock.lock();
             try
             {
-                for (ConsumeMessagesPlannerManager.ConsumeMessagesPlannerManagerAdapter planner : plannerList)
+                for (final ConsumeMessagesPlannerManager.ConsumeMessagesPlannerManagerAdapter planner : this.plannerList)
                 {
                     planner.removeRemovedMessages();
                     
@@ -561,24 +560,24 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
             
             if (signal)
             {
-                channel.signal(SIGNAL_CONSUME);
+                this.channel.signal(SIGNAL_CONSUME);
             }
         }
         
-        protected void addPlanner(ConsumeMessagesPlannerManager.ConsumeMessagesPlannerManagerAdapter planner)
+        protected void addPlanner(final ConsumeMessagesPlannerManager.ConsumeMessagesPlannerManagerAdapter planner)
         {
             Lock lock = this.writeLock;
             lock.lock();
             try
             {
-                for (ConsumeMessagesPlannerManager.ConsumeMessagesPlannerManagerAdapter check : plannerList)
+                for (final ConsumeMessagesPlannerManager.ConsumeMessagesPlannerManagerAdapter check : this.plannerList)
                 {
                     if (planner == check)
                     {
                         return;
                     }
                 }
-                plannerList.add(planner);
+                this.plannerList.add(planner);
             }
             finally
             {
@@ -586,13 +585,13 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
             }
         }
         
-        protected void removePlanner(ConsumeMessagesPlannerManager.ConsumeMessagesPlannerManagerAdapter planner)
+        protected void removePlanner(final ConsumeMessagesPlannerManager.ConsumeMessagesPlannerManagerAdapter planner)
         {
             Lock lock = this.writeLock;
             lock.lock();
             try
             {
-                ListIterator<ConsumeMessagesPlannerManager.ConsumeMessagesPlannerManagerAdapter> itr = plannerList.listIterator();
+                ListIterator<ConsumeMessagesPlannerManager.ConsumeMessagesPlannerManagerAdapter> itr = this.plannerList.listIterator();
                 while (itr.hasNext())
                 {
                     if (planner == itr.next())
@@ -607,13 +606,13 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
             }
         }
         
-        protected void removeConsumeMessageFlag(UUID poolId, UUID flag)
+        protected void removeConsumeMessageFlag(final UUID poolId, final UUID flag)
         {
             Lock lock = this.readLock;
             lock.lock();
             try
             {
-                for (ConsumeMessagesPlannerManager.ConsumeMessagesPlannerManagerAdapter planner : plannerList)
+                for (final ConsumeMessagesPlannerManager.ConsumeMessagesPlannerManagerAdapter planner : this.plannerList)
                 {
                     planner.removeConsumeMessageFlag(poolId, flag);
                 }
@@ -625,7 +624,7 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
         }
         
         @Override
-        public void consumeMessages(String poolAddress)
+        public void consumeMessages(final String poolAddress)
         {
             if (poolAddress == null)
             {
@@ -638,7 +637,7 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
             lock.lock();
             try
             {
-                for (ConsumeMessagesPlannerManager.ConsumeMessagesPlannerManagerAdapter planner : plannerList)
+                for (final ConsumeMessagesPlannerManager.ConsumeMessagesPlannerManagerAdapter planner : this.plannerList)
                 {
                     if (planner.consumeMessages(poolAddress))
                     {
@@ -653,7 +652,7 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
             
             if (signal)
             {
-                channel.signal(SIGNAL_CONSUME);
+                this.channel.signal(SIGNAL_CONSUME);
             }
             
         }
@@ -708,7 +707,7 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
         }
         
         @Override
-        public Object getHelper(Supplier<Object> supplierIfNotExist)
+        public Object getHelper(final Supplier<Object> supplierIfNotExist)
         {
             if (this.helper == null)
             {
@@ -727,14 +726,14 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
             {
                 this.taskContext.heartbeat();
             }
-            catch (Exception e) { }
-            catch (Error e) { }
+            catch (final Exception e) { }
+            catch (final Error e) { }
         }
         
         @Override
         public boolean isInTimeout()
         {
-            return taskContext.getTaskControl().isInTimeout();
+            return this.taskContext.getTaskControl().isInTimeout();
         }
         
         @Override
@@ -749,7 +748,7 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
             setProcessedByConfig(this.keepMessageMode, this.message, this.poolId);
         }
         
-        protected static boolean isConsumedByConfig(KeepMessagesMode keepMessageMode, IMessage<?> message, UUID poolId)
+        protected static boolean isConsumedByConfig(final KeepMessagesMode keepMessageMode, final IMessage<?> message, final UUID poolId)
         {
             if (keepMessageMode == KeepMessagesMode.MessagesConsumedByRule)
             {
@@ -758,7 +757,7 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
                     return false;
                 }
                 
-                Object value = message.getProperty("CONSUMED_BY_RULE_" + poolId.toString());
+                Object value = message.getProperty("CONSUMED_BY_RULE_" + poolId);
                 
                 if (value instanceof Boolean)
                 {
@@ -771,7 +770,7 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
             return message.isConsumed();
         }
         
-        protected static boolean setConsumedByConfig(KeepMessagesMode keepMessageMode, IMessage<?> message, UUID poolId)
+        protected static boolean setConsumedByConfig(final KeepMessagesMode keepMessageMode, final IMessage<?> message, final UUID poolId)
         {
             boolean previews = isConsumedByConfig(keepMessageMode, message, poolId);
             
@@ -782,7 +781,7 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
                     return previews;
                 }
                 
-                message.setProperty("CONSUMED_BY_RULE_" + poolId.toString(), Boolean.TRUE);
+                message.setProperty("CONSUMED_BY_RULE_" + poolId, Boolean.TRUE);
             }
             
             message.setConsumed(Boolean.TRUE);
@@ -790,7 +789,7 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
             return previews;
         }
         
-        protected static boolean isProcessedByConfig(KeepMessagesMode keepMessageMode, IMessage<?> message, UUID poolId)
+        protected static boolean isProcessedByConfig(final KeepMessagesMode keepMessageMode, final IMessage<?> message, final UUID poolId)
         {
             if (keepMessageMode == KeepMessagesMode.MessagesProcessedByRule)
             {
@@ -799,7 +798,7 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
                     return false;
                 }
                 
-                Object value = message.getProperty("PROCESSED_BY_RULE_" + poolId.toString());
+                Object value = message.getProperty("PROCESSED_BY_RULE_" + poolId);
                 
                 if (value instanceof Boolean)
                 {
@@ -812,7 +811,7 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
             return message.isProcessed();
         }
         
-        protected static boolean setProcessedByConfig(KeepMessagesMode keepMessageMode, IMessage<?> message, UUID poolId)
+        protected static boolean setProcessedByConfig(final KeepMessagesMode keepMessageMode, final IMessage<?> message, final UUID poolId)
         {
             boolean previews = isProcessedByConfig(keepMessageMode, message, poolId);
             
@@ -823,7 +822,7 @@ public class ConsumeMessagesConsumerManager implements IDispatcherChannelSystemM
                     return previews;
                 }
                 
-                message.setProperty("PROCESSED_BY_RULE_" + poolId.toString(), Boolean.TRUE);
+                message.setProperty("PROCESSED_BY_RULE_" + poolId, Boolean.TRUE);
             }
             
             message.setProcessed(Boolean.TRUE);

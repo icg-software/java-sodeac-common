@@ -29,5 +29,5 @@ public interface IMatchable
      *
      * @return matchable match to atomic ldap expression
      */
-    public boolean matches(ComparativeOperator operator, String name, String valueExpression);
+    boolean matches(ComparativeOperator operator, String name, String valueExpression);
 }

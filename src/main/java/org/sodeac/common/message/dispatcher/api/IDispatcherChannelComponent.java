@@ -23,16 +23,17 @@ import org.sodeac.common.xuri.ldapfilter.IFilterItem;
  */
 public interface IDispatcherChannelComponent
 {
-    public interface IDispatcherChannelComponentDriver extends IDispatcherChannelComponent, IDriver
+    interface IDispatcherChannelComponentDriver extends IDispatcherChannelComponent, IDriver
     {
-        public default int driverIsApplicableFor(Map<String, Object> properties)
+        @Override
+        default int driverIsApplicableFor(final Map<String, Object> properties)
         {
             return IDriver.APPLICABLE_DEFAULT;
         }
     }
     
     @SuppressWarnings("rawtypes")
-    public static IFilterItem getAdapterMatchFilter(Class adapterClass)
+    static IFilterItem getAdapterMatchFilter(final Class adapterClass)
     {
         return FilterBuilder.andLinker().criteriaWithName(adapterClass.getCanonicalName()).eq("*").build();
     }

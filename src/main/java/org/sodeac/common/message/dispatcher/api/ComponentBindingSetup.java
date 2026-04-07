@@ -47,7 +47,7 @@ public abstract class ComponentBindingSetup implements Serializable
      */
     protected String getDispatcherId()
     {
-        return dispatcherId;
+        return this.dispatcherId;
     }
     
     /**
@@ -57,7 +57,7 @@ public abstract class ComponentBindingSetup implements Serializable
      *
      * @return channel component configuration
      */
-    protected ComponentBindingSetup setDispatcherId(String dispatcherId)
+    protected ComponentBindingSetup setDispatcherId(final String dispatcherId)
     {
         this.dispatcherId = dispatcherId;
         return this;
@@ -70,7 +70,7 @@ public abstract class ComponentBindingSetup implements Serializable
      */
     protected String getName()
     {
-        return name;
+        return this.name;
     }
     
     /**
@@ -80,7 +80,7 @@ public abstract class ComponentBindingSetup implements Serializable
      *
      * @return component configuration
      */
-    protected ComponentBindingSetup setName(String name)
+    protected ComponentBindingSetup setName(final String name)
     {
         this.name = name;
         return this;
@@ -93,7 +93,7 @@ public abstract class ComponentBindingSetup implements Serializable
      */
     protected Long getChannelCapacity()
     {
-        return channelCapacity;
+        return this.channelCapacity;
     }
     
     /**
@@ -103,7 +103,7 @@ public abstract class ComponentBindingSetup implements Serializable
      *
      * @return channel component configuration
      */
-    protected ComponentBindingSetup setChannelCapacity(Long channelCapacity)
+    protected ComponentBindingSetup setChannelCapacity(final Long channelCapacity)
     {
         this.channelCapacity = channelCapacity;
         return this;
@@ -116,7 +116,7 @@ public abstract class ComponentBindingSetup implements Serializable
      */
     protected PrivateChannelWorkerRequirement getPrivateChannelWorkerRequirement()
     {
-        return privateChannelWorkerRequirement;
+        return this.privateChannelWorkerRequirement;
     }
     
     /**
@@ -126,7 +126,7 @@ public abstract class ComponentBindingSetup implements Serializable
      *
      * @return channel component configuration
      */
-    protected ComponentBindingSetup setPrivateChannelWorkerRequirement(PrivateChannelWorkerRequirement privateChannelWorkerRequirement)
+    protected ComponentBindingSetup setPrivateChannelWorkerRequirement(final PrivateChannelWorkerRequirement privateChannelWorkerRequirement)
     {
         this.privateChannelWorkerRequirement = privateChannelWorkerRequirement;
         return this;
@@ -146,7 +146,7 @@ public abstract class ComponentBindingSetup implements Serializable
          */
         private static final long serialVersionUID = 6587259399825230943L;
         
-        private String channelId;
+        private final String channelId;
         private boolean channelMaster = true;
         
         /**
@@ -154,7 +154,7 @@ public abstract class ComponentBindingSetup implements Serializable
          *
          * @param channelId id of channel
          */
-        public BoundedByChannelId(String channelId)
+        public BoundedByChannelId(final String channelId)
         {
             super();
             this.channelId = channelId;
@@ -167,7 +167,7 @@ public abstract class ComponentBindingSetup implements Serializable
          */
         public String getChannelId()
         {
-            return channelId;
+            return this.channelId;
         }
         
         @Override
@@ -177,7 +177,7 @@ public abstract class ComponentBindingSetup implements Serializable
         }
         
         @Override
-        public BoundedByChannelId setName(String name)
+        public BoundedByChannelId setName(final String name)
         {
             return (BoundedByChannelId) super.setName(name);
         }
@@ -189,7 +189,7 @@ public abstract class ComponentBindingSetup implements Serializable
          *
          * @return channel component configuration
          */
-        public BoundedByChannelId setChannelMaster(boolean channelMaster)
+        public BoundedByChannelId setChannelMaster(final boolean channelMaster)
         {
             this.channelMaster = channelMaster;
             return this;
@@ -202,7 +202,7 @@ public abstract class ComponentBindingSetup implements Serializable
          */
         public boolean isChannelMaster()
         {
-            return channelMaster;
+            return this.channelMaster;
         }
         
         @SuppressWarnings("unchecked")
@@ -213,19 +213,19 @@ public abstract class ComponentBindingSetup implements Serializable
         }
         
         @Override
-        public BoundedByChannelId setDispatcherId(String dispatcherId)
+        public BoundedByChannelId setDispatcherId(final String dispatcherId)
         {
             return (BoundedByChannelId) super.setDispatcherId(dispatcherId);
         }
         
         @Override
-        protected BoundedByChannelId setChannelCapacity(Long channelCapacity)
+        protected BoundedByChannelId setChannelCapacity(final Long channelCapacity)
         {
             return (BoundedByChannelId) super.setChannelCapacity(channelCapacity);
         }
         
         @Override
-        public BoundedByChannelId setPrivateChannelWorkerRequirement(PrivateChannelWorkerRequirement privateChannelWorkerRequirement)
+        public BoundedByChannelId setPrivateChannelWorkerRequirement(final PrivateChannelWorkerRequirement privateChannelWorkerRequirement)
         {
             return (BoundedByChannelId) super.setPrivateChannelWorkerRequirement(privateChannelWorkerRequirement);
         }
@@ -276,13 +276,13 @@ public abstract class ComponentBindingSetup implements Serializable
          */
         private static final long serialVersionUID = 7663354400942715419L;
         
-        private IFilterItem ldapFilter;
+        private final IFilterItem ldapFilter;
         
         /**
          * Constructor to  bind a {@link IDispatcherChannelComponent} to existing {@link IDispatcherChannel}s whose properties match the specified ldap-filter.
          *
          */
-        public BoundedByChannelConfiguration(IFilterItem ldapFilter)
+        public BoundedByChannelConfiguration(final IFilterItem ldapFilter)
         {
             super();
             this.ldapFilter = ldapFilter;
@@ -295,7 +295,7 @@ public abstract class ComponentBindingSetup implements Serializable
          */
         public IFilterItem getLdapFilter()
         {
-            return ldapFilter;
+            return this.ldapFilter;
         }
         
         @SuppressWarnings("unchecked")
@@ -306,19 +306,19 @@ public abstract class ComponentBindingSetup implements Serializable
         }
         
         @Override
-        public BoundedByChannelConfiguration setDispatcherId(String dispatcherId)
+        public BoundedByChannelConfiguration setDispatcherId(final String dispatcherId)
         {
             return (BoundedByChannelConfiguration) super.setDispatcherId(dispatcherId);
         }
         
         @Override
-        protected BoundedByChannelConfiguration setChannelCapacity(Long channelCapacity)
+        protected BoundedByChannelConfiguration setChannelCapacity(final Long channelCapacity)
         {
             return (BoundedByChannelConfiguration) super.setChannelCapacity(channelCapacity);
         }
         
         @Override
-        public BoundedByChannelConfiguration setPrivateChannelWorkerRequirement(PrivateChannelWorkerRequirement privateChannelWorkerRequirement)
+        public BoundedByChannelConfiguration setPrivateChannelWorkerRequirement(final PrivateChannelWorkerRequirement privateChannelWorkerRequirement)
         {
             return (BoundedByChannelConfiguration) super.setPrivateChannelWorkerRequirement(privateChannelWorkerRequirement);
         }
@@ -336,7 +336,7 @@ public abstract class ComponentBindingSetup implements Serializable
         }
         
         @Override
-        public BoundedByChannelConfiguration setName(String name)
+        public BoundedByChannelConfiguration setName(final String name)
         {
             return (BoundedByChannelConfiguration) super.setName(name);
         }
@@ -373,7 +373,7 @@ public abstract class ComponentBindingSetup implements Serializable
     public static class ChannelServiceConfiguration extends ComponentBindingSetup
     {
         
-        public ChannelServiceConfiguration(String serviceId)
+        public ChannelServiceConfiguration(final String serviceId)
         {
             super();
             this.serviceId = serviceId;
@@ -384,7 +384,7 @@ public abstract class ComponentBindingSetup implements Serializable
          */
         private static final long serialVersionUID = 7301276962907883651L;
         
-        private String serviceId;
+        private final String serviceId;
         private long timeOutInMS = -1;
         private long heartbeatTimeOutInMS = -1;
         private long startDelayInMS = 0;
@@ -403,7 +403,7 @@ public abstract class ComponentBindingSetup implements Serializable
         }
         
         @Override
-        public ChannelServiceConfiguration setName(String name)
+        public ChannelServiceConfiguration setName(final String name)
         {
             return (ChannelServiceConfiguration) super.setName(name);
         }
@@ -415,7 +415,7 @@ public abstract class ComponentBindingSetup implements Serializable
          */
         public long getTimeOutInMS()
         {
-            return timeOutInMS;
+            return this.timeOutInMS;
         }
         
         /**
@@ -426,7 +426,7 @@ public abstract class ComponentBindingSetup implements Serializable
          *
          * @return channel service configuration
          */
-        public ChannelServiceConfiguration setTimeOutInMS(long timeOutInMS)
+        public ChannelServiceConfiguration setTimeOutInMS(final long timeOutInMS)
         {
             this.timeOutInMS = timeOutInMS;
             return this;
@@ -439,7 +439,7 @@ public abstract class ComponentBindingSetup implements Serializable
          */
         public long getHeartbeatTimeOutInMS()
         {
-            return heartbeatTimeOutInMS;
+            return this.heartbeatTimeOutInMS;
         }
         
         /**
@@ -449,7 +449,7 @@ public abstract class ComponentBindingSetup implements Serializable
          *
          * @return channel service configuration
          */
-        public ChannelServiceConfiguration setHeartbeatTimeOutInMS(long heartbeatTimeOutInMS)
+        public ChannelServiceConfiguration setHeartbeatTimeOutInMS(final long heartbeatTimeOutInMS)
         {
             this.heartbeatTimeOutInMS = heartbeatTimeOutInMS;
             return this;
@@ -462,7 +462,7 @@ public abstract class ComponentBindingSetup implements Serializable
          */
         public long getStartDelayInMS()
         {
-            return startDelayInMS;
+            return this.startDelayInMS;
         }
         
         /**
@@ -472,7 +472,7 @@ public abstract class ComponentBindingSetup implements Serializable
          *
          * @return channel service configuration
          */
-        public ChannelServiceConfiguration setStartDelayInMS(long startDelayInMS)
+        public ChannelServiceConfiguration setStartDelayInMS(final long startDelayInMS)
         {
             this.startDelayInMS = startDelayInMS;
             return this;
@@ -485,7 +485,7 @@ public abstract class ComponentBindingSetup implements Serializable
          */
         public long getPeriodicRepetitionIntervalMS()
         {
-            return periodicRepetitionIntervalMS;
+            return this.periodicRepetitionIntervalMS;
         }
         
         /**
@@ -495,20 +495,20 @@ public abstract class ComponentBindingSetup implements Serializable
          *
          * @return channel service configuration
          */
-        public ChannelServiceConfiguration setPeriodicRepetitionIntervalMS(long periodicRepetitionIntervalMS)
+        public ChannelServiceConfiguration setPeriodicRepetitionIntervalMS(final long periodicRepetitionIntervalMS)
         {
             this.periodicRepetitionIntervalMS = periodicRepetitionIntervalMS;
             return this;
         }
         
         @Override
-        protected ChannelServiceConfiguration setChannelCapacity(Long channelCapacity)
+        protected ChannelServiceConfiguration setChannelCapacity(final Long channelCapacity)
         {
             return (ChannelServiceConfiguration) super.setChannelCapacity(channelCapacity);
         }
         
         @Override
-        public ChannelServiceConfiguration setPrivateChannelWorkerRequirement(PrivateChannelWorkerRequirement privateChannelWorkerRequirement)
+        public ChannelServiceConfiguration setPrivateChannelWorkerRequirement(final PrivateChannelWorkerRequirement privateChannelWorkerRequirement)
         {
             return (ChannelServiceConfiguration) super.setPrivateChannelWorkerRequirement(privateChannelWorkerRequirement);
         }
@@ -532,7 +532,7 @@ public abstract class ComponentBindingSetup implements Serializable
          */
         public String getServiceId()
         {
-            return serviceId;
+            return this.serviceId;
         }
         
         @SuppressWarnings("unchecked")

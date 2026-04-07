@@ -25,20 +25,20 @@ public class ChannelTaskContextImpl implements IDispatcherChannelTaskContext
     private IDispatcherChannel channel;
     private TaskContainer dueTask;
     private List<IDispatcherChannelTask> currentProcessedTaskList;
-    private List<IDispatcherChannelTask> currentProcessedTaskListWritable;
-    private List<IDispatcherChannelTask> currentProcessedTaskListReadOnly;
-    private List<TaskContainer> dueTaskList;
+    private final List<IDispatcherChannelTask> currentProcessedTaskListWritable;
+    private final List<IDispatcherChannelTask> currentProcessedTaskListReadOnly;
+    private final List<TaskContainer> dueTaskList;
     
     private volatile IPropertyBlock propertyBlock = null;
     private volatile String id = null;
     private volatile ITaskControl taskControl = null;
     
-    protected ChannelTaskContextImpl(List<TaskContainer> dueTaskList)
+    protected ChannelTaskContextImpl(final List<TaskContainer> dueTaskList)
     {
         super();
         this.dueTaskList = dueTaskList;
-        currentProcessedTaskListWritable = new ArrayList<IDispatcherChannelTask>();
-        currentProcessedTaskListReadOnly = Collections.unmodifiableList(currentProcessedTaskListWritable);
+        this.currentProcessedTaskListWritable = new ArrayList<IDispatcherChannelTask>();
+        this.currentProcessedTaskListReadOnly = Collections.unmodifiableList(this.currentProcessedTaskListWritable);
     }
     
     @Override
@@ -68,19 +68,19 @@ public class ChannelTaskContextImpl implements IDispatcherChannelTaskContext
     @Override
     public List<IDispatcherChannelTask> currentProcessedTaskList()
     {
-        if (currentProcessedTaskList == null)
+        if (this.currentProcessedTaskList == null)
         {
-            currentProcessedTaskListWritable.clear();
-            for (TaskContainer taskContainer : this.dueTaskList)
+            this.currentProcessedTaskListWritable.clear();
+            for (final TaskContainer taskContainer : this.dueTaskList)
             {
-                currentProcessedTaskListWritable.add(taskContainer.getTask());
+                this.currentProcessedTaskListWritable.add(taskContainer.getTask());
             }
         }
         this.currentProcessedTaskList = this.currentProcessedTaskListReadOnly;
         return this.currentProcessedTaskList;
     }
     
-    protected void setChannel(IDispatcherChannel channel)
+    protected void setChannel(final IDispatcherChannel channel)
     {
         this.channel = channel;
     }
@@ -94,7 +94,7 @@ public class ChannelTaskContextImpl implements IDispatcherChannelTaskContext
         }
     }
     
-    protected void setDueTask(TaskContainer dueTask)
+    protected void setDueTask(final TaskContainer dueTask)
     {
         if (dueTask == null)
         {
@@ -122,18 +122,18 @@ public class ChannelTaskContextImpl implements IDispatcherChannelTaskContext
     {
         try
         {
-            if (dueTask != null)
+            if (this.dueTask != null)
             {
-                dueTask.heartbeat();
+                this.dueTask.heartbeat();
             }
         }
-        catch (Exception e) { }
-        catch (Error e) { }
+        catch (final Exception e) { }
+        catch (final Error e) { }
         
     }
     
     @Override
-    public void setTaskState(Object taskState)
+    public void setTaskState(final Object taskState)
     {
         if (this.taskControl != null)
         {

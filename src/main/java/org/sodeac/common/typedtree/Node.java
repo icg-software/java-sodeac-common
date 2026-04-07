@@ -33,10 +33,10 @@ public abstract class Node<P extends BranchNodeMetaModel, T>
      */
     public boolean isRootLinked()
     {
-        return rootLinked;
+        return this.rootLinked;
     }
     
-    protected void setRootLinked(boolean rootLinked)
+    protected void setRootLinked(final boolean rootLinked)
     {
         this.rootLinked = rootLinked;
     }

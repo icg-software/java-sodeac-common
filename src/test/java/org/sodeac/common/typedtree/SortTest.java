@@ -32,7 +32,7 @@ public class SortTest
                                {
                                    
                                    @Override
-                                   public int compare(BranchNode<SortTestType, SortTestItemType> o1, BranchNode<SortTestType, SortTestItemType> o2)
+                                   public int compare(final BranchNode<SortTestType, SortTestItemType> o1, final BranchNode<SortTestType, SortTestItemType> o2)
                                    {
                                        return o1.getValue(SortTestItemType.random).compareTo(o2.getValue(SortTestItemType.random));
                                    }

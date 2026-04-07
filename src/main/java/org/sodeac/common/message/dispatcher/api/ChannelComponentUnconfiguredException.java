@@ -29,25 +29,25 @@ public class ChannelComponentUnconfiguredException extends RuntimeException
 		this.component = component;
 	}*/
     
-    public ChannelComponentUnconfiguredException(IDispatcherChannelComponent component, String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace)
+    public ChannelComponentUnconfiguredException(final IDispatcherChannelComponent component, final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace)
     {
         super(message, cause, enableSuppression, writableStackTrace);
         this.component = component;
     }
     
-    public ChannelComponentUnconfiguredException(IDispatcherChannelComponent component, String message, Throwable cause)
+    public ChannelComponentUnconfiguredException(final IDispatcherChannelComponent component, final String message, final Throwable cause)
     {
         super(message, cause);
         this.component = component;
     }
     
-    public ChannelComponentUnconfiguredException(IDispatcherChannelComponent component, String message)
+    public ChannelComponentUnconfiguredException(final IDispatcherChannelComponent component, final String message)
     {
         super(message);
         this.component = component;
     }
     
-    public ChannelComponentUnconfiguredException(IDispatcherChannelComponent component, Throwable cause)
+    public ChannelComponentUnconfiguredException(final IDispatcherChannelComponent component, final Throwable cause)
     {
         super(cause);
         this.component = component;

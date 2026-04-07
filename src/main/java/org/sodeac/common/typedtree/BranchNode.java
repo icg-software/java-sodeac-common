@@ -66,7 +66,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      * @param parentNode              parent node instance
      * @param referencedNodeContainer static type instance defined in model
      */
-    protected BranchNode(RootBranchNode<?, ?> rootNode, BranchNode<?, P> parentNode, NodeContainer referencedNodeContainer)
+    protected BranchNode(final RootBranchNode<?, ?> rootNode, final BranchNode<?, P> parentNode, final NodeContainer referencedNodeContainer)
     {
         INodeType<P, T> nodeType = referencedNodeContainer.getNodeType();
         this.referenceNodeType = nodeType;
@@ -83,7 +83,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
             this.nodeContainerList = new ArrayList<>();
             for (int i = 0; i < this.model.getNodeTypeNames().length; i++)
             {
-                INodeType childNodeType = model.getNodeTypeList().get(i);
+                INodeType childNodeType = this.model.getNodeTypeList().get(i);
                 
                 NodeContainer nodeContainer = new NodeContainer(childNodeType, i);
                 if (childNodeType.getClass() == LeafNodeType.class)
@@ -97,7 +97,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
                     nodeContainer.unmodifiableNodeList = Collections.unmodifiableList(nodeContainer.nodeList);
                 }
                 
-                nodeContainerList.add(nodeContainer);
+                this.nodeContainerList.add(nodeContainer);
             }
             this._nodeContainerList = this.nodeContainerList;
             this.nodeContainerList = Collections.unmodifiableList(this.nodeContainerList);
@@ -120,7 +120,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
             }
             this.parentNode = parentNode;
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             if (e instanceof RuntimeException)
             {
@@ -137,10 +137,10 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
     
     protected Node.PayloadLevel getPayloadLevel()
     {
-        return payloadLevel;
+        return this.payloadLevel;
     }
     
-    protected void setPayloadLevel(Node.PayloadLevel payloadLevel)
+    protected void setPayloadLevel(final Node.PayloadLevel payloadLevel)
     {
         this.payloadLevel = payloadLevel;
     }
@@ -150,6 +150,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
     /**
      * Dispose this node and all child nodes.
      */
+    @Override
     protected void disposeNode()
     {
         super.disposed = true;
@@ -162,13 +163,13 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
                     this.bow.dispose();
                 }
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
             
             List<NodeContainer> nodeContainerList = this._nodeContainerList;
             
             if (nodeContainerList != null)
             {
-                for (NodeContainer container : nodeContainerList)
+                for (final NodeContainer container : nodeContainerList)
                 {
                     try
                     {
@@ -179,7 +180,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
                         }
                         if (container.nodeList != null)
                         {
-                            for (BranchNode<?, ?> item : container.nodeList)
+                            for (final BranchNode<?, ?> item : container.nodeList)
                             {
                                 item.disposeNode();
                             }
@@ -187,7 +188,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
                         }
                         if (container.nodeListenerList != null)
                         {
-                            for (IChildNodeListener<?> childNodeListener : container.nodeListenerList)
+                            for (final IChildNodeListener<?> childNodeListener : container.nodeListenerList)
                             {
                                 if (childNodeListener.getClass() == ModifyListenerContainer.class)
                                 {
@@ -223,14 +224,14 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
             
             try
             {
-                if (modifyListenerRegistration != null)
+                if (this.modifyListenerRegistration != null)
                 {
                     try
                     {
-                        modifyListenerRegistration.dispose();
+                        this.modifyListenerRegistration.dispose();
                     }
-                    catch (Exception e) { }
-                    modifyListenerRegistration = null;
+                    catch (final Exception e) { }
+                    this.modifyListenerRegistration = null;
                 }
             }
             finally
@@ -256,7 +257,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
     }
     
     @Override
-    protected void setRootLinked(boolean rootLinked)
+    protected void setRootLinked(final boolean rootLinked)
     {
         if (super.rootLinked == rootLinked)
         {
@@ -266,7 +267,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
         List<NodeContainer> nodeContainerList = this.nodeContainerList;
         if (nodeContainerList != null)
         {
-            for (NodeContainer nodeContainer : nodeContainerList)
+            for (final NodeContainer nodeContainer : nodeContainerList)
             {
                 if (nodeContainer.node != null)
                 {
@@ -274,7 +275,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
                 }
                 if (nodeContainer.nodeList != null)
                 {
-                    for (BranchNode<?, ?> node : nodeContainer.nodeList)
+                    for (final BranchNode<?, ?> node : nodeContainer.nodeList)
                     {
                         node.setRootLinked(rootLinked);
                     }
@@ -290,7 +291,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      */
     public RootBranchNode<?, ?> getRootNode()
     {
-        return rootNode;
+        return this.rootNode;
     }
     
     /**
@@ -300,7 +301,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      */
     public BranchNode<?, P> getParentNode()
     {
-        return parentNode;
+        return this.parentNode;
     }
     
     /**
@@ -310,9 +311,9 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      *
      * @return parent node
      */
-    public <X extends BranchNodeMetaModel> BranchNode<X, P> getParentNode(Class<X> parentOfParent)
+    public <X extends BranchNodeMetaModel> BranchNode<X, P> getParentNode(final Class<X> parentOfParent)
     {
-        return (BranchNode) parentNode;
+        return (BranchNode) this.parentNode;
     }
     
     /**
@@ -352,7 +353,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      *
      * @return this branch node
      */
-    public BranchNode<P, T> applyToConsumer(Consumer<BranchNode<P, T>> consumer)
+    public BranchNode<P, T> applyToConsumer(final Consumer<BranchNode<P, T>> consumer)
     {
         if (consumer == null)
         {
@@ -369,7 +370,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      *
      * @return this branch node
      */
-    public BranchNode<P, T> applyToConsumerWithReadLock(Consumer<BranchNode<P, T>> consumer)
+    public BranchNode<P, T> applyToConsumerWithReadLock(final Consumer<BranchNode<P, T>> consumer)
     {
         if (consumer == null)
         {
@@ -395,7 +396,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      *
      * @return this branch node
      */
-    public BranchNode<P, T> applyToConsumerWithWriteLock(Consumer<BranchNode<P, T>> consumer)
+    public BranchNode<P, T> applyToConsumerWithWriteLock(final Consumer<BranchNode<P, T>> consumer)
     {
         if (consumer == null)
         {
@@ -425,12 +426,12 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      *
      * @return child node
      */
-    public <X> LeafNode<T, X> get(LeafNodeType<? super T, X> nodeType)
+    public <X> LeafNode<T, X> get(final LeafNodeType<? super T, X> nodeType)
     {
         return (LeafNode<T, X>) getLeafNodeByIndex(this.model.getNodeTypeIndexByClass().get(nodeType), nodeType);
     }
     
-    protected LeafNode getLeafNodeByIndex(int nodeTypeIndex, LeafNodeType nodeType)
+    protected LeafNode getLeafNodeByIndex(final int nodeTypeIndex, final LeafNodeType nodeType)
     {
         return (LeafNode) getNodeContainer(nodeTypeIndex, nodeType).node;
     }
@@ -443,13 +444,13 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      *
      * @return this branch node
      */
-    public <X> BranchNode<P, T> applyToConsumer(LeafNodeType<? super T, X> nodeType, BiConsumer<BranchNode<P, ? super T>, LeafNode<? super T, X>> consumer)
+    public <X> BranchNode<P, T> applyToConsumer(final LeafNodeType<? super T, X> nodeType, final BiConsumer<BranchNode<P, ? super T>, LeafNode<? super T, X>> consumer)
     {
-        applyToLeafNodeConsumer(this.model.getNodeTypeIndexByClass().get(nodeType), nodeType, (BiConsumer) consumer);
+        applyToLeafNodeConsumer(this.model.getNodeTypeIndexByClass().get(nodeType), nodeType, consumer);
         return this;
     }
     
-    protected void applyToLeafNodeConsumer(int nodeTypeIndex, LeafNodeType nodeType, BiConsumer consumer)
+    protected void applyToLeafNodeConsumer(final int nodeTypeIndex, final LeafNodeType nodeType, final BiConsumer consumer)
     {
         NodeContainer nodeContainer = this.getNodeContainer(nodeTypeIndex, nodeType);
         LeafNode<T, ?> node = (LeafNode<T, ?>) nodeContainer.node;
@@ -480,13 +481,13 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      *
      * @return this branch node
      */
-    public <X> BranchNode<P, T> setValue(LeafNodeType<? super T, X> nodeType, X value)
+    public <X> BranchNode<P, T> setValue(final LeafNodeType<? super T, X> nodeType, final X value)
     {
         setLeafNodeValue(this.model.getNodeTypeIndexByClass().get(nodeType), nodeType, value);
         return this;
     }
     
-    protected void setLeafNodeValue(int nodeTypeIndex, LeafNodeType nodeType, Object value)
+    protected void setLeafNodeValue(final int nodeTypeIndex, final LeafNodeType nodeType, final Object value)
     {
         NodeContainer nodeContainer = this.getNodeContainer(nodeTypeIndex, nodeType);
         LeafNode<T, Object> node = (LeafNode<T, Object>) nodeContainer.node;
@@ -517,12 +518,12 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      *
      * @return node value
      */
-    public <X> X getValue(LeafNodeType<? super T, X> nodeType)
+    public <X> X getValue(final LeafNodeType<? super T, X> nodeType)
     {
         return (X) getLeafNodeValue(this.model.getNodeTypeIndexByClass().get(nodeType), nodeType);
     }
     
-    protected Object getLeafNodeValue(int nodeTypeIndex, LeafNodeType nodeType)
+    protected Object getLeafNodeValue(final int nodeTypeIndex, final LeafNodeType nodeType)
     {
         NodeContainer nodeContainer = this.getNodeContainer(nodeTypeIndex, nodeType);
         LeafNode<T, Object> node = (LeafNode<T, Object>) nodeContainer.node;
@@ -534,7 +535,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      *  BranchNode methods
      */
     
-    protected BranchNode getBranchNodeByIndex(int nodeTypeIndex, BranchNodeType nodeType)
+    protected BranchNode getBranchNodeByIndex(final int nodeTypeIndex, final BranchNodeType nodeType)
     {
         return (BranchNode) getNodeContainer(nodeTypeIndex, nodeType).node;
     }
@@ -547,7 +548,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      *
      * @return this branch node
      */
-    public <X extends BranchNodeMetaModel> BranchNode<P, T> applyToConsumer(BranchNodeType<T, X> nodeType, BiConsumer<BranchNode<P, T>, BranchNode<?, X>> consumer)
+    public <X extends BranchNodeMetaModel> BranchNode<P, T> applyToConsumer(final BranchNodeType<T, X> nodeType, final BiConsumer<BranchNode<P, T>, BranchNode<?, X>> consumer)
     {
         if (consumer == null)
         {
@@ -621,7 +622,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      *
      * @return this branch node
      */
-    public <X extends BranchNodeMetaModel> BranchNode<P, T> applyToConsumer(BranchNodeType<T, X> nodeType, BiConsumer<BranchNode<P, T>, BranchNode<T, X>> ifAbsent, BiConsumer<BranchNode<P, T>, BranchNode<T, X>> ifPresent)
+    public <X extends BranchNodeMetaModel> BranchNode<P, T> applyToConsumer(final BranchNodeType<T, X> nodeType, final BiConsumer<BranchNode<P, T>, BranchNode<T, X>> ifAbsent, final BiConsumer<BranchNode<P, T>, BranchNode<T, X>> ifPresent)
     {
         int nodeTypeIndex = this.model.getNodeTypeIndexByClass().get(nodeType);
         NodeContainer nodeContainer = getNodeContainer(nodeTypeIndex, nodeType);
@@ -636,7 +637,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
             BranchNode<T, X> node = (BranchNode) nodeContainer.node;
             if (node == null)
             {
-                if (rootNode.isBranchNodeApplyToConsumerAutoCreate() && (!rootNode.isImmutable()))
+                if (this.rootNode.isBranchNodeApplyToConsumerAutoCreate() && (!this.rootNode.isImmutable()))
                 {
                     boolean created = false;
                     node = new BranchNode(this.rootNode, this, nodeContainer);
@@ -706,14 +707,14 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      *
      * @return this branch node
      */
-    public <X extends BranchNodeMetaModel> BranchNode<P, T> remove(BranchNodeType<T, X> nodeType)
+    public <X extends BranchNodeMetaModel> BranchNode<P, T> remove(final BranchNodeType<T, X> nodeType)
     {
         return this.remove(this.model.getNodeTypeIndexByClass().get(nodeType), nodeType);
     }
     
-    protected <X extends BranchNodeMetaModel> BranchNode<P, T> remove(int nodeTypeIndex, BranchNodeType<T, X> nodeType)
+    protected <X extends BranchNodeMetaModel> BranchNode<P, T> remove(final int nodeTypeIndex, final BranchNodeType<T, X> nodeType)
     {
-        if (rootNode.isImmutable())
+        if (this.rootNode.isImmutable())
         {
             return this;
         }
@@ -759,7 +760,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      *
      * @return new child node
      */
-    public <X extends BranchNodeMetaModel> BranchNode<T, X> create(BranchNodeType<T, X> nodeType)
+    public <X extends BranchNodeMetaModel> BranchNode<T, X> create(final BranchNodeType<T, X> nodeType)
     {
         return create(nodeType, null);
     }
@@ -773,14 +774,14 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      * @return new child node
      */
     
-    public <X extends BranchNodeMetaModel> BranchNode<T, X> create(BranchNodeType<T, X> nodeType, BiConsumer<BranchNode<P, T>, BranchNode<T, X>> consumer)
+    public <X extends BranchNodeMetaModel> BranchNode<T, X> create(final BranchNodeType<T, X> nodeType, final BiConsumer<BranchNode<P, T>, BranchNode<T, X>> consumer)
     {
         return create(this.model.getNodeTypeIndexByClass().get(nodeType), nodeType, consumer);
     }
     
-    protected <X extends BranchNodeMetaModel> BranchNode<T, X> create(int nodeTypeIndex, BranchNodeType<T, X> nodeType, BiConsumer<BranchNode<P, T>, BranchNode<T, X>> consumer)
+    protected <X extends BranchNodeMetaModel> BranchNode<T, X> create(final int nodeTypeIndex, final BranchNodeType<T, X> nodeType, final BiConsumer<BranchNode<P, T>, BranchNode<T, X>> consumer)
     {
-        if (rootNode.isImmutable())
+        if (this.rootNode.isImmutable())
         {
             return null;
         }
@@ -862,12 +863,12 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      * @return child node or null, if child node does not exist and auto-create-mode is off
      */
     
-    public <X extends BranchNodeMetaModel> BranchNode<T, X> get(BranchNodeType<T, X> nodeType)
+    public <X extends BranchNodeMetaModel> BranchNode<T, X> get(final BranchNodeType<T, X> nodeType)
     {
         return get(this.model.getNodeTypeIndexByClass().get(nodeType), nodeType);
     }
     
-    protected <X extends BranchNodeMetaModel> BranchNode<T, X> get(int nodeTypeIndex, BranchNodeType<T, X> nodeType)
+    protected <X extends BranchNodeMetaModel> BranchNode<T, X> get(final int nodeTypeIndex, final BranchNodeType<T, X> nodeType)
     {
         NodeContainer nodeContainer = getNodeContainer(nodeTypeIndex, nodeType);
         
@@ -947,17 +948,17 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      *
      * @return unmodifiable node list
      */
-    public <X extends BranchNodeMetaModel> List<BranchNode<T, X>> getUnmodifiableNodeList(BranchNodeListType<T, X> nodeType)
+    public <X extends BranchNodeMetaModel> List<BranchNode<T, X>> getUnmodifiableNodeList(final BranchNodeListType<T, X> nodeType)
     {
         return this.nodeContainerList.get(this.model.getNodeTypeIndexByClass().get(nodeType)).unmodifiableNodeList;
     }
     
-    protected <X extends BranchNodeMetaModel> List<BranchNode<T, X>> getUnmodifiableNodeList(int nodeTypeIndex, BranchNodeListType<T, X> nodeType)
+    protected <X extends BranchNodeMetaModel> List<BranchNode<T, X>> getUnmodifiableNodeList(final int nodeTypeIndex, final BranchNodeListType<T, X> nodeType)
     {
         return this.nodeContainerList.get(nodeTypeIndex).unmodifiableNodeList;
     }
     
-    protected List<BranchNodeToObjectWrapper> getUnmodifiableBowList(int nodeTypeIndex, BranchNodeListType nodeType)
+    protected List<BranchNodeToObjectWrapper> getUnmodifiableBowList(final int nodeTypeIndex, final BranchNodeListType nodeType)
     {
         return this.nodeContainerList.get(nodeTypeIndex).unmodifiableBowList;
     }
@@ -969,7 +970,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      *
      * @return unmodifiable node list snapshot
      */
-    public <X extends BranchNodeMetaModel> List<BranchNode<T, X>> getUnmodifiableNodeListSnapshot(BranchNodeListType<T, X> nodeType)
+    public <X extends BranchNodeMetaModel> List<BranchNode<T, X>> getUnmodifiableNodeListSnapshot(final BranchNodeListType<T, X> nodeType)
     {
         return getUnmodifiableNodeListSnapshot(nodeType, null);
     }
@@ -983,12 +984,12 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      * @return snapshot unmodifiable node list snapshot
      */
     
-    public <X extends BranchNodeMetaModel> List<BranchNode<T, X>> getUnmodifiableNodeListSnapshot(BranchNodeListType<T, X> nodeType, Predicate<BranchNode<T, X>> predicate)
+    public <X extends BranchNodeMetaModel> List<BranchNode<T, X>> getUnmodifiableNodeListSnapshot(final BranchNodeListType<T, X> nodeType, final Predicate<BranchNode<T, X>> predicate)
     {
         return getUnmodifiableNodeListSnapshot(this.model.getNodeTypeIndexByClass().get(nodeType), nodeType, predicate);
     }
     
-    protected <X extends BranchNodeMetaModel> List<BranchNode<T, X>> getUnmodifiableNodeListSnapshot(int nodeTypeIndex, BranchNodeListType<T, X> nodeType, Predicate<BranchNode<T, X>> predicate)
+    protected <X extends BranchNodeMetaModel> List<BranchNode<T, X>> getUnmodifiableNodeListSnapshot(final int nodeTypeIndex, final BranchNodeListType<T, X> nodeType, final Predicate<BranchNode<T, X>> predicate)
     {
         NodeContainer nodeContainer = getNodeContainer(nodeTypeIndex, nodeType);
         
@@ -1044,7 +1045,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
         }
     }
     
-    protected List<BranchNodeToObjectWrapper> getUnmodifiableBowSnapshot(int nodeTypeIndex, BranchNodeListType nodeType, Predicate<BranchNode> predicate)
+    protected List<BranchNodeToObjectWrapper> getUnmodifiableBowSnapshot(final int nodeTypeIndex, final BranchNodeListType nodeType, final Predicate<BranchNode> predicate)
     {
         NodeContainer nodeContainer = getNodeContainer(nodeTypeIndex, nodeType);
         
@@ -1109,7 +1110,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      * @return this branch node
      *
      */
-    public <X extends BranchNodeMetaModel> BranchNode<P, T> setComperator(BranchNodeListType<T, X> nodeType, Comparator<BranchNode<T, X>> comparator)
+    public <X extends BranchNodeMetaModel> BranchNode<P, T> setComperator(final BranchNodeListType<T, X> nodeType, final Comparator<BranchNode<T, X>> comparator)
     {
         NodeContainer nodeContainer = getNodeContainer(this.model.getNodeTypeIndexByClass().get(nodeType), nodeType);
         
@@ -1155,12 +1156,12 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      *
      * @return first matched node
      */
-    public <X extends BranchNodeMetaModel> BranchNode<T, X> get(BranchNodeListType<T, X> nodeType, Predicate<BranchNode<T, X>> predicate)
+    public <X extends BranchNodeMetaModel> BranchNode<T, X> get(final BranchNodeListType<T, X> nodeType, final Predicate<BranchNode<T, X>> predicate)
     {
         return get(this.model.getNodeTypeIndexByClass().get(nodeType), nodeType, predicate);
     }
     
-    protected <X extends BranchNodeMetaModel> BranchNode<T, X> get(int nodeTypeIndex, BranchNodeListType<T, X> nodeType, Predicate<BranchNode<T, X>> predicate)
+    protected <X extends BranchNodeMetaModel> BranchNode<T, X> get(final int nodeTypeIndex, final BranchNodeListType<T, X> nodeType, final Predicate<BranchNode<T, X>> predicate)
     {
         NodeContainer nodeContainer = getNodeContainer(nodeTypeIndex, nodeType);
         
@@ -1171,7 +1172,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
         }
         try
         {
-            for (BranchNode<T, X> node : nodeContainer.nodeList)
+            for (final BranchNode<T, X> node : nodeContainer.nodeList)
             {
                 if (predicate.test(node))
                 {
@@ -1196,12 +1197,12 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      *
      * @return new child node
      */
-    public <X extends BranchNodeMetaModel> BranchNode<T, X> create(BranchNodeListType<T, X> nodeType)
+    public <X extends BranchNodeMetaModel> BranchNode<T, X> create(final BranchNodeListType<T, X> nodeType)
     {
         return create(this.model.getNodeTypeIndexByClass().get(nodeType), nodeType);
     }
     
-    protected <X extends BranchNodeMetaModel> BranchNode<T, X> create(int nodeTypeIndex, BranchNodeListType<T, X> nodeType)
+    protected <X extends BranchNodeMetaModel> BranchNode<T, X> create(final int nodeTypeIndex, final BranchNodeListType<T, X> nodeType)
     {
         if (this.rootNode.isImmutable())
         {
@@ -1268,12 +1269,12 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      *
      * @return this branch node
      */
-    public <X extends BranchNodeMetaModel> BranchNode<P, T> create(BranchNodeListType<T, X> nodeType, BiConsumer<BranchNode<P, T>, BranchNode<T, X>> consumer)
+    public <X extends BranchNodeMetaModel> BranchNode<P, T> create(final BranchNodeListType<T, X> nodeType, final BiConsumer<BranchNode<P, T>, BranchNode<T, X>> consumer)
     {
         return create(this.model.getNodeTypeIndexByClass().get(nodeType), nodeType, consumer);
     }
     
-    protected <X extends BranchNodeMetaModel> BranchNode<P, T> create(int nodeTypeIndex, BranchNodeListType<T, X> nodeType, BiConsumer<BranchNode<P, T>, BranchNode<T, X>> consumer)
+    protected <X extends BranchNodeMetaModel> BranchNode<P, T> create(final int nodeTypeIndex, final BranchNodeListType<T, X> nodeType, final BiConsumer<BranchNode<P, T>, BranchNode<T, X>> consumer)
     {
         if (this.rootNode.isImmutable())
         {
@@ -1319,7 +1320,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
                             node.setRootLinked(super.rootLinked);
                             
                             int index = 0;
-                            for (BranchNode nodeItem : nodeContainer.nodeList)
+                            for (final BranchNode nodeItem : nodeContainer.nodeList)
                             {
                                 nodeItem.positionInList = index++;
                                 this.rootNode.notifyAfterModify(this, nodeContainer, nodeItem, nodeItem);
@@ -1429,12 +1430,12 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      *
      * @return this child node
      */
-    public <X extends BranchNodeMetaModel> BranchNode<P, T> createIfAbsent(BranchNodeListType<T, X> nodeType, Predicate<BranchNode<T, X>> predicate, BiConsumer<BranchNode<P, T>, BranchNode<T, X>> consumer)
+    public <X extends BranchNodeMetaModel> BranchNode<P, T> createIfAbsent(final BranchNodeListType<T, X> nodeType, final Predicate<BranchNode<T, X>> predicate, final BiConsumer<BranchNode<P, T>, BranchNode<T, X>> consumer)
     {
         return createIfAbsent(this.model.getNodeTypeIndexByClass().get(nodeType), nodeType, predicate, consumer);
     }
     
-    protected <X extends BranchNodeMetaModel> BranchNode<P, T> createIfAbsent(int nodeTypeIndex, BranchNodeListType<T, X> nodeType, Predicate<BranchNode<T, X>> predicate, BiConsumer<BranchNode<P, T>, BranchNode<T, X>> consumer)
+    protected <X extends BranchNodeMetaModel> BranchNode<P, T> createIfAbsent(final int nodeTypeIndex, final BranchNodeListType<T, X> nodeType, final Predicate<BranchNode<T, X>> predicate, final BiConsumer<BranchNode<P, T>, BranchNode<T, X>> consumer)
     {
         if (this.rootNode.isImmutable())
         {
@@ -1449,7 +1450,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
         }
         try
         {
-            for (BranchNode<T, X> node : nodeContainer.nodeList)
+            for (final BranchNode<T, X> node : nodeContainer.nodeList)
             {
                 if (predicate.test(node))
                 {
@@ -1490,7 +1491,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
                             nodeContainer.nodeList.add(0, node);
                             node.setRootLinked(super.rootLinked);
                             int index = 0;
-                            for (BranchNode nodeItem : nodeContainer.nodeList)
+                            for (final BranchNode nodeItem : nodeContainer.nodeList)
                             {
                                 nodeItem.positionInList = index++;
                                 this.rootNode.notifyAfterModify(this, nodeContainer, nodeItem, nodeItem);
@@ -1598,12 +1599,12 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      *
      * @return true, if node successfully removed, otherwise false
      */
-    public <X extends BranchNodeMetaModel> boolean remove(BranchNodeListType<T, X> nodeType, BranchNode<T, X> node)
+    public <X extends BranchNodeMetaModel> boolean remove(final BranchNodeListType<T, X> nodeType, final BranchNode<T, X> node)
     {
         return remove(this.model.getNodeTypeIndexByClass().get(nodeType), nodeType, node);
     }
     
-    protected <X extends BranchNodeMetaModel> boolean remove(int nodeTypeIndex, BranchNodeListType<T, X> nodeType, BranchNode<T, X> node)
+    protected <X extends BranchNodeMetaModel> boolean remove(final int nodeTypeIndex, final BranchNodeListType<T, X> nodeType, final BranchNode<T, X> node)
     {
         if (this.rootNode.isImmutable())
         {
@@ -1663,12 +1664,12 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      *                 return this branch node
      */
     
-    public <X extends BranchNodeMetaModel> BranchNode<P, T> clear(BranchNodeListType<T, X> nodeType)
+    public <X extends BranchNodeMetaModel> BranchNode<P, T> clear(final BranchNodeListType<T, X> nodeType)
     {
         return clear(this.model.getNodeTypeIndexByClass().get(nodeType), nodeType);
     }
     
-    protected <X extends BranchNodeMetaModel> BranchNode<P, T> clear(int nodeTypeIndex, BranchNodeListType<T, X> nodeType)
+    protected <X extends BranchNodeMetaModel> BranchNode<P, T> clear(final int nodeTypeIndex, final BranchNodeListType<T, X> nodeType)
     {
         if (this.rootNode.isImmutable())
         {
@@ -1696,7 +1697,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
             
             List<BranchNode<P, T>> copy = (List<BranchNode<P, T>>) new ArrayList(nodeContainer.nodeList);
             
-            for (BranchNode<P, T> node : copy)
+            for (final BranchNode<P, T> node : copy)
             {
                 if (this.rootNode.notifyBeforeModify(this, nodeContainer, node, null))
                 {
@@ -1736,12 +1737,12 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      *
      * @return true, if node is successfully removed, otherwise false
      */
-    public <X extends BranchNodeMetaModel> boolean remove(BranchNodeListType<T, X> nodeType, int index)
+    public <X extends BranchNodeMetaModel> boolean remove(final BranchNodeListType<T, X> nodeType, final int index)
     {
         return remove(this.model.getNodeTypeIndexByClass().get(nodeType), nodeType, index);
     }
     
-    protected <X extends BranchNodeMetaModel> boolean remove(int nodeTypeIndex, BranchNodeListType<T, X> nodeType, int index)
+    protected <X extends BranchNodeMetaModel> boolean remove(final int nodeTypeIndex, final BranchNodeListType<T, X> nodeType, final int index)
     {
         if (this.rootNode.isImmutable())
         {
@@ -1807,7 +1808,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      *
      * @return this branch node
      */
-    public BranchNode<P, T> removeChildNodeListener(IChildNodeListener<T> listener)
+    public BranchNode<P, T> removeChildNodeListener(final IChildNodeListener<T> listener)
     {
         if (listener == null)
         {
@@ -1822,7 +1823,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
         try
         {
             
-            for (NodeContainer container : this.nodeContainerList)
+            for (final NodeContainer container : this.nodeContainerList)
             {
                 if (container.nodeListenerList != null)
                 {
@@ -1841,7 +1842,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
         return this;
     }
     
-    public <X> BranchNode<P, T> addChildNodeListener(LeafNodeType<T, X> nodeType, ILeafNodeListener<T, X> listener)
+    public <X> BranchNode<P, T> addChildNodeListener(final LeafNodeType<T, X> nodeType, final ILeafNodeListener<T, X> listener)
     {
         return addChildNodeListener(listener, nodeType);
     }
@@ -1854,7 +1855,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      *
      * @return this branch node
      */
-    public BranchNode<P, T> addChildNodeListener(IChildNodeListener<T> listener, INodeType<T, ?>... childNodeTypeMask)
+    public BranchNode<P, T> addChildNodeListener(final IChildNodeListener<T> listener, final INodeType<T, ?>... childNodeTypeMask)
     {
         if (listener == null)
         {
@@ -1871,7 +1872,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
             
             if ((childNodeTypeMask == null) || (childNodeTypeMask.length == 0))
             {
-                for (NodeContainer container : this.nodeContainerList)
+                for (final NodeContainer container : this.nodeContainerList)
                 {
                     if (container.nodeListenerList == null)
                     {
@@ -1886,7 +1887,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
             }
             else
             {
-                for (INodeType<T, ?> filteredType : childNodeTypeMask)
+                for (final INodeType<T, ?> filteredType : childNodeTypeMask)
                 {
                     if (filteredType == null)
                     {
@@ -1925,7 +1926,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
      * Path Modify Listener
      */
     
-    public <X> void registerForModify(ModelPath<T, X> path, IModifyListener<X> listener)
+    public <X> void registerForModify(final ModelPath<T, X> path, final IModifyListener<X> listener)
     {
         Objects.requireNonNull(path, "Model path is null");
         Objects.requireNonNull(path.getNodeSelectorList(), "Model path is disposed");
@@ -1954,7 +1955,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
             
             this.modifyListenerRegistration.registerListener(path, listener);
             
-            for (NodeSelector<T, ?> rootSelector : this.modifyListenerRegistration.getRootNodeSelectorList())
+            for (final NodeSelector<T, ?> rootSelector : this.modifyListenerRegistration.getRootNodeSelectorList())
             {
                 if (rootSelector.getChildSelectorList() == null)
                 {
@@ -1973,7 +1974,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
         }
     }
     
-    public <X> void unregisterForModify(ModelPath<T, X> path)
+    public <X> void unregisterForModify(final ModelPath<T, X> path)
     {
         if (path == null)
         {
@@ -2004,14 +2005,14 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
         }
     }
     
-    private void recursiveRegisterIModifyListener(Collection<NodeSelector<?, ?>> selectorList, NodeSelectorPredicate rootPredicate)
+    private void recursiveRegisterIModifyListener(final Collection<NodeSelector<?, ?>> selectorList, final NodeSelectorPredicate rootPredicate)
     {
         if (selectorList == null)
         {
             return;
         }
         
-        for (NodeSelector<?, ?> selector : selectorList)
+        for (final NodeSelector<?, ?> selector : selectorList)
         {
             NodeContainer container = this.nodeContainerList.get(this.model.getNodeTypeIndexByClass().get(selector.getType()));
             
@@ -2024,7 +2025,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
             }
             else
             {
-                for (IChildNodeListener child : container.nodeListenerList)
+                for (final IChildNodeListener child : container.nodeListenerList)
                 {
                     if
                     (
@@ -2051,7 +2052,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
             // ensure ModifyListenerWrapper is registered (same selector and equal rootPredicate)
             
             ModifyListenerWrapper listenerWrapper = null;
-            for (ModifyListenerWrapper child : childNodeListener.listenerWrapperList)
+            for (final ModifyListenerWrapper child : childNodeListener.listenerWrapperList)
             {
                 if ((child.selector == selector) && (child.equalsRootPredicate(rootPredicate)))
                 {
@@ -2082,7 +2083,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
                     }
                     if (container.getNodeList() != null)
                     {
-                        for (BranchNode node : container.getNodeList()) // branch node list
+                        for (final BranchNode node : container.getNodeList()) // branch node list
                         {
                             node.recursiveRegisterIModifyListener(listenerWrapper.selector.getChildSelectorList(), null);
                         }
@@ -2094,7 +2095,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
     
     private void recursiveCleanIModifyListener()
     {
-        for (NodeContainer container : this.nodeContainerList)
+        for (final NodeContainer container : this.nodeContainerList)
         {
             if (container.nodeListenerList != null)
             {
@@ -2104,7 +2105,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
                 }
                 if (container.getNodeList() != null)
                 {
-                    for (BranchNode node : container.getNodeList()) // branch node list
+                    for (final BranchNode node : container.getNodeList()) // branch node list
                     {
                         node.recursiveCleanIModifyListener();
                     }
@@ -2112,15 +2113,14 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
                 
                 int listenerIndex = 0;
                 LinkedList<Integer> listenerToRemove = null;
-                for (IChildNodeListener child : container.nodeListenerList)
+                for (final IChildNodeListener child : container.nodeListenerList)
                 {
-                    if (child instanceof BranchNode.ModifyListenerContainer)
+                    if (child instanceof final BranchNode.ModifyListenerContainer childNodeListener)
                     {
-                        BranchNode.ModifyListenerContainer childNodeListener = (BranchNode.ModifyListenerContainer) child;
                         
                         int wrapperIndex = 0;
                         LinkedList<Integer> wrapperToRemove = null;
-                        for (ModifyListenerWrapper wrapper : (List<ModifyListenerWrapper>) childNodeListener.listenerWrapperList)
+                        for (final ModifyListenerWrapper wrapper : (List<ModifyListenerWrapper>) childNodeListener.listenerWrapperList)
                         {
                             if ((wrapper.selector == null) || wrapper.selector.isDisposed())
                             {
@@ -2135,7 +2135,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
                         
                         if (wrapperToRemove != null)
                         {
-                            for (int index : wrapperToRemove)
+                            for (final int index : wrapperToRemove)
                             {
                                 childNodeListener.listenerWrapperList.remove(index);
                             }
@@ -2158,7 +2158,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
                 
                 if (listenerToRemove != null)
                 {
-                    for (int index : listenerToRemove)
+                    for (final int index : listenerToRemove)
                     {
                         BranchNode.ModifyListenerContainer childNodeListener = (BranchNode.ModifyListenerContainer) container.nodeListenerList.remove(index);
                         if (childNodeListener != null)
@@ -2176,14 +2176,14 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
     protected class ModifyListenerContainer implements IChildNodeListener<T>
     {
         private NodeSelector selector = null;
-        private boolean active = true;
+        private final boolean active = true;
         private List<ModifyListenerWrapper> listenerWrapperList = new ArrayList<ModifyListenerWrapper>();
         private Set<IModifyListener<?>> activeSet = null;
         private NodeContainer container = null;
         private BooleanFunction predicateEvaluator = null;
         
         @Override
-        public void accept(Node<T, ?> node, Object oldValue)
+        public void accept(final Node<T, ?> node, final Object oldValue)
         {
             if (this.active)
             {
@@ -2191,27 +2191,27 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
                 
                 if ((activeSet != null) && (!activeSet.isEmpty()))
                 {
-                    for (IModifyListener modifyListener : activeSet)
+                    for (final IModifyListener modifyListener : activeSet)
                     {
                         if (!modifyListener.isEnabled())
                         {
                             continue;
                         }
-                        if (selector.getAxis() == Axis.VALUE)
+                        if (this.selector.getAxis() == Axis.VALUE)
                         {
                             modifyListener.accept(((LeafNode) node).getValue(), oldValue);
                         }
-                        else if (selector.getAxis() == Axis.CHILD)
+                        else if (this.selector.getAxis() == Axis.CHILD)
                         {
-                            if (selector.getType() instanceof LeafNodeType)
+                            if (this.selector.getType() instanceof LeafNodeType)
                             {
                                 modifyListener.accept(node, oldValue);
                             }
-                            else if (selector.getType() instanceof BranchNodeType)
+                            else if (this.selector.getType() instanceof BranchNodeType)
                             {
                                 modifyListener.accept(node, oldValue);
                             }
-                            else if (selector.getType() instanceof BranchNodeListType)
+                            else if (this.selector.getType() instanceof BranchNodeListType)
                             {
                                 modifyListener.accept(node, oldValue);
                             }
@@ -2220,14 +2220,14 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
                 }
             }
             
-            for (ModifyListenerWrapper listenerWrapper : listenerWrapperList)
+            for (final ModifyListenerWrapper listenerWrapper : this.listenerWrapperList)
             {
                 if ((listenerWrapper.selector == null) || listenerWrapper.selector.isDisposed())
                 {
                     continue;
                 }
                 
-                if ((selector.getAxis() == Axis.CHILD) && (!(selector.getType() instanceof LeafNodeType)))
+                if ((this.selector.getAxis() == Axis.CHILD) && (!(this.selector.getType() instanceof LeafNodeType)))
                 {
                     if ((listenerWrapper.selector.getChildSelectorList() != null) && (!listenerWrapper.selector.getChildSelectorList().isEmpty()))
                     {
@@ -2252,7 +2252,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
             private NodeSelector selector = null;
             private boolean activeByParent = true;
             
-            private boolean equalsRootPredicate(NodeSelectorPredicate rootPathPredicate)
+            private boolean equalsRootPredicate(final NodeSelectorPredicate rootPathPredicate)
             {
                 if (rootPathPredicate == null)
                 {
@@ -2271,21 +2271,21 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
             }
             
             @Override
-            public void accept(LeafNode<T, ?> newValue, LeafNode<T, ?> oldValue)
+            public void accept(final LeafNode<T, ?> newValue, final LeafNode<T, ?> oldValue)
             {
                 // TODO Auto-generated method stub
                 
             }
             
             @Override
-            public void onListenStart(LeafNode<T, ?> value)
+            public void onListenStart(final LeafNode<T, ?> value)
             {
                 // TODO Auto-generated method stub
                 IModifyListener.super.onListenStart(value);
             }
             
             @Override
-            public void onListenStop(LeafNode<T, ?> value)
+            public void onListenStop(final LeafNode<T, ?> value)
             {
                 // TODO Auto-generated method stub
                 IModifyListener.super.onListenStop(value);
@@ -2311,7 +2311,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
             {
                 newActiveSet = new HashSet<>();
                 
-                for (ModifyListenerWrapper listenerWrapper : this.listenerWrapperList)
+                for (final ModifyListenerWrapper listenerWrapper : this.listenerWrapperList)
                 {
                     if ((listenerWrapper.selector == null) || listenerWrapper.selector.isDisposed())
                     {
@@ -2323,7 +2323,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
                     }
                     if (listenerWrapper.selector.getModifyListenerList() != null)
                     {
-                        for (IModifyListener modifyListener : (Set<IModifyListener>) listenerWrapper.selector.getModifyListenerList())
+                        for (final IModifyListener modifyListener : (Set<IModifyListener>) listenerWrapper.selector.getModifyListenerList())
                         {
                             newActiveSet.add(modifyListener);
                         }
@@ -2333,7 +2333,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
             
             if ((thisActiveSet != null) && (!thisActiveSet.isEmpty()))
             {
-                for (IModifyListener<?> modifyLister : thisActiveSet)
+                for (final IModifyListener<?> modifyLister : thisActiveSet)
                 {
                     if ((newActiveSet == null) || (!newActiveSet.contains(modifyLister)))
                     {
@@ -2348,7 +2348,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
             
             if ((newActiveSet != null) && (!newActiveSet.isEmpty()))
             {
-                for (IModifyListener<?> modifyLister : newActiveSet)
+                for (final IModifyListener<?> modifyLister : newActiveSet)
                 {
                     if ((thisActiveSet == null) || (!thisActiveSet.contains(modifyLister)))
                     {
@@ -2378,25 +2378,25 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
             
             if (listenStop != null)
             {
-                if (selector.getAxis() == Axis.VALUE)
+                if (this.selector.getAxis() == Axis.VALUE)
                 {
-                    LeafNode node = (LeafNode) container.node;
-                    for (IModifyListener modifyListener : listenStop)
+                    LeafNode node = (LeafNode) this.container.node;
+                    for (final IModifyListener modifyListener : listenStop)
                     {
                         modifyListener.onListenStop(node.getValue());
                     }
                 }
-                else if (selector.getAxis() == Axis.CHILD)
+                else if (this.selector.getAxis() == Axis.CHILD)
                 {
-                    for (IModifyListener modifyListener : listenStart)
+                    for (final IModifyListener modifyListener : listenStart)
                     {
-                        if (container.getNode() != null)
+                        if (this.container.getNode() != null)
                         {
-                            modifyListener.onListenStop(container.getNode());
+                            modifyListener.onListenStop(this.container.getNode());
                         }
-                        if (container.getNodeList() != null)
+                        if (this.container.getNodeList() != null)
                         {
-                            for (BranchNode node : container.getNodeList())
+                            for (final BranchNode node : this.container.getNodeList())
                             {
                                 modifyListener.onListenStop(node);
                             }
@@ -2407,25 +2407,25 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
             
             if (listenStart != null)
             {
-                if (selector.getAxis() == Axis.VALUE)
+                if (this.selector.getAxis() == Axis.VALUE)
                 {
-                    LeafNode node = (LeafNode) container.node;
-                    for (IModifyListener modifyListener : listenStart)
+                    LeafNode node = (LeafNode) this.container.node;
+                    for (final IModifyListener modifyListener : listenStart)
                     {
                         modifyListener.onListenStart(node.getValue());
                     }
                 }
-                else if (selector.getAxis() == Axis.CHILD)
+                else if (this.selector.getAxis() == Axis.CHILD)
                 {
-                    for (IModifyListener modifyListener : listenStart)
+                    for (final IModifyListener modifyListener : listenStart)
                     {
-                        if (container.getNode() != null)
+                        if (this.container.getNode() != null)
                         {
-                            modifyListener.onListenStart(container.getNode());
+                            modifyListener.onListenStart(this.container.getNode());
                         }
-                        if (container.getNodeList() != null)
+                        if (this.container.getNodeList() != null)
                         {
-                            for (BranchNode node : container.getNodeList())
+                            for (final BranchNode node : this.container.getNodeList())
                             {
                                 modifyListener.onListenStart(node);
                             }
@@ -2439,25 +2439,25 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
         {
             if (this.activeSet != null)
             {
-                if (selector.getAxis() == Axis.VALUE)
+                if (this.selector.getAxis() == Axis.VALUE)
                 {
-                    LeafNode node = (LeafNode) container.node;
-                    for (IModifyListener modifyLister : this.activeSet)
+                    LeafNode node = (LeafNode) this.container.node;
+                    for (final IModifyListener modifyLister : this.activeSet)
                     {
                         modifyLister.onListenStop(node.getValue());
                     }
                 }
-                else if (selector.getAxis() == Axis.CHILD)
+                else if (this.selector.getAxis() == Axis.CHILD)
                 {
-                    for (IModifyListener modifyListener : this.activeSet)
+                    for (final IModifyListener modifyListener : this.activeSet)
                     {
-                        if (container.getNode() != null)
+                        if (this.container.getNode() != null)
                         {
-                            modifyListener.onListenStop(container.getNode());
+                            modifyListener.onListenStop(this.container.getNode());
                         }
-                        if (container.getNodeList() != null)
+                        if (this.container.getNodeList() != null)
                         {
-                            for (BranchNode node : container.getNodeList())
+                            for (final BranchNode node : this.container.getNodeList())
                             {
                                 modifyListener.onListenStop(node);
                             }
@@ -2470,7 +2470,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
             
             if (this.listenerWrapperList == null)
             {
-                for (ModifyListenerWrapper modifyListenerWrapper : this.listenerWrapperList)
+                for (final ModifyListenerWrapper modifyListenerWrapper : this.listenerWrapperList)
                 {
                     try
                     {
@@ -2478,14 +2478,14 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
                         modifyListenerWrapper.selector = null;
                         modifyListenerWrapper.activeByParent = true;
                     }
-                    catch (Exception e) { }
+                    catch (final Exception e) { }
                 }
             }
             try
             {
                 this.listenerWrapperList.clear();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
             
             if (this.selector != null)
             {
@@ -2511,10 +2511,10 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
         
         public Boolean isDefined()
         {
-            return defined;
+            return this.defined;
         }
         
-        public NodeMeta setDefined(boolean defined)
+        public NodeMeta setDefined(final boolean defined)
         {
             this.defined = defined ? Boolean.TRUE : Boolean.FALSE;
             return this;
@@ -2522,10 +2522,10 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
         
         protected Node.PayloadLevel getRequiredPayloadLevel()
         {
-            return requiredPayloadLevel;
+            return this.requiredPayloadLevel;
         }
         
-        protected void setRequiredPayloadLevel(Node.PayloadLevel requiredPayloadLevel)
+        protected void setRequiredPayloadLevel(final Node.PayloadLevel requiredPayloadLevel)
         {
             this.requiredPayloadLevel = requiredPayloadLevel;
         }
@@ -2539,7 +2539,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
     
     protected static class NodeContainer
     {
-        protected NodeContainer(INodeType nodeType, int index)
+        protected NodeContainer(final INodeType nodeType, final int index)
         {
             super();
             this.nodeType = nodeType;
@@ -2560,47 +2560,47 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
         
         protected INodeType getNodeType()
         {
-            return nodeType;
+            return this.nodeType;
         }
         
-        protected void setNodeType(INodeType nodeType)
+        protected void setNodeType(final INodeType nodeType)
         {
             this.nodeType = nodeType;
         }
         
         protected int getIndex()
         {
-            return index;
+            return this.index;
         }
         
-        protected void setIndex(int index)
+        protected void setIndex(final int index)
         {
             this.index = index;
         }
         
         protected Node getNode()
         {
-            return node;
+            return this.node;
         }
         
-        protected void setNode(Node node)
+        protected void setNode(final Node node)
         {
             this.node = node;
         }
         
         protected ArrayList<BranchNode> getNodeList()
         {
-            return nodeList;
+            return this.nodeList;
         }
         
-        protected void setNodeList(ArrayList<BranchNode> nodeList)
+        protected void setNodeList(final ArrayList<BranchNode> nodeList)
         {
             this.nodeList = nodeList;
         }
         
         protected List getUnmodifiableNodeList()
         {
-            return unmodifiableNodeList;
+            return this.unmodifiableNodeList;
         }
         
         /*protected void setUnmodifiableNodeList(List unmodifiableNodeList)
@@ -2609,17 +2609,17 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
         }*/
         protected Comparator getListComparator()
         {
-            return listComparator;
+            return this.listComparator;
         }
         
-        protected void setListComparator(Comparator listComparator)
+        protected void setListComparator(final Comparator listComparator)
         {
             this.listComparator = listComparator;
         }
         
         protected List getUnmodifiableNodeListSnapshot()
         {
-            return unmodifiableNodeListSnapshot;
+            return this.unmodifiableNodeListSnapshot;
         }
         
         /*protected void setUnmodifiableNodeListSnapshot(List unmodifiableNodeListSnapshot)
@@ -2628,17 +2628,17 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
         }*/
         protected List<IChildNodeListener> getNodeListenerList()
         {
-            return nodeListenerList;
+            return this.nodeListenerList;
         }
         
-        protected void setNodeListenerList(List<IChildNodeListener> nodeListenerList)
+        protected void setNodeListenerList(final List<IChildNodeListener> nodeListenerList)
         {
             this.nodeListenerList = nodeListenerList;
         }
         
     }
     
-    public BranchNode<P, T> copyFrom(BranchNode<? extends BranchNodeMetaModel, ? extends T> copyFrom)
+    public BranchNode<P, T> copyFrom(final BranchNode<? extends BranchNodeMetaModel, ? extends T> copyFrom)
     {
         if (copyFrom == this)
         {
@@ -2648,7 +2648,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
         {
             return null;
         }
-        for (NodeContainer nodeContainer : this._nodeContainerList)
+        for (final NodeContainer nodeContainer : this._nodeContainerList)
         {
             if (nodeContainer.nodeType instanceof LeafNodeType)
             {
@@ -2670,7 +2670,7 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
             {
                 this.clear((BranchNodeListType) nodeContainer.nodeType);
                 
-                for (BranchNode copyChild : (List<BranchNode>) copyFrom.getUnmodifiableNodeList((BranchNodeListType) nodeContainer.nodeType))
+                for (final BranchNode copyChild : (List<BranchNode>) copyFrom.getUnmodifiableNodeList((BranchNodeListType) nodeContainer.nodeType))
                 {
                     this.create((BranchNodeListType) nodeContainer.nodeType).copyFrom(copyChild);
                 }
@@ -2681,13 +2681,13 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
     
     public BranchNodeToObjectWrapper getBow()
     {
-        return bow;
+        return this.bow;
     }
     
-    protected void setBow(BranchNodeToObjectWrapper bow)
+    protected void setBow(final BranchNodeToObjectWrapper bow)
     {
         this.bow = bow;
-        for (NodeContainer nodeContainer : nodeContainerList)
+        for (final NodeContainer nodeContainer : this.nodeContainerList)
         {
             if (nodeContainer.unmodifiableNodeList != null)
             {
@@ -2701,12 +2701,12 @@ public class BranchNode<P extends BranchNodeMetaModel, T extends BranchNodeMetaM
         return (RootBranchNode) this;
     }
     
-    protected NodeContainer getNodeContainer(int nodeTypeIndex, INodeType nodeType)
+    protected NodeContainer getNodeContainer(final int nodeTypeIndex, final INodeType nodeType)
     {
         NodeContainer nodeContainer = this.nodeContainerList.get(nodeTypeIndex);
         if (nodeContainer.nodeType != nodeType)
         {
-            INodeType origin = (INodeType) model.getNodeTypeIndexByHidden().get(nodeType);
+            INodeType origin = (INodeType) this.model.getNodeTypeIndexByHidden().get(nodeType);
             if (origin != nodeContainer.nodeType)
             {
                 throw new IllegalStateException("Illegale index for nodeContainer. Index: " + nodeTypeIndex + " accepted type: " + nodeType + " addressed type by index: " + nodeContainer.nodeType);

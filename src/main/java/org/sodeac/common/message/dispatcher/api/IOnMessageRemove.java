@@ -26,5 +26,5 @@ public interface IOnMessageRemove<T> extends IDispatcherChannelManager
      *
      * @param message removed message
      */
-    public void onMessageRemove(IMessage<T> message);
+    void onMessageRemove(IMessage<T> message);
 }

@@ -14,22 +14,22 @@ import org.sodeac.common.message.dispatcher.impl.MessageDispatcherManagerImpl;
 
 public interface IMessageDispatcherManager
 {
-    public static final String DEFAULT_DISPATCHER_ID = "org.sodeac.common.message.dispatcher.default";
+    String DEFAULT_DISPATCHER_ID = "org.sodeac.common.message.dispatcher.default";
     
-    public static IMessageDispatcherManager get()
+    static IMessageDispatcherManager get()
     {
         return MessageDispatcherManagerImpl.get();
     }
     
-    public default IMessageDispatcher getDefaultDispatcher()
+    default IMessageDispatcher getDefaultDispatcher()
     {
         // shutdown-protection ?
         return getOrCreateDispatcher(DEFAULT_DISPATCHER_ID);
     }
     
-    public IMessageDispatcher createDispatcher(String id);
+    IMessageDispatcher createDispatcher(String id);
     
-    public IMessageDispatcher getOrCreateDispatcher(String id);
+    IMessageDispatcher getOrCreateDispatcher(String id);
     
-    public IMessageDispatcher getDispatcher(String id);
+    IMessageDispatcher getDispatcher(String id);
 }

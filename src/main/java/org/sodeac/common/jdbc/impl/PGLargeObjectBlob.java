@@ -23,13 +23,13 @@ import org.postgresql.largeobject.LargeObjectManager;
 public class PGLargeObjectBlob implements Blob
 {
     private LargeObject largeObject;
-    private org.postgresql.core.BaseConnection nativeConnection;
+    private final org.postgresql.core.BaseConnection nativeConnection;
     private long oid = -1;
     private boolean isFree = false;
     private boolean writable = false;
-    private List<LargeObject> usedList = new ArrayList<LargeObject>();
+    private final List<LargeObject> usedList = new ArrayList<LargeObject>();
     
-    public PGLargeObjectBlob(org.postgresql.core.BaseConnection nativeConnection, long oid)
+    public PGLargeObjectBlob(final org.postgresql.core.BaseConnection nativeConnection, final long oid)
     {
         super();
         this.oid = oid;
@@ -37,7 +37,7 @@ public class PGLargeObjectBlob implements Blob
         this.writable = false;
     }
     
-    public PGLargeObjectBlob(org.postgresql.core.BaseConnection nativeConnection) throws SQLException
+    public PGLargeObjectBlob(final org.postgresql.core.BaseConnection nativeConnection) throws SQLException
     {
         super();
         this.nativeConnection = nativeConnection;
@@ -49,7 +49,7 @@ public class PGLargeObjectBlob implements Blob
     @Override
     public long length() throws SQLException
     {
-        if (isFree)
+        if (this.isFree)
         {
             throw new SQLException("Blob is free");
         }
@@ -58,14 +58,14 @@ public class PGLargeObjectBlob implements Blob
     }
     
     @Override
-    public byte[] getBytes(long pos, int length) throws SQLException
+    public byte[] getBytes(final long pos, final int length) throws SQLException
     {
-        if (isFree)
+        if (this.isFree)
         {
             throw new SQLException("Blob is free");
         }
         checkLargeObject();
-        largeObject.seek64(pos - 1L, LargeObject.SEEK_SET);
+        this.largeObject.seek64(pos - 1L, LargeObject.SEEK_SET);
         byte[] ret = this.largeObject.read(length);
         this.usedList.add(this.largeObject);
         this.largeObject = null;
@@ -75,7 +75,7 @@ public class PGLargeObjectBlob implements Blob
     @Override
     public InputStream getBinaryStream() throws SQLException
     {
-        if (isFree)
+        if (this.isFree)
         {
             throw new SQLException("Blob is free");
         }
@@ -87,9 +87,9 @@ public class PGLargeObjectBlob implements Blob
     }
     
     @Override
-    public long position(byte[] pattern, long start) throws SQLException
+    public long position(final byte[] pattern, final long start) throws SQLException
     {
-        if (isFree)
+        if (this.isFree)
         {
             throw new SQLException("Blob is free");
         }
@@ -140,7 +140,7 @@ public class PGLargeObjectBlob implements Blob
                 }
             }
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             throw new SQLException(e.getMessage(), e);
         }
@@ -150,15 +150,15 @@ public class PGLargeObjectBlob implements Blob
             {
                 is.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
         return -1;
     }
     
     @Override
-    public long position(Blob pattern, long start) throws SQLException
+    public long position(final Blob pattern, final long start) throws SQLException
     {
-        if (isFree)
+        if (this.isFree)
         {
             throw new SQLException("Blob is free");
         }
@@ -166,9 +166,9 @@ public class PGLargeObjectBlob implements Blob
     }
     
     @Override
-    public int setBytes(long pos, byte[] bytes) throws SQLException
+    public int setBytes(final long pos, final byte[] bytes) throws SQLException
     {
-        if (isFree)
+        if (this.isFree)
         {
             throw new SQLException("Blob is free");
         }
@@ -176,9 +176,9 @@ public class PGLargeObjectBlob implements Blob
     }
     
     @Override
-    public int setBytes(long pos, byte[] bytes, int offset, int len) throws SQLException
+    public int setBytes(final long pos, final byte[] bytes, final int offset, final int len) throws SQLException
     {
-        if (isFree)
+        if (this.isFree)
         {
             throw new SQLException("Blob is free");
         }
@@ -191,9 +191,9 @@ public class PGLargeObjectBlob implements Blob
     }
     
     @Override
-    public OutputStream setBinaryStream(long pos) throws SQLException
+    public OutputStream setBinaryStream(final long pos) throws SQLException
     {
-        if (isFree)
+        if (this.isFree)
         {
             throw new SQLException("Blob is free");
         }
@@ -210,9 +210,9 @@ public class PGLargeObjectBlob implements Blob
     }
     
     @Override
-    public void truncate(long len) throws SQLException
+    public void truncate(final long len) throws SQLException
     {
-        if (isFree)
+        if (this.isFree)
         {
             throw new SQLException("Blob is free");
         }
@@ -225,11 +225,11 @@ public class PGLargeObjectBlob implements Blob
     @Override
     public void free() throws SQLException
     {
-        if (isFree)
+        if (this.isFree)
         {
             return;
         }
-        isFree = true;
+        this.isFree = true;
         try
         {
             if (this.largeObject != null)
@@ -237,22 +237,22 @@ public class PGLargeObjectBlob implements Blob
                 this.largeObject.close();
             }
         }
-        catch (Exception e) { }
-        for (LargeObject used : this.usedList)
+        catch (final Exception e) { }
+        for (final LargeObject used : this.usedList)
         {
             try
             {
                 used.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
         this.largeObject = null;
     }
     
     @Override
-    public InputStream getBinaryStream(long pos, long length) throws SQLException
+    public InputStream getBinaryStream(final long pos, final long length) throws SQLException
     {
-        if (isFree)
+        if (this.isFree)
         {
             throw new SQLException("Blob is free");
         }
@@ -277,14 +277,14 @@ public class PGLargeObjectBlob implements Blob
     {
         if (this.largeObject == null)
         {
-            LargeObjectManager lobj = nativeConnection.getLargeObjectAPI();
-            this.largeObject = lobj.open(oid, writable ? LargeObjectManager.READWRITE : LargeObjectManager.READ);
+            LargeObjectManager lobj = this.nativeConnection.getLargeObjectAPI();
+            this.largeObject = lobj.open(this.oid, this.writable ? LargeObjectManager.READWRITE : LargeObjectManager.READ);
         }
     }
     
     private LargeObject createLargeObject() throws SQLException
     {
-        LargeObjectManager lobj = nativeConnection.getLargeObjectAPI();
+        LargeObjectManager lobj = this.nativeConnection.getLargeObjectAPI();
         long oid = lobj.createLO(LargeObjectManager.READ | LargeObjectManager.WRITE);
         LargeObject obj = lobj.open(oid, LargeObjectManager.READWRITE);
         return obj;
@@ -292,7 +292,7 @@ public class PGLargeObjectBlob implements Blob
     
     public boolean isWritable()
     {
-        return writable;
+        return this.writable;
     }
     
 }

@@ -14,7 +14,7 @@ import org.sodeac.common.message.dispatcher.api.IPropertyBlockModifyListener.Mod
 
 public class PropertyBlockModifyItem
 {
-    public PropertyBlockModifyItem(ModifyType type, String key, Object valueOld, Object valueNew)
+    public PropertyBlockModifyItem(final ModifyType type, final String key, final Object valueOld, final Object valueNew)
     {
         super();
         this.type = type;
@@ -30,40 +30,40 @@ public class PropertyBlockModifyItem
     
     public ModifyType getType()
     {
-        return type;
+        return this.type;
     }
     
-    public void setType(ModifyType type)
+    public void setType(final ModifyType type)
     {
         this.type = type;
     }
     
     public String getKey()
     {
-        return key;
+        return this.key;
     }
     
-    public void setKey(String key)
+    public void setKey(final String key)
     {
         this.key = key;
     }
     
     public Object getValueOld()
     {
-        return valueOld;
+        return this.valueOld;
     }
     
-    public void setValueOld(Object valueOld)
+    public void setValueOld(final Object valueOld)
     {
         this.valueOld = valueOld;
     }
     
     public Object getValueNew()
     {
-        return valueNew;
+        return this.valueNew;
     }
     
-    public void setValueNew(Object valueNew)
+    public void setValueNew(final Object valueNew)
     {
         this.valueNew = valueNew;
     }

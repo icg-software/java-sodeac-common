@@ -15,7 +15,7 @@ import java.util.UUID;
 
 public interface IServiceChannel<T>
 {
-    public enum ChannelType
+    enum ChannelType
     {
         /**
          * Stream to consume. If Consumed, the Message is removed
@@ -36,50 +36,50 @@ public interface IServiceChannel<T>
         STATE
     }
     
-    public IServiceChannel<T> close(String reason);
+    IServiceChannel<T> close(String reason);
     
-    public boolean isClosed();
+    boolean isClosed();
     
-    public IChannelDescription getChannelDescription();
+    IChannelDescription getChannelDescription();
     
-    public <P extends IChannelPolicy> Optional<P> getChannelPolicy(Class<P> type);
+    <P extends IChannelPolicy> Optional<P> getChannelPolicy(Class<P> type);
     
-    public <P extends IChannelEventProcessor> Optional<P> getChannelEventProcessor(Class<P> type);
+    <P extends IChannelEventProcessor> Optional<P> getChannelEventProcessor(Class<P> type);
     
-    public IServiceConnection getConnection();
+    IServiceConnection getConnection();
     
-    public interface IChannelDescription
+    interface IChannelDescription
     {
-        public ChannelType getChannelType();
+        ChannelType getChannelType();
     }
     
-    public interface IMessageRequest<T>
+    interface IMessageRequest<T>
     {
-        public IServiceChannel<T> getChannel();
+        IServiceChannel<T> getChannel();
     }
     
-    public interface IMessageReceive<T>
+    interface IMessageReceive<T>
     {
-        public T value();
+        T value();
         
-        public UUID getId();
+        UUID getId();
         
-        public long getChannelSequence();
+        long getChannelSequence();
         
-        public long getConversationSequence();
+        long getConversationSequence();
         
-        public IServiceChannel<T> getChannel();
+        IServiceChannel<T> getChannel();
     }
     
-    public interface IChannelPolicy
+    interface IChannelPolicy
     {
     }
     
-    public interface IChannelEvent
+    interface IChannelEvent
     {
     }
     
-    public interface IChannelEventProcessor
+    interface IChannelEventProcessor
     {
     }
 }

@@ -22,12 +22,12 @@ public interface IDispatcherChannelWorker
     /**
      * invoke {@link java.lang.Thread#interrupt()}  on worker thread
      */
-    public void interrupt();
+    void interrupt();
     
     /**
      * get {@link IDispatcherChannel} for which the worker works
      *
      * @return queue for which the worker works
      */
-    public IDispatcherChannel getChannel();
+    IDispatcherChannel getChannel();
 }

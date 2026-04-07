@@ -31,7 +31,7 @@ public class LeafNode<P extends BranchNodeMetaModel, T> extends Node<P, T>
      * @param parentNode    parent node instance
      * @param nodeContainer container for leaf node
      */
-    protected LeafNode(BranchNode<?, P> parentNode, NodeContainer nodeContainer)
+    protected LeafNode(final BranchNode<?, P> parentNode, final NodeContainer nodeContainer)
     {
         super();
         this.parentNode = parentNode;
@@ -45,6 +45,7 @@ public class LeafNode<P extends BranchNodeMetaModel, T> extends Node<P, T>
     /**
      * Dispose this node.
      */
+    @Override
     protected void disposeNode()
     {
         super.disposed = true;
@@ -70,7 +71,7 @@ public class LeafNode<P extends BranchNodeMetaModel, T> extends Node<P, T>
      *
      * @return this leaf node
      */
-    public LeafNode<P, T> setValue(T value)
+    public LeafNode<P, T> setValue(final T value)
     {
         if (this.parentNode.getRootNode().isImmutable())
         {
@@ -86,7 +87,7 @@ public class LeafNode<P extends BranchNodeMetaModel, T> extends Node<P, T>
             T oldValue = this.value;
             if
             (
-                parentNode.getRootNode().notifyBeforeModify
+                this.parentNode.getRootNode().notifyBeforeModify
                     (
                         this.parentNode,
                         this.nodeContainer,
@@ -97,7 +98,7 @@ public class LeafNode<P extends BranchNodeMetaModel, T> extends Node<P, T>
             {
                 this.value = value;
                 
-                parentNode.getRootNode().notifyAfterModify
+                this.parentNode.getRootNode().notifyAfterModify
                     (
                         this.parentNode,
                         this.nodeContainer,
@@ -123,7 +124,7 @@ public class LeafNode<P extends BranchNodeMetaModel, T> extends Node<P, T>
      */
     protected BranchNode<?, P> getParentNode()
     {
-        return parentNode;
+        return this.parentNode;
     }
     
     @Override

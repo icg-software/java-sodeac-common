@@ -30,5 +30,5 @@ public interface IOnTaskStop<T> extends IDispatcherChannelTask<T>
      *
      * @return time in ms tasks requires for clean up
      */
-    public long requestForMoreLifeTime(long requestNumber, long totalMoreTimeUntilNow, IDispatcherChannelWorker worker);
+    long requestForMoreLifeTime(long requestNumber, long totalMoreTimeUntilNow, IDispatcherChannelWorker worker);
 }

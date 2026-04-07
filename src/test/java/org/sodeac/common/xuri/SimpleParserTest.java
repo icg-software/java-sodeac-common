@@ -481,7 +481,7 @@ public class SimpleParserTest
         String queryString =
             "action=check" + "&"
             + "test=string:'" + str + "'" + "&"
-            + "org.sodeac.user.User:user=json:" + json + "";
+            + "org.sodeac.user.User:user=json:" + json;
         
         uri = new URI("sdc://eventdispatcher(|(id=default)(id=userservice))/org.sodeac.user.service?" + queryString);
         assertEquals("query should contains correct expression", queryString, uri.getQuery().getExpression());

@@ -12,33 +12,33 @@ package org.sodeac.common.message.dispatcher.impl;
 
 public class SpooledChannelWorker
 {
-    protected SpooledChannelWorker(ChannelImpl channel, long wakeupTime)
+    protected SpooledChannelWorker(final ChannelImpl channel, final long wakeupTime)
     {
         super();
         this.channel = channel;
         this.wakeupTime = wakeupTime;
     }
     
-    private ChannelImpl channel;
-    private long wakeupTime;
+    private final ChannelImpl channel;
+    private final long wakeupTime;
     private volatile boolean valid = true;
     
     public ChannelImpl getChannel()
     {
-        return channel;
+        return this.channel;
     }
     
     public long getWakeupTime()
     {
-        return wakeupTime;
+        return this.wakeupTime;
     }
     
     public boolean isValid()
     {
-        return valid;
+        return this.valid;
     }
     
-    public void setValid(boolean valid)
+    public void setValid(final boolean valid)
     {
         this.valid = valid;
     }

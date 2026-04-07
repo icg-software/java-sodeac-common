@@ -19,33 +19,33 @@ package org.sodeac.common.message.dispatcher.api;
 public interface ITaskControl
 {
     
-    public enum ExecutionTimestampSource
+    enum ExecutionTimestampSource
     {SCHEDULE, RESCHEDULE, WORKER, PERODIC, TRIGGER}
     
     /**
      *
      * @return true, of task is done, otherwise false
      */
-    public boolean isDone();
+    boolean isDone();
     
     /**
      * mark task as done
      *
      * @return true, if task is already marked as done, otherwise false
      */
-    public boolean setDone();
+    boolean setDone();
     
     /**
      *
      * @return timestamp of execution plan for next run
      */
-    public long getExecutionTimestamp();
+    long getExecutionTimestamp();
     
     /**
      *
      * @return SourceType of executionTimestamp
      */
-    public ExecutionTimestampSource getExecutionTimestampSource();
+    ExecutionTimestampSource getExecutionTimestampSource();
     
     /**
      * setter for timestamp of execution plan for next run
@@ -59,14 +59,14 @@ public interface ITaskControl
      *
      * @return success state
      */
-    public boolean setExecutionTimestamp(long executionTimestamp, boolean force);
+    boolean setExecutionTimestamp(long executionTimestamp, boolean force);
     
     /**
      * getter for timout value
      *
      * @return timeout value
      */
-    public long getTimeout();
+    long getTimeout();
     
     /**
      * setter for timeout value
@@ -75,14 +75,14 @@ public interface ITaskControl
      *
      * @return overwritten timeout value
      */
-    public long setTimeout(long timeout);
+    long setTimeout(long timeout);
     
     /**
      * getter for heartbeat timeout value
      *
      * @return heartbeat timeout value
      */
-    public long getHeartbeatTimeout();
+    long getHeartbeatTimeout();
     
     /**
      * setter for heartbeat timeout value
@@ -91,18 +91,18 @@ public interface ITaskControl
      *
      * @return overwritten heartbeat timeout value
      */
-    public long setHeartbeatTimeout(long heartbeatTimeout);
+    long setHeartbeatTimeout(long heartbeatTimeout);
     
     /**
      * notify, that this task runs to long
      */
-    public void timeout();
+    void timeout();
     
     /**
      *
      * @return true if task runs to long (timeout or heartbeat timeout), otherwise false
      */
-    public boolean isInTimeout();
+    boolean isInTimeout();
     
     /**
      * setter for stopOnTimeout flag
@@ -117,13 +117,13 @@ public interface ITaskControl
      *
      * @return old stopOnTimeout value
      */
-    public boolean setStopOnTimeoutFlag(boolean stopOnTimeoutFlag);
+    boolean setStopOnTimeoutFlag(boolean stopOnTimeoutFlag);
     
     /**
      * getter for stopOnTimeout flag
      *
      * @return stopOnTimeout flag
      */
-    public boolean getStopOnTimeoutFlag();
+    boolean getStopOnTimeoutFlag();
     
 }

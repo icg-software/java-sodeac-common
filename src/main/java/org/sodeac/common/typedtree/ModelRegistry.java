@@ -45,12 +45,12 @@ public class ModelRegistry
     private Map<Class<?>, TypedTreeMetaModel> typedTreeModelIndex = null;
     private Map<Class<?>, BranchNodeMetaModel> branchNodeModelIndex = null;
     
-    public static <M extends TypedTreeMetaModel> M getTypedTreeMetaModel(Class<M> clazz)
+    public static <M extends TypedTreeMetaModel> M getTypedTreeMetaModel(final Class<M> clazz)
     {
         return ModelRegistry.DEFAULT_INSTANCE.getCachedTypedTreeMetaModel(clazz);
     }
     
-    protected <M extends TypedTreeMetaModel> M getCachedTypedTreeMetaModel(Class<M> clazz)
+    protected <M extends TypedTreeMetaModel> M getCachedTypedTreeMetaModel(final Class<M> clazz)
     {
         this.readLock.lock();
         try
@@ -75,16 +75,16 @@ public class ModelRegistry
                 return modelObject;
             }
             
-            modelObject = (M) clazz.newInstance();
+            modelObject = clazz.newInstance();
             this.typedTreeModelIndex.put(clazz, modelObject);
             
             return modelObject;
         }
-        catch (RuntimeException e)
+        catch (final RuntimeException e)
         {
             throw e;
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             throw new RuntimeException(e);
         }
@@ -94,12 +94,12 @@ public class ModelRegistry
         }
     }
     
-    public static <M extends BranchNodeMetaModel> M getBranchNodeMetaModel(Class<M> clazz)
+    public static <M extends BranchNodeMetaModel> M getBranchNodeMetaModel(final Class<M> clazz)
     {
         return ModelRegistry.DEFAULT_INSTANCE.getCachedBranchNodeMetaModel(clazz);
     }
     
-    protected <M extends BranchNodeMetaModel> M getCachedBranchNodeMetaModel(Class<M> clazz)
+    protected <M extends BranchNodeMetaModel> M getCachedBranchNodeMetaModel(final Class<M> clazz)
     {
         this.readLock.lock();
         try
@@ -124,16 +124,16 @@ public class ModelRegistry
                 return modelObject;
             }
             
-            modelObject = (M) clazz.newInstance();
+            modelObject = clazz.newInstance();
             this.branchNodeModelIndex.put(clazz, modelObject);
             
             return modelObject;
         }
-        catch (RuntimeException e)
+        catch (final RuntimeException e)
         {
             throw e;
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             throw new RuntimeException(e);
         }
@@ -143,22 +143,22 @@ public class ModelRegistry
         }
     }
     
-    public static void parse(BranchNodeType<? extends BranchNodeMetaModel, ? extends BranchNodeMetaModel> nodeType, ITypedTreeModelParserHandler handler)
+    public static void parse(final BranchNodeType<? extends BranchNodeMetaModel, ? extends BranchNodeMetaModel> nodeType, final ITypedTreeModelParserHandler handler)
     {
         parse(nodeType.getTypeClass(), handler, nodeType);
     }
     
-    public static void parse(BranchNodeListType<? extends BranchNodeMetaModel, ? extends BranchNodeMetaModel> nodeType, ITypedTreeModelParserHandler handler)
+    public static void parse(final BranchNodeListType<? extends BranchNodeMetaModel, ? extends BranchNodeMetaModel> nodeType, final ITypedTreeModelParserHandler handler)
     {
         parse(nodeType.getTypeClass(), handler, nodeType);
     }
     
-    public static void parse(Class<? extends BranchNodeMetaModel> clazz, ITypedTreeModelParserHandler handler)
+    public static void parse(final Class<? extends BranchNodeMetaModel> clazz, final ITypedTreeModelParserHandler handler)
     {
         parse(clazz, handler, null);
     }
     
-    private static void parse(Class<? extends BranchNodeMetaModel> clazz, ITypedTreeModelParserHandler handler, INodeType parentNodeType)
+    private static void parse(final Class<? extends BranchNodeMetaModel> clazz, final ITypedTreeModelParserHandler handler, final INodeType parentNodeType)
     {
         if (clazz == null)
         {
@@ -181,7 +181,7 @@ public class ModelRegistry
             
             while (toParseSet.size() > doneSet.size())
             {
-                for (Entry<Class<? extends BranchNodeMetaModel>, Set<INodeType<BranchNodeMetaModel, ?>>> entry : toParseSet.entrySet())
+                for (final Entry<Class<? extends BranchNodeMetaModel>, Set<INodeType<BranchNodeMetaModel, ?>>> entry : toParseSet.entrySet())
                 {
                     Class<? extends BranchNodeMetaModel> toParse = entry.getKey();
                     if (doneSet.contains(toParse))
@@ -193,7 +193,7 @@ public class ModelRegistry
                     BranchNodeMetaModel modelInstance = ModelRegistry.DEFAULT_INSTANCE.getCachedBranchNodeMetaModel(toParse);
                     
                     boolean toParseModify = false;
-                    for (INodeType<BranchNodeMetaModel, ?> staticNodeTypeInstance : modelInstance.getNodeTypeList())
+                    for (final INodeType<BranchNodeMetaModel, ?> staticNodeTypeInstance : modelInstance.getNodeTypeList())
                     {
                         if (staticNodeTypeInstance instanceof BranchNodeType)
                         {
@@ -226,13 +226,13 @@ public class ModelRegistry
             }
             if (handler != null)
             {
-                for (Class<? extends BranchNodeMetaModel> toParse : orderedParseClassList)
+                for (final Class<? extends BranchNodeMetaModel> toParse : orderedParseClassList)
                 {
                     BranchNodeMetaModel modelInstance = ModelRegistry.DEFAULT_INSTANCE.getCachedBranchNodeMetaModel(toParse);
                     
                     handler.startModel(modelInstance, toParseSet.get(toParse));
                     
-                    for (INodeType<BranchNodeMetaModel, ?> staticNodeTypeInstance : modelInstance.getNodeTypeList())
+                    for (final INodeType<BranchNodeMetaModel, ?> staticNodeTypeInstance : modelInstance.getNodeTypeList())
                     {
                         if (handler != null)
                         {

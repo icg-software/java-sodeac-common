@@ -29,7 +29,7 @@ import org.sodeac.common.snapdeque.SnapshotableDeque.SnapshotVersion;
  */
 public class DequeNode<E>
 {
-    protected DequeNode(E element, SnapshotableDeque<E> snapshotableDeque, UUID id, Long timestamp, Long sequence)
+    protected DequeNode(final E element, final SnapshotableDeque<E> snapshotableDeque, final UUID id, final Long timestamp, final Long sequence)
     {
         super();
         this.snapshotableDeque = snapshotableDeque;
@@ -48,36 +48,35 @@ public class DequeNode<E>
     protected Long timestamp = null;
     protected Long sequence = null;
     protected UUID id = null;
-    ;
     
     /**
      * helps gc
      */
     protected void dispose()
     {
-        if (snapshotableDeque != null)
+        if (this.snapshotableDeque != null)
         {
-            List<INodeEventHandler<E>> eventHandlerList = snapshotableDeque.eventHandlerList;
+            List<INodeEventHandler<E>> eventHandlerList = this.snapshotableDeque.eventHandlerList;
             if (eventHandlerList != null)
             {
-                for (INodeEventHandler<E> eventHandler : eventHandlerList)
+                for (final INodeEventHandler<E> eventHandler : eventHandlerList)
                 {
                     try
                     {
-                        eventHandler.onDisposeNode(this.snapshotableDeque, element);
+                        eventHandler.onDisposeNode(this.snapshotableDeque, this.element);
                     }
-                    catch (Exception e) { }
-                    catch (Error e) { }
+                    catch (final Exception e) { }
+                    catch (final Error e) { }
                 }
             }
         }
-        snapshotableDeque = null;
-        element = null;
-        head = null;
+        this.snapshotableDeque = null;
+        this.element = null;
+        this.head = null;
         
-        id = null;
-        timestamp = null;
-        sequence = null;
+        this.id = null;
+        this.timestamp = null;
+        this.sequence = null;
     }
     
     public final boolean isLinked()
@@ -96,7 +95,7 @@ public class DequeNode<E>
         {
             throw new IllegalStateException(new UnsupportedOperationException("node is not payload"));
         }
-        Lock lock = snapshotableDeque.writeLock;
+        Lock lock = this.snapshotableDeque.writeLock;
         lock.lock();
         try
         {
@@ -121,7 +120,7 @@ public class DequeNode<E>
      *
      * @return true, if node was linked to deque, otherwise false
      */
-    private final boolean unlink(Link<E> link)
+    private final boolean unlink(final Link<E> link)
     {
         if (!isPayload())
         {
@@ -132,9 +131,9 @@ public class DequeNode<E>
             return false;
         }
         
-        SnapshotVersion<E> currentVersion = snapshotableDeque.getModificationVersion();
-        Eyebolt<E> linkBegin = snapshotableDeque.begin.getLink();
-        Eyebolt<E> linkEnd = snapshotableDeque.end.getLink();
+        SnapshotVersion<E> currentVersion = this.snapshotableDeque.getModificationVersion();
+        Eyebolt<E> linkBegin = this.snapshotableDeque.begin.getLink();
+        Eyebolt<E> linkEnd = this.snapshotableDeque.end.getLink();
         boolean isEndpoint;
         
         Link<E> prev = link.previewsLink;
@@ -146,7 +145,7 @@ public class DequeNode<E>
         {
             if (next.createOnVersion.getSequence() < currentVersion.getSequence())
             {
-                if (!snapshotableDeque.openSnapshotVersionList.isEmpty())
+                if (!this.snapshotableDeque.openSnapshotVersionList.isEmpty())
                 {
                     nextOfNext = next.nextLink;
                     next = next.createNewerLink(currentVersion, null);
@@ -158,7 +157,7 @@ public class DequeNode<E>
         
         if (prev.createOnVersion.getSequence() < currentVersion.getSequence())
         {
-            if (!snapshotableDeque.openSnapshotVersionList.isEmpty())
+            if (!this.snapshotableDeque.openSnapshotVersionList.isEmpty())
             {
                 previewsOfPreviews = prev.previewsLink;
                 if (prev.node != null)
@@ -172,7 +171,7 @@ public class DequeNode<E>
                 prev = prev.createNewerLink(currentVersion, null);
                 if (isEndpoint)
                 {
-                    linkBegin = snapshotableDeque.begin.getLink();
+                    linkBegin = this.snapshotableDeque.begin.getLink();
                 }
                 prev.previewsLink = previewsOfPreviews;
             }
@@ -195,7 +194,7 @@ public class DequeNode<E>
         
         setHead(null, null);
         
-        if (snapshotableDeque.openSnapshotVersionList.isEmpty())
+        if (this.snapshotableDeque.openSnapshotVersionList.isEmpty())
         {
             link.obsoleteOnVersion = currentVersion.getSequence();
             link.node.lastObsoleteOnVersion = link.obsoleteOnVersion;
@@ -203,7 +202,7 @@ public class DequeNode<E>
         }
         else
         {
-            snapshotableDeque.setObsolete(link);
+            this.snapshotableDeque.setObsolete(link);
         }
         
         return true;
@@ -216,7 +215,7 @@ public class DequeNode<E>
      */
     protected Link<E> getLink()
     {
-        return head;
+        return this.head;
     }
     
     /**
@@ -227,7 +226,7 @@ public class DequeNode<E>
      *
      * @return new link
      */
-    protected Link<E> createHead(SnapshotVersion<E> currentVersion, SnapshotableDeque.LinkMode linkMode)
+    protected Link<E> createHead(final SnapshotVersion<E> currentVersion, final SnapshotableDeque.LinkMode linkMode)
     {
         return setHead(new Link<>(this, currentVersion), linkMode);
     }
@@ -240,9 +239,9 @@ public class DequeNode<E>
      *
      * @return new link
      */
-    protected Link<E> setHead(Link<E> link, SnapshotableDeque.LinkMode linkMode)
+    protected Link<E> setHead(final Link<E> link, final SnapshotableDeque.LinkMode linkMode)
     {
-        boolean startsWithEmptyState = linkSize == 0;
+        boolean startsWithEmptyState = this.linkSize == 0;
         try
         {
             boolean notify = false;
@@ -256,20 +255,20 @@ public class DequeNode<E>
                         this.linkSize--;
                     }
                     this.head = link;
-                    return head;
+                    return this.head;
                 }
                 finally
                 {
-                    if ((notify) && isPayload() && (snapshotableDeque.eventHandlerList != null))
+                    if ((notify) && isPayload() && (this.snapshotableDeque.eventHandlerList != null))
                     {
-                        for (INodeEventHandler<E> eventHandler : snapshotableDeque.eventHandlerList)
+                        for (final INodeEventHandler<E> eventHandler : this.snapshotableDeque.eventHandlerList)
                         {
                             try
                             {
-                                eventHandler.onUnlink(this, snapshotableDeque.modificationVersion.getSequence());
+                                eventHandler.onUnlink(this, this.snapshotableDeque.modificationVersion.getSequence());
                             }
-                            catch (Exception e) { }
-                            catch (Error e) { }
+                            catch (final Exception e) { }
+                            catch (final Error e) { }
                         }
                     }
                 }
@@ -280,30 +279,30 @@ public class DequeNode<E>
                 {
                     if (this.head == null)
                     {
-                        if (startsWithEmptyState && (snapshotableDeque.nodeSize >= snapshotableDeque.capacity))
+                        if (startsWithEmptyState && (this.snapshotableDeque.nodeSize >= this.snapshotableDeque.capacity))
                         {
-                            throw new CapacityExceededException(snapshotableDeque.capacity, "Can not link node, becase max size of deque is " + snapshotableDeque.capacity);
+                            throw new CapacityExceededException(this.snapshotableDeque.capacity, "Can not link node, becase max size of deque is " + this.snapshotableDeque.capacity);
                         }
                         notify = true;
-                        linkSize++;
+                        this.linkSize++;
                     }
                     this.head = link;
-                    return head;
+                    return this.head;
                 }
                 finally
                 {
                     if (notify && isPayload())
                     {
-                        if ((notify) && (snapshotableDeque.eventHandlerList != null))
+                        if ((notify) && (this.snapshotableDeque.eventHandlerList != null))
                         {
-                            for (INodeEventHandler<E> eventHandler : snapshotableDeque.eventHandlerList)
+                            for (final INodeEventHandler<E> eventHandler : this.snapshotableDeque.eventHandlerList)
                             {
                                 try
                                 {
-                                    eventHandler.onLink(this, linkMode, snapshotableDeque.modificationVersion.getSequence());
+                                    eventHandler.onLink(this, linkMode, this.snapshotableDeque.modificationVersion.getSequence());
                                 }
-                                catch (Exception e) { }
-                                catch (Error e) { }
+                                catch (final Exception e) { }
+                                catch (final Error e) { }
                             }
                         }
                     }
@@ -314,13 +313,13 @@ public class DequeNode<E>
         {
             if (isPayload())
             {
-                if ((linkSize > 0L) && (startsWithEmptyState))
+                if ((this.linkSize > 0L) && (startsWithEmptyState))
                 {
-                    snapshotableDeque.nodeSize++;
+                    this.snapshotableDeque.nodeSize++;
                 }
-                else if ((linkSize == 0L) && (!startsWithEmptyState))
+                else if ((this.linkSize == 0L) && (!startsWithEmptyState))
                 {
-                    snapshotableDeque.nodeSize--;
+                    this.snapshotableDeque.nodeSize--;
                 }
             }
         }
@@ -333,7 +332,7 @@ public class DequeNode<E>
      */
     public E getElement()
     {
-        return element;
+        return this.element;
     }
     
     /**
@@ -343,7 +342,7 @@ public class DequeNode<E>
      */
     public Long getTimestamp()
     {
-        return timestamp;
+        return this.timestamp;
     }
     
     /**
@@ -353,7 +352,7 @@ public class DequeNode<E>
      */
     public Long getSequence()
     {
-        return sequence;
+        return this.sequence;
     }
     
     /**
@@ -363,7 +362,7 @@ public class DequeNode<E>
      */
     public UUID getId()
     {
-        return id;
+        return this.id;
     }
     
     /**
@@ -393,7 +392,7 @@ public class DequeNode<E>
     {
         public static final long NO_OBSOLETE = -1L;
         
-        protected Link(DequeNode<E> node, SnapshotVersion<E> version)
+        protected Link(final DequeNode<E> node, final SnapshotVersion<E> version)
         {
             super();
             this.node = node;
@@ -418,7 +417,7 @@ public class DequeNode<E>
         protected volatile Link<E> previewsLink = null;
         protected volatile Link<E> nextLink = null;
         
-        protected Link<E> createNewerLink(SnapshotVersion<E> currentVersion, LinkMode linkMode)
+        protected Link<E> createNewerLink(final SnapshotVersion<E> currentVersion, final LinkMode linkMode)
         {
             Link<E> newVersion = new Link<>(this.node, currentVersion);
             newVersion.olderVersion = this;
@@ -430,12 +429,12 @@ public class DequeNode<E>
         
         public E getElement()
         {
-            return element;
+            return this.element;
         }
         
         public DequeNode<E> getNode()
         {
-            return node;
+            return this.node;
         }
         
         public boolean unlink()
@@ -453,7 +452,7 @@ public class DequeNode<E>
             clear(true);
         }
         
-        private void clear(boolean nodeClear)
+        private void clear(final boolean nodeClear)
         {
             if (this.node != null)
             {
@@ -475,11 +474,11 @@ public class DequeNode<E>
         public String toString()
         {
             return
-                node == null ? "link-version cleared away" :
+                this.node == null ? "link-version cleared away" :
                     (
                         "lVersion " + this.createOnVersion.getSequence()
-                        + " hasNewer: " + (newerVersion != null)
-                        + " hasOlder: " + (olderVersion != null)
+                        + " hasNewer: " + (this.newerVersion != null)
+                        + " hasOlder: " + (this.olderVersion != null)
                     );
         }
         

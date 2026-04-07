@@ -24,31 +24,31 @@ public class ChannelNotFoundException extends RuntimeException
     
     private String queueId = null;
     
-    public ChannelNotFoundException(String queueId)
+    public ChannelNotFoundException(final String queueId)
     {
         super();
         this.queueId = queueId;
     }
     
-    public ChannelNotFoundException(String queueId, String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace)
+    public ChannelNotFoundException(final String queueId, final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace)
     {
         super(message, cause, enableSuppression, writableStackTrace);
         this.queueId = queueId;
     }
     
-    public ChannelNotFoundException(String queueId, String message, Throwable cause)
+    public ChannelNotFoundException(final String queueId, final String message, final Throwable cause)
     {
         super(message, cause);
         this.queueId = queueId;
     }
     
-    public ChannelNotFoundException(String queueId, String message)
+    public ChannelNotFoundException(final String queueId, final String message)
     {
         super(message);
         this.queueId = queueId;
     }
     
-    public ChannelNotFoundException(String queueId, Throwable cause)
+    public ChannelNotFoundException(final String queueId, final Throwable cause)
     {
         super(cause);
         this.queueId = queueId;
@@ -56,7 +56,7 @@ public class ChannelNotFoundException extends RuntimeException
     
     public String getQueueId()
     {
-        return queueId;
+        return this.queueId;
     }
     
 }

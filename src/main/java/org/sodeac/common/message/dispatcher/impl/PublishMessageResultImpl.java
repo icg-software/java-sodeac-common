@@ -38,13 +38,13 @@ public class PublishMessageResultImpl implements IOnMessageStoreResult
     
     protected void waitForProcessingIsFinished()
     {
-        while (!processingIsFinished)
+        while (!this.processingIsFinished)
         {
             try
             {
                 this.resultSettedNotifier.await();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
     }
     
@@ -55,7 +55,7 @@ public class PublishMessageResultImpl implements IOnMessageStoreResult
     }
     
     @Override
-    public void addError(Throwable throwable)
+    public void addError(final Throwable throwable)
     {
         this.lock.lock();
         try
@@ -103,7 +103,7 @@ public class PublishMessageResultImpl implements IOnMessageStoreResult
     @Override
     public boolean isStored()
     {
-        return queued;
+        return this.queued;
     }
     
     @Override
@@ -115,11 +115,11 @@ public class PublishMessageResultImpl implements IOnMessageStoreResult
     @Override
     public Object getDetailResultObject()
     {
-        return detailResultObject;
+        return this.detailResultObject;
     }
     
     @Override
-    public void setDetailResultObject(Object detailResultObject)
+    public void setDetailResultObject(final Object detailResultObject)
     {
         this.detailResultObject = detailResultObject;
     }
@@ -143,7 +143,7 @@ public class PublishMessageResultImpl implements IOnMessageStoreResult
     }
     
     @Override
-    public void addDetailResultObjectList(Object detailResultObject)
+    public void addDetailResultObjectList(final Object detailResultObject)
     {
         this.lock.lock();
         try
@@ -158,7 +158,7 @@ public class PublishMessageResultImpl implements IOnMessageStoreResult
         {
             this.lock.unlock();
         }
-        this.detailResultObjectList = detailResultObjectList;
+        this.detailResultObjectList = this.detailResultObjectList;
     }
     
     protected void dispose()
@@ -172,7 +172,7 @@ public class PublishMessageResultImpl implements IOnMessageStoreResult
             {
                 this.detailResultObjectList.clear();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
         
         if (this.errorList != null)
@@ -181,7 +181,7 @@ public class PublishMessageResultImpl implements IOnMessageStoreResult
             {
                 this.errorList.clear();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
         
         this.detailResultObjectList = null;

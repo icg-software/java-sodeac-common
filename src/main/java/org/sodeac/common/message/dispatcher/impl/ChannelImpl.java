@@ -50,7 +50,7 @@ import org.sodeac.common.snapdeque.SnapshotableDeque;
 
 public class ChannelImpl<T> implements IDispatcherChannel<T>
 {
-    protected ChannelImpl(String channelId, MessageDispatcherImpl messageDispatcher, ChannelImpl rootChannel, ChannelImpl parentChannel, String name, Map<String, Object> configurationProperties, Map<String, Object> stateProperties)
+    protected ChannelImpl(final String channelId, final MessageDispatcherImpl messageDispatcher, final ChannelImpl rootChannel, final ChannelImpl parentChannel, final String name, final Map<String, Object> configurationProperties, final Map<String, Object> stateProperties)
     {
         super();
         
@@ -109,18 +109,18 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         this.queueScopeListWriteLock = this.subChannelListLock.writeLock();
         
         this.consumeMessageHandlerListLock = new ReentrantReadWriteLock();
-        this.consumeMessageHandlerListWriteLock = consumeMessageHandlerListLock.writeLock();
-        this.consumeMessageHandlerListReadLock = consumeMessageHandlerListLock.readLock();
+        this.consumeMessageHandlerListWriteLock = this.consumeMessageHandlerListLock.writeLock();
+        this.consumeMessageHandlerListReadLock = this.consumeMessageHandlerListLock.readLock();
         
         this.dummyPublishMessageResult = new DummyPublishMessageResult();
         
-        this.configurationPropertyBlock = (PropertyBlockImpl) messageDispatcher.createPropertyBlock();
+        this.configurationPropertyBlock = messageDispatcher.createPropertyBlock();
         if (configurationProperties != null)
         {
             this.configurationPropertyBlock.setPropertyEntrySet(configurationProperties.entrySet(), false);
         }
         
-        this.statePropertyBlock = (PropertyBlockImpl) messageDispatcher.createPropertyBlock();
+        this.statePropertyBlock = messageDispatcher.createPropertyBlock();
         if (stateProperties != null)
         {
             this.statePropertyBlock.setPropertyEntrySet(stateProperties.entrySet(), false);
@@ -203,9 +203,9 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
     protected ReadLock subChannelListReadLock;
     protected WriteLock queueScopeListWriteLock;
     
-    private ReentrantReadWriteLock consumeMessageHandlerListLock;
-    private ReadLock consumeMessageHandlerListReadLock;
-    private WriteLock consumeMessageHandlerListWriteLock;
+    private final ReentrantReadWriteLock consumeMessageHandlerListLock;
+    private final ReadLock consumeMessageHandlerListReadLock;
+    private final WriteLock consumeMessageHandlerListWriteLock;
     
     protected DummyPublishMessageResult dummyPublishMessageResult = null;
     
@@ -216,7 +216,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
     protected volatile RegistrationTypes registrationTypes = null;
     
     @Override
-    public void sendMessage(T messagePayload, MessageHeader messageHeader)
+    public void sendMessage(final T messagePayload, MessageHeader messageHeader)
     {
         if (this.disposed)
         {
@@ -236,17 +236,17 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
             DequeNode<MessageImpl> node = this.messageQueue.link(SnapshotableDeque.LinkMode.APPEND, message, n ->
                                                                  {
                                                                      message.setNode(n);
-                                                                     message.setScheduleResultObject(dummyPublishMessageResult);
+                                                                     message.setScheduleResultObject(this.dummyPublishMessageResult);
                                                                  }
             );
         }
-        catch (CapacityExceededException e)
+        catch (final CapacityExceededException e)
         {
             try
             {
                 message.dispose();
             }
-            catch (Exception ex) { }
+            catch (final Exception ex) { }
             throw e;
         }
         
@@ -259,7 +259,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
     }
     
     @Override
-    public void sendMessages(Collection<T> messagePayloadCollection, MessageHeader messageHeaderTemplate)
+    public void sendMessages(final Collection<T> messagePayloadCollection, final MessageHeader messageHeaderTemplate)
     {
         if (this.disposed)
         {
@@ -267,7 +267,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         }
         
         List<MessageImpl<T>> messageList = new ArrayList<>(messagePayloadCollection.size());
-        for (T messagePayload : messagePayloadCollection)
+        for (final T messagePayload : messagePayloadCollection)
         {
             MessageHeader messageHeader = null;
             if (messageHeaderTemplate == null)
@@ -290,20 +290,20 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
                                       {
                                           MessageImpl message = n.getElement();
                                           message.setNode(n);
-                                          message.setScheduleResultObject(dummyPublishMessageResult);
+                                          message.setScheduleResultObject(this.dummyPublishMessageResult);
                                       }
             );
         }
-        catch (CapacityExceededException e)
+        catch (final CapacityExceededException e)
         {
             try
             {
-                for (MessageImpl<T> message : messageList)
+                for (final MessageImpl<T> message : messageList)
                 {
                     message.dispose();
                 }
             }
-            catch (Exception ex) { }
+            catch (final Exception ex) { }
             throw e;
         }
         
@@ -316,7 +316,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
     }
     
     @Override
-    public Future<IOnMessageStoreResult> sendMessageWithResult(T messagePayload, MessageHeader messageHeader)
+    public Future<IOnMessageStoreResult> sendMessageWithResult(final T messagePayload, MessageHeader messageHeader)
     {
         if (this.disposed)
         {
@@ -343,13 +343,13 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
             );
             
         }
-        catch (CapacityExceededException e)
+        catch (final CapacityExceededException e)
         {
             try
             {
                 message.dispose();
             }
-            catch (Exception ex) { }
+            catch (final Exception ex) { }
             throw e;
         }
         
@@ -365,12 +365,12 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
     
     // Controller
     
-    public void checkForChannelManager(ChannelManagerContainer controllerContainer, ChannelBindingModifyFlags bindingModifyFlags)
+    public void checkForChannelManager(final ChannelManagerContainer controllerContainer, final ChannelBindingModifyFlags bindingModifyFlags)
     {
         boolean controllerMatch = false;
         if (controllerContainer.getBoundByIdList() != null)
         {
-            for (ComponentBindingSetup.BoundedByChannelId boundedById : controllerContainer.getBoundByIdList())
+            for (final ComponentBindingSetup.BoundedByChannelId boundedById : controllerContainer.getBoundByIdList())
             {
                 if (boundedById.getChannelId() == null)
                 {
@@ -393,7 +393,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
             {
                 if (controllerContainer.getFilterObjectList() != null)
                 {
-                    for (ControllerFilterObjects controllerFilterObjects : controllerContainer.getFilterObjectList())
+                    for (final ControllerFilterObjects controllerFilterObjects : controllerContainer.getFilterObjectList())
                     {
                         if (controllerFilterObjects.filter == null)
                         {
@@ -407,9 +407,9 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
                                 break;
                             }
                         }
-                        catch (Exception e)
+                        catch (final Exception e)
                         {
-                            messageDispatcher.logError("check queue binding for controller", e);
+                            this.messageDispatcher.logError("check queue binding for controller", e);
                         }
                     }
                 }
@@ -448,7 +448,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
             this.subChannelListReadLock.lock();
             try
             {
-                for (SubChannelImpl scope : this.subChannelList)
+                for (final SubChannelImpl scope : this.subChannelList)
                 {
                     if (scope.isAdoptContoller() && controllerMatch)
                     {
@@ -484,9 +484,9 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         }
     }
     
-    protected boolean setManager(ChannelManagerContainer controllerContainer)
+    protected boolean setManager(final ChannelManagerContainer controllerContainer)
     {
-        channelManagerListReadLock.lock();
+        this.channelManagerListReadLock.lock();
         try
         {
             if (this.channelManagerIndex.get(controllerContainer) != null)
@@ -496,10 +496,10 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         }
         finally
         {
-            channelManagerListReadLock.unlock();
+            this.channelManagerListReadLock.unlock();
         }
         
-        channelManagerListWriteLock.lock();
+        this.channelManagerListWriteLock.lock();
         try
         {
             if (this.channelManagerIndex.get(controllerContainer) != null)
@@ -524,23 +524,23 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         }
         finally
         {
-            channelManagerListWriteLock.unlock();
+            this.channelManagerListWriteLock.unlock();
         }
     }
     
-    private boolean unsetController(ChannelManagerContainer configurationContainer)
+    private boolean unsetController(final ChannelManagerContainer configurationContainer)
     {
         return unsetChannelManager(configurationContainer, false);
     }
     
-    protected boolean unsetChannelManager(ChannelManagerContainer configurationContainer, boolean unregisterInScope)
+    protected boolean unsetChannelManager(final ChannelManagerContainer configurationContainer, final boolean unregisterInScope)
     {
         if (unregisterInScope)
         {
             this.subChannelListReadLock.lock();
             try
             {
-                for (SubChannelImpl scope : this.subChannelList)
+                for (final SubChannelImpl scope : this.subChannelList)
                 {
                     scope.unsetChannelManager(configurationContainer, false);
                 }
@@ -550,7 +550,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
                 this.subChannelListReadLock.unlock();
             }
         }
-        channelManagerListReadLock.lock();
+        this.channelManagerListReadLock.lock();
         try
         {
             if (this.channelManagerIndex.get(configurationContainer) == null)
@@ -560,10 +560,10 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         }
         finally
         {
-            channelManagerListReadLock.unlock();
+            this.channelManagerListReadLock.unlock();
         }
         
-        channelManagerListWriteLock.lock();
+        this.channelManagerListWriteLock.lock();
         try
         {
             ChannelManagerContainer unlinkFromQueue = this.channelManagerIndex.get(configurationContainer);
@@ -589,29 +589,29 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         }
         finally
         {
-            channelManagerListWriteLock.unlock();
+            this.channelManagerListWriteLock.unlock();
         }
     }
     
     protected int getManagerSize()
     {
-        channelManagerListReadLock.lock();
+        this.channelManagerListReadLock.lock();
         try
         {
             return this.channelManagerList.size();
         }
         finally
         {
-            channelManagerListReadLock.unlock();
+            this.channelManagerListReadLock.unlock();
         }
     }
     
     protected boolean isMastered()
     {
-        channelManagerListReadLock.lock();
+        this.channelManagerListReadLock.lock();
         try
         {
-            for (ChannelManagerContainer container : this.channelManagerList)
+            for (final ChannelManagerContainer container : this.channelManagerList)
             {
                 if (container.isChannelMaster())
                 {
@@ -622,19 +622,19 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         }
         finally
         {
-            channelManagerListReadLock.unlock();
+            this.channelManagerListReadLock.unlock();
         }
     }
     
     // Services
     
-    protected void checkForService(ServiceContainer serviceContainer, ChannelBindingModifyFlags bindingModifyFlags)
+    protected void checkForService(final ServiceContainer serviceContainer, final ChannelBindingModifyFlags bindingModifyFlags)
     {
         boolean serviceMatch = false;
         
         if (serviceContainer.getBoundByIdList() != null)
         {
-            for (ComponentBindingSetup.BoundedByChannelId boundedById : serviceContainer.getBoundByIdList())
+            for (final ComponentBindingSetup.BoundedByChannelId boundedById : serviceContainer.getBoundByIdList())
             {
                 if (boundedById.getChannelId() == null)
                 {
@@ -655,7 +655,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         {
             if (serviceContainer.getBoundedByChannelConfigurationList() != null)
             {
-                for (ServiceFilterObjects serviceFilterObjects : serviceContainer.getFilterObjectList())
+                for (final ServiceFilterObjects serviceFilterObjects : serviceContainer.getFilterObjectList())
                 {
                     try
                     {
@@ -665,9 +665,9 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
                             break;
                         }
                     }
-                    catch (Exception e)
+                    catch (final Exception e)
                     {
-                        messageDispatcher.logError("check queue binding for service", e);
+                        this.messageDispatcher.logError("check queue binding for service", e);
                     }
                 }
             }
@@ -705,7 +705,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
             this.subChannelListReadLock.lock();
             try
             {
-                for (SubChannelImpl scope : this.subChannelList)
+                for (final SubChannelImpl scope : this.subChannelList)
                 {
                     if (scope.isAdoptServices() && serviceMatch)
                     {
@@ -741,29 +741,29 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         }
     }
     
-    protected boolean setService(ServiceContainer serviceContainer, boolean createOnly)
+    protected boolean setService(final ServiceContainer serviceContainer, final boolean createOnly)
     {
         if (createOnly)
         {
-            channelServiceListReadLock.lock();
+            this.channelServiceListReadLock.lock();
             try
             {
-                if (channelServiceIndex.get(serviceContainer) != null)
+                if (this.channelServiceIndex.get(serviceContainer) != null)
                 {
                     return false;
                 }
             }
             finally
             {
-                channelServiceListReadLock.unlock();
+                this.channelServiceListReadLock.unlock();
             }
         }
         
         boolean reschedule = false;
-        channelServiceListWriteLock.lock();
+        this.channelServiceListWriteLock.lock();
         try
         {
-            if (channelServiceIndex.get(serviceContainer) != null)
+            if (this.channelServiceIndex.get(serviceContainer) != null)
             {
                 if (createOnly)
                 {
@@ -775,13 +775,13 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
             if (!reschedule)
             {
                 this.channelServiceList.add(serviceContainer);
-                channelServiceIndex.put(serviceContainer, serviceContainer);
+                this.channelServiceIndex.put(serviceContainer, serviceContainer);
                 this.serviceListCopy = null;
             }
         }
         finally
         {
-            channelServiceListWriteLock.unlock();
+            this.channelServiceListWriteLock.unlock();
         }
         
         this.scheduleService(serviceContainer.getChannelService(), serviceContainer.getServiceConfiguration(), reschedule);
@@ -790,7 +790,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         
     }
     
-    private void scheduleService(IDispatcherChannelService queueService, ComponentBindingSetup.ChannelServiceConfiguration configuration, boolean reschedule)
+    private void scheduleService(final IDispatcherChannelService queueService, final ComponentBindingSetup.ChannelServiceConfiguration configuration, final boolean reschedule)
     {
         String serviceId = configuration.getServiceId();
         long delay = configuration.getStartDelayInMS() < 0L ? 0L : configuration.getStartDelayInMS();
@@ -816,25 +816,25 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
             
             this.scheduleTask(serviceId, queueService, servicePropertyBlock, System.currentTimeMillis() + delay, timeout, hbtimeout);
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
-            messageDispatcher.logError("problems scheduling service with id " + serviceId, e);
+            this.messageDispatcher.logError("problems scheduling service with id " + serviceId, e);
         }
     }
     
-    private boolean unsetService(ServiceContainer serviceContainer)
+    private boolean unsetService(final ServiceContainer serviceContainer)
     {
         return unsetService(serviceContainer, false);
     }
     
-    protected boolean unsetService(ServiceContainer serviceContainer, boolean unregisterInScope)
+    protected boolean unsetService(final ServiceContainer serviceContainer, final boolean unregisterInScope)
     {
         if (unregisterInScope)
         {
             this.subChannelListReadLock.lock();
             try
             {
-                for (SubChannelImpl scope : this.subChannelList)
+                for (final SubChannelImpl scope : this.subChannelList)
                 {
                     scope.unsetService(serviceContainer, false);
                 }
@@ -845,7 +845,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
             }
         }
         
-        channelServiceListReadLock.lock();
+        this.channelServiceListReadLock.lock();
         try
         {
             if (this.channelServiceIndex.get(serviceContainer) == null)
@@ -855,10 +855,10 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         }
         finally
         {
-            channelServiceListReadLock.unlock();
+            this.channelServiceListReadLock.unlock();
         }
         
-        channelServiceListWriteLock.lock();
+        this.channelServiceListWriteLock.lock();
         try
         {
             ServiceContainer toDelete = this.channelServiceIndex.get(serviceContainer);
@@ -870,10 +870,10 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
             this.channelServiceIndex.remove(serviceContainer);
             this.serviceListCopy = null;
             
-            taskListReadLock.lock();
+            this.taskListReadLock.lock();
             try
             {
-                for (Entry<String, TaskContainer> taskContainerEntry : this.taskIndex.entrySet())
+                for (final Entry<String, TaskContainer> taskContainerEntry : this.taskIndex.entrySet())
                 {
                     try
                     {
@@ -882,15 +882,15 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
                             taskContainerEntry.getValue().getTaskControl().setDone();
                         }
                     }
-                    catch (Exception e)
+                    catch (final Exception e)
                     {
-                        messageDispatcher.logError("set queue service done", e);
+                        this.messageDispatcher.logError("set queue service done", e);
                     }
                 }
             }
             finally
             {
-                taskListReadLock.unlock();
+                this.taskListReadLock.unlock();
             }
             
             return true;
@@ -898,20 +898,20 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         }
         finally
         {
-            channelServiceListWriteLock.unlock();
+            this.channelServiceListWriteLock.unlock();
         }
     }
     
     protected int getServiceSize()
     {
-        channelServiceListReadLock.lock();
+        this.channelServiceListReadLock.lock();
         try
         {
             return this.channelServiceList.size();
         }
         finally
         {
-            channelServiceListReadLock.unlock();
+            this.channelServiceListReadLock.unlock();
         }
     }
     
@@ -936,11 +936,11 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
     protected int cleanDoneTasks()
     {
         List<TaskContainer> toRemove = null;
-        taskListWriteLock.lock();
+        this.taskListWriteLock.lock();
         try
         {
             
-            for (TaskContainer taskContainer : this.taskList)
+            for (final TaskContainer taskContainer : this.taskList)
             {
                 if (taskContainer.getTaskControl().isDone())
                 {
@@ -957,7 +957,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
                 return 0;
             }
             
-            for (TaskContainer taskContainer : toRemove)
+            for (final TaskContainer taskContainer : toRemove)
             {
                 String id = taskContainer.getId();
                 this.taskList.remove(taskContainer);
@@ -976,19 +976,19 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         }
         finally
         {
-            taskListWriteLock.unlock();
+            this.taskListWriteLock.unlock();
         }
     }
     
-    protected long getDueTasks(List<TaskContainer> dueTaskList)
+    protected long getDueTasks(final List<TaskContainer> dueTaskList)
     {
-        taskListReadLock.lock();
+        this.taskListReadLock.lock();
         long timeStamp = System.currentTimeMillis();
         long nextRun = timeStamp + ChannelWorker.DEFAULT_WAIT_TIME;
         try
         {
             
-            for (TaskContainer taskContainer : taskList)
+            for (final TaskContainer taskContainer : this.taskList)
             {
                 if (taskContainer.getTaskControl().isDone())
                 {
@@ -1008,7 +1008,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         }
         finally
         {
-            taskListReadLock.unlock();
+            this.taskListReadLock.unlock();
         }
         
         return nextRun;
@@ -1016,13 +1016,13 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
     
     protected long getNextRun()
     {
-        taskListReadLock.lock();
+        this.taskListReadLock.lock();
         long timeStamp = System.currentTimeMillis();
         long nextRun = timeStamp + ChannelWorker.DEFAULT_WAIT_TIME;
         try
         {
             
-            for (TaskContainer taskContainer : taskList)
+            for (final TaskContainer taskContainer : this.taskList)
             {
                 if (taskContainer.getTaskControl().isDone())
                 {
@@ -1037,20 +1037,20 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         }
         finally
         {
-            taskListReadLock.unlock();
+            this.taskListReadLock.unlock();
         }
         
         return nextRun;
     }
     
     @Override
-    public IPropertyBlock getTaskPropertyBlock(String id)
+    public IPropertyBlock getTaskPropertyBlock(final String id)
     {
         if (this.disposed)
         {
             return null;
         }
-        taskListReadLock.lock();
+        this.taskListReadLock.lock();
         try
         {
             TaskContainer taskContainer = this.taskIndex.get(id);
@@ -1064,32 +1064,32 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         }
         finally
         {
-            taskListReadLock.unlock();
+            this.taskListReadLock.unlock();
         }
         
         return null;
     }
     
     @Override
-    public String scheduleTask(IDispatcherChannelTask task)
+    public String scheduleTask(final IDispatcherChannelTask task)
     {
         return scheduleTask(null, task);
     }
     
     @Override
-    public String scheduleTask(String id, IDispatcherChannelTask task)
+    public String scheduleTask(final String id, final IDispatcherChannelTask task)
     {
         return scheduleTask(id, task, null, -1, -1, -1);
     }
     
     @Override
-    public String scheduleTask(String id, IDispatcherChannelTask task, IPropertyBlock propertyBlock, long executionTimeStamp, long timeOutValue, long heartBeatTimeOut)
+    public String scheduleTask(final String id, final IDispatcherChannelTask task, final IPropertyBlock propertyBlock, final long executionTimeStamp, final long timeOutValue, final long heartBeatTimeOut)
     {
         return scheduleTask(id, task, propertyBlock, executionTimeStamp, timeOutValue, heartBeatTimeOut, false);
     }
     
     @Override
-    public String scheduleTask(String id, IDispatcherChannelTask task, IPropertyBlock propertyBlock, long executionTimeStamp, long timeOutValue, long heartBeatTimeOut, boolean stopOnTimeOut)
+    public String scheduleTask(String id, final IDispatcherChannelTask task, IPropertyBlock propertyBlock, final long executionTimeStamp, final long timeOutValue, final long heartBeatTimeOut, final boolean stopOnTimeOut)
     {
         if (this.disposed)
         {
@@ -1098,11 +1098,11 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         
         TaskContainer taskContainer = null;
         
-        taskListWriteLock.lock();
+        this.taskListWriteLock.lock();
         try
         {
             TaskContainer toRemove = null;
-            for (TaskContainer alreadyInList : this.taskList)
+            for (final TaskContainer alreadyInList : this.taskList)
             {
                 if (alreadyInList.getTask() == task)
                 {
@@ -1155,7 +1155,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
             
             if (propertyBlock == null)
             {
-                propertyBlock = (PropertyBlockImpl) this.getDispatcher().createPropertyBlock();
+                propertyBlock = this.getDispatcher().createPropertyBlock();
             }
             
             TaskControlImpl taskControl = new TaskControlImpl();
@@ -1183,20 +1183,20 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         }
         finally
         {
-            taskListWriteLock.unlock();
+            this.taskListWriteLock.unlock();
         }
         
         taskContainer.getTask().configure(this, id, taskContainer.getPropertyBlock(), taskContainer.getTaskControl());
         
-        taskListWriteLock.lock();
+        this.taskListWriteLock.lock();
         try
         {
-            taskList.add(taskContainer);
-            taskIndex.put(id, taskContainer);
+            this.taskList.add(taskContainer);
+            this.taskIndex.put(id, taskContainer);
         }
         finally
         {
-            taskListWriteLock.unlock();
+            this.taskListWriteLock.unlock();
         }
         notifyOrCreateWorker(executionTimeStamp);
         
@@ -1204,7 +1204,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
     }
     
     @Override
-    public IDispatcherChannelTask rescheduleTask(String id, long executionTimeStamp, long timeOutValue, long heartBeatTimeOut)
+    public IDispatcherChannelTask rescheduleTask(final String id, final long executionTimeStamp, final long timeOutValue, final long heartBeatTimeOut)
     {
         if (this.disposed)
         {
@@ -1218,7 +1218,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
             return null;
         }
         
-        taskListWriteLock.lock();
+        this.taskListWriteLock.lock();
         try
         {
             taskContainer = this.taskIndex.get(id);
@@ -1257,19 +1257,19 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         }
         finally
         {
-            taskListWriteLock.unlock();
+            this.taskListWriteLock.unlock();
         }
     }
     
     @Override
-    public IDispatcherChannelTask getTask(String id)
+    public IDispatcherChannelTask getTask(final String id)
     {
         if (this.disposed)
         {
             return null;
         }
         
-        taskListReadLock.lock();
+        this.taskListReadLock.lock();
         try
         {
             TaskContainer taskContainer = this.taskIndex.get(id);
@@ -1283,21 +1283,21 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         }
         finally
         {
-            taskListReadLock.unlock();
+            this.taskListReadLock.unlock();
         }
         
         return null;
     }
     
     @Override
-    public IDispatcherChannelTask removeTask(String id)
+    public IDispatcherChannelTask removeTask(final String id)
     {
         if (this.disposed)
         {
             return null;
         }
         
-        taskListWriteLock.lock();
+        this.taskListWriteLock.lock();
         try
         {
             TaskContainer taskContainer = this.taskIndex.get(id);
@@ -1309,14 +1309,14 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         }
         finally
         {
-            taskListWriteLock.unlock();
+            this.taskListWriteLock.unlock();
         }
         
         return null;
     }
     
     @Override
-    public IMessage getMessage(UUID id)
+    public IMessage getMessage(final UUID id)
     {
         if (this.disposed)
         {
@@ -1331,7 +1331,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         DequeSnapshot<MessageImpl> snapshot = this.messageQueue.createSnapshot();
         try
         {
-            for (IMessage queuedEvent : snapshot)
+            for (final IMessage queuedEvent : snapshot)
             {
                 if (id.equals(queuedEvent.getId()))
                 {
@@ -1345,9 +1345,9 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
             {
                 snapshot.close();
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
-                messageDispatcher.logError("close multichain snapshot", e);
+                this.messageDispatcher.logError("close multichain snapshot", e);
             }
         }
         
@@ -1365,8 +1365,8 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         
         if (Thread.currentThread() == this.channelWorker)
         {
-            DequeSnapshot snaphot = (DequeSnapshot) this.messageQueue.createSnapshot();
-            snapshotsByWorkerThread.add(snaphot);
+            DequeSnapshot snaphot = this.messageQueue.createSnapshot();
+            this.snapshotsByWorkerThread.add(snaphot);
             return snaphot;
         }
         return (DequeSnapshot) this.messageQueue.createSnapshot();
@@ -1383,8 +1383,8 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         
         if (Thread.currentThread() == this.channelWorker)
         {
-            DequeSnapshot snaphot = (DequeSnapshot) this.messageQueue.createSnapshotPoll();
-            snapshotsByWorkerThread.add(snaphot);
+            DequeSnapshot snaphot = this.messageQueue.createSnapshotPoll();
+            this.snapshotsByWorkerThread.add(snaphot);
             return snaphot;
         }
         return (DequeSnapshot) this.messageQueue.createSnapshotPoll();
@@ -1399,26 +1399,26 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         
         try
         {
-            for (DequeSnapshot<IMessage<T>> snapshot : this.snapshotsByWorkerThread)
+            for (final DequeSnapshot<IMessage<T>> snapshot : this.snapshotsByWorkerThread)
             {
                 try
                 {
                     snapshot.close();
                 }
-                catch (Exception e)
+                catch (final Exception e)
                 {
-                    messageDispatcher.logError("close multichain worker snapshots", e);
+                    this.messageDispatcher.logError("close multichain worker snapshots", e);
                 }
             }
             this.snapshotsByWorkerThread.clear();
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
-            messageDispatcher.logError("close multichain worker snapshots", e);
+            this.messageDispatcher.logError("close multichain worker snapshots", e);
         }
     }
     
-    protected boolean removeMessage(MessageImpl message)
+    protected boolean removeMessage(final MessageImpl message)
     {
         if (message == null)
         {
@@ -1446,7 +1446,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
     }
     
     @Override
-    public boolean removeMessage(UUID uuid)
+    public boolean removeMessage(final UUID uuid)
     {
         if (this.disposed)
         {
@@ -1463,7 +1463,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         
         try
         {
-            for (MessageImpl event : snapshot)
+            for (final MessageImpl event : snapshot)
             {
                 if (uuid.equals(event.getId()))
                 {
@@ -1488,9 +1488,9 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
             {
                 snapshot.close();
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
-                messageDispatcher.logError("close deque snapshot", e);
+                this.messageDispatcher.logError("close deque snapshot", e);
             }
         }
         
@@ -1505,7 +1505,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
     }
     
     @Override
-    public boolean removeMessageList(List<UUID> uuidList)
+    public boolean removeMessageList(final List<UUID> uuidList)
     {
         if (this.disposed)
         {
@@ -1531,9 +1531,9 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         DequeSnapshot<MessageImpl> snapshot = this.messageQueue.createSnapshot();
         try
         {
-            for (MessageImpl message : snapshot)
+            for (final MessageImpl message : snapshot)
             {
-                for (UUID uuid : uuidList)
+                for (final UUID uuid : uuidList)
                 {
                     if (uuid == null)
                     {
@@ -1566,9 +1566,9 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
             {
                 snapshot.close();
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
-                messageDispatcher.logError("close deque snapshot", e);
+                this.messageDispatcher.logError("close deque snapshot", e);
             }
         }
         
@@ -1586,25 +1586,25 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
     
     protected List<ChannelManagerContainer> getManagerContainerList()
     {
-        List<ChannelManagerContainer> list = controllerListCopy;
+        List<ChannelManagerContainer> list = this.controllerListCopy;
         if (list != null)
         {
             return list;
         }
-        channelManagerListReadLock.lock();
+        this.channelManagerListReadLock.lock();
         try
         {
             list = new ArrayList<ChannelManagerContainer>();
-            for (ChannelManagerContainer container : channelManagerList)
+            for (final ChannelManagerContainer container : this.channelManagerList)
             {
                 list.add(container);
             }
             list = Collections.unmodifiableList(list);
-            controllerListCopy = list;
+            this.controllerListCopy = list;
         }
         finally
         {
-            channelManagerListReadLock.unlock();
+            this.channelManagerListReadLock.unlock();
         }
         
         return list;
@@ -1612,25 +1612,25 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
     
     public List<ServiceContainer> getServiceContainerList()
     {
-        List<ServiceContainer> list = serviceListCopy;
+        List<ServiceContainer> list = this.serviceListCopy;
         if (list != null)
         {
             return list;
         }
-        channelServiceListReadLock.lock();
+        this.channelServiceListReadLock.lock();
         try
         {
             list = new ArrayList<ServiceContainer>();
-            for (ServiceContainer service : channelServiceList)
+            for (final ServiceContainer service : this.channelServiceList)
             {
                 list.add(service);
             }
             list = Collections.unmodifiableList(list);
-            serviceListCopy = list;
+            this.serviceListCopy = list;
         }
         finally
         {
-            channelServiceListReadLock.unlock();
+            this.channelServiceListReadLock.unlock();
         }
         
         return list;
@@ -1674,7 +1674,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
             }
             catch (Exception | Error e)
             {
-                messageDispatcher.logError("check worker timeout", e);
+                this.messageDispatcher.logError("check worker timeout", e);
             }
         }
         return timeOut;
@@ -1694,7 +1694,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
             if (!this.subChannelList.isEmpty())
             {
                 List<SubChannelImpl> scopeCopyList = new ArrayList<SubChannelImpl>(this.subChannelList);
-                for (SubChannelImpl scope : scopeCopyList)
+                for (final SubChannelImpl scope : scopeCopyList)
                 {
                     scope.dispose();
                 }
@@ -1719,10 +1719,10 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         {
             this.parentChannel.removeScope((SubChannelImpl) this);
             
-            channelManagerListReadLock.lock();
+            this.channelManagerListReadLock.lock();
             try
             {
-                for (ChannelManagerContainer controllerContainer : this.channelManagerList)
+                for (final ChannelManagerContainer controllerContainer : this.channelManagerList)
                 {
                     if (controllerContainer.isImplementingIOnChannelDetach())
                     {
@@ -1732,11 +1732,11 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
             }
             finally
             {
-                channelManagerListReadLock.unlock();
+                this.channelManagerListReadLock.unlock();
             }
         }
         
-        channelServiceListWriteLock.lock();
+        this.channelServiceListWriteLock.lock();
         try
         {
             this.channelServiceList.clear();
@@ -1746,90 +1746,90 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         }
         finally
         {
-            channelServiceListWriteLock.unlock();
+            this.channelServiceListWriteLock.unlock();
         }
         
         this.sharedMessageLock = null;
         
         try
         {
-            taskListReadLock.lock();
+            this.taskListReadLock.lock();
             try
             {
-                for (Entry<String, TaskContainer> taskContainerEntry : this.taskIndex.entrySet())
+                for (final Entry<String, TaskContainer> taskContainerEntry : this.taskIndex.entrySet())
                 {
                     try
                     {
                         taskContainerEntry.getValue().getTaskControl().setDone();
                     }
-                    catch (Exception e)
+                    catch (final Exception e)
                     {
-                        messageDispatcher.logError("set queue task / service done", e);
+                        this.messageDispatcher.logError("set queue task / service done", e);
                     }
                 }
             }
             finally
             {
-                taskListReadLock.unlock();
+                this.taskListReadLock.unlock();
             }
         }
-        catch (Exception e) { }
+        catch (final Exception e) { }
         
         try
         {
-            messageQueue.dispose();
+            this.messageQueue.dispose();
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
-            messageDispatcher.logError("dispose event queue", e);
-        }
-        
-        try
-        {
-            removedMessageQueue.dispose();
-        }
-        catch (Exception e)
-        {
-            messageDispatcher.logError("dispose new event queue", e);
+            this.messageDispatcher.logError("dispose event queue", e);
         }
         
         try
         {
-            newPublishedMessageQueue.dispose();
+            this.removedMessageQueue.dispose();
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
-            messageDispatcher.logError("dispose new event queue", e);
-        }
-        
-        try
-        {
-            channelSignalList.dispose();
-        }
-        catch (Exception e)
-        {
-            messageDispatcher.logError("dispose signal queue", e);
+            this.messageDispatcher.logError("dispose new event queue", e);
         }
         
         try
         {
-            onChannelAttachList.dispose();
+            this.newPublishedMessageQueue.dispose();
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
-            messageDispatcher.logError("dispose channel attach queue", e);
+            this.messageDispatcher.logError("dispose new event queue", e);
+        }
+        
+        try
+        {
+            this.channelSignalList.dispose();
+        }
+        catch (final Exception e)
+        {
+            this.messageDispatcher.logError("dispose signal queue", e);
+        }
+        
+        try
+        {
+            this.onChannelAttachList.dispose();
+        }
+        catch (final Exception e)
+        {
+            this.messageDispatcher.logError("dispose channel attach queue", e);
         }
         
         this.registrationTypes = null;
         
-        if (dummyPublishMessageResult != null)
+        if (this.dummyPublishMessageResult != null)
         {
             try
             {
-                dummyPublishMessageResult.disposeDummy();
+                this.dummyPublishMessageResult.disposeDummy();
             }
-            catch (Exception e) { }
-            dummyPublishMessageResult = null;
+            catch (final Exception e) { }
+            this.dummyPublishMessageResult = null;
         }
         
         this.rootChannel = null;
@@ -1837,7 +1837,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         
     }
     
-    private void removeScope(SubChannelImpl scope)
+    private void removeScope(final SubChannelImpl scope)
     {
         SubChannelImpl found = null;
         this.queueScopeListWriteLock.lock();
@@ -1849,7 +1849,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
                 List<ISubChannel> copyList = this.subChannelListCopy;
                 if (!((copyList == null) || copyList.isEmpty()))
                 {
-                    for (ISubChannel subChannel : copyList)
+                    for (final ISubChannel subChannel : copyList)
                     {
                         if (subChannel == scope)
                         {
@@ -1900,12 +1900,12 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
     
     protected MessageDispatcherImpl getMessageDispatcher()
     {
-        return messageDispatcher;
+        return this.messageDispatcher;
     }
     
     protected DequeSnapshot<String> getSignalsSnapshot()
     {
-        if (!signalListUpdate)
+        if (!this.signalListUpdate)
         {
             return null;
         }
@@ -1916,7 +1916,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
     
     protected DequeSnapshot<? extends IMessage> getNewScheduledEventsSnaphot()
     {
-        if (!newScheduledListUpdate)
+        if (!this.newScheduledListUpdate)
         {
             return null;
         }
@@ -1927,7 +1927,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
     
     protected DequeSnapshot<? extends IMessage> getRemovedMessagesSnapshot()
     {
-        if (!removedEventListUpdate)
+        if (!this.removedEventListUpdate)
         {
             return null;
         }
@@ -1936,7 +1936,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         return this.removedMessageQueue.createSnapshotPoll();
     }
     
-    protected void notifyOrCreateWorker(long nextRuntimeStamp)
+    protected void notifyOrCreateWorker(final long nextRuntimeStamp)
     {
         if (this.disposed)
         {
@@ -2021,7 +2021,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         }
     }
     
-    protected boolean checkFreeWorker(ChannelWorker worker, long nextRun)
+    protected boolean checkFreeWorker(final ChannelWorker worker, final long nextRun)
     {
         if (worker == null)
         {
@@ -2089,7 +2089,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         }
     }
     
-    protected boolean checkWorkerShutdown(ChannelWorker worker)
+    protected boolean checkWorkerShutdown(final ChannelWorker worker)
     {
         if (worker == null)
         {
@@ -2131,17 +2131,17 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
                 return false;
             }
             
-            taskListReadLock.lock();
+            this.taskListReadLock.lock();
             try
             {
-                if (!taskList.isEmpty())
+                if (!this.taskList.isEmpty())
                 {
                     return false;
                 }
             }
             finally
             {
-                taskListReadLock.unlock();
+                this.taskListReadLock.unlock();
             }
             
             if (this.currentSpooledChannelWorker != null)
@@ -2193,7 +2193,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
     }
     
     @Override
-    public void signal(String signal)
+    public void signal(final String signal)
     {
         if (this.disposed)
         {
@@ -2211,7 +2211,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
     
     public DequeSnapshot<IOnChannelAttach> getOnQueueAttachList()
     {
-        if (!onQueueAttachListUpdate)
+        if (!this.onQueueAttachListUpdate)
         {
             return null;
         }
@@ -2220,7 +2220,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         return this.onChannelAttachList.createSnapshotPoll();
     }
     
-    protected void addOnChannelAttach(IOnChannelAttach onChannelAttach)
+    protected void addOnChannelAttach(final IOnChannelAttach onChannelAttach)
     {
         this.onQueueAttachListUpdate = true;
         this.onChannelAttachList.addLast(onChannelAttach);
@@ -2228,9 +2228,10 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         this.notifyOrCreateWorker(-1);
     }
     
+    @Override
     public String getChannelName()
     {
-        return name;
+        return this.name;
     }
     
     public void touchLastWorkerAction()
@@ -2245,18 +2246,18 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
     
     public ChannelConfigurationModifyListener getQueueConfigurationModifyListener()
     {
-        return channelConfigurationModifyListener;
+        return this.channelConfigurationModifyListener;
     }
     
-    public void setQueueConfigurationModifyListener(ChannelConfigurationModifyListener queueConfigurationModifyListener)
+    public void setQueueConfigurationModifyListener(final ChannelConfigurationModifyListener queueConfigurationModifyListener)
     {
         this.channelConfigurationModifyListener = queueConfigurationModifyListener;
     }
     
     @Override
-    public ISubChannel createChildScope(UUID scopeId, String scopeName, Map<String, Object> configurationProperties, Map<String, Object> stateProperties, boolean adoptContoller, boolean adoptServices)
+    public ISubChannel createChildScope(UUID scopeId, final String scopeName, final Map<String, Object> configurationProperties, final Map<String, Object> stateProperties, final boolean adoptContoller, final boolean adoptServices)
     {
-        if (disposed)
+        if (this.disposed)
         {
             return null;
         }
@@ -2270,7 +2271,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
         this.queueScopeListWriteLock.lock();
         try
         {
-            if (disposed)
+            if (this.disposed)
             {
                 return null;
             }
@@ -2305,7 +2306,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
     }
     
     @Override
-    public ISubChannel getChildScope(UUID scopeId)
+    public ISubChannel getChildScope(final UUID scopeId)
     {
         if (this.disposed)
         {
@@ -2325,10 +2326,10 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
     
     public int getCapacity()
     {
-        return capacity;
+        return this.capacity;
     }
     
-    protected void setCapacity(int eventListLimit)
+    protected void setCapacity(final int eventListLimit)
     {
         this.capacity = eventListLimit;
         this.messageQueue.setCapacity(eventListLimit);
@@ -2348,14 +2349,14 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
     
     protected ReentrantLock getMessageEventLock()
     {
-        return sharedMessageLock;
+        return this.sharedMessageLock;
     }
     
     public void recalcRegistrationTypes()
     {
         RegistrationTypes newRegistrationTypes = new RegistrationTypes();
         
-        for (ChannelManagerContainer controllerContainer : getManagerContainerList())
+        for (final ChannelManagerContainer controllerContainer : getManagerContainerList())
         {
             if (controllerContainer.isImplementingIOnMessageStore() || controllerContainer.isImplementingIOnMessageStoreSnapshot())
             {
@@ -2375,7 +2376,7 @@ public class ChannelImpl<T> implements IDispatcherChannel<T>
     }
     
     @Override
-    public boolean equals(Object obj)
+    public boolean equals(final Object obj)
     {
         return this == obj;
     }

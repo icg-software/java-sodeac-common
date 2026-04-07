@@ -67,7 +67,7 @@ public class ResultSetParseHelper implements AutoCloseable
     }
     
     // TODO Controller: stopper, skipper, progress
-    public void parse(PreparedStatement preparedStatement, Object root, int mainPhaseSize) throws SQLException
+    public void parse(final PreparedStatement preparedStatement, final Object root, final int mainPhaseSize) throws SQLException
     {
         if (mainPhaseSize < 1)
         {
@@ -90,7 +90,7 @@ public class ResultSetParseHelper implements AutoCloseable
             
             NodeConfiguration mainConfiguration = null;
             
-            for (ParsePhase parsePhase : this.parsePhaseList)
+            for (final ParsePhase parsePhase : this.parsePhaseList)
             {
                 if (parsePhase.nodeConfiguration == null)
                 {
@@ -105,7 +105,7 @@ public class ResultSetParseHelper implements AutoCloseable
                 parsePhaseInstanceList.add(parsePhaseInstance);
                 if (mainConfiguration == null)
                 {
-                    mainConfiguration = (NodeConfiguration) parsePhase.getNodeConfiguration();
+                    mainConfiguration = parsePhase.getNodeConfiguration();
                 }
             }
             
@@ -158,7 +158,7 @@ public class ResultSetParseHelper implements AutoCloseable
                 Set<Object> mainNodeSet = new HashSet<>();
                 Object lastMainNode = null;
                 
-                for (ParsePhaseInstance parsePhaseInstance : parsePhaseInstanceList)
+                for (final ParsePhaseInstance parsePhaseInstance : parsePhaseInstanceList)
                 {
                     lastMainNode = null;
                     
@@ -285,7 +285,7 @@ public class ResultSetParseHelper implements AutoCloseable
             }
             if (this.childNodes != null)
             {
-                for (List<Node> child : this.childNodes.values())
+                for (final List<Node> child : this.childNodes.values())
                 {
                     if (child != null)
                     {
@@ -304,23 +304,23 @@ public class ResultSetParseHelper implements AutoCloseable
             this.lastObject = null;
         }
         
-        protected Object fetch(ResultSet resultSet, Cursor cursor, boolean isMain) throws SQLException
+        protected Object fetch(final ResultSet resultSet, final Cursor cursor, final boolean isMain) throws SQLException
         {
-            Object currentId = fetchId(configuration.idType, configuration.idColumnName, resultSet);
+            Object currentId = fetchId(this.configuration.idType, this.configuration.idColumnName, resultSet);
             cursor.setId(currentId);
             List<Node> childs = this.childNodes.get(currentId);
             
             if
             (
-                (!((currentId == null) && (lastId == null))) &&
-                ((currentId == null) || (!currentId.equals(lastId)))
+                (!((currentId == null) && (this.lastId == null))) &&
+                ((currentId == null) || (!currentId.equals(this.lastId)))
             )
             {
                 this.lastId = currentId;
                 
-                if (objects.containsKey(currentId))
+                if (this.objects.containsKey(currentId))
                 {
-                    this.lastObject = objects.get(currentId);
+                    this.lastObject = this.objects.get(currentId);
                 }
                 else
                 {
@@ -335,16 +335,16 @@ public class ResultSetParseHelper implements AutoCloseable
                     }
                     try
                     {
-                        if ((currentId == null) && (configuration.recordParserIfNull != null))
+                        if ((currentId == null) && (this.configuration.recordParserIfNull != null))
                         {
-                            object = configuration.recordParserIfNull.parse(cursor);
+                            object = this.configuration.recordParserIfNull.parse(cursor);
                         }
-                        else if ((currentId != null) && (configuration.recordParser != null))
+                        else if ((currentId != null) && (this.configuration.recordParser != null))
                         {
-                            object = configuration.recordParser.parse(cursor);
+                            object = this.configuration.recordParser.parse(cursor);
                         }
                     }
-                    catch (Exception e)
+                    catch (final Exception e)
                     {
                         if (e instanceof RuntimeException)
                         {
@@ -352,19 +352,19 @@ public class ResultSetParseHelper implements AutoCloseable
                         }
                         throw new RuntimeWrappedException(e);
                     }
-                    catch (Error e)
+                    catch (final Error e)
                     {
                         throw new RuntimeWrappedException(e);
                     }
-                    objects.put(currentId, object);
+                    this.objects.put(currentId, object);
                     this.lastObject = object;
                     
-                    if ((configuration.childList != null) && (!configuration.childList.isEmpty()))
+                    if ((this.configuration.childList != null) && (!this.configuration.childList.isEmpty()))
                     {
                         childs = new ArrayList<>();
                         this.childNodes.put(currentId, childs);
                         
-                        for (NodeConfiguration childNodeConfiguration : (List<NodeConfiguration>) configuration.childList)
+                        for (final NodeConfiguration childNodeConfiguration : (List<NodeConfiguration>) this.configuration.childList)
                         {
                             Node node = new Node();
                             node.parent = this;
@@ -390,7 +390,7 @@ public class ResultSetParseHelper implements AutoCloseable
             {
                 Object backupParent = cursor.parentObject;
                 Object backupId = cursor.id;
-                for (Node childNode : childs)
+                for (final Node childNode : childs)
                 {
                     cursor.parentObject = backupParent;
                     cursor.id = backupId;
@@ -403,7 +403,7 @@ public class ResultSetParseHelper implements AutoCloseable
         
     }
     
-    private Object fetchId(Class idType, String idColumnName, ResultSet resultSet) throws SQLException
+    private Object fetchId(final Class idType, final String idColumnName, final ResultSet resultSet) throws SQLException
     {
         Object id = null;
         
@@ -479,11 +479,11 @@ public class ResultSetParseHelper implements AutoCloseable
          */
         public static <B, I, S> ResultSetParseHelperBuilder<B, I, B, S> newBuilder
         (
-            String mainIdColumnName,
-            Class<I> mainIdType,
-            Class<B> mainNodeOjectType,
-            Class<S> rootType,
-            IRecordParser<I, B, S, B> recordParser
+            final String mainIdColumnName,
+            final Class<I> mainIdType,
+            final Class<B> mainNodeOjectType,
+            final Class<S> rootType,
+            final IRecordParser<I, B, S, B> recordParser
         )
         {
             return newBuilder(mainIdColumnName, mainIdType, mainNodeOjectType, rootType, recordParser, null, null);
@@ -504,13 +504,13 @@ public class ResultSetParseHelper implements AutoCloseable
          */
         public static <B, I, S> ResultSetParseHelperBuilder<B, I, B, S> newBuilder
         (
-            String mainIdColumnName,
-            Class<I> mainIdType,
-            Class<B> mainNodeOjectType,
-            Class<S> rootType,
-            IRecordParser<I, B, S, B> recordParser,
-            Consumer<B> consumerOnMainNodeComplete,
-            Consumer<List<B>> consumerClusterComplete
+            final String mainIdColumnName,
+            final Class<I> mainIdType,
+            final Class<B> mainNodeOjectType,
+            final Class<S> rootType,
+            final IRecordParser<I, B, S, B> recordParser,
+            final Consumer<B> consumerOnMainNodeComplete,
+            final Consumer<List<B>> consumerClusterComplete
         )
         {
             ResultSetParseHelperBuilder<B, I, B, S> builder = new ResultSetParseHelperBuilder<B, I, B, S>();
@@ -530,13 +530,13 @@ public class ResultSetParseHelper implements AutoCloseable
          *
          * @return builder
          */
-        public <C, J> ResultSetParseHelperBuilder<C, J, M, B> subParser(String idColumnName, Class<J> idType, Class<C> nodeOjectType, IRecordParser<J, M, B, C> recordParser)
+        public <C, J> ResultSetParseHelperBuilder<C, J, M, B> subParser(final String idColumnName, final Class<J> idType, final Class<C> nodeOjectType, final IRecordParser<J, M, B, C> recordParser)
         {
-            NodeConfiguration parentConfiguration = currentParsePhase.currentNodeConfiguration;
-            currentParsePhase.currentNodeConfiguration = new NodeConfiguration(UUID.randomUUID().toString(), new ConplierBean(), idColumnName, (Class) idType, parentConfiguration);
-            parentConfiguration.childList.add(currentParsePhase.currentNodeConfiguration);
+            NodeConfiguration parentConfiguration = this.currentParsePhase.currentNodeConfiguration;
+            this.currentParsePhase.currentNodeConfiguration = new NodeConfiguration(UUID.randomUUID().toString(), new ConplierBean(), idColumnName, (Class) idType, parentConfiguration);
+            parentConfiguration.childList.add(this.currentParsePhase.currentNodeConfiguration);
             
-            currentParsePhase.currentNodeConfiguration.recordParser = (IRecordParser) recordParser;
+            this.currentParsePhase.currentNodeConfiguration.recordParser = (IRecordParser) recordParser;
             
             return (ResultSetParseHelperBuilder) this;
         }
@@ -548,9 +548,9 @@ public class ResultSetParseHelper implements AutoCloseable
          *
          * @return builder
          */
-        public ResultSetParseHelperBuilder<B, I, M, P> onNullRecord(IRecordParser<I, M, P, B> recordParser)
+        public ResultSetParseHelperBuilder<B, I, M, P> onNullRecord(final IRecordParser<I, M, P, B> recordParser)
         {
-            currentParsePhase.currentNodeConfiguration.recordParserIfNull = recordParser;
+            this.currentParsePhase.currentNodeConfiguration.recordParserIfNull = recordParser;
             return this;
         }
         
@@ -561,9 +561,9 @@ public class ResultSetParseHelper implements AutoCloseable
          */
         public ResultSetParseHelperBuilder<P, ?, M, ?> build()
         {
-            if (currentParsePhase.currentNodeConfiguration.parent != null)
+            if (this.currentParsePhase.currentNodeConfiguration.parent != null)
             {
-                currentParsePhase.currentNodeConfiguration = currentParsePhase.currentNodeConfiguration.parent;
+                this.currentParsePhase.currentNodeConfiguration = this.currentParsePhase.currentNodeConfiguration.parent;
             }
             return (ResultSetParseHelperBuilder) this;
         }
@@ -577,11 +577,11 @@ public class ResultSetParseHelper implements AutoCloseable
          *
          * @return
          */
-        public <A, Z, Y> ResultSetParseHelperBuilder<A, Y, M, Z> build(Class<A> parentDataType, Class<Z> parentParentType, Class<Y> parentIdType)
+        public <A, Z, Y> ResultSetParseHelperBuilder<A, Y, M, Z> build(final Class<A> parentDataType, final Class<Z> parentParentType, final Class<Y> parentIdType)
         {
-            if (currentParsePhase.currentNodeConfiguration.parent != null)
+            if (this.currentParsePhase.currentNodeConfiguration.parent != null)
             {
-                currentParsePhase.currentNodeConfiguration = currentParsePhase.currentNodeConfiguration.parent;
+                this.currentParsePhase.currentNodeConfiguration = this.currentParsePhase.currentNodeConfiguration.parent;
             }
             return (ResultSetParseHelperBuilder) this;
         }
@@ -600,12 +600,12 @@ public class ResultSetParseHelper implements AutoCloseable
          */
         public <B, I, S> ResultSetParseHelperBuilder<B, I, B, S> newParsePhase
         (
-            String name,
-            String mainIdColumnName,
-            Class<I> mainIdType,
-            Class<B> mainNodeOjectType,
-            Class<S> rootType,
-            IRecordParser<I, B, S, B> recordParser
+            final String name,
+            final String mainIdColumnName,
+            final Class<I> mainIdType,
+            final Class<B> mainNodeOjectType,
+            final Class<S> rootType,
+            final IRecordParser<I, B, S, B> recordParser
         )
         {
             return newParsePhase(name, mainIdColumnName, mainIdType, mainNodeOjectType, rootType, recordParser, null, null);
@@ -627,14 +627,14 @@ public class ResultSetParseHelper implements AutoCloseable
          */
         public <B, I, S> ResultSetParseHelperBuilder<B, I, B, S> newParsePhase
         (
-            String name,
-            String mainIdColumnName,
-            Class<I> mainIdType,
-            Class<B> mainNodeOjectType,
-            Class<S> rootType,
-            IRecordParser<I, B, S, B> recordParser,
-            Consumer<B> consumerOnMainNodeComplete,
-            Consumer<List<B>> consumerClusterComplete
+            final String name,
+            final String mainIdColumnName,
+            final Class<I> mainIdType,
+            final Class<B> mainNodeOjectType,
+            final Class<S> rootType,
+            final IRecordParser<I, B, S, B> recordParser,
+            final Consumer<B> consumerOnMainNodeComplete,
+            final Consumer<List<B>> consumerClusterComplete
         )
         {
             this.currentParsePhase = this.new ParsePhase(name);
@@ -667,11 +667,11 @@ public class ResultSetParseHelper implements AutoCloseable
          *
          * @return ResultSetParseHelper
          */
-        public ResultSetParseHelper buildParser(boolean disposeBuilder)
+        public ResultSetParseHelper buildParser(final boolean disposeBuilder)
         {
             ResultSetParseHelper parser = new ResultSetParseHelper();
             parser.parsePhaseList = new ArrayList<>();
-            for (ParsePhase parsePhase : this.parsePhaseList)
+            for (final ParsePhase parsePhase : this.parsePhaseList)
             {
                 parser.parsePhaseList.add(parsePhase.copy());
             }
@@ -692,7 +692,7 @@ public class ResultSetParseHelper implements AutoCloseable
             private Consumer<Object> consumerMainNodeComplete = null;
             private Consumer<Object> consumerClusterComplete = null;
             
-            protected ParsePhase(String name)
+            protected ParsePhase(final String name)
             {
                 super();
                 this.name = name;
@@ -700,7 +700,7 @@ public class ResultSetParseHelper implements AutoCloseable
             
             protected ParsePhase copy()
             {
-                ParsePhase copy = new ParsePhase(name);
+                ParsePhase copy = new ParsePhase(this.name);
                 copy.nodeConfiguration = this.nodeConfiguration.copy();
                 copy.consumerClusterComplete = this.consumerClusterComplete;
                 copy.consumerMainNodeComplete = this.consumerMainNodeComplete;
@@ -709,12 +709,12 @@ public class ResultSetParseHelper implements AutoCloseable
             
             protected String getName()
             {
-                return name;
+                return this.name;
             }
             
             protected NodeConfiguration getNodeConfiguration()
             {
-                return nodeConfiguration;
+                return this.nodeConfiguration;
             }
             
             protected void clear()
@@ -746,7 +746,7 @@ public class ResultSetParseHelper implements AutoCloseable
             private IRecordParser<I, M, P, B> recordParserIfNull = null;
             private List<NodeConfiguration> childList = null;
             
-            protected NodeConfiguration(String nodeName, ConplierBean<B> objectReference, String idColumnName, Class<I> idType, NodeConfiguration parent)
+            protected NodeConfiguration(final String nodeName, final ConplierBean<B> objectReference, final String idColumnName, final Class<I> idType, final NodeConfiguration parent)
             {
                 super();
                 this.nodeName = nodeName;
@@ -763,7 +763,7 @@ public class ResultSetParseHelper implements AutoCloseable
                 copy.parent = null;
                 copy.recordParser = this.recordParser;
                 copy.recordParserIfNull = this.recordParserIfNull;
-                for (NodeConfiguration child : childList)
+                for (final NodeConfiguration child : this.childList)
                 {
                     copy.childList.add(child.copy());
                 }
@@ -772,37 +772,37 @@ public class ResultSetParseHelper implements AutoCloseable
             
             protected String getNodeName()
             {
-                return nodeName;
+                return this.nodeName;
             }
             
             protected NodeConfiguration getParent()
             {
-                return parent;
+                return this.parent;
             }
             
             protected ConplierBean<B> getObjectReference()
             {
-                return objectReference;
+                return this.objectReference;
             }
             
             protected Class<I> getIdType()
             {
-                return idType;
+                return this.idType;
             }
             
             protected String getIdColumnName()
             {
-                return idColumnName;
+                return this.idColumnName;
             }
             
             protected IRecordParser<I, M, P, B> getRecordParser()
             {
-                return recordParser;
+                return this.recordParser;
             }
             
             protected IRecordParser<I, M, P, B> getRecordParserIfNull()
             {
-                return recordParserIfNull;
+                return this.recordParserIfNull;
             }
             
             protected void clear()
@@ -832,6 +832,7 @@ public class ResultSetParseHelper implements AutoCloseable
     /**
      * Close the parser helper. After this the helper is not usable anymore.
      */
+    @Override
     public void close()
     {
         if (!this.closable)
@@ -870,10 +871,10 @@ public class ResultSetParseHelper implements AutoCloseable
          */
         public ResultSet getResultSet()
         {
-            return resultSet;
+            return this.resultSet;
         }
         
-        protected void setResultSet(ResultSet resultSet)
+        protected void setResultSet(final ResultSet resultSet)
         {
             this.resultSet = resultSet;
         }
@@ -885,10 +886,10 @@ public class ResultSetParseHelper implements AutoCloseable
          */
         public I getId()
         {
-            return id;
+            return this.id;
         }
         
-        protected void setId(I id)
+        protected void setId(final I id)
         {
             this.id = id;
         }
@@ -900,10 +901,10 @@ public class ResultSetParseHelper implements AutoCloseable
          */
         public M getMainObject()
         {
-            return mainObject;
+            return this.mainObject;
         }
         
-        public void setMainObject(M mainObject)
+        public void setMainObject(final M mainObject)
         {
             this.mainObject = mainObject;
         }
@@ -915,79 +916,79 @@ public class ResultSetParseHelper implements AutoCloseable
          */
         public P getParentObject()
         {
-            return parentObject;
+            return this.parentObject;
         }
         
-        public void setParentObject(P parentObject)
+        public void setParentObject(final P parentObject)
         {
             this.parentObject = parentObject;
         }
         
-        public String getString(String columnName) throws SQLException
+        public String getString(final String columnName) throws SQLException
         {
             return this.resultSet.getString(columnName);
         }
         
-        public Short getShort(String columnName) throws SQLException
+        public Short getShort(final String columnName) throws SQLException
         {
             Short value = this.resultSet.getShort(columnName);
-            return resultSet.wasNull() ? null : value;
+            return this.resultSet.wasNull() ? null : value;
         }
         
-        public Integer getInteger(String columnName) throws SQLException
+        public Integer getInteger(final String columnName) throws SQLException
         {
             Integer value = this.resultSet.getInt(columnName);
-            return resultSet.wasNull() ? null : value;
+            return this.resultSet.wasNull() ? null : value;
         }
         
-        public Long getLong(String columnName) throws SQLException
+        public Long getLong(final String columnName) throws SQLException
         {
             Long value = this.resultSet.getLong(columnName);
-            return resultSet.wasNull() ? null : value;
+            return this.resultSet.wasNull() ? null : value;
         }
         
-        public Float getFloat(String columnName) throws SQLException
+        public Float getFloat(final String columnName) throws SQLException
         {
             Float value = this.resultSet.getFloat(columnName);
-            return resultSet.wasNull() ? null : value;
+            return this.resultSet.wasNull() ? null : value;
         }
         
-        public Double getDouble(String columnName) throws SQLException
+        public Double getDouble(final String columnName) throws SQLException
         {
             Double value = this.resultSet.getDouble(columnName);
-            return resultSet.wasNull() ? null : value;
+            return this.resultSet.wasNull() ? null : value;
         }
         
-        public Boolean getBoolean(String columnName) throws SQLException
+        public Boolean getBoolean(final String columnName) throws SQLException
         {
             Boolean value = this.resultSet.getBoolean(columnName);
-            return resultSet.wasNull() ? null : value;
+            return this.resultSet.wasNull() ? null : value;
         }
         
-        public Date getTimestamp(String columnName) throws SQLException
+        public Date getTimestamp(final String columnName) throws SQLException
         {
             Timestamp value = this.resultSet.getTimestamp(columnName);
             return value == null ? null : new Date(value.getTime());
         }
         
-        public Date getDate(String columnName) throws SQLException
+        public Date getDate(final String columnName) throws SQLException
         {
             Date value = this.resultSet.getDate(columnName);
             return value == null ? null : new Date(value.getTime());
         }
         
-        public Date getTime(String columnName) throws SQLException
+        public Date getTime(final String columnName) throws SQLException
         {
             Time value = this.resultSet.getTime(columnName);
             return value == null ? null : new Date(value.getTime());
         }
         
-        public UUID getUUID(String columnName) throws SQLException
+        public UUID getUUID(final String columnName) throws SQLException
         {
             return (UUID) this.resultSet.getObject(columnName);
         }
         
-        public UUID getUUIDFromString(String columnName) throws SQLException
+        public UUID getUUIDFromString(final String columnName) throws SQLException
         {
             String value = this.resultSet.getString(columnName);
             if (value == null)
@@ -997,7 +998,7 @@ public class ResultSetParseHelper implements AutoCloseable
             return UUID.fromString(value);
         }
         
-        public byte[] getBytes(String columnName) throws SQLException
+        public byte[] getBytes(final String columnName) throws SQLException
         {
             return this.resultSet.getBytes(columnName);
         }
@@ -1022,17 +1023,17 @@ public class ResultSetParseHelper implements AutoCloseable
      * @author Sebastian Palarus
      */
     @FunctionalInterface
-    public static interface IRecordParser<I, M, P, B> extends Function<Cursor<I, M, P>, B>
+    public interface IRecordParser<I, M, P, B> extends Function<Cursor<I, M, P>, B>
     {
         
         @Override
-        default B apply(Cursor<I, M, P> cursor)
+        default B apply(final Cursor<I, M, P> cursor)
         {
             try
             {
                 return this.parse(cursor);
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
                 if (e instanceof RuntimeException)
                 {
@@ -1054,7 +1055,7 @@ public class ResultSetParseHelper implements AutoCloseable
          *
          * @throws Exception
          */
-        public B parse(Cursor<I, M, P> cursor) throws Exception;
+        B parse(Cursor<I, M, P> cursor) throws Exception;
         
     }
 }

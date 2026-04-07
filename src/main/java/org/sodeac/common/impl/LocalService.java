@@ -7,7 +7,7 @@ public class LocalService
 {
     private static final LocalServiceRegistryImpl LOCAL_SERVICE_REGISTRY = LocalServiceRegistryImpl.get();
     
-    public static <S> IServiceProvider<S> getServiceProvider(Class<S> clazz, URI address)
+    public static <S> IServiceProvider<S> getServiceProvider(final Class<S> clazz, final URI address)
     {
         return LOCAL_SERVICE_REGISTRY.getServiceProvider(clazz, address);
     }

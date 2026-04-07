@@ -47,7 +47,7 @@ public class SmartSupplier<T> implements Supplier<T>
      *
      * @return
      */
-    public static <T> SmartSupplier<T> forSupplier(Supplier<T> wrappedSupplier)
+    public static <T> SmartSupplier<T> forSupplier(final Supplier<T> wrappedSupplier)
     {
         SmartSupplier<T> smartSupply = new SmartSupplier<>();
         smartSupply.internSupplier = wrappedSupplier == null ? () -> null : wrappedSupplier;
@@ -61,7 +61,7 @@ public class SmartSupplier<T> implements Supplier<T>
      *
      * @return smart supplier
      */
-    public SmartSupplier<T> withAttemptCount(int attemptCount)
+    public SmartSupplier<T> withAttemptCount(final int attemptCount)
     {
         this.attemptCount = attemptCount;
         return this;
@@ -75,7 +75,7 @@ public class SmartSupplier<T> implements Supplier<T>
      *
      * @return smart supplier
      */
-    public SmartSupplier<T> withWaitTimeForNextAttempt(int waitTimeValue, TimeUnit waitTimeUnit)
+    public SmartSupplier<T> withWaitTimeForNextAttempt(final int waitTimeValue, final TimeUnit waitTimeUnit)
     {
         this.waitTimeValue = waitTimeValue;
         this.waitTimeUnit = waitTimeUnit;
@@ -89,7 +89,7 @@ public class SmartSupplier<T> implements Supplier<T>
      *
      * @return smart supplier
      */
-    public SmartSupplier<T> withDefaultValue(T defaultValue)
+    public SmartSupplier<T> withDefaultValue(final T defaultValue)
     {
         this.defaultValue = defaultValue;
         return this;
@@ -102,7 +102,7 @@ public class SmartSupplier<T> implements Supplier<T>
      *
      * @return smart supplier
      */
-    public SmartSupplier<T> useCacheAfterFailedAttemptsCount(int failedAttemptCount)
+    public SmartSupplier<T> useCacheAfterFailedAttemptsCount(final int failedAttemptCount)
     {
         this.attemptCountUseCached = failedAttemptCount;
         return this;
@@ -140,16 +140,16 @@ public class SmartSupplier<T> implements Supplier<T>
             return null;
         }
         
-        if (waitTimeValue < 1)
+        if (this.waitTimeValue < 1)
         {
-            waitTimeValue = 1;
+            this.waitTimeValue = 1;
         }
-        if (waitTimeUnit == null)
+        if (this.waitTimeUnit == null)
         {
-            waitTimeUnit = TimeUnit.MILLISECONDS;
+            this.waitTimeUnit = TimeUnit.MILLISECONDS;
         }
         
-        if ((cachedValue != null) && (cachedValueExpireTimestamp <= System.currentTimeMillis()))
+        if ((this.cachedValue != null) && (this.cachedValueExpireTimestamp <= System.currentTimeMillis()))
         {
             this.cachedValue = null;
             this.containsCachedValue = false;
@@ -157,7 +157,7 @@ public class SmartSupplier<T> implements Supplier<T>
         
         T suppliedValue = null;
         int count = 0;
-        while ((suppliedValue == null) && (count < attemptCount))
+        while ((suppliedValue == null) && (count < this.attemptCount))
         {
             
             suppliedValue = this.internSupplier.get();
@@ -165,13 +165,13 @@ public class SmartSupplier<T> implements Supplier<T>
             
             if
             (
-                (containsCachedValue)
+                (this.containsCachedValue)
                 && (suppliedValue == null)
                 && (this.attemptCountUseCached != null)
                 && (this.attemptCountUseCached.intValue() <= count)
             )
             {
-                if (cachedValueExpireTimestamp > System.currentTimeMillis())
+                if (this.cachedValueExpireTimestamp > System.currentTimeMillis())
                 {
                     return this.cachedValue;
                 }
@@ -179,18 +179,18 @@ public class SmartSupplier<T> implements Supplier<T>
                 this.containsCachedValue = false;
             }
             
-            if ((suppliedValue == null) && (count < attemptCount))
+            if ((suppliedValue == null) && (count < this.attemptCount))
             {
                 try
                 {
-                    Thread.sleep(TimeUnit.MILLISECONDS.convert(waitTimeValue, waitTimeUnit));
+                    Thread.sleep(TimeUnit.MILLISECONDS.convert(this.waitTimeValue, this.waitTimeUnit));
                 }
-                catch (Exception e) { }
+                catch (final Exception e) { }
             }
         }
         if (suppliedValue == null)
         {
-            suppliedValue = defaultValue;
+            suppliedValue = this.defaultValue;
         }
         
         if (this.attemptCountUseCached != null)
@@ -222,7 +222,7 @@ public class SmartSupplier<T> implements Supplier<T>
      *
      * @return supplied value, or default value, if supplier supplied no value
      */
-    public static <T> T supplyPeriodicallyOrDefault(Supplier<T> supplier, int attemptCount, int waitTimeValue, TimeUnit waitTimeUnit, T defaultValue)
+    public static <T> T supplyPeriodicallyOrDefault(final Supplier<T> supplier, final int attemptCount, final int waitTimeValue, final TimeUnit waitTimeUnit, final T defaultValue)
     {
         T suppliedValue = supplyPeriodically(supplier, attemptCount, waitTimeValue, waitTimeUnit);
         return suppliedValue == null ? defaultValue : suppliedValue;
@@ -238,7 +238,7 @@ public class SmartSupplier<T> implements Supplier<T>
      *
      * @return supplied value, or null, if supplier supplied no value
      */
-    public static <T> T supplyPeriodically(Supplier<T> supplier, int attemptCount, int waitTimeValue, TimeUnit waitTimeUnit)
+    public static <T> T supplyPeriodically(final Supplier<T> supplier, int attemptCount, int waitTimeValue, TimeUnit waitTimeUnit)
     {
         if (supplier == null)
         {
@@ -264,7 +264,7 @@ public class SmartSupplier<T> implements Supplier<T>
                 {
                     Thread.sleep(TimeUnit.MILLISECONDS.convert(waitTimeValue, waitTimeUnit));
                 }
-                catch (Exception e) { }
+                catch (final Exception e) { }
             }
         }
         return suppliedValue;

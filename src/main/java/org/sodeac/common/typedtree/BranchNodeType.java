@@ -38,7 +38,7 @@ public class BranchNodeType<P extends BranchNodeMetaModel, T extends BranchNodeM
      * @param typeClass       type of child node (should be a class of {@link BranchNodeMetaModel})
      * @param field           referenced by field
      */
-    public BranchNodeType(Class<P> parentNodeClass, Class<T> typeClass, Field field)
+    public BranchNodeType(final Class<P> parentNodeClass, final Class<T> typeClass, final Field field)
     {
         this.parentNodeClass = parentNodeClass;
         this.typeClass = typeClass;
@@ -49,22 +49,22 @@ public class BranchNodeType<P extends BranchNodeMetaModel, T extends BranchNodeM
         // generate hashcode
         
         final int prime = 31;
-        hashCode = prime * hashCode + ((field == null) ? 0 : field.hashCode());
-        hashCode = prime * hashCode + ((name == null) ? 0 : name.hashCode());
-        hashCode = prime * hashCode + ((parentNodeClass == null) ? 0 : parentNodeClass.hashCode());
-        hashCode = prime * hashCode + ((typeClass == null) ? 0 : typeClass.hashCode());
+        this.hashCode = prime * this.hashCode + ((field == null) ? 0 : field.hashCode());
+        this.hashCode = prime * this.hashCode + ((this.name == null) ? 0 : this.name.hashCode());
+        this.hashCode = prime * this.hashCode + ((parentNodeClass == null) ? 0 : parentNodeClass.hashCode());
+        this.hashCode = prime * this.hashCode + ((typeClass == null) ? 0 : typeClass.hashCode());
     }
     
     @Override
     public Class<T> getTypeClass()
     {
-        return typeClass;
+        return this.typeClass;
     }
     
     @Override
     public Class<P> getParentNodeClass()
     {
-        return parentNodeClass;
+        return this.parentNodeClass;
     }
     
     @Override
@@ -86,7 +86,7 @@ public class BranchNodeType<P extends BranchNodeMetaModel, T extends BranchNodeM
     }
     
     @Override
-    public boolean equals(Object obj)
+    public boolean equals(final Object obj)
     {
         return (this == obj);
     }
@@ -117,6 +117,6 @@ public class BranchNodeType<P extends BranchNodeMetaModel, T extends BranchNodeM
     @Override
     public boolean isTransient()
     {
-        return transientFlag;
+        return this.transientFlag;
     }
 }

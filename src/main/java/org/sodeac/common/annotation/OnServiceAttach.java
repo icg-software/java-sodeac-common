@@ -28,9 +28,9 @@ public @interface OnServiceAttach
 {
     Class<? extends Consumer<IService.IServiceProvider<?>>> trigger() default NoTrigger.class;
     
-    public class NoTrigger implements Consumer<IService.IServiceProvider<?>>
+    class NoTrigger implements Consumer<IService.IServiceProvider<?>>
     {
         @Override
-        public void accept(IServiceProvider<?> t) { }
+        public void accept(final IServiceProvider<?> t) { }
     }
 }

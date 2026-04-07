@@ -17,22 +17,22 @@ import org.sodeac.common.message.dispatcher.api.PropertyBlockModifyItem;
 
 public class ChannelConfigurationModifyListener implements IPropertyBlockModifyListener
 {
-    private ChannelImpl channel;
+    private final ChannelImpl channel;
     
-    protected ChannelConfigurationModifyListener(ChannelImpl queue)
+    protected ChannelConfigurationModifyListener(final ChannelImpl queue)
     {
         super();
         this.channel = queue;
     }
     
     @Override
-    public void onModify(ModifyType type, String key, Object valueOld, Object valueNew)
+    public void onModify(final ModifyType type, final String key, final Object valueOld, final Object valueNew)
     {
-        ((MessageDispatcherImpl) channel.getDispatcher()).onConfigurationModify(this.channel, key);
+        ((MessageDispatcherImpl) this.channel.getDispatcher()).onConfigurationModify(this.channel, key);
     }
     
     @Override
-    public void onModifySet(List<PropertyBlockModifyItem> modifySet)
+    public void onModifySet(final List<PropertyBlockModifyItem> modifySet)
     {
         if (modifySet == null)
         {
@@ -44,11 +44,11 @@ public class ChannelConfigurationModifyListener implements IPropertyBlockModifyL
         }
         String[] attributes = new String[modifySet.size()];
         int index = 0;
-        for (PropertyBlockModifyItem item : modifySet)
+        for (final PropertyBlockModifyItem item : modifySet)
         {
             attributes[index++] = item.getKey();
         }
-        ((MessageDispatcherImpl) channel.getDispatcher()).onConfigurationModify(this.channel, attributes);
+        ((MessageDispatcherImpl) this.channel.getDispatcher()).onConfigurationModify(this.channel, attributes);
     }
     
 }

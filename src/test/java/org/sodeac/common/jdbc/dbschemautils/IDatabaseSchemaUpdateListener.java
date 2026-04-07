@@ -41,5 +41,5 @@ public interface IDatabaseSchemaUpdateListener
      *
      * @throws SQLException
      */
-    public void onAction(ActionType actionType, ObjectType objectType, PhaseType phaseType, Connection connection, String domain, Dictionary<ObjectType, Object> objects, IDBSchemaUtilsDriver driver, Exception exception) throws SQLException;
+    void onAction(ActionType actionType, ObjectType objectType, PhaseType phaseType, Connection connection, String domain, Dictionary<ObjectType, Object> objects, IDBSchemaUtilsDriver driver, Exception exception) throws SQLException;
 }

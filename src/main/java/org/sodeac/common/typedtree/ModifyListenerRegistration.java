@@ -36,7 +36,7 @@ public class ModifyListenerRegistration<R extends BranchNodeMetaModel>
     
     protected Set<NodeSelector<R, ?>> getRootNodeSelectorList()
     {
-        return rootNodeSelectorList;
+        return this.rootNodeSelectorList;
     }
     
     public void dispose()
@@ -50,7 +50,7 @@ public class ModifyListenerRegistration<R extends BranchNodeMetaModel>
     
     protected boolean isIndisposable()
     {
-        return indisposable;
+        return this.indisposable;
     }
     
     protected ModifyListenerRegistration<R> setIndisposable()
@@ -61,7 +61,7 @@ public class ModifyListenerRegistration<R extends BranchNodeMetaModel>
     
     protected boolean isFinal()
     {
-        return finalState;
+        return this.finalState;
     }
     
     protected ModifyListenerRegistration<R> setFinal()
@@ -70,7 +70,7 @@ public class ModifyListenerRegistration<R extends BranchNodeMetaModel>
         return this;
     }
     
-    private void recursiveDispose(Collection nodeSelectorList)
+    private void recursiveDispose(final Collection nodeSelectorList)
     {
         if (nodeSelectorList == null)
         {
@@ -82,7 +82,7 @@ public class ModifyListenerRegistration<R extends BranchNodeMetaModel>
             return;
         }
         
-        for (NodeSelector<?, ?> nodeSelector : (Collection<NodeSelector<?, ?>>) nodeSelectorList)
+        for (final NodeSelector<?, ?> nodeSelector : (Collection<NodeSelector<?, ?>>) nodeSelectorList)
         {
             
             // recursive
@@ -92,7 +92,7 @@ public class ModifyListenerRegistration<R extends BranchNodeMetaModel>
                 nodeSelector.getChildSelectorList().clear();
             }
             
-            for (Entry<ConplierBean<Object>, Set<IModifyListener<?>>> entry : nodeSelector.getRegistrationObjects().entrySet())
+            for (final Entry<ConplierBean<Object>, Set<IModifyListener<?>>> entry : nodeSelector.getRegistrationObjects().entrySet())
             {
                 if (entry.getKey() != null)
                 {
@@ -116,14 +116,14 @@ public class ModifyListenerRegistration<R extends BranchNodeMetaModel>
         nodeSelectorList.clear();
     }
     
-    protected <T> ModifyListenerRegistration<R> registerListener(ModelPath<R, T> path, IModifyListener<T> listener)
+    protected <T> ModifyListenerRegistration<R> registerListener(final ModelPath<R, T> path, final IModifyListener<T> listener)
     {
         return registerListeners(path, listener);
     }
     
-    protected <T> ModifyListenerRegistration<R> registerListeners(ModelPath<R, T> path, IModifyListener<T>... listener)
+    protected <T> ModifyListenerRegistration<R> registerListeners(ModelPath<R, T> path, final IModifyListener<T>... listener)
     {
-        if (finalState)
+        if (this.finalState)
         {
             return this;
         }
@@ -136,16 +136,13 @@ public class ModifyListenerRegistration<R extends BranchNodeMetaModel>
         NodeSelector targetNodeSelector = path.getNodeSelectorList().get(path.getNodeSelectorList().size() - 1);
         if (listener != null)
         {
-            for (IModifyListener modifyListener : listener)
+            for (final IModifyListener modifyListener : listener)
             {
                 if (targetNodeSelector.getModifyListenerList() == null)
                 {
                     targetNodeSelector.setModifyListenerList(new HashSet<>());
                 }
-                if (!targetNodeSelector.getModifyListenerList().contains(modifyListener))
-                {
-                    targetNodeSelector.getModifyListenerList().add(modifyListener);
-                }
+                targetNodeSelector.getModifyListenerList().add(modifyListener);
             }
         }
         List<NodeSelector<?, ?>> otherNodeSelectorList = new ArrayList<NodeSelector<?, ?>>();
@@ -156,32 +153,32 @@ public class ModifyListenerRegistration<R extends BranchNodeMetaModel>
         return this;
     }
     
-    protected <T> ModifyListenerRegistration<R> unregister(ModelPath<R, T> path)
+    protected <T> ModifyListenerRegistration<R> unregister(final ModelPath<R, T> path)
     {
         recursiveUnregister(this.rootNodeSelectorList, path);
         return this;
     }
     
-    protected <T> ModifyListenerRegistration<R> registerListener(ModifyListenerRegistration<?> registration, IModifyListener<T> listener)
+    protected <T> ModifyListenerRegistration<R> registerListener(final ModifyListenerRegistration<?> registration, final IModifyListener<T> listener)
     {
         return registerListeners(registration, listener);
     }
     
-    protected <T> ModifyListenerRegistration<R> registerListeners(ModifyListenerRegistration<?> registration, IModifyListener<T>... listener)
+    protected <T> ModifyListenerRegistration<R> registerListeners(final ModifyListenerRegistration<?> registration, final IModifyListener<T>... listener)
     {
         recursiveRegister(null, this.rootNodeSelectorList, registration.rootNodeSelectorList, registration);
         return this;
     }
     
-    protected <T> ModifyListenerRegistration<R> unregister(ModifyListenerRegistration<?> registration)
+    protected <T> ModifyListenerRegistration<R> unregister(final ModifyListenerRegistration<?> registration)
     {
         recursiveUnregister(this.rootNodeSelectorList, registration);
         return this;
     }
     
-    private <T> void recursiveUnregister(Collection nodeSelectorList, Object pathObject)
+    private <T> void recursiveUnregister(final Collection nodeSelectorList, final Object pathObject)
     {
-        if (finalState)
+        if (this.finalState)
         {
             return;
         }
@@ -199,7 +196,7 @@ public class ModifyListenerRegistration<R extends BranchNodeMetaModel>
         ConplierBean<Object> sameWrapper = new ConplierBean<Object>(pathObject);
         
         List<NodeSelector<?, ?>> toRemoveSelector = new ArrayList<NodeSelector<?, ?>>();
-        for (NodeSelector<?, ?> nodeSelector : (Collection<NodeSelector<?, ?>>) nodeSelectorList)
+        for (final NodeSelector<?, ?> nodeSelector : (Collection<NodeSelector<?, ?>>) nodeSelectorList)
         {
             if (nodeSelector.getRegistrationObjects().get(sameWrapper) == null)
             {
@@ -224,13 +221,13 @@ public class ModifyListenerRegistration<R extends BranchNodeMetaModel>
             if ((nodeSelector.getModifyListenerList() != null) && (!nodeSelector.getModifyListenerList().isEmpty()))
             {
                 Set<IModifyListener<?>> listenerIndex = new HashSet<IModifyListener<?>>();
-                for (Set<IModifyListener<?>> listenerList : nodeSelector.getRegistrationObjects().values())
+                for (final Set<IModifyListener<?>> listenerList : nodeSelector.getRegistrationObjects().values())
                 {
                     listenerIndex.addAll(listenerList);
                 }
                 
                 List<IModifyListener<?>> toRemoveListener = new ArrayList<IModifyListener<?>>();
-                for (IModifyListener<?> modifyListener : nodeSelector.getModifyListenerList())
+                for (final IModifyListener<?> modifyListener : nodeSelector.getModifyListenerList())
                 {
                     if (!listenerIndex.contains(modifyListener))
                     {
@@ -241,7 +238,7 @@ public class ModifyListenerRegistration<R extends BranchNodeMetaModel>
                 listenerIndex.clear();
                 listenerIndex = null;
                 
-                for (IModifyListener<?> toRemove : toRemoveListener)
+                for (final IModifyListener<?> toRemove : toRemoveListener)
                 {
                     nodeSelector.getModifyListenerList().remove(toRemove);
                 }
@@ -256,7 +253,7 @@ public class ModifyListenerRegistration<R extends BranchNodeMetaModel>
             }
         }
         
-        for (NodeSelector<?, ?> toRemove : toRemoveSelector)
+        for (final NodeSelector<?, ?> toRemove : toRemoveSelector)
         {
             nodeSelectorList.remove(toRemove);
         }
@@ -264,9 +261,9 @@ public class ModifyListenerRegistration<R extends BranchNodeMetaModel>
         sameWrapper.dispose();
     }
     
-    private <T> void recursiveRegister(NodeSelector<?, ?> parent, Collection thisNodeSelectorList, Collection otherNodeSelectorList, Object pathObject)
+    private <T> void recursiveRegister(final NodeSelector<?, ?> parent, final Collection thisNodeSelectorList, final Collection otherNodeSelectorList, final Object pathObject)
     {
-        if (finalState)
+        if (this.finalState)
         {
             return;
         }
@@ -284,12 +281,12 @@ public class ModifyListenerRegistration<R extends BranchNodeMetaModel>
             return;
         }
         
-        for (NodeSelector<?, ?> otherNodeSelector : (Collection<NodeSelector<?, ?>>) otherNodeSelectorList)
+        for (final NodeSelector<?, ?> otherNodeSelector : (Collection<NodeSelector<?, ?>>) otherNodeSelectorList)
         {
             // current this nodeSelector
             
             NodeSelector<?, ?> nodeSelector = null;
-            for (NodeSelector<?, ?> thisNodeSelector : (Collection<NodeSelector<?, ?>>) thisNodeSelectorList)
+            for (final NodeSelector<?, ?> thisNodeSelector : (Collection<NodeSelector<?, ?>>) thisNodeSelectorList)
             {
                 if (thisNodeSelector.equals(otherNodeSelector))
                 {
@@ -324,16 +321,10 @@ public class ModifyListenerRegistration<R extends BranchNodeMetaModel>
                 {
                     nodeSelector.setModifyListenerList(new HashSet<IModifyListener<?>>());
                 }
-                for (IModifyListener<?> modifyListener : otherNodeSelector.getModifyListenerList())
+                for (final IModifyListener<?> modifyListener : otherNodeSelector.getModifyListenerList())
                 {
-                    if (!nodeSelector.getModifyListenerList().contains(modifyListener))
-                    {
-                        nodeSelector.getModifyListenerList().add(modifyListener);
-                    }
-                    if (!registrationSet.contains(modifyListener))
-                    {
-                        registrationSet.add(modifyListener);
-                    }
+                    nodeSelector.getModifyListenerList().add(modifyListener);
+                    registrationSet.add(modifyListener);
                 }
             }
             

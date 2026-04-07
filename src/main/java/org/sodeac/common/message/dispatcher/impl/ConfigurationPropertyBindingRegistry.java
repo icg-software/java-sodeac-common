@@ -37,7 +37,7 @@ public class ConfigurationPropertyBindingRegistry
     private Map<String, Set<ServiceContainer>> serviceContainerIndex = null;
     private Lock lock = null;
     
-    public void register(ChannelManagerContainer controllerContainer)
+    public void register(final ChannelManagerContainer controllerContainer)
     {
         if (controllerContainer == null)
         {
@@ -50,20 +50,20 @@ public class ConfigurationPropertyBindingRegistry
             return;
         }
         
-        lock.lock();
+        this.lock.lock();
         try
         {
-            for (ControllerFilterObjects controllerFilterObjects : controllerFilterObjectsList)
+            for (final ControllerFilterObjects controllerFilterObjects : controllerFilterObjectsList)
             {
                 if ((controllerFilterObjects.attributes != null) && (!controllerFilterObjects.attributes.isEmpty()))
                 {
-                    for (String attributeName : controllerFilterObjects.attributes)
+                    for (final String attributeName : controllerFilterObjects.attributes)
                     {
-                        Set<ChannelManagerContainer> controllerContainerSet = controllerContainerIndex.get(attributeName);
+                        Set<ChannelManagerContainer> controllerContainerSet = this.controllerContainerIndex.get(attributeName);
                         if (controllerContainerSet == null)
                         {
                             controllerContainerSet = new HashSet<ChannelManagerContainer>();
-                            controllerContainerIndex.put(attributeName, controllerContainerSet);
+                            this.controllerContainerIndex.put(attributeName, controllerContainerSet);
                         }
                         controllerContainerSet.add(controllerContainer);
                     }
@@ -72,11 +72,11 @@ public class ConfigurationPropertyBindingRegistry
         }
         finally
         {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
     
-    public Set<ChannelManagerContainer> getManagerContainer(String... attributes)
+    public Set<ChannelManagerContainer> getManagerContainer(final String... attributes)
     {
         if (attributes == null)
         {
@@ -88,13 +88,13 @@ public class ConfigurationPropertyBindingRegistry
             return null;
         }
         
-        lock.lock();
+        this.lock.lock();
         try
         {
             Set<ChannelManagerContainer> set = null;
-            for (String attribute : attributes)
+            for (final String attribute : attributes)
             {
-                Set<ChannelManagerContainer> controllerContainerSet = controllerContainerIndex.get(attribute);
+                Set<ChannelManagerContainer> controllerContainerSet = this.controllerContainerIndex.get(attribute);
                 if (controllerContainerSet == null)
                 {
                     continue;
@@ -109,11 +109,11 @@ public class ConfigurationPropertyBindingRegistry
         }
         finally
         {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
     
-    public void unregister(ChannelManagerContainer controllerContainer)
+    public void unregister(final ChannelManagerContainer controllerContainer)
     {
         if (controllerContainer == null)
         {
@@ -128,12 +128,12 @@ public class ConfigurationPropertyBindingRegistry
         
         LinkedList<String> removeList = null;
         
-        lock.lock();
+        this.lock.lock();
         try
         {
-            if (controllerContainerIndex != null)
+            if (this.controllerContainerIndex != null)
             {
-                for (Entry<String, Set<ChannelManagerContainer>> controllerContainerSetEntry : controllerContainerIndex.entrySet())
+                for (final Entry<String, Set<ChannelManagerContainer>> controllerContainerSetEntry : this.controllerContainerIndex.entrySet())
                 {
                     if (controllerContainerSetEntry.getValue().remove(controllerContainer))
                     {
@@ -151,20 +151,20 @@ public class ConfigurationPropertyBindingRegistry
                 
                 if (removeList != null)
                 {
-                    for (String attribute : removeList)
+                    for (final String attribute : removeList)
                     {
-                        controllerContainerIndex.remove(attribute);
+                        this.controllerContainerIndex.remove(attribute);
                     }
                 }
             }
         }
         finally
         {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
     
-    public void register(ServiceContainer serviceContainer)
+    public void register(final ServiceContainer serviceContainer)
     {
         if (serviceContainer == null)
         {
@@ -177,20 +177,20 @@ public class ConfigurationPropertyBindingRegistry
             return;
         }
         
-        lock.lock();
+        this.lock.lock();
         try
         {
-            for (ServiceFilterObjects serviceFilterObjects : serviceFilterObjectsList)
+            for (final ServiceFilterObjects serviceFilterObjects : serviceFilterObjectsList)
             {
                 if ((serviceFilterObjects.attributes != null) && (!serviceFilterObjects.attributes.isEmpty()))
                 {
-                    for (String attributeName : serviceFilterObjects.attributes)
+                    for (final String attributeName : serviceFilterObjects.attributes)
                     {
-                        Set<ServiceContainer> serviceContainerSet = serviceContainerIndex.get(attributeName);
+                        Set<ServiceContainer> serviceContainerSet = this.serviceContainerIndex.get(attributeName);
                         if (serviceContainerSet == null)
                         {
                             serviceContainerSet = new HashSet<ServiceContainer>();
-                            serviceContainerIndex.put(attributeName, serviceContainerSet);
+                            this.serviceContainerIndex.put(attributeName, serviceContainerSet);
                         }
                         serviceContainerSet.add(serviceContainer);
                     }
@@ -199,11 +199,11 @@ public class ConfigurationPropertyBindingRegistry
         }
         finally
         {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
     
-    public Set<ServiceContainer> getServiceContainer(String... attributes)
+    public Set<ServiceContainer> getServiceContainer(final String... attributes)
     {
         if (attributes == null)
         {
@@ -215,13 +215,13 @@ public class ConfigurationPropertyBindingRegistry
             return null;
         }
         
-        lock.lock();
+        this.lock.lock();
         try
         {
             Set<ServiceContainer> set = null;
-            for (String attribute : attributes)
+            for (final String attribute : attributes)
             {
-                Set<ServiceContainer> serviceContainerSet = serviceContainerIndex.get(attribute);
+                Set<ServiceContainer> serviceContainerSet = this.serviceContainerIndex.get(attribute);
                 if (serviceContainerSet == null)
                 {
                     continue;
@@ -236,11 +236,11 @@ public class ConfigurationPropertyBindingRegistry
         }
         finally
         {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
     
-    public void unregister(ServiceContainer serviceContainer)
+    public void unregister(final ServiceContainer serviceContainer)
     {
         if (serviceContainer == null)
         {
@@ -255,12 +255,12 @@ public class ConfigurationPropertyBindingRegistry
         
         LinkedList<String> removeList = null;
         
-        lock.lock();
+        this.lock.lock();
         try
         {
-            if (serviceContainerIndex != null)
+            if (this.serviceContainerIndex != null)
             {
-                for (Entry<String, Set<ServiceContainer>> serviceContainerSetEntry : serviceContainerIndex.entrySet())
+                for (final Entry<String, Set<ServiceContainer>> serviceContainerSetEntry : this.serviceContainerIndex.entrySet())
                 {
                     if (serviceContainerSetEntry.getValue().remove(serviceContainer))
                     {
@@ -278,25 +278,25 @@ public class ConfigurationPropertyBindingRegistry
                 
                 if (removeList != null)
                 {
-                    for (String attribute : removeList)
+                    for (final String attribute : removeList)
                     {
-                        serviceContainerIndex.remove(attribute);
+                        this.serviceContainerIndex.remove(attribute);
                     }
                 }
             }
         }
         finally
         {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
     
     public void clear()
     {
-        lock.lock();
+        this.lock.lock();
         try
         {
-            for (Entry<String, Set<ChannelManagerContainer>> controllerContainerSetEntry : controllerContainerIndex.entrySet())
+            for (final Entry<String, Set<ChannelManagerContainer>> controllerContainerSetEntry : this.controllerContainerIndex.entrySet())
             {
                 if (controllerContainerSetEntry.getValue() == null)
                 {
@@ -304,10 +304,10 @@ public class ConfigurationPropertyBindingRegistry
                 }
                 controllerContainerSetEntry.getValue().clear();
             }
-            controllerContainerIndex.clear();
-            controllerContainerIndex = null;
+            this.controllerContainerIndex.clear();
+            this.controllerContainerIndex = null;
             
-            for (Entry<String, Set<ServiceContainer>> serviceContainerSetEntry : serviceContainerIndex.entrySet())
+            for (final Entry<String, Set<ServiceContainer>> serviceContainerSetEntry : this.serviceContainerIndex.entrySet())
             {
                 if (serviceContainerSetEntry.getValue() == null)
                 {
@@ -315,12 +315,12 @@ public class ConfigurationPropertyBindingRegistry
                 }
                 serviceContainerSetEntry.getValue().clear();
             }
-            serviceContainerIndex.clear();
-            serviceContainerIndex = null;
+            this.serviceContainerIndex.clear();
+            this.serviceContainerIndex = null;
         }
         finally
         {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
 }

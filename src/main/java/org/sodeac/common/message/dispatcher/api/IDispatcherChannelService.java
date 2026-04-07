@@ -22,16 +22,16 @@ public interface IDispatcherChannelService<T> extends IDispatcherChannelTask<T>,
      *
      * @param componentConfiguration
      */
-    public default void configureChannelServicePolicy(IChannelServicePolicy componentBindingPolicy)
+    default void configureChannelServicePolicy(final IChannelServicePolicy componentBindingPolicy)
     {
     }
     
-    public static interface IChannelServicePolicy
+    interface IChannelServicePolicy
     {
         /**
          *
          * @param configuration
          */
-        public IChannelServicePolicy addConfigurationDetail(ComponentBindingSetup componentBindingSetup);
+        IChannelServicePolicy addConfigurationDetail(ComponentBindingSetup componentBindingSetup);
     }
 }

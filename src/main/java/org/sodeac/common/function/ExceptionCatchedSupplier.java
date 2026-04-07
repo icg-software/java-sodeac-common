@@ -24,7 +24,7 @@ public interface ExceptionCatchedSupplier<T> extends Supplier<T>
         {
             return getWithException();
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             if (e instanceof RuntimeException)
             {
@@ -32,15 +32,15 @@ public interface ExceptionCatchedSupplier<T> extends Supplier<T>
             }
             throw new RuntimeWrappedException(e);
         }
-        catch (Error e)
+        catch (final Error e)
         {
             throw new RuntimeWrappedException(e);
         }
     }
     
-    public T getWithException() throws Exception, Error;
+    T getWithException() throws Exception, Error;
     
-    public static <T> Supplier<T> wrap(ExceptionCatchedSupplier<T> supplier)
+    static <T> Supplier<T> wrap(final ExceptionCatchedSupplier<T> supplier)
     {
         return new Supplier<T>()
         {

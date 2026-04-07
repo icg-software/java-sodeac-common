@@ -34,7 +34,7 @@ public class H2DBUtilDriver implements IDBSchemaUtilsDriver
     protected volatile OSGiDriverRegistry internalBootstrapDep;
     
     @Override
-    public int driverIsApplicableFor(Map<String, Object> properties)
+    public int driverIsApplicableFor(final Map<String, Object> properties)
     {
         try
         {
@@ -44,15 +44,15 @@ public class H2DBUtilDriver implements IDBSchemaUtilsDriver
                 return IDriver.APPLICABLE_DEFAULT;
             }
         }
-        catch (Exception e) { }
+        catch (final Exception e) { }
         return IDriver.APPLICABLE_NONE;
     }
     
     @Override
     public void setPrimaryKey
         (
-            Connection connection, BranchNode<?, DBSchemaNodeType> schema,
-            BranchNode<?, TableNodeType> table, Map<String, Object> tableProperties
+            final Connection connection, final BranchNode<?, DBSchemaNodeType> schema,
+            final BranchNode<?, TableNodeType> table, final Map<String, Object> tableProperties
         ) throws SQLException
     {
         IDBSchemaUtilsDriver.setPrimaryKeyWithIndex(connection, schema, table, tableProperties, this);
@@ -61,15 +61,15 @@ public class H2DBUtilDriver implements IDBSchemaUtilsDriver
     @Override
     public String objectNameGuidelineFormat
         (
-            BranchNode<?, DBSchemaNodeType> schema, Connection connection,
-            String name, String type
+            final BranchNode<?, DBSchemaNodeType> schema, final Connection connection,
+            final String name, final String type
         )
     {
         return name == null ? name : name.toUpperCase();
     }
     
     @Override
-    public boolean isSequenceExists(String schema, String sequenceName, Connection connection) throws SQLException
+    public boolean isSequenceExists(final String schema, final String sequenceName, final Connection connection) throws SQLException
     {
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT count(*) FROM INFORMATION_SCHEMA.SEQUENCES WHERE UPPER(SEQUENCE_SCHEMA) = ? AND UPPER(SEQUENCE_NAME) = ?");
         try
@@ -94,12 +94,11 @@ public class H2DBUtilDriver implements IDBSchemaUtilsDriver
     }
     
     @Override
-    public void createSequence(String schema, String sequenceName, Connection connection, long min, long max, boolean cycle, Long cache) throws SQLException
+    public void createSequence(final String schema, final String sequenceName, final Connection connection, final long min, final long max, final boolean cycle, final Long cache) throws SQLException
     {
-        StringBuilder sqlBuilder = new StringBuilder("CREATE SEQUENCE IF NOT EXISTS " + schema + "." + sequenceName + " MINVALUE ? MAXVALUE ? ");
-        sqlBuilder.append(cycle ? "CYCLE" : "NOCYCLE");
-        sqlBuilder.append(cache == null ? " " : " CACHE ? ");
-        PreparedStatement preparedStatement = connection.prepareStatement(sqlBuilder.toString());
+        final String sqlBuilder = "CREATE SEQUENCE IF NOT EXISTS " + schema + "." + sequenceName + " MINVALUE ? MAXVALUE ? " + (cycle ? "CYCLE" : "NOCYCLE")
+                                  + (cache == null ? " " : " CACHE ? ");
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlBuilder);
         try
         {
             preparedStatement.setLong(1, min);
@@ -118,7 +117,7 @@ public class H2DBUtilDriver implements IDBSchemaUtilsDriver
     }
     
     @Override
-    public void dropSquence(String schema, String sequenceName, Connection connection) throws SQLException
+    public void dropSquence(final String schema, final String sequenceName, final Connection connection) throws SQLException
     {
         PreparedStatement preparedStatement = connection.prepareStatement("DROP SEQUENCE " + schema + "." + sequenceName);
         try
@@ -132,7 +131,7 @@ public class H2DBUtilDriver implements IDBSchemaUtilsDriver
     }
     
     @Override
-    public long nextFromSequence(String schema, String sequenceName, Connection connection) throws SQLException
+    public long nextFromSequence(final String schema, final String sequenceName, final Connection connection) throws SQLException
     {
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT NEXT VALUE FOR " + schema + "." + sequenceName);
         try

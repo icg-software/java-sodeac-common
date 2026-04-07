@@ -26,11 +26,11 @@ public interface ISubChannel<T> extends IDispatcherChannel<T>
      *
      * @return scope id
      */
-    public UUID getScopeId();
+    UUID getScopeId();
     
     /**
      * dispose this scope and remove it from global scope
      */
-    public void dispose();
+    void dispose();
     
 }

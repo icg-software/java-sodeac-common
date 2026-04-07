@@ -11,6 +11,7 @@
 package org.sodeac.common.xuri.ldapfilter;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -38,7 +39,7 @@ public class LDAPFilterEnDecodingTest
         assertEquals("attributename should be correct", "a", attribute.getName());
         assertEquals("attributeoperator should be correct", ComparativeOperator.EQUAL, attribute.getOperator());
         assertEquals("attributevalue should be correct", "b", attribute.getValue());
-        assertEquals("invertflag should be correct", false, attribute.isInvert());
+        assertFalse("invertflag should be correct", attribute.isInvert());
     }
     
     @Test
@@ -56,7 +57,7 @@ public class LDAPFilterEnDecodingTest
         assertEquals("attributename should be correct", "a", attribute.getName());
         assertEquals("attributeoperator should be correct", ComparativeOperator.EQUAL, attribute.getOperator());
         assertEquals("attributevalue should be correct", "b", attribute.getValue());
-        assertEquals("invertflag should be correct", true, attribute.isInvert());
+        assertTrue("invertflag should be correct", attribute.isInvert());
     }
     
     @Test
@@ -74,7 +75,7 @@ public class LDAPFilterEnDecodingTest
         assertEquals("attributename should be correct", "a", attribute.getName());
         assertEquals("attributeoperator should be correct", ComparativeOperator.LTE, attribute.getOperator());
         assertEquals("attributevalue should be correct", "b", attribute.getValue());
-        assertEquals("invertflag should be correct", false, attribute.isInvert());
+        assertFalse("invertflag should be correct", attribute.isInvert());
     }
     
     @Test
@@ -92,7 +93,7 @@ public class LDAPFilterEnDecodingTest
         assertEquals("attributename should be correct", "a", attribute.getName());
         assertEquals("attributeoperator should be correct", ComparativeOperator.LTE, attribute.getOperator());
         assertEquals("attributevalue should be correct", "b", attribute.getValue());
-        assertEquals("invertflag should be correct", true, attribute.isInvert());
+        assertTrue("invertflag should be correct", attribute.isInvert());
     }
     
     @Test
@@ -110,7 +111,7 @@ public class LDAPFilterEnDecodingTest
         assertEquals("attributename should be correct", "a", attribute.getName());
         assertEquals("attributeoperator should be correct", ComparativeOperator.GTE, attribute.getOperator());
         assertEquals("attributevalue should be correct", "b", attribute.getValue());
-        assertEquals("invertflag should be correct", false, attribute.isInvert());
+        assertFalse("invertflag should be correct", attribute.isInvert());
     }
     
     @Test
@@ -128,7 +129,7 @@ public class LDAPFilterEnDecodingTest
         assertEquals("attributename should be correct", "a", attribute.getName());
         assertEquals("attributeoperator should be correct", ComparativeOperator.GTE, attribute.getOperator());
         assertEquals("attributevalue should be correct", "b", attribute.getValue());
-        assertEquals("invertflag should be correct", true, attribute.isInvert());
+        assertTrue("invertflag should be correct", attribute.isInvert());
     }
     
     @Test
@@ -146,7 +147,7 @@ public class LDAPFilterEnDecodingTest
         assertEquals("attributename should be correct", "a", attribute.getName());
         assertEquals("attributeoperator should be correct", ComparativeOperator.APPROX, attribute.getOperator());
         assertEquals("attributevalue should be correct", "b", attribute.getValue());
-        assertEquals("invertflag should be correct", false, attribute.isInvert());
+        assertFalse("invertflag should be correct", attribute.isInvert());
     }
     
     @Test
@@ -164,7 +165,7 @@ public class LDAPFilterEnDecodingTest
         assertEquals("attributename should be correct", "a", attribute.getName());
         assertEquals("attributeoperator should be correct", ComparativeOperator.APPROX, attribute.getOperator());
         assertEquals("attributevalue should be correct", "b", attribute.getValue());
-        assertEquals("invertflag should be correct", true, attribute.isInvert());
+        assertTrue("invertflag should be correct", attribute.isInvert());
     }
     
     @Test
@@ -185,7 +186,7 @@ public class LDAPFilterEnDecodingTest
         
         attributeLinker = (CriteriaLinker) filterItem;
         assertEquals("parsed linker should contains correct operator", LogicalOperator.AND, attributeLinker.getOperator());
-        assertEquals("invertflag should be correct", false, attributeLinker.isInvert());
+        assertFalse("invertflag should be correct", attributeLinker.isInvert());
         
         List<IFilterItem> childs1 = attributeLinker.getLinkedItemList();
         assertEquals("parsed linker should contains correct linked item size", 2, childs1.size());
@@ -201,7 +202,7 @@ public class LDAPFilterEnDecodingTest
                 assertEquals("attributename should be correct", "a", attr1.getName());
                 assertEquals("attributeoperator should be correct", ComparativeOperator.EQUAL, attr1.getOperator());
                 assertEquals("attributevalue should be correct", "b", attr1.getValue());
-                assertEquals("invertflag should be correct", false, attr1.isInvert());
+                assertFalse("invertflag should be correct", attr1.isInvert());
             }
             
             if (i == 1)
@@ -210,7 +211,7 @@ public class LDAPFilterEnDecodingTest
                 assertEquals("attributename should be correct", "x", attr2.getName());
                 assertEquals("attributeoperator should be correct", ComparativeOperator.APPROX, attr2.getOperator());
                 assertEquals("attributevalue should be correct", "z", attr2.getValue());
-                assertEquals("invertflag should be correct", false, attr2.isInvert());
+                assertFalse("invertflag should be correct", attr2.isInvert());
             }
         }
     }
@@ -233,7 +234,7 @@ public class LDAPFilterEnDecodingTest
         
         attributeLinker = (CriteriaLinker) filterItem;
         assertEquals("parsed linker should contains correct operator", LogicalOperator.AND, attributeLinker.getOperator());
-        assertEquals("invertflag should be correct", false, attributeLinker.isInvert());
+        assertFalse("invertflag should be correct", attributeLinker.isInvert());
         
         List<IFilterItem> childs1 = attributeLinker.getLinkedItemList();
         assertEquals("parsed linker should contains correct linked item size", 2, childs1.size());
@@ -249,7 +250,7 @@ public class LDAPFilterEnDecodingTest
                 assertEquals("attributename should be correct", "a", attr1.getName());
                 assertEquals("attributeoperator should be correct", ComparativeOperator.EQUAL, attr1.getOperator());
                 assertEquals("attributevalue should be correct", "b", attr1.getValue());
-                assertEquals("invertflag should be correct", true, attr1.isInvert());
+                assertTrue("invertflag should be correct", attr1.isInvert());
             }
             
             if (i == 1)
@@ -258,7 +259,7 @@ public class LDAPFilterEnDecodingTest
                 assertEquals("attributename should be correct", "x", attr2.getName());
                 assertEquals("attributeoperator should be correct", ComparativeOperator.APPROX, attr2.getOperator());
                 assertEquals("attributevalue should be correct", "z", attr2.getValue());
-                assertEquals("invertflag should be correct", false, attr2.isInvert());
+                assertFalse("invertflag should be correct", attr2.isInvert());
             }
         }
     }
@@ -281,7 +282,7 @@ public class LDAPFilterEnDecodingTest
         
         attributeLinker = (CriteriaLinker) filterItem;
         assertEquals("parsed linker should contains correct operator", LogicalOperator.AND, attributeLinker.getOperator());
-        assertEquals("invertflag should be correct", false, attributeLinker.isInvert());
+        assertFalse("invertflag should be correct", attributeLinker.isInvert());
         
         List<IFilterItem> childs1 = attributeLinker.getLinkedItemList();
         assertEquals("parsed linker should contains correct linked item size", 2, childs1.size());
@@ -297,7 +298,7 @@ public class LDAPFilterEnDecodingTest
                 assertEquals("attributename should be correct", "a", attr1.getName());
                 assertEquals("attributeoperator should be correct", ComparativeOperator.EQUAL, attr1.getOperator());
                 assertEquals("attributevalue should be correct", "b", attr1.getValue());
-                assertEquals("invertflag should be correct", false, attr1.isInvert());
+                assertFalse("invertflag should be correct", attr1.isInvert());
             }
             
             if (i == 1)
@@ -306,7 +307,7 @@ public class LDAPFilterEnDecodingTest
                 assertEquals("attributename should be correct", "x", attr2.getName());
                 assertEquals("attributeoperator should be correct", ComparativeOperator.APPROX, attr2.getOperator());
                 assertEquals("attributevalue should be correct", "z", attr2.getValue());
-                assertEquals("invertflag should be correct", true, attr2.isInvert());
+                assertTrue("invertflag should be correct", attr2.isInvert());
             }
         }
     }
@@ -329,7 +330,7 @@ public class LDAPFilterEnDecodingTest
         
         attributeLinker = (CriteriaLinker) filterItem;
         assertEquals("parsed linker should contains correct operator", LogicalOperator.AND, attributeLinker.getOperator());
-        assertEquals("invertflag should be correct", false, attributeLinker.isInvert());
+        assertFalse("invertflag should be correct", attributeLinker.isInvert());
         
         List<IFilterItem> childs1 = attributeLinker.getLinkedItemList();
         assertEquals("parsed linker should contains correct linked item size", 2, childs1.size());
@@ -345,7 +346,7 @@ public class LDAPFilterEnDecodingTest
                 assertEquals("attributename should be correct", "a", attr1.getName());
                 assertEquals("attributeoperator should be correct", ComparativeOperator.EQUAL, attr1.getOperator());
                 assertEquals("attributevalue should be correct", "b", attr1.getValue());
-                assertEquals("invertflag should be correct", true, attr1.isInvert());
+                assertTrue("invertflag should be correct", attr1.isInvert());
             }
             
             if (i == 1)
@@ -354,7 +355,7 @@ public class LDAPFilterEnDecodingTest
                 assertEquals("attributename should be correct", "x", attr2.getName());
                 assertEquals("attributeoperator should be correct", ComparativeOperator.APPROX, attr2.getOperator());
                 assertEquals("attributevalue should be correct", "z", attr2.getValue());
-                assertEquals("invertflag should be correct", true, attr2.isInvert());
+                assertTrue("invertflag should be correct", attr2.isInvert());
             }
         }
     }
@@ -377,7 +378,7 @@ public class LDAPFilterEnDecodingTest
         
         attributeLinker = (CriteriaLinker) filterItem;
         assertEquals("parsed linker should contains correct operator", LogicalOperator.AND, attributeLinker.getOperator());
-        assertEquals("invertflag should be correct", true, attributeLinker.isInvert());
+        assertTrue("invertflag should be correct", attributeLinker.isInvert());
         
         List<IFilterItem> childs1 = attributeLinker.getLinkedItemList();
         assertEquals("parsed linker should contains correct linked item size", 2, childs1.size());
@@ -393,7 +394,7 @@ public class LDAPFilterEnDecodingTest
                 assertEquals("attributename should be correct", "a", attr1.getName());
                 assertEquals("attributeoperator should be correct", ComparativeOperator.EQUAL, attr1.getOperator());
                 assertEquals("attributevalue should be correct", "b", attr1.getValue());
-                assertEquals("invertflag should be correct", false, attr1.isInvert());
+                assertFalse("invertflag should be correct", attr1.isInvert());
             }
             
             if (i == 1)
@@ -402,7 +403,7 @@ public class LDAPFilterEnDecodingTest
                 assertEquals("attributename should be correct", "x", attr2.getName());
                 assertEquals("attributeoperator should be correct", ComparativeOperator.APPROX, attr2.getOperator());
                 assertEquals("attributevalue should be correct", "z", attr2.getValue());
-                assertEquals("invertflag should be correct", false, attr2.isInvert());
+                assertFalse("invertflag should be correct", attr2.isInvert());
             }
         }
     }
@@ -429,7 +430,7 @@ public class LDAPFilterEnDecodingTest
         
         attributeLinkerRoot = (CriteriaLinker) filterItem;
         assertEquals("parsed linker should contains correct operator", LogicalOperator.OR, attributeLinkerRoot.getOperator());
-        assertEquals("invertflag should be correct", false, attributeLinkerRoot.isInvert());
+        assertFalse("invertflag should be correct", attributeLinkerRoot.isInvert());
         
         List<IFilterItem> childs1 = attributeLinkerRoot.getLinkedItemList();
         assertEquals("parsed linker should contains correct linked item size", 2, childs1.size());
@@ -445,7 +446,7 @@ public class LDAPFilterEnDecodingTest
                 assertEquals("attributename should be correct", "a", attr1.getName());
                 assertEquals("attributeoperator should be correct", ComparativeOperator.EQUAL, attr1.getOperator());
                 assertEquals("attributevalue should be correct", "b", attr1.getValue());
-                assertEquals("invertflag should be correct", false, attr1.isInvert());
+                assertFalse("invertflag should be correct", attr1.isInvert());
             }
             
             if (i == 1)
@@ -453,7 +454,7 @@ public class LDAPFilterEnDecodingTest
                 assertTrue("parsed ldapfilter should be correct filteritem type", filterItem instanceof CriteriaLinker);
                 attributeLinkerNested = (CriteriaLinker) filterItem;
                 assertEquals("parsed linker should contains correct operator", LogicalOperator.AND, attributeLinkerNested.getOperator());
-                assertEquals("invertflag should be correct", true, attributeLinkerNested.isInvert());
+                assertTrue("invertflag should be correct", attributeLinkerNested.isInvert());
                 
                 List<IFilterItem> childs2 = attributeLinkerNested.getLinkedItemList();
                 assertEquals("parsed linker should contains correct linked item size", 2, childs2.size());
@@ -469,7 +470,7 @@ public class LDAPFilterEnDecodingTest
                         assertEquals("attributename should be correct", "x", attr2.getName());
                         assertEquals("attributeoperator should be correct", ComparativeOperator.APPROX, attr2.getOperator());
                         assertEquals("attributevalue should be correct", "z", attr2.getValue());
-                        assertEquals("invertflag should be correct", false, attr2.isInvert());
+                        assertFalse("invertflag should be correct", attr2.isInvert());
                     }
                     
                     if (j == 1)
@@ -479,7 +480,7 @@ public class LDAPFilterEnDecodingTest
                         assertEquals("attributename should be correct", "y", attr3.getName());
                         assertEquals("attributeoperator should be correct", ComparativeOperator.LTE, attr3.getOperator());
                         assertEquals("attributevalue should be correct", "1", attr3.getValue());
-                        assertEquals("invertflag should be correct", false, attr3.isInvert());
+                        assertFalse("invertflag should be correct", attr3.isInvert());
                     }
                 }
             }

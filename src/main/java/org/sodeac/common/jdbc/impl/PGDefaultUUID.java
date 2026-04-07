@@ -35,7 +35,7 @@ public class PGDefaultUUID implements IDefaultUUID
     protected volatile OSGiDriverRegistry internalBootstrapDep;
     
     @Override
-    public int driverIsApplicableFor(Map<String, Object> properties)
+    public int driverIsApplicableFor(final Map<String, Object> properties)
     {
         try
         {
@@ -45,17 +45,17 @@ public class PGDefaultUUID implements IDefaultUUID
                 return IDriver.APPLICABLE_DEFAULT;
             }
         }
-        catch (Exception e) { }
+        catch (final Exception e) { }
         return IDriver.APPLICABLE_NONE;
     }
     
     @Override
     public String createExpression
         (
-            BranchNode<?, ColumnNodeType> column,
-            Connection connection, String schemaName,
-            Dictionary<String, Object> properties,
-            IDBSchemaUtilsDriver driver
+            final BranchNode<?, ColumnNodeType> column,
+            final Connection connection, final String schemaName,
+            final Dictionary<String, Object> properties,
+            final IDBSchemaUtilsDriver driver
         )
     {
         try
@@ -70,7 +70,7 @@ public class PGDefaultUUID implements IDefaultUUID
                 preparedStatement.close();
             }
         }
-        catch (SQLException e)
+        catch (final SQLException e)
         {
             throw new RuntimeWrappedException(e);
         }

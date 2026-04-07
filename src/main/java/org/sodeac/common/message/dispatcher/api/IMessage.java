@@ -28,40 +28,40 @@ public interface IMessage<T>
      *
      * @return message payload
      */
-    public T getPayload();
+    T getPayload();
     
     /**
      * Getter for id of message.
      *
      * @return id of message
      */
-    public UUID getId();
+    UUID getId();
     
     /**
      * Getter of create timestamp of message in channel
      *
      * @return create timestamp of message
      */
-    public Long getCreateTimestamp();
+    Long getCreateTimestamp();
     
     /**
      * Getter of create sequence of message in channel
      *
      * @return create sequence of message
      */
-    public Long getSequence();
+    Long getSequence();
     
     /**
      *
      * @return message header of message
      */
-    public MessageHeader getMessageHeader();
+    MessageHeader getMessageHeader();
     
     /**
      *
      * @return parent channel
      */
-    public IDispatcherChannel<T> getChannel();
+    IDispatcherChannel<T> getChannel();
     
     /**
      * insert or update property for {@link IMessage}
@@ -71,7 +71,7 @@ public interface IMessage<T>
      *
      * @return overwritten property or null
      */
-    public Object setProperty(String key, Object value);
+    Object setProperty(String key, Object value);
     
     /**
      * get property for {@link IMessage} registered with {@code key}
@@ -80,28 +80,28 @@ public interface IMessage<T>
      *
      * @return property for {@link IMessage} registered with {@code key} or null, if absent
      */
-    public Object getProperty(String key);
+    Object getProperty(String key);
     
     /**
      * get set of all property-keys for {@link IMessage}
      *
      * @return set of all property-keys for {@link IMessage}
      */
-    public Set<String> getPropertyKeySet();
+    Set<String> getPropertyKeySet();
     
     /**
      * get immutable deep copy of property-keys {@link IMessage}
      *
      * @return immutable deep copy of property-keys {@link IMessage}
      */
-    public Map<String, Object> getProperties();
+    Map<String, Object> getProperties();
     
     /**
      * getter for {@link IOnMessageStoreResult} to inform schedule invoker about result
      *
      * @return schedule result object
      */
-    public IOnMessageStoreResult getScheduleResultObject();
+    IOnMessageStoreResult getScheduleResultObject();
     
     /**
      * get registered adapter
@@ -111,7 +111,7 @@ public interface IMessage<T>
      * @return registered adapter with specified adapterClass
      */
     @SuppressWarnings("unchecked")
-    public default <A> A getAdapter(Class<A> adapterClass)
+    default <A> A getAdapter(final Class<A> adapterClass)
     {
         return (A) getProperty(adapterClass.getCanonicalName());
     }
@@ -119,23 +119,23 @@ public interface IMessage<T>
     /**
      * remove event from parent channel
      */
-    public void removeFromChannel();
+    void removeFromChannel();
     
     /**
      *
      * @return true, if message is removed from channel
      */
-    public boolean isRemoved();
+    boolean isRemoved();
     
-    public Boolean getConsumed();
+    Boolean getConsumed();
     
-    public void setConsumed(Boolean consumed);
+    void setConsumed(Boolean consumed);
     
-    public Boolean getProcessed();
+    Boolean getProcessed();
     
-    public void setProcessed(Boolean processed);
+    void setProcessed(Boolean processed);
     
-    public default boolean isProcessed()
+    default boolean isProcessed()
     {
         Boolean processed = this.getProcessed();
         
@@ -147,7 +147,7 @@ public interface IMessage<T>
         return processed.booleanValue();
     }
     
-    public default boolean isConsumed()
+    default boolean isConsumed()
     {
         Boolean consumed = this.getConsumed();
         

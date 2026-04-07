@@ -59,7 +59,7 @@ public class LogServiceTest
         return connectionList = Statics.connections(createdSchema, "logger");
     }
     
-    public LogServiceTest(Callable<TestConnection> connectionFactory)
+    public LogServiceTest(final Callable<TestConnection> connectionFactory)
     {
         this.testConnectionFactory = connectionFactory;
     }
@@ -70,7 +70,7 @@ public class LogServiceTest
     @Before
     public void setUp() throws Exception
     {
-        this.testConnection = testConnectionFactory.call();
+        this.testConnection = this.testConnectionFactory.call();
     }
     
     @After
@@ -86,19 +86,19 @@ public class LogServiceTest
             {
                 this.testConnection.connection.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
     }
     
     @Test
     public void test00001LogServiceDatasoure() throws Exception
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
         
-        ConplierBean<DataSource> dataSourceProvider = new ConplierBean<DataSource>(testConnection.getDataSource());
+        ConplierBean<DataSource> dataSourceProvider = new ConplierBean<DataSource>(this.testConnection.getDataSource());
         
         RootBranchNode<LoggingTreeModel, LogEventListChunkNodeType> chunk = LoggingTreeModel.createLogEventListChunk(2, 1, 0, true);
         

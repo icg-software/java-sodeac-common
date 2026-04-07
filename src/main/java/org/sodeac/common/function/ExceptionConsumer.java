@@ -26,13 +26,13 @@ import java.util.function.Consumer;
 public interface ExceptionConsumer<T> extends Consumer<T>
 {
     @Override
-    default void accept(T t)
+    default void accept(final T t)
     {
         try
         {
             acceptWithException(t);
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             if (e instanceof RuntimeException)
             {
@@ -49,14 +49,14 @@ public interface ExceptionConsumer<T> extends Consumer<T>
      *
      * @throws Exception
      */
-    public void acceptWithException(T t) throws Exception;
+    void acceptWithException(T t) throws Exception;
     
-    public static <T> Consumer<T> wrap(ExceptionConsumer<T> consumer)
+    static <T> Consumer<T> wrap(final ExceptionConsumer<T> consumer)
     {
         return new Consumer<T>()
         {
             @Override
-            public void accept(T t)
+            public void accept(final T t)
             {
                 consumer.accept(t);
             }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.sodeac.common.jdbc;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -39,13 +40,13 @@ import org.sodeac.common.typedtree.TypedTreeMetaModel.RootBranchNode;
 
 public class ParseDBSchemaHandler implements ITypedTreeModelParserHandler
 {
-    public ParseDBSchemaHandler(String database)
+    public ParseDBSchemaHandler(final String database)
     {
         super();
         this.schema = DBSchemaTreeModel.newSchema(database);
     }
     
-    public ParseDBSchemaHandler(RootBranchNode<?, DBSchemaNodeType> schema)
+    public ParseDBSchemaHandler(final RootBranchNode<?, DBSchemaNodeType> schema)
     {
         super();
         this.schema = schema;
@@ -55,7 +56,7 @@ public class ParseDBSchemaHandler implements ITypedTreeModelParserHandler
     private Map<String, TableNode> tableNodes = new HashMap<>();
     
     @Override
-    public void startModel(BranchNodeMetaModel model, Set<INodeType<BranchNodeMetaModel, ?>> references)
+    public void startModel(final BranchNodeMetaModel model, final Set<INodeType<BranchNodeMetaModel, ?>> references)
     {
         Objects.nonNull(this.schema);
         Objects.nonNull(this.tableNodes);
@@ -65,7 +66,7 @@ public class ParseDBSchemaHandler implements ITypedTreeModelParserHandler
             return;
         }
         
-        for (INodeType<? extends BranchNodeMetaModel, ?> nodeType : references)
+        for (final INodeType<? extends BranchNodeMetaModel, ?> nodeType : references)
         {
             TableNode tableNode = TypedTreeJDBCHelper.parseTableNode(nodeType, MASK.ALL);
             
@@ -85,7 +86,7 @@ public class ParseDBSchemaHandler implements ITypedTreeModelParserHandler
         }
     }
     
-    public RootBranchNode<?, DBSchemaNodeType> fillSchemaSpec(Class<? extends TypedTreeMetaModel<?>>... modelClasses)
+    public RootBranchNode<?, DBSchemaNodeType> fillSchemaSpec(final Class<? extends TypedTreeMetaModel<?>>... modelClasses)
     {
         try
         {
@@ -93,13 +94,10 @@ public class ParseDBSchemaHandler implements ITypedTreeModelParserHandler
             if ((modelClasses != null) && (modelClasses.length > 0))
             {
                 modelClassSet = new HashSet<>();
-                for (Class<? extends TypedTreeMetaModel<?>> modelClass : modelClasses)
-                {
-                    modelClassSet.add(modelClass);
-                }
+                Collections.addAll(modelClassSet, modelClasses);
             }
             
-            for (Entry<String, TableNode> tableNodeEntry : this.tableNodes.entrySet())
+            for (final Entry<String, TableNode> tableNodeEntry : this.tableNodes.entrySet())
             {
                 Map<String, BranchNode<TableNodeType, IndexNodeType>> indexSet = new HashMap<>();
                 Map<String, BranchNode<TableNodeType, IndexNodeType>> uniqueIndexSet = new HashMap<>();
@@ -171,7 +169,7 @@ public class ParseDBSchemaHandler implements ITypedTreeModelParserHandler
                 
                 if (primaryKeyColumn.getIndexSet() != null)
                 {
-                    for (String indexName : primaryKeyColumn.getIndexSet())
+                    for (final String indexName : primaryKeyColumn.getIndexSet())
                     {
                         BranchNode<TableNodeType, IndexNodeType> indexSpec = tableSpec.create(TableNodeType.indices).setValue(IndexNodeType.name, indexName).setValue(IndexNodeType.unique, false);
                         indexSet.put(indexName, indexSpec);
@@ -181,7 +179,7 @@ public class ParseDBSchemaHandler implements ITypedTreeModelParserHandler
                 
                 if (primaryKeyColumn.getUniqueIndexSet() != null)
                 {
-                    for (String indexName : primaryKeyColumn.getUniqueIndexSet())
+                    for (final String indexName : primaryKeyColumn.getUniqueIndexSet())
                     {
                         BranchNode<TableNodeType, IndexNodeType> indexSpec = tableSpec.create(TableNodeType.indices).setValue(IndexNodeType.name, indexName).setValue(IndexNodeType.unique, true);
                         uniqueIndexSet.put(indexName, indexSpec);
@@ -225,7 +223,7 @@ public class ParseDBSchemaHandler implements ITypedTreeModelParserHandler
                     
                     if (referencedByColumnNode.getIndexSet() != null)
                     {
-                        for (String indexName : referencedByColumnNode.getIndexSet())
+                        for (final String indexName : referencedByColumnNode.getIndexSet())
                         {
                             BranchNode<TableNodeType, IndexNodeType> indexSpec = indexSet.get(indexName);
                             if (indexSpec == null)
@@ -239,7 +237,7 @@ public class ParseDBSchemaHandler implements ITypedTreeModelParserHandler
                     
                     if (referencedByColumnNode.getUniqueIndexSet() != null)
                     {
-                        for (String indexName : referencedByColumnNode.getUniqueIndexSet())
+                        for (final String indexName : referencedByColumnNode.getUniqueIndexSet())
                         {
                             BranchNode<TableNodeType, IndexNodeType> indexSpec = uniqueIndexSet.get(indexName);
                             if (indexSpec == null)
@@ -252,7 +250,7 @@ public class ParseDBSchemaHandler implements ITypedTreeModelParserHandler
                     }
                 }
                 
-                for (ColumnNode columnNode : tableNode.getColumnList())
+                for (final ColumnNode columnNode : tableNode.getColumnList())
                 {
                     if (columnNode == primaryKeyColumn)
                     {
@@ -304,7 +302,7 @@ public class ParseDBSchemaHandler implements ITypedTreeModelParserHandler
                     
                     if (columnNode.getIndexSet() != null)
                     {
-                        for (String indexName : columnNode.getIndexSet())
+                        for (final String indexName : columnNode.getIndexSet())
                         {
                             BranchNode<TableNodeType, IndexNodeType> indexSpec = indexSet.get(indexName);
                             if (indexSpec == null)
@@ -318,7 +316,7 @@ public class ParseDBSchemaHandler implements ITypedTreeModelParserHandler
                     
                     if (columnNode.getUniqueIndexSet() != null)
                     {
-                        for (String indexName : columnNode.getUniqueIndexSet())
+                        for (final String indexName : columnNode.getUniqueIndexSet())
                         {
                             BranchNode<TableNodeType, IndexNodeType> indexSpec = uniqueIndexSet.get(indexName);
                             if (indexSpec == null)
@@ -335,18 +333,18 @@ public class ParseDBSchemaHandler implements ITypedTreeModelParserHandler
                 uniqueIndexSet.clear();
             }
             
-            return schema;
+            return this.schema;
         }
         finally
         {
             
-            tableNodes.clear();
-            tableNodes = null;
-            schema = null;
+            this.tableNodes.clear();
+            this.tableNodes = null;
+            this.schema = null;
         }
     }
     
     @Override
-    public void onNodeType(BranchNodeMetaModel model, INodeType<BranchNodeMetaModel, ?> nodeType) { }
+    public void onNodeType(final BranchNodeMetaModel model, final INodeType<BranchNodeMetaModel, ?> nodeType) { }
     
 }

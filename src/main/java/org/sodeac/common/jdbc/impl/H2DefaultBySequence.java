@@ -36,7 +36,7 @@ public class H2DefaultBySequence implements IDefaultBySequence
     protected volatile OSGiDriverRegistry internalBootstrapDep;
     
     @Override
-    public int driverIsApplicableFor(Map<String, Object> properties)
+    public int driverIsApplicableFor(final Map<String, Object> properties)
     {
         try
         {
@@ -46,17 +46,17 @@ public class H2DefaultBySequence implements IDefaultBySequence
                 return IDriver.APPLICABLE_DEFAULT;
             }
         }
-        catch (Exception e) { }
+        catch (final Exception e) { }
         return IDriver.APPLICABLE_NONE;
     }
     
     @Override
     public String createExpression
         (
-            BranchNode<?, ColumnNodeType> column,
-            Connection connection, String schemaName,
-            Dictionary<String, Object> properties,
-            IDBSchemaUtilsDriver driver
+            final BranchNode<?, ColumnNodeType> column,
+            final Connection connection, final String schemaName,
+            final Dictionary<String, Object> properties,
+            final IDBSchemaUtilsDriver driver
         )
     {
         BranchNode<ColumnNodeType, SequenceNodeType> sequence = column.get(ColumnNodeType.sequence);
@@ -75,7 +75,8 @@ public class H2DefaultBySequence implements IDefaultBySequence
         return " NEXT VALUE FOR " + schemaName + "." + sequenceName + " ";
     }
     
-    public boolean updateRequired(BranchNode<?, ColumnNodeType> column, Connection connection, String schema, Dictionary<String, Object> properties, IDBSchemaUtilsDriver driver, String currentValue)
+    @Override
+    public boolean updateRequired(final BranchNode<?, ColumnNodeType> column, final Connection connection, final String schema, final Dictionary<String, Object> properties, final IDBSchemaUtilsDriver driver, final String currentValue)
     {
         String defaultValue = createExpression(column, connection, schema, properties, driver).replace("\"", "").toUpperCase().trim();
         String currentValue2 = currentValue.replace("\"", "").trim();

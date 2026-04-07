@@ -25,13 +25,13 @@ import org.sodeac.common.misc.RuntimeWrappedException;
 public interface ExceptionCatchedConsumer<T> extends Consumer<T>
 {
     @Override
-    default void accept(T t)
+    default void accept(final T t)
     {
         try
         {
             acceptWithException(t);
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             if (e instanceof RuntimeException)
             {
@@ -39,7 +39,7 @@ public interface ExceptionCatchedConsumer<T> extends Consumer<T>
             }
             throw new RuntimeWrappedException(e);
         }
-        catch (Error e)
+        catch (final Error e)
         {
             throw new RuntimeWrappedException(e);
         }
@@ -52,14 +52,14 @@ public interface ExceptionCatchedConsumer<T> extends Consumer<T>
      *
      * @throws Exception
      */
-    public void acceptWithException(T t) throws Exception, Error;
+    void acceptWithException(T t) throws Exception, Error;
     
-    public static <T> Consumer<T> wrap(ExceptionCatchedConsumer<T> consumer)
+    static <T> Consumer<T> wrap(final ExceptionCatchedConsumer<T> consumer)
     {
         return new Consumer<T>()
         {
             @Override
-            public void accept(T t)
+            public void accept(final T t)
             {
                 consumer.accept(t);
             }

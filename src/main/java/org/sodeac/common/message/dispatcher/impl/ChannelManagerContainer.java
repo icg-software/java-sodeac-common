@@ -37,10 +37,10 @@ public class ChannelManagerContainer
 {
     protected ChannelManagerContainer
         (
-            MessageDispatcherImpl dispatcher,
-            IDispatcherChannelManager queueController,
-            List<ComponentBindingSetup.BoundedByChannelId> boundByIdList,
-            List<ComponentBindingSetup.BoundedByChannelConfiguration> boundedByQueueConfigurationList
+            final MessageDispatcherImpl dispatcher,
+            final IDispatcherChannelManager queueController,
+            final List<ComponentBindingSetup.BoundedByChannelId> boundByIdList,
+            final List<ComponentBindingSetup.BoundedByChannelConfiguration> boundedByQueueConfigurationList
         )
     {
         super();
@@ -53,7 +53,7 @@ public class ChannelManagerContainer
         
         if (boundByIdList != null)
         {
-            for (ComponentBindingSetup.BoundedByChannelId config : boundByIdList)
+            for (final ComponentBindingSetup.BoundedByChannelId config : boundByIdList)
             {
                 if (config.isChannelMaster())
                 {
@@ -90,46 +90,45 @@ public class ChannelManagerContainer
     {
         if (this.channelController == null)
         {
-            implementsIOnTaskDone = false;
-            implementsIOnTaskError = false;
-            implementsIOnTaskTimeout = false;
-            implementsIOnChannelAttach = false;
-            implementsIOnChannelDetach = false;
-            implementsIOnChannelSignal = false;
-            implementsIOnMessageStore = false;
-            implementsIOnMessageRemove = false;
-            implementsIOnTaskTimeout = false;
-            implementsIOnMessageStoreSnapshot = false;
-            implementsIOnMessageRemoveSnapshot = false;
+            this.implementsIOnTaskDone = false;
+            this.implementsIOnTaskError = false;
+            this.implementsIOnTaskTimeout = false;
+            this.implementsIOnChannelAttach = false;
+            this.implementsIOnChannelDetach = false;
+            this.implementsIOnChannelSignal = false;
+            this.implementsIOnMessageStore = false;
+            this.implementsIOnMessageRemove = false;
+            this.implementsIOnTaskTimeout = false;
+            this.implementsIOnMessageStoreSnapshot = false;
+            this.implementsIOnMessageRemoveSnapshot = false;
             return;
         }
         
-        if (this.channelController instanceof IFeatureConfigurableManager)
+        if (this.channelController instanceof final IFeatureConfigurableManager featureConfigurableController)
         {
-            IFeatureConfigurableManager featureConfigurableController = (IFeatureConfigurableManager) this.channelController;
-            implementsIOnTaskDone = featureConfigurableController.implementsOnTaskDone();
-            implementsIOnTaskError = featureConfigurableController.implementsOnTaskError();
-            implementsIOnTaskTimeout = featureConfigurableController.implementsOnTaskTimeout();
-            implementsIOnChannelAttach = featureConfigurableController.implementsOnChannelAttach();
-            implementsIOnChannelDetach = featureConfigurableController.implementsOnChannelDetach();
-            implementsIOnChannelSignal = featureConfigurableController.implementsOnChannelSignal();
-            implementsIOnMessageStore = featureConfigurableController.implementsOnMessageStore();
-            implementsIOnMessageRemove = featureConfigurableController.implementsOnMessageRemove();
-            implementsIOnMessageStoreSnapshot = featureConfigurableController.implementsOnMessageStoreSnapshot();
-            implementsIOnMessageRemoveSnapshot = featureConfigurableController.implementsOnMessageRemoveSnapshot();
+            this.implementsIOnTaskDone = featureConfigurableController.implementsOnTaskDone();
+            this.implementsIOnTaskError = featureConfigurableController.implementsOnTaskError();
+            this.implementsIOnTaskTimeout = featureConfigurableController.implementsOnTaskTimeout();
+            this.implementsIOnChannelAttach = featureConfigurableController.implementsOnChannelAttach();
+            this.implementsIOnChannelDetach = featureConfigurableController.implementsOnChannelDetach();
+            this.implementsIOnChannelSignal = featureConfigurableController.implementsOnChannelSignal();
+            this.implementsIOnMessageStore = featureConfigurableController.implementsOnMessageStore();
+            this.implementsIOnMessageRemove = featureConfigurableController.implementsOnMessageRemove();
+            this.implementsIOnMessageStoreSnapshot = featureConfigurableController.implementsOnMessageStoreSnapshot();
+            this.implementsIOnMessageRemoveSnapshot = featureConfigurableController.implementsOnMessageRemoveSnapshot();
         }
         else
         {
-            implementsIOnTaskDone = this.channelController instanceof IOnTaskDone;
-            implementsIOnTaskError = this.channelController instanceof IOnTaskError;
-            implementsIOnTaskTimeout = this.channelController instanceof IOnTaskTimeout;
-            implementsIOnChannelAttach = this.channelController instanceof IOnChannelAttach;
-            implementsIOnChannelDetach = this.channelController instanceof IOnChannelDetach;
-            implementsIOnChannelSignal = this.channelController instanceof IOnChannelSignal;
-            implementsIOnMessageStore = this.channelController instanceof IOnMessageStore;
-            implementsIOnMessageRemove = this.channelController instanceof IOnMessageRemove;
-            implementsIOnMessageStoreSnapshot = this.channelController instanceof IOnMessageStoreSnapshot;
-            implementsIOnMessageRemoveSnapshot = this.channelController instanceof IOnMessageRemoveSnapshot;
+            this.implementsIOnTaskDone = this.channelController instanceof IOnTaskDone;
+            this.implementsIOnTaskError = this.channelController instanceof IOnTaskError;
+            this.implementsIOnTaskTimeout = this.channelController instanceof IOnTaskTimeout;
+            this.implementsIOnChannelAttach = this.channelController instanceof IOnChannelAttach;
+            this.implementsIOnChannelDetach = this.channelController instanceof IOnChannelDetach;
+            this.implementsIOnChannelSignal = this.channelController instanceof IOnChannelSignal;
+            this.implementsIOnMessageStore = this.channelController instanceof IOnMessageStore;
+            this.implementsIOnMessageRemove = this.channelController instanceof IOnMessageRemove;
+            this.implementsIOnMessageStoreSnapshot = this.channelController instanceof IOnMessageStoreSnapshot;
+            this.implementsIOnMessageRemoveSnapshot = this.channelController instanceof IOnMessageRemoveSnapshot;
         }
     }
     
@@ -138,7 +137,7 @@ public class ChannelManagerContainer
         List<ControllerFilterObjects> list = new ArrayList<ControllerFilterObjects>();
         if (this.boundedByQueueConfigurationList != null)
         {
-            for (ComponentBindingSetup.BoundedByChannelConfiguration boundedByQueueConfiguration : boundedByQueueConfigurationList)
+            for (final ComponentBindingSetup.BoundedByChannelConfiguration boundedByQueueConfiguration : this.boundedByQueueConfigurationList)
             {
                 if (boundedByQueueConfiguration.getLdapFilter() == null)
                 {
@@ -171,19 +170,19 @@ public class ChannelManagerContainer
                     
                     list.add(controllerFilterObjects);
                 }
-                catch (Exception e)
+                catch (final Exception e)
                 {
-                    dispatcher.logError("parse bounded channel configuration " + boundedByQueueConfiguration.getLdapFilter(), e);
+                    this.dispatcher.logError("parse bounded channel configuration " + boundedByQueueConfiguration.getLdapFilter(), e);
                 }
             }
         }
         this.filterObjectList = list;
         this.filterAttributes = new HashSet<String>();
-        for (ControllerFilterObjects controllerFilterObjects : this.filterObjectList)
+        for (final ControllerFilterObjects controllerFilterObjects : this.filterObjectList)
         {
             if (controllerFilterObjects.attributes != null)
             {
-                for (String attribute : controllerFilterObjects.attributes)
+                for (final String attribute : controllerFilterObjects.attributes)
                 {
                     this.filterAttributes.add(attribute);
                 }
@@ -193,37 +192,37 @@ public class ChannelManagerContainer
     
     public IDispatcherChannelManager getChannelManager()
     {
-        return channelController;
+        return this.channelController;
     }
     
     public boolean isRegistered()
     {
-        return registered;
+        return this.registered;
     }
     
-    public void setRegistered(boolean registered)
+    public void setRegistered(final boolean registered)
     {
         this.registered = registered;
     }
     
     public List<ComponentBindingSetup.BoundedByChannelConfiguration> getBoundedByChannelConfigurationList()
     {
-        return boundedByQueueConfigurationList;
+        return this.boundedByQueueConfigurationList;
     }
     
     public List<ComponentBindingSetup.BoundedByChannelId> getBoundByIdList()
     {
-        return boundByIdList;
+        return this.boundByIdList;
     }
     
     public List<ControllerFilterObjects> getFilterObjectList()
     {
-        return filterObjectList;
+        return this.filterObjectList;
     }
     
     public Set<String> getFilterAttributeSet()
     {
-        return filterAttributes;
+        return this.filterAttributes;
     }
     
     public boolean isChannelMaster()
@@ -250,65 +249,65 @@ public class ChannelManagerContainer
     
     public boolean isImplementingIOnTaskDone()
     {
-        return implementsIOnTaskDone;
+        return this.implementsIOnTaskDone;
     }
     
     public boolean isImplementingIOnTaskError()
     {
-        return implementsIOnTaskError;
+        return this.implementsIOnTaskError;
     }
     
     public boolean isImplementingIOnChannelAttach()
     {
-        return implementsIOnChannelAttach;
+        return this.implementsIOnChannelAttach;
     }
     
     public boolean isImplementingIOnChannelDetach()
     {
-        return implementsIOnChannelDetach;
+        return this.implementsIOnChannelDetach;
     }
     
     public boolean isImplementingIOnChannelSignal()
     {
-        return implementsIOnChannelSignal;
+        return this.implementsIOnChannelSignal;
     }
     
     public boolean isImplementingIOnMessageStore()
     {
-        return implementsIOnMessageStore;
+        return this.implementsIOnMessageStore;
     }
     
     public boolean isImplementingIOnMessageRemove()
     {
-        return implementsIOnMessageRemove;
+        return this.implementsIOnMessageRemove;
     }
     
     public boolean isImplementingIOnMessageStoreSnapshot()
     {
-        return implementsIOnMessageStoreSnapshot;
+        return this.implementsIOnMessageStoreSnapshot;
     }
     
     public boolean isImplementingIOnMessageRemoveSnapshot()
     {
-        return implementsIOnMessageRemoveSnapshot;
+        return this.implementsIOnMessageRemoveSnapshot;
     }
     
     public boolean isImplementingIOnTaskTimeout()
     {
-        return implementsIOnTaskTimeout;
+        return this.implementsIOnTaskTimeout;
     }
     
     public List<ComponentBindingSetup> getComponentConfigurationList()
     {
         List<ComponentBindingSetup> list = new ArrayList<ComponentBindingSetup>();
         
-        if (boundByIdList != null)
+        if (this.boundByIdList != null)
         {
-            list.addAll(boundByIdList);
+            list.addAll(this.boundByIdList);
         }
-        if (boundedByQueueConfigurationList != null)
+        if (this.boundedByQueueConfigurationList != null)
         {
-            list.addAll(boundedByQueueConfigurationList);
+            list.addAll(this.boundedByQueueConfigurationList);
         }
         
         return list;

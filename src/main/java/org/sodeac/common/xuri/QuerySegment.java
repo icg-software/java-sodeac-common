@@ -42,7 +42,7 @@ public class QuerySegment implements Serializable, IExtensible
      * @param coding     the format of segment (not required / null, json or string)
      * @param value      the value of segment
      */
-    protected QuerySegment(String expression, String type, String name, String coding, String value)
+    protected QuerySegment(final String expression, final String type, final String name, final String coding, final String value)
     {
         super();
         this.expression = expression;
@@ -66,7 +66,7 @@ public class QuerySegment implements Serializable, IExtensible
      *
      * @param expression
      */
-    protected void setExpression(String expression)
+    protected void setExpression(final String expression)
     {
         this.expression = expression;
     }
@@ -76,7 +76,7 @@ public class QuerySegment implements Serializable, IExtensible
      *
      * @param extension
      */
-    protected void addExtension(IExtension<?> extension)
+    protected void addExtension(final IExtension<?> extension)
     {
         if (this.extensions == null)
         {
@@ -87,7 +87,7 @@ public class QuerySegment implements Serializable, IExtensible
     }
     
     @Override
-    public IExtension<?> getExtension(String type)
+    public IExtension<?> getExtension(final String type)
     {
         List<IExtension<?>> extensionList = getExtensionList();
         
@@ -95,7 +95,7 @@ public class QuerySegment implements Serializable, IExtensible
         {
             return extensionList.get(0);
         }
-        for (IExtension<?> extension : extensionList)
+        for (final IExtension<?> extension : extensionList)
         {
             if (type.equals(extension.getType()))
             {
@@ -108,7 +108,7 @@ public class QuerySegment implements Serializable, IExtensible
     @Override
     public List<IExtension<?>> getExtensionList()
     {
-        List<IExtension<?>> extensionList = extensionsImmutable;
+        List<IExtension<?>> extensionList = this.extensionsImmutable;
         if (extensionList == null)
         {
             extensionList = this.extensionsImmutable;
@@ -123,10 +123,10 @@ public class QuerySegment implements Serializable, IExtensible
     }
     
     @Override
-    public List<IExtension<?>> getExtensionList(String type)
+    public List<IExtension<?>> getExtensionList(final String type)
     {
         List<IExtension<?>> extensionList = new ArrayList<IExtension<?>>();
-        for (IExtension<?> extension : getExtensionList())
+        for (final IExtension<?> extension : getExtensionList())
         {
             if (type.equals(extension.getType()))
             {
@@ -143,7 +143,7 @@ public class QuerySegment implements Serializable, IExtensible
      */
     public String getExpression()
     {
-        return expression;
+        return this.expression;
     }
     
     /**
@@ -153,7 +153,7 @@ public class QuerySegment implements Serializable, IExtensible
      */
     public String getType()
     {
-        return type;
+        return this.type;
     }
     
     /**
@@ -163,7 +163,7 @@ public class QuerySegment implements Serializable, IExtensible
      */
     public String getName()
     {
-        return name;
+        return this.name;
     }
     
     /**
@@ -173,7 +173,7 @@ public class QuerySegment implements Serializable, IExtensible
      */
     public String getCoding()
     {
-        return coding;
+        return this.coding;
     }
     
     /**
@@ -183,7 +183,7 @@ public class QuerySegment implements Serializable, IExtensible
      */
     public String getValue()
     {
-        return value;
+        return this.value;
     }
     
 }

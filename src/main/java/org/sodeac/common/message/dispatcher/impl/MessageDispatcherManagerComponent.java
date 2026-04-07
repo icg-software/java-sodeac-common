@@ -29,21 +29,21 @@ public class MessageDispatcherManagerComponent
     @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC)
     protected volatile OSGiDriverRegistry driverRegistry;
     
-    private static HandleManagerUpdates handleManagerUpdates = new HandleManagerUpdates();
-    private static HandleServiceUpdates handleServiceUpdates = new HandleServiceUpdates();
+    private static final HandleManagerUpdates handleManagerUpdates = new HandleManagerUpdates();
+    private static final HandleServiceUpdates handleServiceUpdates = new HandleServiceUpdates();
     
     @Activate
     public void activate()
     {
-        driverRegistry.addDriverUpdateListener(IDispatcherChannelSystemManager.class, handleManagerUpdates);
-        driverRegistry.addDriverUpdateListener(IDispatcherChannelSystemService.class, handleServiceUpdates);
+        this.driverRegistry.addDriverUpdateListener(IDispatcherChannelSystemManager.class, handleManagerUpdates);
+        this.driverRegistry.addDriverUpdateListener(IDispatcherChannelSystemService.class, handleServiceUpdates);
     }
     
     @Deactivate
     public void deactivate()
     {
-        driverRegistry.removeDriverUpdateListener(IDispatcherChannelSystemManager.class, handleManagerUpdates);
-        driverRegistry.removeDriverUpdateListener(IDispatcherChannelSystemService.class, handleServiceUpdates);
+        this.driverRegistry.removeDriverUpdateListener(IDispatcherChannelSystemManager.class, handleManagerUpdates);
+        this.driverRegistry.removeDriverUpdateListener(IDispatcherChannelSystemService.class, handleServiceUpdates);
         
         ((MessageDispatcherManagerImpl) MessageDispatcherManagerImpl.get()).shutdownAllDispatcher();
     }
@@ -52,7 +52,7 @@ public class MessageDispatcherManagerComponent
     {
         
         @Override
-        public void accept(IDispatcherChannelSystemManager newManager, IDispatcherChannelSystemManager oldManager)
+        public void accept(final IDispatcherChannelSystemManager newManager, final IDispatcherChannelSystemManager oldManager)
         {
             if (oldManager != null)
             {
@@ -70,7 +70,7 @@ public class MessageDispatcherManagerComponent
     private static class HandleServiceUpdates implements BiConsumer<IDispatcherChannelSystemService, IDispatcherChannelSystemService>
     {
         @Override
-        public void accept(IDispatcherChannelSystemService newService, IDispatcherChannelSystemService oldService)
+        public void accept(final IDispatcherChannelSystemService newService, final IDispatcherChannelSystemService oldService)
         {
             if (oldService != null)
             {

@@ -20,5 +20,5 @@ package org.sodeac.common.message.dispatcher.api;
 public interface IStateInfoProvider
 {
     // TODO remove
-    public String getStateInfo();
+    String getStateInfo();
 }

@@ -38,7 +38,7 @@ public class SimpleShrinkableCacheTest
         assertEquals("value should be correct", 3, ssc.getView().size());
         
         int index = 0;
-        for (Entry<String, String> entry : ssc.getView().entrySet())
+        for (final Entry<String, String> entry : ssc.getView().entrySet())
         {
             if (index == 0)
             {
@@ -67,7 +67,7 @@ public class SimpleShrinkableCacheTest
         ssc.shrink(1, null);
         assertEquals("value should be correct", 1, ssc.getView().size());
         
-        for (Entry<String, String> entry : ssc.getView().entrySet())
+        for (final Entry<String, String> entry : ssc.getView().entrySet())
         {
             assertEquals("value should be correct", "ABC", entry.getKey());
             assertEquals("value should be correct", "abc", entry.getValue());

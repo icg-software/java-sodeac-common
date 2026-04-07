@@ -23,17 +23,17 @@ public class Version implements Comparable<Version>
         super();
     }
     
-    public Version(int major)
+    public Version(final int major)
     {
         this(major, 0, 0);
     }
     
-    public Version(int major, int minor)
+    public Version(final int major, final int minor)
     {
         this(major, minor, 0);
     }
     
-    public Version(int major, int minor, int service)
+    public Version(final int major, final int minor, final int service)
     {
         super();
         this.major = major;
@@ -47,17 +47,17 @@ public class Version implements Comparable<Version>
     
     public int getMajor()
     {
-        return major;
+        return this.major;
     }
     
     public int getMinor()
     {
-        return minor;
+        return this.minor;
     }
     
     public int getService()
     {
-        return service;
+        return this.service;
     }
     
     public String toString()
@@ -65,7 +65,7 @@ public class Version implements Comparable<Version>
         return this.major + "." + this.minor + "." + this.service;
     }
     
-    public static Version fromAnnotation(org.sodeac.common.annotation.Version version)
+    public static Version fromAnnotation(final org.sodeac.common.annotation.Version version)
     {
         if (version.major() == -1 && version.minor() == -1 && version.service() == -1)
         {
@@ -74,7 +74,7 @@ public class Version implements Comparable<Version>
         return new Version(version.major(), version.minor(), version.service());
     }
     
-    public static Version fromString(String versionText)
+    public static Version fromString(final String versionText)
     {
         int major = 1;
         int minor = 0;
@@ -121,14 +121,14 @@ public class Version implements Comparable<Version>
     {
         final int prime = 31;
         int result = 1;
-        result = prime * result + major;
-        result = prime * result + minor;
-        result = prime * result + service;
+        result = prime * result + this.major;
+        result = prime * result + this.minor;
+        result = prime * result + this.service;
         return result;
     }
     
     @Override
-    public boolean equals(Object obj)
+    public boolean equals(final Object obj)
     {
         if (this == obj)
         {
@@ -143,19 +143,15 @@ public class Version implements Comparable<Version>
             return false;
         }
         Version other = (Version) obj;
-        if (major != other.major)
+        if (this.major != other.major)
         {
             return false;
         }
-        if (minor != other.minor)
+        if (this.minor != other.minor)
         {
             return false;
         }
-        if (service != other.service)
-        {
-            return false;
-        }
-        return true;
+        return this.service == other.service;
     }
     
     @Override

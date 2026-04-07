@@ -22,7 +22,7 @@ import java.lang.annotation.Target;
 @Target(FIELD)
 public @interface Association
 {
-    public enum AssociationType
+    enum AssociationType
     {AGGREGATION, COMPOSITION}
     
     AssociationType type();

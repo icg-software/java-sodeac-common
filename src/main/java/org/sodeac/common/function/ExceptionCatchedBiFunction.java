@@ -18,13 +18,13 @@ public interface ExceptionCatchedBiFunction<T, U, R> extends BiFunction<T, U, R>
 {
     
     @Override
-    default R apply(T t, U u)
+    default R apply(final T t, final U u)
     {
         try
         {
             return applyWithException(t, u);
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             if (e instanceof RuntimeException)
             {
@@ -32,7 +32,7 @@ public interface ExceptionCatchedBiFunction<T, U, R> extends BiFunction<T, U, R>
             }
             throw new RuntimeWrappedException(e);
         }
-        catch (Error e)
+        catch (final Error e)
         {
             throw new RuntimeWrappedException(e);
         }
@@ -48,14 +48,14 @@ public interface ExceptionCatchedBiFunction<T, U, R> extends BiFunction<T, U, R>
      *
      * @throws Exception
      */
-    public R applyWithException(T t, U u) throws Exception, Error;
+    R applyWithException(T t, U u) throws Exception, Error;
     
-    public static <T, U, R> BiFunction<T, U, R> wrap(ExceptionCatchedBiFunction<T, U, R> function)
+    static <T, U, R> BiFunction<T, U, R> wrap(final ExceptionCatchedBiFunction<T, U, R> function)
     {
         return new BiFunction<T, U, R>()
         {
             @Override
-            public R apply(T t, U u)
+            public R apply(final T t, final U u)
             {
                 return function.apply(t, u);
             }

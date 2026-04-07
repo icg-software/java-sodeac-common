@@ -24,7 +24,7 @@ public interface IDefaultCurrentTime extends IDefaultValueExpressionDriver
 {
     
     @Override
-    default int driverIsApplicableFor(Map<String, Object> properties)
+    default int driverIsApplicableFor(final Map<String, Object> properties)
     {
         return IDriver.APPLICABLE_DEFAULT;
     }
@@ -32,11 +32,11 @@ public interface IDefaultCurrentTime extends IDefaultValueExpressionDriver
     @Override
     default String createExpression
         (
-            BranchNode<?, ColumnNodeType> column,
-            Connection connection,
-            String schema,
-            Dictionary<String, Object> properties,
-            IDBSchemaUtilsDriver driver
+            final BranchNode<?, ColumnNodeType> column,
+            final Connection connection,
+            final String schema,
+            final Dictionary<String, Object> properties,
+            final IDBSchemaUtilsDriver driver
         )
     {
         return driver.getFunctionExpression("CURRENT_TIME");

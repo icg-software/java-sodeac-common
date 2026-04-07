@@ -26,7 +26,7 @@ public interface IEncodingExtensionHandler<T>
      *
      * @return
      */
-    public String getType();
+    String getType();
     
     /**
      * encodes extension object of type {@link T} to string encoded extension
@@ -35,5 +35,5 @@ public interface IEncodingExtensionHandler<T>
      *
      * @return
      */
-    public String encodeToString(T extensionDataObject);
+    String encodeToString(T extensionDataObject);
 }

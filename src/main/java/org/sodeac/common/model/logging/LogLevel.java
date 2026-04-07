@@ -47,18 +47,18 @@ public enum LogLevel
      */
     FATAL(6);
     
-    private LogLevel(int intValue)
+    LogLevel(final int intValue)
     {
         this.intValue = intValue;
     }
     
     private static volatile Set<LogLevel> ALL = null;
     
-    private int intValue;
+    private final int intValue;
     
     public int getIntValue()
     {
-        return intValue;
+        return this.intValue;
     }
     
     public static Set<LogLevel> getAll()
@@ -71,9 +71,9 @@ public enum LogLevel
         return LogLevel.ALL;
     }
     
-    public static LogLevel findByInteger(int value)
+    public static LogLevel findByInteger(final int value)
     {
-        for (LogLevel logLevel : getAll())
+        for (final LogLevel logLevel : getAll())
         {
             if (logLevel.intValue == value)
             {
@@ -83,9 +83,9 @@ public enum LogLevel
         return null;
     }
     
-    public static LogLevel findByName(String name)
+    public static LogLevel findByName(final String name)
     {
-        for (LogLevel logLevel : getAll())
+        for (final LogLevel logLevel : getAll())
         {
             if (logLevel.name().equalsIgnoreCase(name))
             {

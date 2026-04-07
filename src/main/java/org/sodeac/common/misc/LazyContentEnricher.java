@@ -43,7 +43,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
         return lce;
     }
     
-    public LazyContentEnricher<T, R, E> defineContentEnricher(Consumer<LazyContentEnricher<T, R, E>> contentEnricher)
+    public LazyContentEnricher<T, R, E> defineContentEnricher(final Consumer<LazyContentEnricher<T, R, E>> contentEnricher)
     {
         this.contentEnricher = contentEnricher;
         return this;
@@ -56,12 +56,12 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
     
     public Map<T, Set<R>> getReferencesByObjectsToBeEnriched()
     {
-        return referencesByObjectsToBeEnriched;
+        return this.referencesByObjectsToBeEnriched;
     }
     
     public Map<R, Set<T>> getObjectsToBeEnrichByReference()
     {
-        return objectsToBeEnrichByReference;
+        return this.objectsToBeEnrichByReference;
     }
     
     public LazyContentEnricher<T, R, E> invokeContentEnricher()
@@ -84,7 +84,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
     {
         try
         {
-            for (Set<R> reference : this.referencesByObjectsToBeEnriched.values())
+            for (final Set<R> reference : this.referencesByObjectsToBeEnriched.values())
             {
                 try
                 {
@@ -103,7 +103,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
         
         try
         {
-            for (Set<T> objects : this.objectsToBeEnrichByReference.values())
+            for (final Set<T> objects : this.objectsToBeEnrichByReference.values())
             {
                 try
                 {
@@ -130,7 +130,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
         catch (Exception | Error e) { }
     }
     
-    public T register(T objectToBeEnriched, R reference)
+    public T register(final T objectToBeEnriched, final R reference)
     {
         Objects.requireNonNull(objectToBeEnriched, "object to be enriched not defined");
         Objects.requireNonNull(reference, "reference not defined");
@@ -162,22 +162,22 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
             {
                 ((AutoCloseable) this.contentEnricher).close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
         
     }
     
     public interface IClearable
     {
-        public void clear();
+        void clear();
     }
     
     public static class CommonContentEnricher<T, R, E> implements AutoCloseable, IClearable, Consumer<LazyContentEnricher<T, R, E>>
     {
-        public static enum CardinalityMode
+        public enum CardinalityMode
         {ONE_REFERENCE_TO_ONE_ENRICHMENT, ONE_REFERENCE_TO_MANY_ENRICHMENTS}
         
-        public static enum WorkingMode
+        public enum WorkingMode
         {DEDICATED, ON_THE_FLY}
         
         private CardinalityMode cardinalityMode = CardinalityMode.ONE_REFERENCE_TO_ONE_ENRICHMENT;
@@ -210,7 +210,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
         private E enrichment = null;
         
         @Override
-        public void accept(LazyContentEnricher<T, R, E> lazyContentEnricher)
+        public void accept(final LazyContentEnricher<T, R, E> lazyContentEnricher)
         {
             Collection<R> originReferences = lazyContentEnricher.getReferences();
             this.lazyContentEnricher = lazyContentEnricher;
@@ -231,7 +231,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
                         {
                             this.references = new ArrayList<>(originReferences.size());
                             referencesToClear = true;
-                            for (R reference : originReferences)
+                            for (final R reference : originReferences)
                             {
                                 if (!this.enrichmentManyCache.containsKey(reference))
                                 {
@@ -251,7 +251,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
                         {
                             this.references = new ArrayList<>(originReferences.size());
                             referencesToClear = true;
-                            for (R reference : originReferences)
+                            for (final R reference : originReferences)
                             {
                                 if (!this.enrichmentOneCache.containsKey(reference))
                                 {
@@ -267,11 +267,11 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
                         this.enricheCycleHandler.accept(this.references, this);
                     }
                     
-                    for (Entry<R, Set<T>> objectsEntry : this.lazyContentEnricher.getObjectsToBeEnrichByReference().entrySet())
+                    for (final Entry<R, Set<T>> objectsEntry : this.lazyContentEnricher.getObjectsToBeEnrichByReference().entrySet())
                     {
                         this.reference = objectsEntry.getKey();
                         
-                        for (T object : objectsEntry.getValue())
+                        for (final T object : objectsEntry.getValue())
                         {
                             this.objectToBeEnriched = object;
                             
@@ -281,7 +281,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
                                 
                                 if (enrichmentList != null)
                                 {
-                                    for (E enrichment : enrichmentList)
+                                    for (final E enrichment : enrichmentList)
                                     {
                                         this.enrichment = enrichment;
                                         
@@ -316,7 +316,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
                         this.enrichment = null;
                     }
                 }
-                else if (workingMode == WorkingMode.ON_THE_FLY)
+                else if (this.workingMode == WorkingMode.ON_THE_FLY)
                 {
                     if (this.cardinalityMode == CardinalityMode.ONE_REFERENCE_TO_MANY_ENRICHMENTS)
                     {
@@ -328,7 +328,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
                         {
                             this.references = new LinkedHashSet<>();
                             referencesToClear = true;
-                            for (R reference : originReferences)
+                            for (final R reference : originReferences)
                             {
                                 if (this.enrichmentManyCache.containsKey(reference))
                                 {
@@ -336,14 +336,14 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
                                     Collection<T> objects = this.lazyContentEnricher.getObjectsToBeEnrichByReference().get(reference);
                                     if (objects != null)
                                     {
-                                        for (T object : objects)
+                                        for (final T object : objects)
                                         {
                                             this.objectToBeEnriched = object;
                                             
                                             List<E> enrichmentList = this.enrichmentManyCache.get(reference);
                                             if (enrichmentList != null)
                                             {
-                                                for (E enrichment : enrichmentList)
+                                                for (final E enrichment : enrichmentList)
                                                 {
                                                     this.enrichment = enrichment;
                                                     
@@ -382,7 +382,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
                         {
                             this.references = new LinkedHashSet<>();
                             referencesToClear = true;
-                            for (R reference : originReferences)
+                            for (final R reference : originReferences)
                             {
                                 if (this.enrichmentOneCache.containsKey(reference))
                                 {
@@ -390,7 +390,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
                                     Collection<T> objects = this.lazyContentEnricher.getObjectsToBeEnrichByReference().get(reference);
                                     if (objects != null)
                                     {
-                                        for (T object : objects)
+                                        for (final T object : objects)
                                         {
                                             this.objectToBeEnriched = object;
                                             this.enrichment = this.enrichmentOneCache.get(reference);
@@ -435,7 +435,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
                     {
                         this.references.clear();
                     }
-                    catch (Exception e) { }
+                    catch (final Exception e) { }
                 }
                 
                 this.lazyContentEnricher = null;
@@ -448,11 +448,11 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
             
         }
         
-        public void supplyEnrichment(R reference, E enrichment)
+        public void supplyEnrichment(final R reference, final E enrichment)
         {
             if (this.workingMode == WorkingMode.DEDICATED)
             {
-                if (cardinalityMode == CardinalityMode.ONE_REFERENCE_TO_ONE_ENRICHMENT)
+                if (this.cardinalityMode == CardinalityMode.ONE_REFERENCE_TO_ONE_ENRICHMENT)
                 {
                     this.enrichmentOneCache.put(reference, enrichment);
                 }
@@ -476,7 +476,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
                 if (objects != null)
                 {
                     boolean first = true;
-                    for (T object : objects)
+                    for (final T object : objects)
                     {
                         this.objectToBeEnriched = object;
                         if (first)
@@ -504,7 +504,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
                 
                 if (this.cacheSize > 0)
                 {
-                    if (cardinalityMode == CardinalityMode.ONE_REFERENCE_TO_ONE_ENRICHMENT)
+                    if (this.cardinalityMode == CardinalityMode.ONE_REFERENCE_TO_ONE_ENRICHMENT)
                     {
                         this.enrichmentOneCache.put(reference, enrichment);
                     }
@@ -526,7 +526,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
             }
         }
         
-        public E createBlankEnrichment(R reference)
+        public E createBlankEnrichment(final R reference)
         {
             this.reference = reference;
             Set<T> objects = this.lazyContentEnricher.getObjectsToBeEnrichByReference().get(reference);
@@ -548,22 +548,22 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
         
         public Collection<R> getReferences()
         {
-            return references;
+            return this.references;
         }
         
         public T getObjectToBeEnriched()
         {
-            return objectToBeEnriched;
+            return this.objectToBeEnriched;
         }
         
         public R getReference()
         {
-            return reference;
+            return this.reference;
         }
         
         public E getEnrichment()
         {
-            return enrichment;
+            return this.enrichment;
         }
         
         @Override
@@ -573,7 +573,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
             {
                 if (this.enrichmentManyCache != null)
                 {
-                    if (removeFromCacheHandler == null)
+                    if (this.removeFromCacheHandler == null)
                     {
                         this.enrichmentManyCache.shrink(this.cacheSize, null);
                     }
@@ -582,7 +582,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
                         this.enrichmentManyCache.shrink(this.cacheSize, (r, l) -> {
                                                             if (l != null)
                                                             {
-                                                                l.forEach(e -> removeFromCacheHandler.accept(r, e));
+                                                                l.forEach(e -> this.removeFromCacheHandler.accept(r, e));
                                                                 l.clear();
                                                             }
                                                         }
@@ -591,7 +591,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
                 }
                 if (this.enrichmentOneCache != null)
                 {
-                    this.enrichmentOneCache.shrink(this.cacheSize, removeFromCacheHandler);
+                    this.enrichmentOneCache.shrink(this.cacheSize, this.removeFromCacheHandler);
                 }
             }
             else
@@ -603,7 +603,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
                         this.enrichmentManyCache.getView().forEach((r, l) -> {
                             if (l != null)
                             {
-                                l.forEach(e -> removeFromCacheHandler.accept(r, e));
+                                l.forEach(e -> this.removeFromCacheHandler.accept(r, e));
                                 l.clear();
                             }
                         });
@@ -614,7 +614,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
                 {
                     if (this.removeFromCacheHandler != null)
                     {
-                        this.enrichmentOneCache.getView().forEach((r, e) -> removeFromCacheHandler.accept(r, e));
+                        this.enrichmentOneCache.getView().forEach((r, e) -> this.removeFromCacheHandler.accept(r, e));
                     }
                     this.enrichmentOneCache.clear();
                 }
@@ -634,7 +634,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
                         this.enrichmentManyCache.getView().forEach((r, l) -> {
                             if (l != null)
                             {
-                                l.forEach(e -> removeFromCacheHandler.accept(r, e));
+                                l.forEach(e -> this.removeFromCacheHandler.accept(r, e));
                                 l.clear();
                             }
                         });
@@ -645,7 +645,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
                 {
                     if (this.removeFromCacheHandler != null)
                     {
-                        this.enrichmentOneCache.getView().forEach((r, e) -> removeFromCacheHandler.accept(r, e));
+                        this.enrichmentOneCache.getView().forEach((r, e) -> this.removeFromCacheHandler.accept(r, e));
                     }
                     this.enrichmentOneCache.clear();
                 }
@@ -668,7 +668,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
         
         public LazyContentEnricher<T, R, E> getLazyContentEnricher()
         {
-            return lazyContentEnricher;
+            return this.lazyContentEnricher;
         }
         
         public static WorkingModeOption newBuilder()
@@ -686,7 +686,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
             
             private CommonContentEnricher cce = null;
             
-            public CardinalityModeOption workingMode(WorkingMode workingMode)
+            public CardinalityModeOption workingMode(final WorkingMode workingMode)
             {
                 if (workingMode != null)
                 {
@@ -698,7 +698,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
         
         public static class CardinalityModeOption
         {
-            private CardinalityModeOption(CommonContentEnricher cce)
+            private CardinalityModeOption(final CommonContentEnricher cce)
             {
                 super();
                 this.cce = cce;
@@ -706,7 +706,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
             
             private CommonContentEnricher cce = null;
             
-            public TypeOfObjetToBeEnrichedOption cardinalityMode(CardinalityMode cardinalityMode)
+            public TypeOfObjetToBeEnrichedOption cardinalityMode(final CardinalityMode cardinalityMode)
             {
                 if (cardinalityMode != null)
                 {
@@ -718,7 +718,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
         
         public static class TypeOfObjetToBeEnrichedOption
         {
-            private TypeOfObjetToBeEnrichedOption(CommonContentEnricher cce)
+            private TypeOfObjetToBeEnrichedOption(final CommonContentEnricher cce)
             {
                 super();
                 this.cce = cce;
@@ -726,7 +726,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
             
             private CommonContentEnricher cce = null;
             
-            public <T> TypeOfReferenceOption<T> typeOfObjectsToBeEnriched(Class<T> tp)
+            public <T> TypeOfReferenceOption<T> typeOfObjectsToBeEnriched(final Class<T> tp)
             {
                 return new TypeOfReferenceOption<>(this.cce);
             }
@@ -734,7 +734,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
         
         public static class TypeOfReferenceOption<T>
         {
-            private TypeOfReferenceOption(CommonContentEnricher cce)
+            private TypeOfReferenceOption(final CommonContentEnricher cce)
             {
                 super();
                 this.cce = cce;
@@ -742,7 +742,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
             
             private CommonContentEnricher cce = null;
             
-            public <R> TypeOfEnrichmentOption<T, R> typeOfReferences(Class<R> tp)
+            public <R> TypeOfEnrichmentOption<T, R> typeOfReferences(final Class<R> tp)
             {
                 return new TypeOfEnrichmentOption<>(this.cce);
             }
@@ -750,7 +750,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
         
         public static class TypeOfEnrichmentOption<T, R>
         {
-            private TypeOfEnrichmentOption(CommonContentEnricher cce)
+            private TypeOfEnrichmentOption(final CommonContentEnricher cce)
             {
                 super();
                 this.cce = cce;
@@ -758,7 +758,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
             
             private CommonContentEnricher cce = null;
             
-            public <E> NewBlankHandlerOption<T, R, E> typeOfEnrichments(Class<E> tp)
+            public <E> NewBlankHandlerOption<T, R, E> typeOfEnrichments(final Class<E> tp)
             {
                 return new NewBlankHandlerOption<>(this.cce);
             }
@@ -766,7 +766,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
         
         public static class NewBlankHandlerOption<T, R, E>
         {
-            private NewBlankHandlerOption(CommonContentEnricher cce)
+            private NewBlankHandlerOption(final CommonContentEnricher cce)
             {
                 super();
                 this.cce = cce;
@@ -774,7 +774,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
             
             private CommonContentEnricher cce = null;
             
-            public CloneHandlerOption<T, R, E> newBlankEnrichmentHandler(Function<CommonContentEnricher<T, R, E>, E> newBlankEnrichmentHandler)
+            public CloneHandlerOption<T, R, E> newBlankEnrichmentHandler(final Function<CommonContentEnricher<T, R, E>, E> newBlankEnrichmentHandler)
             {
                 Objects.requireNonNull(newBlankEnrichmentHandler, "handler to create new blank enrichments not defined");
                 this.cce.newBlankEnrichmentHandler = newBlankEnrichmentHandler;
@@ -785,7 +785,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
         
         public static class CloneHandlerOption<T, R, E>
         {
-            private CloneHandlerOption(CommonContentEnricher cce)
+            private CloneHandlerOption(final CommonContentEnricher cce)
             {
                 super();
                 this.cce = cce;
@@ -793,7 +793,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
             
             private CommonContentEnricher cce = null;
             
-            public EnrichHandlerWithOptionallyLinkOption<T, R, E> cloneEnrichmentHandler(Function<CommonContentEnricher<T, R, E>, E> cloneEnrichmentHandler)
+            public EnrichHandlerWithOptionallyLinkOption<T, R, E> cloneEnrichmentHandler(final Function<CommonContentEnricher<T, R, E>, E> cloneEnrichmentHandler)
             {
                 this.cce.cloneEnrichmentHandler = cloneEnrichmentHandler;
                 return new EnrichHandlerWithOptionallyLinkOption(this.cce);
@@ -802,7 +802,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
         
         public static class EnrichHandlerOption<T, R, E>
         {
-            private EnrichHandlerOption(CommonContentEnricher cce)
+            private EnrichHandlerOption(final CommonContentEnricher cce)
             {
                 super();
                 this.cce = cce;
@@ -810,7 +810,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
             
             protected CommonContentEnricher cce = null;
             
-            public HandleRemoveFromCacheOption<T, R, E> enrichCycleHandler(BiConsumer<Collection<R>, CommonContentEnricher<T, R, E>> enricheCycleHandler)
+            public HandleRemoveFromCacheOption<T, R, E> enrichCycleHandler(final BiConsumer<Collection<R>, CommonContentEnricher<T, R, E>> enricheCycleHandler)
             {
                 this.cce.enricheCycleHandler = enricheCycleHandler;
                 return new HandleRemoveFromCacheOption<>(this.cce);
@@ -819,12 +819,12 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
         
         public static class EnrichHandlerWithOptionallyLinkOption<T, R, E> extends EnrichHandlerOption<T, R, E>
         {
-            private EnrichHandlerWithOptionallyLinkOption(CommonContentEnricher cce)
+            private EnrichHandlerWithOptionallyLinkOption(final CommonContentEnricher cce)
             {
                 super(cce);
             }
             
-            public EnrichHandlerOption<T, R, E> linkEnrichmentHandler(Consumer<CommonContentEnricher<T, R, E>> linkEnrichmentHandler)
+            public EnrichHandlerOption<T, R, E> linkEnrichmentHandler(final Consumer<CommonContentEnricher<T, R, E>> linkEnrichmentHandler)
             {
                 super.cce.linkEnrichmentHandler = linkEnrichmentHandler;
                 return this;
@@ -833,7 +833,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
         
         public static class PrebuildOption<T, R, E>
         {
-            public PrebuildOption(CommonContentEnricher cce)
+            public PrebuildOption(final CommonContentEnricher cce)
             {
                 super();
                 this.cce = cce;
@@ -859,7 +859,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
         
         public static class SetDefaultCacheOption<T, R, E> extends PrebuildOption<T, R, E>
         {
-            public SetDefaultCacheOption(CommonContentEnricher cce)
+            public SetDefaultCacheOption(final CommonContentEnricher cce)
             {
                 super(cce);
             }
@@ -877,12 +877,12 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
         
         public static class HandleRemoveFromCacheOption<T, R, E> extends SetDefaultCacheOption<T, R, E>
         {
-            public HandleRemoveFromCacheOption(CommonContentEnricher cce)
+            public HandleRemoveFromCacheOption(final CommonContentEnricher cce)
             {
                 super(cce);
             }
             
-            public SetDefaultCacheOption<T, R, E> removeFromCacheHandler(BiConsumer<R, E> removeFromCacheHandler)
+            public SetDefaultCacheOption<T, R, E> removeFromCacheHandler(final BiConsumer<R, E> removeFromCacheHandler)
             {
                 super.cce.removeFromCacheHandler = removeFromCacheHandler;
                 return this;
@@ -891,7 +891,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
         
         public static class PreBuilder<T, R, E>
         {
-            public PreBuilder(CommonContentEnricher cce)
+            public PreBuilder(final CommonContentEnricher cce)
             {
                 super();
                 this.cce = cce;
@@ -913,7 +913,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
                 return builder;
             }
             
-            public Builder<T, R, E> putProperty(String key, Object value)
+            public Builder<T, R, E> putProperty(final String key, final Object value)
             {
                 return new Builder(this.cce).property(key, value);
             }
@@ -931,7 +931,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
         
         public static class Builder<T, R, E>
         {
-            public Builder(CommonContentEnricher cce)
+            public Builder(final CommonContentEnricher cce)
             {
                 super();
                 this.cce = new CommonContentEnricher();
@@ -954,7 +954,7 @@ public class LazyContentEnricher<T, R, E> implements AutoCloseable
             
             protected CommonContentEnricher cce = null;
             
-            public Builder<T, R, E> property(String key, Object value)
+            public Builder<T, R, E> property(final String key, final Object value)
             {
                 Objects.requireNonNull(key, "key no defined");
                 

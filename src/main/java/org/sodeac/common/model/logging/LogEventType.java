@@ -41,14 +41,14 @@ public enum LogEventType
      */
     TASK("sdc://identifier.specs/org.sodeac.logging/logitemtype/task");
     
-    private LogEventType(String uri)
+    LogEventType(final String uri)
     {
         this.uri = uri;
     }
     
     private static volatile Set<LogEventType> ALL = null;
     
-    private String uri;
+    private final String uri;
     
     public static Set<LogEventType> getAll()
     {
@@ -60,9 +60,9 @@ public enum LogEventType
         return LogEventType.ALL;
     }
     
-    public static LogEventType findByURI(String uri)
+    public static LogEventType findByURI(final String uri)
     {
-        for (LogEventType type : getAll())
+        for (final LogEventType type : getAll())
         {
             if (type.uri.equals(uri))
             {
@@ -72,9 +72,9 @@ public enum LogEventType
         return null;
     }
     
-    public static LogEventType findByName(String name)
+    public static LogEventType findByName(final String name)
     {
-        for (LogEventType type : getAll())
+        for (final LogEventType type : getAll())
         {
             if (type.name().equalsIgnoreCase(name))
             {

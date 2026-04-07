@@ -18,14 +18,14 @@ public class SupplierCounterWrapper<T> implements Supplier<T>
     private Supplier<T> supplier = null;
     private AtomicLong count = null;
     
-    private SupplierCounterWrapper(Supplier<T> supplier)
+    private SupplierCounterWrapper(final Supplier<T> supplier)
     {
         super();
         this.supplier = supplier;
         this.count = new AtomicLong(0);
     }
     
-    public static <T> SupplierCounterWrapper<T> forSupplier(Supplier<T> supplier)
+    public static <T> SupplierCounterWrapper<T> forSupplier(final Supplier<T> supplier)
     {
         return new SupplierCounterWrapper<>(supplier);
     }
@@ -34,7 +34,7 @@ public class SupplierCounterWrapper<T> implements Supplier<T>
     public T get()
     {
         T t = this.supplier.get();
-        count.incrementAndGet();
+        this.count.incrementAndGet();
         return t;
     }
     

@@ -121,9 +121,9 @@ public class MessageHeader implements Serializable
     private volatile String boundedContext = null;
     private volatile boolean boundedContextLocked = false;
     
-    private volatile String accessToken = null; // TODO // grant token for permissionSet ??
-    private volatile String idToken = null; // TODO
-    private volatile String refreshToken = null; // TODO
+    private final String accessToken = null; // TODO // grant token for permissionSet ??
+    private final String idToken = null; // TODO
+    private final String refreshToken = null; // TODO
     
     private volatile String destination = null;
     private volatile boolean destinationLocked = false;
@@ -203,7 +203,7 @@ public class MessageHeader implements Serializable
      *
      * @return message header
      */
-    public MessageHeader lockHeader(String messageHeader)
+    public MessageHeader lockHeader(final String messageHeader)
     {
         switch (messageHeader)
         {
@@ -356,7 +356,7 @@ public class MessageHeader implements Serializable
      */
     public UUID getMessageID()
     {
-        return messageID;
+        return this.messageID;
     }
     
     /**
@@ -380,7 +380,7 @@ public class MessageHeader implements Serializable
      */
     public UUID getCorrelationID()
     {
-        return correlationID;
+        return this.correlationID;
     }
     
     /**
@@ -390,7 +390,7 @@ public class MessageHeader implements Serializable
      *
      * @return message headers
      */
-    public MessageHeader setCorrelationID(UUID correlationID)
+    public MessageHeader setCorrelationID(final UUID correlationID)
     {
         if (!this.correlationIDLocked)
         {
@@ -406,7 +406,7 @@ public class MessageHeader implements Serializable
      */
     public Integer getPriority()
     {
-        return priority;
+        return this.priority;
     }
     
     /**
@@ -416,7 +416,7 @@ public class MessageHeader implements Serializable
      *
      * @return message header
      */
-    public MessageHeader setPriority(Integer priority)
+    public MessageHeader setPriority(final Integer priority)
     {
         if (!this.priorityLocked)
         {
@@ -432,7 +432,7 @@ public class MessageHeader implements Serializable
      */
     public Boolean getGuaranteedDelivery()
     {
-        return guaranteedDelivery;
+        return this.guaranteedDelivery;
     }
     
     /**
@@ -442,7 +442,7 @@ public class MessageHeader implements Serializable
      *
      * @return message header
      */
-    public MessageHeader setGuaranteedDelivery(Boolean guaranteedDelivery)
+    public MessageHeader setGuaranteedDelivery(final Boolean guaranteedDelivery)
     {
         if (!this.guaranteedDeliveryLocked)
         {
@@ -458,7 +458,7 @@ public class MessageHeader implements Serializable
      */
     public Long getTimestamp()
     {
-        return timestamp;
+        return this.timestamp;
     }
     
     /**
@@ -468,7 +468,7 @@ public class MessageHeader implements Serializable
      *
      * @return message header
      */
-    public MessageHeader setTimestamp(Long timestamp)
+    public MessageHeader setTimestamp(final Long timestamp)
     {
         if (!this.timestampLocked)
         {
@@ -484,7 +484,7 @@ public class MessageHeader implements Serializable
      */
     public Long getExpiration()
     {
-        return expiration;
+        return this.expiration;
     }
     
     /**
@@ -494,7 +494,7 @@ public class MessageHeader implements Serializable
      *
      * @return message header
      */
-    public MessageHeader setExpiration(Long expiration)
+    public MessageHeader setExpiration(final Long expiration)
     {
         if (!this.expirationLocked)
         {
@@ -510,7 +510,7 @@ public class MessageHeader implements Serializable
      */
     public UUID getConnection()
     {
-        return connection;
+        return this.connection;
     }
     
     /**
@@ -520,7 +520,7 @@ public class MessageHeader implements Serializable
      *
      * @return message header
      */
-    public MessageHeader setConnection(UUID connection)
+    public MessageHeader setConnection(final UUID connection)
     {
         if (!this.connectionLocked)
         {
@@ -536,7 +536,7 @@ public class MessageHeader implements Serializable
      */
     public UUID getSession()
     {
-        return session;
+        return this.session;
     }
     
     /**
@@ -546,7 +546,7 @@ public class MessageHeader implements Serializable
      *
      * @return message header
      */
-    public MessageHeader setSession(UUID session)
+    public MessageHeader setSession(final UUID session)
     {
         if (!this.serviceLocked)
         {
@@ -562,7 +562,7 @@ public class MessageHeader implements Serializable
      */
     public UUID getWorkflow()
     {
-        return workflow;
+        return this.workflow;
     }
     
     /**
@@ -572,9 +572,9 @@ public class MessageHeader implements Serializable
      *
      * @return
      */
-    public MessageHeader setWorkflow(UUID workflow)
+    public MessageHeader setWorkflow(final UUID workflow)
     {
-        if (!workflowLocked)
+        if (!this.workflowLocked)
         {
             this.workflow = workflow;
         }
@@ -588,7 +588,7 @@ public class MessageHeader implements Serializable
      */
     public String getTopic()
     {
-        return topic;
+        return this.topic;
     }
     
     /**
@@ -598,7 +598,7 @@ public class MessageHeader implements Serializable
      *
      * @return message header
      */
-    public MessageHeader setTopic(String topic)
+    public MessageHeader setTopic(final String topic)
     {
         if (!this.topicLocked)
         {
@@ -614,7 +614,7 @@ public class MessageHeader implements Serializable
      */
     public String getQueue()
     {
-        return queue;
+        return this.queue;
     }
     
     /**
@@ -624,7 +624,7 @@ public class MessageHeader implements Serializable
      *
      * @return message header
      */
-    public MessageHeader setQueue(String queue)
+    public MessageHeader setQueue(final String queue)
     {
         if (!this.queueLocked)
         {
@@ -640,7 +640,7 @@ public class MessageHeader implements Serializable
      */
     public String getMessageType()
     {
-        return messageType;
+        return this.messageType;
     }
     
     /**
@@ -650,7 +650,7 @@ public class MessageHeader implements Serializable
      *
      * @return message header
      */
-    public MessageHeader setMessageType(String messageType)
+    public MessageHeader setMessageType(final String messageType)
     {
         if (!this.messageTypeLocked)
         {
@@ -666,7 +666,7 @@ public class MessageHeader implements Serializable
      */
     public String getMessageFormat()
     {
-        return messageFormat;
+        return this.messageFormat;
     }
     
     /**
@@ -676,7 +676,7 @@ public class MessageHeader implements Serializable
      *
      * @return message header
      */
-    public MessageHeader setMessageFormat(String messageFormat)
+    public MessageHeader setMessageFormat(final String messageFormat)
     {
         if (!this.messageFormatLocked)
         {
@@ -692,7 +692,7 @@ public class MessageHeader implements Serializable
      */
     public String getService()
     {
-        return service;
+        return this.service;
     }
     
     /**
@@ -702,9 +702,9 @@ public class MessageHeader implements Serializable
      *
      * @return message header
      */
-    public MessageHeader setService(String service)
+    public MessageHeader setService(final String service)
     {
-        if (!serviceLocked)
+        if (!this.serviceLocked)
         {
             this.service = service;
         }
@@ -718,7 +718,7 @@ public class MessageHeader implements Serializable
      */
     public String getDomain()
     {
-        return domain;
+        return this.domain;
     }
     
     /**
@@ -728,7 +728,7 @@ public class MessageHeader implements Serializable
      *
      * @return message header
      */
-    public MessageHeader setDomain(String domain)
+    public MessageHeader setDomain(final String domain)
     {
         if (!this.domainLocked)
         {
@@ -744,7 +744,7 @@ public class MessageHeader implements Serializable
      */
     public String getBoundedContext()
     {
-        return boundedContext;
+        return this.boundedContext;
     }
     
     /**
@@ -754,7 +754,7 @@ public class MessageHeader implements Serializable
      *
      * @return message header
      */
-    public MessageHeader setBoundedContext(String boundedContext)
+    public MessageHeader setBoundedContext(final String boundedContext)
     {
         if (!this.boundedContextLocked)
         {
@@ -770,7 +770,7 @@ public class MessageHeader implements Serializable
      */
     public String getDestination()
     {
-        return destination;
+        return this.destination;
     }
     
     /**
@@ -780,7 +780,7 @@ public class MessageHeader implements Serializable
      *
      * @return message header
      */
-    public MessageHeader setDestination(String destination)
+    public MessageHeader setDestination(final String destination)
     {
         if (!this.destinationLocked)
         {
@@ -796,7 +796,7 @@ public class MessageHeader implements Serializable
      */
     public String getUser()
     {
-        return user;
+        return this.user;
     }
     
     /**
@@ -806,7 +806,7 @@ public class MessageHeader implements Serializable
      *
      * @return message parameter
      */
-    public MessageHeader setUser(String user)
+    public MessageHeader setUser(final String user)
     {
         if (!this.userLocked)
         {
@@ -822,7 +822,7 @@ public class MessageHeader implements Serializable
      */
     public String getSource()
     {
-        return source;
+        return this.source;
     }
     
     /**
@@ -832,7 +832,7 @@ public class MessageHeader implements Serializable
      *
      * @return message header
      */
-    public MessageHeader setSource(String source)
+    public MessageHeader setSource(final String source)
     {
         if (!this.sourceLocked)
         {
@@ -848,7 +848,7 @@ public class MessageHeader implements Serializable
      */
     public String getReplyTo()
     {
-        return replyTo;
+        return this.replyTo;
     }
     
     /**
@@ -858,7 +858,7 @@ public class MessageHeader implements Serializable
      *
      * @return message header
      */
-    public MessageHeader setReplyTo(String replyTo)
+    public MessageHeader setReplyTo(final String replyTo)
     {
         if (!this.replyToLocked)
         {
@@ -874,7 +874,7 @@ public class MessageHeader implements Serializable
      */
     public Long getDeliveryTime()
     {
-        return deliveryTime;
+        return this.deliveryTime;
     }
     
     /**
@@ -884,7 +884,7 @@ public class MessageHeader implements Serializable
      *
      * @return message header
      */
-    public MessageHeader setDeliveryTime(Long deliveryTime)
+    public MessageHeader setDeliveryTime(final Long deliveryTime)
     {
         if (!this.deliveryTimeLocked)
         {
@@ -900,7 +900,7 @@ public class MessageHeader implements Serializable
      */
     public Boolean getRedelivered()
     {
-        return redelivered;
+        return this.redelivered;
     }
     
     /**
@@ -910,7 +910,7 @@ public class MessageHeader implements Serializable
      *
      * @return message header
      */
-    public MessageHeader setRedelivered(Boolean redelivered)
+    public MessageHeader setRedelivered(final Boolean redelivered)
     {
         if (!this.redeliveredLocked)
         {
@@ -926,7 +926,7 @@ public class MessageHeader implements Serializable
      */
     public Long getSequence()
     {
-        return sequence;
+        return this.sequence;
     }
     
     /**
@@ -936,7 +936,7 @@ public class MessageHeader implements Serializable
      *
      * @return message header
      */
-    public MessageHeader setSequence(Long sequence)
+    public MessageHeader setSequence(final Long sequence)
     {
         if (!this.sequenceLocked)
         {
@@ -952,7 +952,7 @@ public class MessageHeader implements Serializable
      */
     public Long getPosition()
     {
-        return position;
+        return this.position;
     }
     
     /**
@@ -962,7 +962,7 @@ public class MessageHeader implements Serializable
      *
      * @return message header
      */
-    public MessageHeader setPosition(Long position)
+    public MessageHeader setPosition(final Long position)
     {
         if (!this.positionLocked)
         {
@@ -978,7 +978,7 @@ public class MessageHeader implements Serializable
      */
     public Long getSize()
     {
-        return size;
+        return this.size;
     }
     
     /**
@@ -988,7 +988,7 @@ public class MessageHeader implements Serializable
      *
      * @return message header
      */
-    public MessageHeader setSize(Long size)
+    public MessageHeader setSize(final Long size)
     {
         if (!this.sizeLocked)
         {
@@ -1004,7 +1004,7 @@ public class MessageHeader implements Serializable
      */
     public Boolean getEnd()
     {
-        return end;
+        return this.end;
     }
     
     /**
@@ -1014,7 +1014,7 @@ public class MessageHeader implements Serializable
      *
      * @return message header
      */
-    public MessageHeader setEnd(Boolean end)
+    public MessageHeader setEnd(final Boolean end)
     {
         if (!this.endLocked)
         {
@@ -1041,7 +1041,7 @@ public class MessageHeader implements Serializable
      *
      * @return message header
      */
-    public MessageHeader addProperty(String key, Object value)
+    public MessageHeader addProperty(final String key, final Object value)
     {
         if (this.propertiesLocked)
         {
@@ -1065,7 +1065,7 @@ public class MessageHeader implements Serializable
      *
      * @return message header
      */
-    public MessageHeader removeProperty(String key)
+    public MessageHeader removeProperty(final String key)
     {
         if (this.propertiesLocked)
         {
@@ -1111,7 +1111,7 @@ public class MessageHeader implements Serializable
      *
      * @return property specified by key
      */
-    public Object getPropertyValue(String key)
+    public Object getPropertyValue(final String key)
     {
         if (this.properties == null)
         {
@@ -1130,7 +1130,7 @@ public class MessageHeader implements Serializable
      * @return typed property specified by key
      */
     @SuppressWarnings("unchecked")
-    public <T> T getPropertyValue(String key, Class<T> type)
+    public <T> T getPropertyValue(final String key, final Class<T> type)
     {
         if (this.properties == null)
         {
@@ -1145,65 +1145,65 @@ public class MessageHeader implements Serializable
     {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((boundedContext == null) ? 0 : boundedContext.hashCode());
-        result = prime * result + (boundedContextLocked ? 1231 : 1237);
-        result = prime * result + ((connection == null) ? 0 : connection.hashCode());
-        result = prime * result + (connectionLocked ? 1231 : 1237);
-        result = prime * result + ((correlationID == null) ? 0 : correlationID.hashCode());
-        result = prime * result + (correlationIDLocked ? 1231 : 1237);
-        result = prime * result + ((deliveryTime == null) ? 0 : deliveryTime.hashCode());
-        result = prime * result + (deliveryTimeLocked ? 1231 : 1237);
-        result = prime * result + ((destination == null) ? 0 : destination.hashCode());
-        result = prime * result + (destinationLocked ? 1231 : 1237);
-        result = prime * result + ((domain == null) ? 0 : domain.hashCode());
-        result = prime * result + (domainLocked ? 1231 : 1237);
-        result = prime * result + ((end == null) ? 0 : end.hashCode());
-        result = prime * result + (endLocked ? 1231 : 1237);
-        result = prime * result + ((expiration == null) ? 0 : expiration.hashCode());
-        result = prime * result + (expirationLocked ? 1231 : 1237);
-        result = prime * result + ((guaranteedDelivery == null) ? 0 : guaranteedDelivery.hashCode());
-        result = prime * result + (guaranteedDeliveryLocked ? 1231 : 1237);
-        result = prime * result + ((messageFormat == null) ? 0 : messageFormat.hashCode());
-        result = prime * result + (messageFormatLocked ? 1231 : 1237);
-        result = prime * result + ((messageID == null) ? 0 : messageID.hashCode());
-        result = prime * result + (messageIDLocked ? 1231 : 1237);
-        result = prime * result + ((messageType == null) ? 0 : messageType.hashCode());
-        result = prime * result + (messageTypeLocked ? 1231 : 1237);
-        result = prime * result + ((position == null) ? 0 : position.hashCode());
-        result = prime * result + (positionLocked ? 1231 : 1237);
-        result = prime * result + ((priority == null) ? 0 : priority.hashCode());
-        result = prime * result + (priorityLocked ? 1231 : 1237);
-        result = prime * result + ((properties == null) ? 0 : properties.hashCode());
-        result = prime * result + (propertiesLocked ? 1231 : 1237);
-        result = prime * result + ((queue == null) ? 0 : queue.hashCode());
-        result = prime * result + (queueLocked ? 1231 : 1237);
-        result = prime * result + ((redelivered == null) ? 0 : redelivered.hashCode());
-        result = prime * result + (redeliveredLocked ? 1231 : 1237);
-        result = prime * result + ((replyTo == null) ? 0 : replyTo.hashCode());
-        result = prime * result + (replyToLocked ? 1231 : 1237);
-        result = prime * result + ((sequence == null) ? 0 : sequence.hashCode());
-        result = prime * result + (sequenceLocked ? 1231 : 1237);
-        result = prime * result + ((service == null) ? 0 : service.hashCode());
-        result = prime * result + (serviceLocked ? 1231 : 1237);
-        result = prime * result + ((session == null) ? 0 : session.hashCode());
-        result = prime * result + (sessionLocked ? 1231 : 1237);
-        result = prime * result + ((size == null) ? 0 : size.hashCode());
-        result = prime * result + (sizeLocked ? 1231 : 1237);
-        result = prime * result + ((source == null) ? 0 : source.hashCode());
-        result = prime * result + (sourceLocked ? 1231 : 1237);
-        result = prime * result + ((timestamp == null) ? 0 : timestamp.hashCode());
-        result = prime * result + (timestampLocked ? 1231 : 1237);
-        result = prime * result + ((topic == null) ? 0 : topic.hashCode());
-        result = prime * result + (topicLocked ? 1231 : 1237);
-        result = prime * result + ((user == null) ? 0 : user.hashCode());
-        result = prime * result + (userLocked ? 1231 : 1237);
-        result = prime * result + ((workflow == null) ? 0 : workflow.hashCode());
-        result = prime * result + (workflowLocked ? 1231 : 1237);
+        result = prime * result + ((this.boundedContext == null) ? 0 : this.boundedContext.hashCode());
+        result = prime * result + (this.boundedContextLocked ? 1231 : 1237);
+        result = prime * result + ((this.connection == null) ? 0 : this.connection.hashCode());
+        result = prime * result + (this.connectionLocked ? 1231 : 1237);
+        result = prime * result + ((this.correlationID == null) ? 0 : this.correlationID.hashCode());
+        result = prime * result + (this.correlationIDLocked ? 1231 : 1237);
+        result = prime * result + ((this.deliveryTime == null) ? 0 : this.deliveryTime.hashCode());
+        result = prime * result + (this.deliveryTimeLocked ? 1231 : 1237);
+        result = prime * result + ((this.destination == null) ? 0 : this.destination.hashCode());
+        result = prime * result + (this.destinationLocked ? 1231 : 1237);
+        result = prime * result + ((this.domain == null) ? 0 : this.domain.hashCode());
+        result = prime * result + (this.domainLocked ? 1231 : 1237);
+        result = prime * result + ((this.end == null) ? 0 : this.end.hashCode());
+        result = prime * result + (this.endLocked ? 1231 : 1237);
+        result = prime * result + ((this.expiration == null) ? 0 : this.expiration.hashCode());
+        result = prime * result + (this.expirationLocked ? 1231 : 1237);
+        result = prime * result + ((this.guaranteedDelivery == null) ? 0 : this.guaranteedDelivery.hashCode());
+        result = prime * result + (this.guaranteedDeliveryLocked ? 1231 : 1237);
+        result = prime * result + ((this.messageFormat == null) ? 0 : this.messageFormat.hashCode());
+        result = prime * result + (this.messageFormatLocked ? 1231 : 1237);
+        result = prime * result + ((this.messageID == null) ? 0 : this.messageID.hashCode());
+        result = prime * result + (this.messageIDLocked ? 1231 : 1237);
+        result = prime * result + ((this.messageType == null) ? 0 : this.messageType.hashCode());
+        result = prime * result + (this.messageTypeLocked ? 1231 : 1237);
+        result = prime * result + ((this.position == null) ? 0 : this.position.hashCode());
+        result = prime * result + (this.positionLocked ? 1231 : 1237);
+        result = prime * result + ((this.priority == null) ? 0 : this.priority.hashCode());
+        result = prime * result + (this.priorityLocked ? 1231 : 1237);
+        result = prime * result + ((this.properties == null) ? 0 : this.properties.hashCode());
+        result = prime * result + (this.propertiesLocked ? 1231 : 1237);
+        result = prime * result + ((this.queue == null) ? 0 : this.queue.hashCode());
+        result = prime * result + (this.queueLocked ? 1231 : 1237);
+        result = prime * result + ((this.redelivered == null) ? 0 : this.redelivered.hashCode());
+        result = prime * result + (this.redeliveredLocked ? 1231 : 1237);
+        result = prime * result + ((this.replyTo == null) ? 0 : this.replyTo.hashCode());
+        result = prime * result + (this.replyToLocked ? 1231 : 1237);
+        result = prime * result + ((this.sequence == null) ? 0 : this.sequence.hashCode());
+        result = prime * result + (this.sequenceLocked ? 1231 : 1237);
+        result = prime * result + ((this.service == null) ? 0 : this.service.hashCode());
+        result = prime * result + (this.serviceLocked ? 1231 : 1237);
+        result = prime * result + ((this.session == null) ? 0 : this.session.hashCode());
+        result = prime * result + (this.sessionLocked ? 1231 : 1237);
+        result = prime * result + ((this.size == null) ? 0 : this.size.hashCode());
+        result = prime * result + (this.sizeLocked ? 1231 : 1237);
+        result = prime * result + ((this.source == null) ? 0 : this.source.hashCode());
+        result = prime * result + (this.sourceLocked ? 1231 : 1237);
+        result = prime * result + ((this.timestamp == null) ? 0 : this.timestamp.hashCode());
+        result = prime * result + (this.timestampLocked ? 1231 : 1237);
+        result = prime * result + ((this.topic == null) ? 0 : this.topic.hashCode());
+        result = prime * result + (this.topicLocked ? 1231 : 1237);
+        result = prime * result + ((this.user == null) ? 0 : this.user.hashCode());
+        result = prime * result + (this.userLocked ? 1231 : 1237);
+        result = prime * result + ((this.workflow == null) ? 0 : this.workflow.hashCode());
+        result = prime * result + (this.workflowLocked ? 1231 : 1237);
         return result;
     }
     
     @Override
-    public boolean equals(Object obj)
+    public boolean equals(final Object obj)
     {
         if (this == obj)
         {
@@ -1218,412 +1218,408 @@ public class MessageHeader implements Serializable
             return false;
         }
         MessageHeader other = (MessageHeader) obj;
-        if (boundedContext == null)
+        if (this.boundedContext == null)
         {
             if (other.boundedContext != null)
             {
                 return false;
             }
         }
-        else if (!boundedContext.equals(other.boundedContext))
+        else if (!this.boundedContext.equals(other.boundedContext))
         {
             return false;
         }
-        if (boundedContextLocked != other.boundedContextLocked)
+        if (this.boundedContextLocked != other.boundedContextLocked)
         {
             return false;
         }
-        if (connection == null)
+        if (this.connection == null)
         {
             if (other.connection != null)
             {
                 return false;
             }
         }
-        else if (!connection.equals(other.connection))
+        else if (!this.connection.equals(other.connection))
         {
             return false;
         }
-        if (connectionLocked != other.connectionLocked)
+        if (this.connectionLocked != other.connectionLocked)
         {
             return false;
         }
-        if (correlationID == null)
+        if (this.correlationID == null)
         {
             if (other.correlationID != null)
             {
                 return false;
             }
         }
-        else if (!correlationID.equals(other.correlationID))
+        else if (!this.correlationID.equals(other.correlationID))
         {
             return false;
         }
-        if (correlationIDLocked != other.correlationIDLocked)
+        if (this.correlationIDLocked != other.correlationIDLocked)
         {
             return false;
         }
-        if (deliveryTime == null)
+        if (this.deliveryTime == null)
         {
             if (other.deliveryTime != null)
             {
                 return false;
             }
         }
-        else if (!deliveryTime.equals(other.deliveryTime))
+        else if (!this.deliveryTime.equals(other.deliveryTime))
         {
             return false;
         }
-        if (deliveryTimeLocked != other.deliveryTimeLocked)
+        if (this.deliveryTimeLocked != other.deliveryTimeLocked)
         {
             return false;
         }
-        if (destination == null)
+        if (this.destination == null)
         {
             if (other.destination != null)
             {
                 return false;
             }
         }
-        else if (!destination.equals(other.destination))
+        else if (!this.destination.equals(other.destination))
         {
             return false;
         }
-        if (destinationLocked != other.destinationLocked)
+        if (this.destinationLocked != other.destinationLocked)
         {
             return false;
         }
-        if (domain == null)
+        if (this.domain == null)
         {
             if (other.domain != null)
             {
                 return false;
             }
         }
-        else if (!domain.equals(other.domain))
+        else if (!this.domain.equals(other.domain))
         {
             return false;
         }
-        if (domainLocked != other.domainLocked)
+        if (this.domainLocked != other.domainLocked)
         {
             return false;
         }
-        if (end == null)
+        if (this.end == null)
         {
             if (other.end != null)
             {
                 return false;
             }
         }
-        else if (!end.equals(other.end))
+        else if (!this.end.equals(other.end))
         {
             return false;
         }
-        if (endLocked != other.endLocked)
+        if (this.endLocked != other.endLocked)
         {
             return false;
         }
-        if (expiration == null)
+        if (this.expiration == null)
         {
             if (other.expiration != null)
             {
                 return false;
             }
         }
-        else if (!expiration.equals(other.expiration))
+        else if (!this.expiration.equals(other.expiration))
         {
             return false;
         }
-        if (expirationLocked != other.expirationLocked)
+        if (this.expirationLocked != other.expirationLocked)
         {
             return false;
         }
-        if (guaranteedDelivery == null)
+        if (this.guaranteedDelivery == null)
         {
             if (other.guaranteedDelivery != null)
             {
                 return false;
             }
         }
-        else if (!guaranteedDelivery.equals(other.guaranteedDelivery))
+        else if (!this.guaranteedDelivery.equals(other.guaranteedDelivery))
         {
             return false;
         }
-        if (guaranteedDeliveryLocked != other.guaranteedDeliveryLocked)
+        if (this.guaranteedDeliveryLocked != other.guaranteedDeliveryLocked)
         {
             return false;
         }
-        if (messageFormat == null)
+        if (this.messageFormat == null)
         {
             if (other.messageFormat != null)
             {
                 return false;
             }
         }
-        else if (!messageFormat.equals(other.messageFormat))
+        else if (!this.messageFormat.equals(other.messageFormat))
         {
             return false;
         }
-        if (messageFormatLocked != other.messageFormatLocked)
+        if (this.messageFormatLocked != other.messageFormatLocked)
         {
             return false;
         }
-        if (messageID == null)
+        if (this.messageID == null)
         {
             if (other.messageID != null)
             {
                 return false;
             }
         }
-        else if (!messageID.equals(other.messageID))
+        else if (!this.messageID.equals(other.messageID))
         {
             return false;
         }
-        if (messageIDLocked != other.messageIDLocked)
+        if (this.messageIDLocked != other.messageIDLocked)
         {
             return false;
         }
-        if (messageType == null)
+        if (this.messageType == null)
         {
             if (other.messageType != null)
             {
                 return false;
             }
         }
-        else if (!messageType.equals(other.messageType))
+        else if (!this.messageType.equals(other.messageType))
         {
             return false;
         }
-        if (messageTypeLocked != other.messageTypeLocked)
+        if (this.messageTypeLocked != other.messageTypeLocked)
         {
             return false;
         }
-        if (position == null)
+        if (this.position == null)
         {
             if (other.position != null)
             {
                 return false;
             }
         }
-        else if (!position.equals(other.position))
+        else if (!this.position.equals(other.position))
         {
             return false;
         }
-        if (positionLocked != other.positionLocked)
+        if (this.positionLocked != other.positionLocked)
         {
             return false;
         }
-        if (priority == null)
+        if (this.priority == null)
         {
             if (other.priority != null)
             {
                 return false;
             }
         }
-        else if (!priority.equals(other.priority))
+        else if (!this.priority.equals(other.priority))
         {
             return false;
         }
-        if (priorityLocked != other.priorityLocked)
+        if (this.priorityLocked != other.priorityLocked)
         {
             return false;
         }
-        if (properties == null)
+        if (this.properties == null)
         {
             if (other.properties != null)
             {
                 return false;
             }
         }
-        else if (!properties.equals(other.properties))
+        else if (!this.properties.equals(other.properties))
         {
             return false;
         }
-        if (propertiesLocked != other.propertiesLocked)
+        if (this.propertiesLocked != other.propertiesLocked)
         {
             return false;
         }
-        if (queue == null)
+        if (this.queue == null)
         {
             if (other.queue != null)
             {
                 return false;
             }
         }
-        else if (!queue.equals(other.queue))
+        else if (!this.queue.equals(other.queue))
         {
             return false;
         }
-        if (queueLocked != other.queueLocked)
+        if (this.queueLocked != other.queueLocked)
         {
             return false;
         }
-        if (redelivered == null)
+        if (this.redelivered == null)
         {
             if (other.redelivered != null)
             {
                 return false;
             }
         }
-        else if (!redelivered.equals(other.redelivered))
+        else if (!this.redelivered.equals(other.redelivered))
         {
             return false;
         }
-        if (redeliveredLocked != other.redeliveredLocked)
+        if (this.redeliveredLocked != other.redeliveredLocked)
         {
             return false;
         }
-        if (replyTo == null)
+        if (this.replyTo == null)
         {
             if (other.replyTo != null)
             {
                 return false;
             }
         }
-        else if (!replyTo.equals(other.replyTo))
+        else if (!this.replyTo.equals(other.replyTo))
         {
             return false;
         }
-        if (replyToLocked != other.replyToLocked)
+        if (this.replyToLocked != other.replyToLocked)
         {
             return false;
         }
-        if (sequence == null)
+        if (this.sequence == null)
         {
             if (other.sequence != null)
             {
                 return false;
             }
         }
-        else if (!sequence.equals(other.sequence))
+        else if (!this.sequence.equals(other.sequence))
         {
             return false;
         }
-        if (sequenceLocked != other.sequenceLocked)
+        if (this.sequenceLocked != other.sequenceLocked)
         {
             return false;
         }
-        if (service == null)
+        if (this.service == null)
         {
             if (other.service != null)
             {
                 return false;
             }
         }
-        else if (!service.equals(other.service))
+        else if (!this.service.equals(other.service))
         {
             return false;
         }
-        if (serviceLocked != other.serviceLocked)
+        if (this.serviceLocked != other.serviceLocked)
         {
             return false;
         }
-        if (session == null)
+        if (this.session == null)
         {
             if (other.session != null)
             {
                 return false;
             }
         }
-        else if (!session.equals(other.session))
+        else if (!this.session.equals(other.session))
         {
             return false;
         }
-        if (sessionLocked != other.sessionLocked)
+        if (this.sessionLocked != other.sessionLocked)
         {
             return false;
         }
-        if (size == null)
+        if (this.size == null)
         {
             if (other.size != null)
             {
                 return false;
             }
         }
-        else if (!size.equals(other.size))
+        else if (!this.size.equals(other.size))
         {
             return false;
         }
-        if (sizeLocked != other.sizeLocked)
+        if (this.sizeLocked != other.sizeLocked)
         {
             return false;
         }
-        if (source == null)
+        if (this.source == null)
         {
             if (other.source != null)
             {
                 return false;
             }
         }
-        else if (!source.equals(other.source))
+        else if (!this.source.equals(other.source))
         {
             return false;
         }
-        if (sourceLocked != other.sourceLocked)
+        if (this.sourceLocked != other.sourceLocked)
         {
             return false;
         }
-        if (timestamp == null)
+        if (this.timestamp == null)
         {
             if (other.timestamp != null)
             {
                 return false;
             }
         }
-        else if (!timestamp.equals(other.timestamp))
+        else if (!this.timestamp.equals(other.timestamp))
         {
             return false;
         }
-        if (timestampLocked != other.timestampLocked)
+        if (this.timestampLocked != other.timestampLocked)
         {
             return false;
         }
-        if (topic == null)
+        if (this.topic == null)
         {
             if (other.topic != null)
             {
                 return false;
             }
         }
-        else if (!topic.equals(other.topic))
+        else if (!this.topic.equals(other.topic))
         {
             return false;
         }
-        if (topicLocked != other.topicLocked)
+        if (this.topicLocked != other.topicLocked)
         {
             return false;
         }
-        if (user == null)
+        if (this.user == null)
         {
             if (other.user != null)
             {
                 return false;
             }
         }
-        else if (!user.equals(other.user))
+        else if (!this.user.equals(other.user))
         {
             return false;
         }
-        if (userLocked != other.userLocked)
+        if (this.userLocked != other.userLocked)
         {
             return false;
         }
-        if (workflow == null)
+        if (this.workflow == null)
         {
             if (other.workflow != null)
             {
                 return false;
             }
         }
-        else if (!workflow.equals(other.workflow))
+        else if (!this.workflow.equals(other.workflow))
         {
             return false;
         }
-        if (workflowLocked != other.workflowLocked)
-        {
-            return false;
-        }
-        return true;
+        return this.workflowLocked == other.workflowLocked;
     }
     
     public void dispose()
@@ -1662,7 +1658,7 @@ public class MessageHeader implements Serializable
         this.properties = null;
     }
     
-    public static void copyLocks(MessageHeader messageHeader, MessageHeader template)
+    public static void copyLocks(final MessageHeader messageHeader, final MessageHeader template)
     {
         messageHeader.messageIDLocked = template.messageIDLocked;
         messageHeader.correlationIDLocked = template.correlationIDLocked;
@@ -1693,7 +1689,7 @@ public class MessageHeader implements Serializable
         messageHeader.propertiesLocked = template.propertiesLocked;
     }
     
-    public static MessageHeader createFrom(MessageHeader template, boolean copyLocks)
+    public static MessageHeader createFrom(final MessageHeader template, final boolean copyLocks)
     {
         MessageHeader mh = MessageHeader.newInstance();
         

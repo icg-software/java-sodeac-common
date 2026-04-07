@@ -25,13 +25,13 @@ public interface ExceptionCatchedBiConsumer<T, U> extends BiConsumer<T, U>
 {
     
     @Override
-    default void accept(T t, U u)
+    default void accept(final T t, final U u)
     {
         try
         {
             acceptWithException(t, u);
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             if (e instanceof RuntimeException)
             {
@@ -39,7 +39,7 @@ public interface ExceptionCatchedBiConsumer<T, U> extends BiConsumer<T, U>
             }
             throw new RuntimeWrappedException(e);
         }
-        catch (Error e)
+        catch (final Error e)
         {
             throw new RuntimeWrappedException(e);
         }
@@ -54,14 +54,14 @@ public interface ExceptionCatchedBiConsumer<T, U> extends BiConsumer<T, U>
      *
      * @throws Exception
      */
-    public void acceptWithException(T t, U u) throws Exception, Error;
+    void acceptWithException(T t, U u) throws Exception, Error;
     
-    public static <T, U> BiConsumer<T, U> wrap(ExceptionCatchedBiConsumer<T, U> consumer)
+    static <T, U> BiConsumer<T, U> wrap(final ExceptionCatchedBiConsumer<T, U> consumer)
     {
         return new BiConsumer<T, U>()
         {
             @Override
-            public void accept(T t, U u)
+            public void accept(final T t, final U u)
             {
                 consumer.accept(t, u);
             }

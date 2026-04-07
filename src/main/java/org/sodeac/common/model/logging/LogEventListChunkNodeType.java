@@ -37,8 +37,8 @@ public class LogEventListChunkNodeType extends CommonListChunkBaseBranchNodeType
     @BowMethod(convertReturnValueToBow = true, returnBowMode = ReturnBowMode.SELF)
     public static void addLogToEventListChunk
         (
-            @BowParameter(self = true) BranchNode<? extends BranchNodeMetaModel, LogEventListChunkNodeType> chunkNodeList,
-            @BowParameter(convertToBow = true, name = "logEventBow") BranchNode<? extends BranchNodeMetaModel, LogEventNodeType> logEventNode
+            @BowParameter(self = true) final BranchNode<? extends BranchNodeMetaModel, LogEventListChunkNodeType> chunkNodeList,
+            @BowParameter(convertToBow = true, name = "logEventBow") final BranchNode<? extends BranchNodeMetaModel, LogEventNodeType> logEventNode
         )
     {
         Integer itemSize = chunkNodeList.getValue(LogEventListChunkNodeType.itemSize);

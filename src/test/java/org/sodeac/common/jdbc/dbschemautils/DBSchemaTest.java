@@ -41,7 +41,7 @@ public class DBSchemaTest
 {
     public static final String SCHEMA_NAME = "SODEAC_TEST";
     
-    private EasyMockSupport support = new EasyMockSupport();
+    private final EasyMockSupport support = new EasyMockSupport();
     
     public static List<Object[]> connectionList = null;
     public static final Map<String, Boolean> createdSchema = new HashMap<String, Boolean>();
@@ -56,7 +56,7 @@ public class DBSchemaTest
         return connectionList = Statics.connections(createdSchema, "dbschema");
     }
     
-    public DBSchemaTest(Callable<TestConnection> connectionFactory)
+    public DBSchemaTest(final Callable<TestConnection> connectionFactory)
     {
         this.testConnectionFactory = connectionFactory;
     }
@@ -67,7 +67,7 @@ public class DBSchemaTest
     @Before
     public void setUp() throws Exception
     {
-        this.testConnection = testConnectionFactory.call();
+        this.testConnection = this.testConnectionFactory.call();
     }
     
     @After
@@ -83,18 +83,18 @@ public class DBSchemaTest
             {
                 this.testConnection.connection.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
     }
     
     @Test
     public void test00001createDropSchema() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         

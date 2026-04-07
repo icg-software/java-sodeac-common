@@ -14,7 +14,7 @@ public class TestMatchable implements IMatchable
 {
     
     @Override
-    public boolean matches(ComparativeOperator operator, String name, String valueExpression)
+    public boolean matches(final ComparativeOperator operator, final String name, final String valueExpression)
     {
         return name.equalsIgnoreCase(Boolean.TRUE.toString());
     }

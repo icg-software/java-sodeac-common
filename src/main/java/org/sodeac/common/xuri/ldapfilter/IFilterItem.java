@@ -23,23 +23,23 @@ import java.util.Map;
  */
 public interface IFilterItem
 {
-    public static final char OPENER = '(';
-    public static final char CLOSER = ')';
-    public static final char ESCAPE = '\\';
-    public static final char NOT = '!';
-    public static final char AND = '&';
-    public static final char OR = '|';
-    public static final char LTE_STARTSEQ = '<';
-    public static final char GTE_STARTSEQ = '>';
-    public static final char APPROX_STARTSEQ = '~';
-    public static final char EQUAL = '=';
+    char OPENER = '(';
+    char CLOSER = ')';
+    char ESCAPE = '\\';
+    char NOT = '!';
+    char AND = '&';
+    char OR = '|';
+    char LTE_STARTSEQ = '<';
+    char GTE_STARTSEQ = '>';
+    char APPROX_STARTSEQ = '~';
+    char EQUAL = '=';
     
     /**
      * getter for invert state
      *
      * @return true if converted, otherwise false
      */
-    public boolean isInvert();
+    boolean isInvert();
     
     /**
      * check {@code properties} match filter item
@@ -48,5 +48,5 @@ public interface IFilterItem
      *
      * @return true if {@code properties} match filter item, otherwise false
      */
-    public boolean matches(Map<String, IMatchable> properties);
+    boolean matches(Map<String, IMatchable> properties);
 }

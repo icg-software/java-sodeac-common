@@ -45,7 +45,7 @@ public class LocalOSGiServiceRegistry
     
     private ComponentContext componentContext;
     protected static LocalOSGiServiceRegistry INSTANCE;
-    private Lock lock;
+    private final Lock lock;
     private Map<Class, SrvServiceTracker> trackerIndex = new HashMap<Class, LocalOSGiServiceRegistry.SrvServiceTracker>();
     
     public LocalOSGiServiceRegistry()
@@ -55,7 +55,7 @@ public class LocalOSGiServiceRegistry
     }
     
     @Activate
-    public void activate(ComponentContext componentContext)
+    public void activate(final ComponentContext componentContext)
     {
         this.componentContext = componentContext;
         LocalOSGiServiceRegistry.INSTANCE = this;
@@ -88,39 +88,39 @@ public class LocalOSGiServiceRegistry
     }
     
     @Deactivate
-    public void deactivate(ComponentContext componentContext)
+    public void deactivate(final ComponentContext componentContext)
     {
         List<SrvServiceTracker> values = null;
-        lock.lock();
+        this.lock.lock();
         try
         {
-            values = new ArrayList<LocalOSGiServiceRegistry.SrvServiceTracker>(trackerIndex.values());
-            trackerIndex.clear();
-            trackerIndex = null;
+            values = new ArrayList<LocalOSGiServiceRegistry.SrvServiceTracker>(this.trackerIndex.values());
+            this.trackerIndex.clear();
+            this.trackerIndex = null;
         }
         finally
         {
-            lock.unlock();
+            this.lock.unlock();
         }
         
-        for (SrvServiceTracker srvServiceTracker : values)
+        for (final SrvServiceTracker srvServiceTracker : values)
         {
             try
             {
                 srvServiceTracker.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
         this.componentContext = null;
         LocalOSGiServiceRegistry.INSTANCE = null;
     }
     
-    public <T> void observe(Class<T> type)
+    public <T> void observe(final Class<T> type)
     {
-        lock.lock();
+        this.lock.lock();
         try
         {
-            if (trackerIndex.containsKey(type))
+            if (this.trackerIndex.containsKey(type))
             {
                 return;
             }
@@ -131,7 +131,7 @@ public class LocalOSGiServiceRegistry
         }
         finally
         {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
     
@@ -142,7 +142,7 @@ public class LocalOSGiServiceRegistry
         
         private Map<String, List<ServiceContainer>> listsByClassName = null;
         
-        public SrvServiceTracker(BundleContext context, Class clazz, Customizer customizer)
+        public SrvServiceTracker(final BundleContext context, final Class clazz, final Customizer customizer)
         {
             super(context, clazz, customizer);
             this.clazz = clazz;
@@ -155,26 +155,26 @@ public class LocalOSGiServiceRegistry
         public void close()
         {
             super.close();
-            if (lock == null)
+            if (this.lock == null)
             {
                 return;
             }
-            lock.lock();
+            this.lock.lock();
             try
             {
-                listsByClassName.values().forEach(i -> i.clear());
-                listsByClassName.clear();
+                this.listsByClassName.values().forEach(i -> i.clear());
+                this.listsByClassName.clear();
             }
             finally
             {
-                lock.unlock();
+                this.lock.unlock();
             }
-            lock = null;
-            clazz = null;
-            listsByClassName = null;
+            this.lock = null;
+            this.clazz = null;
+            this.listsByClassName = null;
         }
         
-        public void addService(ServiceReference reference, Object service)
+        public void addService(final ServiceReference reference, final Object service)
         {
             if (service == null)
             {
@@ -188,21 +188,21 @@ public class LocalOSGiServiceRegistry
             {
                 return;
             }
-            if (lock == null)
+            if (this.lock == null)
             {
                 return;
             }
-            lock.lock();
+            this.lock.lock();
             try
             {
-                List<ServiceContainer> list = listsByClassName.get(service.getClass().getCanonicalName());
+                List<ServiceContainer> list = this.listsByClassName.get(service.getClass().getCanonicalName());
                 if (list == null)
                 {
                     list = new ArrayList<>();
-                    listsByClassName.put(service.getClass().getCanonicalName(), list);
+                    this.listsByClassName.put(service.getClass().getCanonicalName(), list);
                 }
                 ServiceContainer oldContainer = null;
-                for (ServiceContainer container : list)
+                for (final ServiceContainer container : list)
                 {
                     if (container.getServiceReference() == reference)
                     {
@@ -219,7 +219,7 @@ public class LocalOSGiServiceRegistry
                                  {
                                      
                                      @Override
-                                     public int compare(ServiceContainer o1, ServiceContainer o2)
+                                     public int compare(final ServiceContainer o1, final ServiceContainer o2)
                                      {
                                          ServiceReference sr1 = o1.getServiceReference();
                                          ServiceReference sr2 = o2.getServiceReference();
@@ -248,21 +248,21 @@ public class LocalOSGiServiceRegistry
             }
             finally
             {
-                lock.unlock();
+                this.lock.unlock();
             }
         }
         
-        public void removeService(ServiceReference reference, Object service)
+        public void removeService(final ServiceReference reference, final Object service)
         {
-            if (lock == null)
+            if (this.lock == null)
             {
                 return;
             }
-            lock.lock();
+            this.lock.lock();
             try
             {
                 Set<String> toRemoveLists = new HashSet<>();
-                for (Entry<String, List<ServiceContainer>> entry : listsByClassName.entrySet())
+                for (final Entry<String, List<ServiceContainer>> entry : this.listsByClassName.entrySet())
                 {
                     List<ServiceContainer> list = entry.getValue();
                     
@@ -281,14 +281,14 @@ public class LocalOSGiServiceRegistry
                         toRemoveLists.add(entry.getKey());
                     }
                 }
-                for (String toRemove : toRemoveLists)
+                for (final String toRemove : toRemoveLists)
                 {
-                    listsByClassName.remove(toRemove);
+                    this.listsByClassName.remove(toRemove);
                 }
             }
             finally
             {
-                lock.unlock();
+                this.lock.unlock();
             }
         }
         
@@ -299,7 +299,7 @@ public class LocalOSGiServiceRegistry
         
         private class ServiceContainer
         {
-            private ServiceContainer(ServiceReference serviceReference, Object service)
+            private ServiceContainer(final ServiceReference serviceReference, final Object service)
             {
                 super();
                 this.serviceReference = serviceReference;
@@ -311,12 +311,12 @@ public class LocalOSGiServiceRegistry
             
             public ServiceReference getServiceReference()
             {
-                return serviceReference;
+                return this.serviceReference;
             }
             
             public Object getService()
             {
-                return service;
+                return this.service;
             }
         }
     }
@@ -330,26 +330,26 @@ public class LocalOSGiServiceRegistry
             super();
         }
         
-        public void setTracker(SrvServiceTracker tracker)
+        public void setTracker(final SrvServiceTracker tracker)
         {
             this.tracker = tracker;
         }
         
         @Override
-        public Object addingService(ServiceReference reference)
+        public Object addingService(final ServiceReference reference)
         {
-            Object service = tracker.getContext().getService(reference);
-            tracker.addService(reference, service);
+            Object service = this.tracker.getContext().getService(reference);
+            this.tracker.addService(reference, service);
             return service;
         }
         
         @Override
-        public void modifiedService(ServiceReference reference, Object service) { }
+        public void modifiedService(final ServiceReference reference, final Object service) { }
         
         @Override
-        public void removedService(ServiceReference reference, Object service)
+        public void removedService(final ServiceReference reference, final Object service)
         {
-            tracker.removeService(reference, service);
+            this.tracker.removeService(reference, service);
         }
         
     }

@@ -51,7 +51,7 @@ public class ColumnTest
     public static final String DOMAIN = "TESTDOMAIN";
     private static final String DATABASE_ID = "TestDatabase";
     
-    private EasyMockSupport support = new EasyMockSupport();
+    private final EasyMockSupport support = new EasyMockSupport();
     
     public static List<Object[]> connectionList = null;
     public static final Map<String, Boolean> createdSchema = new HashMap<String, Boolean>();
@@ -66,7 +66,7 @@ public class ColumnTest
         return connectionList = Statics.connections(createdSchema, "dbschema");
     }
     
-    public ColumnTest(Callable<TestConnection> connectionFactory)
+    public ColumnTest(final Callable<TestConnection> connectionFactory)
     {
         this.testConnectionFactory = connectionFactory;
     }
@@ -77,7 +77,7 @@ public class ColumnTest
     @Before
     public void setUp() throws Exception
     {
-        this.testConnection = testConnectionFactory.call();
+        this.testConnection = this.testConnectionFactory.call();
     }
     
     @After
@@ -93,30 +93,30 @@ public class ColumnTest
             {
                 this.testConnection.connection.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
     }
     
     @Test
     public void test000200CreateColumnUnquoted() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
         String table1Name = "Table1ColumnA";
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATABASE_ID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATABASE_ID, this.testConnection.dbmsSchemaName);
         
         // prepare spec for simulation
         Dictionary<ObjectType, Object> schemaDictionary = new Hashtable<>();
@@ -177,23 +177,23 @@ public class ColumnTest
     @Test
     public void test000201CreateColumnUnquotedAgain() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
         String table1Name = "Table1ColumnA";
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATABASE_ID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATABASE_ID, this.testConnection.dbmsSchemaName);
         
         // prepare spec for simulation
         Dictionary<ObjectType, Object> schemaDictionary = new Hashtable<>();
@@ -250,23 +250,23 @@ public class ColumnTest
     @Test
     public void test000210CreateColumnQuotedTab() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
         String table1Name = "Table2ColumnA";
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATABASE_ID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATABASE_ID, this.testConnection.dbmsSchemaName);
         
         // prepare spec for simulation
         Dictionary<ObjectType, Object> schemaDictionary = new Hashtable<>();
@@ -330,23 +330,23 @@ public class ColumnTest
     @Test
     public void test000211CreateColumnQuotedTabAgain() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
         String table1Name = "Table2ColumnA";
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATABASE_ID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATABASE_ID, this.testConnection.dbmsSchemaName);
         
         // prepare spec for simulation
         Dictionary<ObjectType, Object> schemaDictionary = new Hashtable<>();
@@ -406,23 +406,23 @@ public class ColumnTest
     @Test
     public void test000220CreateColumnQuotedCol() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
         String table1Name = "Table3ColumnA";
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATABASE_ID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATABASE_ID, this.testConnection.dbmsSchemaName);
         
         // prepare spec for simulation
         Dictionary<ObjectType, Object> schemaDictionary = new Hashtable<>();
@@ -486,23 +486,23 @@ public class ColumnTest
     @Test
     public void test000221CreateColumnQuotedColAgain() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
         String table1Name = "Table3ColumnA";
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATABASE_ID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATABASE_ID, this.testConnection.dbmsSchemaName);
         
         // prepare spec for simulation
         Dictionary<ObjectType, Object> schemaDictionary = new Hashtable<>();
@@ -562,23 +562,23 @@ public class ColumnTest
     @Test
     public void test000230CreateColumnNotNullUnquoted() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
         String table1Name = "Table4ColumnA";
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATABASE_ID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATABASE_ID, this.testConnection.dbmsSchemaName);
         
         // prepare spec for simulation
         Dictionary<ObjectType, Object> schemaDictionary = new Hashtable<>();
@@ -646,23 +646,23 @@ public class ColumnTest
     @Test
     public void test000231CreateColumnNotNullUnquotedAgain() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
         String table1Name = "Table4ColumnA";
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATABASE_ID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATABASE_ID, this.testConnection.dbmsSchemaName);
         
         // prepare spec for simulation
         Dictionary<ObjectType, Object> schemaDictionary = new Hashtable<>();
@@ -721,24 +721,24 @@ public class ColumnTest
     @Test
     public void test000240CreateColumnNotNullQuoted() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
         
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
         String table1Name = "Table5ColumnA";
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATABASE_ID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATABASE_ID, this.testConnection.dbmsSchemaName);
         
         // prepare spec for simulation
         Dictionary<ObjectType, Object> schemaDictionary = new Hashtable<>();
@@ -805,23 +805,23 @@ public class ColumnTest
     @Test
     public void test000241CreateColumnNotNullUnquotedAgain() throws SQLException, ClassNotFoundException, IOException
     {
-        if (!testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        Connection connection = testConnection.connection;
+        Connection connection = this.testConnection.connection;
         DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
         IDBSchemaUtilsDriver driver = dbSchemaUtils.getDriver();
         
         String table1Name = "Table5ColumnA";
         
-        IMocksControl ctrl = support.createControl();
+        IMocksControl ctrl = this.support.createControl();
         IDatabaseSchemaUpdateListener updateListenerMock = ctrl.createMock(IDatabaseSchemaUpdateListener.class);
         
         ctrl.checkOrder(true);
         
         // create spec
-        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATABASE_ID, testConnection.dbmsSchemaName);
+        BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(DATABASE_ID, this.testConnection.dbmsSchemaName);
         
         // prepare spec for simulation
         Dictionary<ObjectType, Object> schemaDictionary = new Hashtable<>();

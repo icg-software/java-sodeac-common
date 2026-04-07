@@ -14,7 +14,7 @@ public class URISyntaxException extends RuntimeException
 {
     private String input = null;
     
-    public URISyntaxException(String input, String reason)
+    public URISyntaxException(final String input, final String reason)
     {
         super(reason);
         this.input = input;
@@ -27,7 +27,7 @@ public class URISyntaxException extends RuntimeException
     
     public String getInput()
     {
-        return input;
+        return this.input;
     }
     
 }

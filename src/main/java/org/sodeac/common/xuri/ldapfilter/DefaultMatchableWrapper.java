@@ -30,7 +30,7 @@ public class DefaultMatchableWrapper implements IMatchable
      *
      * @param value value to wrap
      */
-    public DefaultMatchableWrapper(Object value)
+    public DefaultMatchableWrapper(final Object value)
     {
         super();
         this.value = value;
@@ -38,7 +38,7 @@ public class DefaultMatchableWrapper implements IMatchable
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public boolean matches(ComparativeOperator operator, String name, String valueExpression)
+    public boolean matches(final ComparativeOperator operator, final String name, String valueExpression)
     {
         Objects.requireNonNull(valueExpression, "value expression must not be null");
         valueExpression = valueExpression.trim();
@@ -63,7 +63,7 @@ public class DefaultMatchableWrapper implements IMatchable
             // TODO SubstringFilter
             if (this.value instanceof String)
             {
-                return ((String) this.value).equals(valueExpression);
+                return this.value.equals(valueExpression);
             }
         }
         
@@ -100,7 +100,7 @@ public class DefaultMatchableWrapper implements IMatchable
         return this.value.equals(convertedRightHandSide);
     }
     
-    private Object convertValueExpression(String valueExpression)
+    private Object convertValueExpression(final String valueExpression)
     {
         if (this.value instanceof String)
         {
@@ -149,7 +149,7 @@ public class DefaultMatchableWrapper implements IMatchable
                 return Version.fromString(valueExpression);
             }
         }
-        catch (Exception e) { }
+        catch (final Exception e) { }
         
         return valueExpression;
     }

@@ -55,9 +55,9 @@ public class BranchNodeMetaModel
         Map<String, Set<BranchNodeType>> branchNodeIndex = new HashMap<>();
         Map<String, Set<BranchNodeListType>> branchNodeListIndex = new HashMap<>();
         
-        for (Class modelClass : classList)
+        for (final Class modelClass : classList)
         {
-            for (Field field : modelClass.getDeclaredFields())
+            for (final Field field : modelClass.getDeclaredFields())
             {
                 INodeType staticNodeTypeInstance = getStaticFieldInstance(field);
                 if (staticNodeTypeInstance == null)
@@ -97,7 +97,7 @@ public class BranchNodeMetaModel
                 }
                 int pos = -1;
                 int idx = 0;
-                for (Field existingField : fieldList)
+                for (final Field existingField : fieldList)
                 {
                     if (existingField.getName().equals(field.getName()))
                     {
@@ -116,7 +116,7 @@ public class BranchNodeMetaModel
                 }
             }
         }
-        for (Field field : fieldList)
+        for (final Field field : fieldList)
         {
             INodeType staticNodeTypeInstance = getStaticFieldInstance(field);
             if (staticNodeTypeInstance != null)
@@ -149,7 +149,7 @@ public class BranchNodeMetaModel
             {
                 this.leafNodeTypeList.add((LeafNodeType) staticNodeTypeInstance);
                 Set<LeafNodeType> nodeIndex = leafNodeIndex.get(name);
-                for (LeafNodeType node : nodeIndex)
+                for (final LeafNodeType node : nodeIndex)
                 {
                     if (node != staticNodeTypeInstance)
                     {
@@ -162,7 +162,7 @@ public class BranchNodeMetaModel
             {
                 this.branchNodeTypeList.add((BranchNodeType) staticNodeTypeInstance);
                 Set<BranchNodeType> nodeIndex = branchNodeIndex.get(name);
-                for (BranchNodeType node : nodeIndex)
+                for (final BranchNodeType node : nodeIndex)
                 {
                     if (node != staticNodeTypeInstance)
                     {
@@ -175,7 +175,7 @@ public class BranchNodeMetaModel
             {
                 this.branchNodeListTypeList.add((BranchNodeListType) staticNodeTypeInstance);
                 Set<BranchNodeListType> nodeIndex = branchNodeListIndex.get(name);
-                for (BranchNodeListType node : nodeIndex)
+                for (final BranchNodeListType node : nodeIndex)
                 {
                     if (node != staticNodeTypeInstance)
                     {
@@ -206,49 +206,49 @@ public class BranchNodeMetaModel
     
     protected String[] getNodeTypeNames()
     {
-        return nodeTypeNames;
+        return this.nodeTypeNames;
     }
     
     public List<INodeType> getNodeTypeList()
     {
-        return nodeTypeList;
+        return this.nodeTypeList;
     }
     
     public List<LeafNodeType> getLeafNodeTypeList()
     {
-        return leafNodeTypeList;
+        return this.leafNodeTypeList;
     }
     
     public List<BranchNodeType> getBranchNodeTypeList()
     {
-        return branchNodeTypeList;
+        return this.branchNodeTypeList;
     }
     
     public List<BranchNodeListType> getBranchNodeListTypeList()
     {
-        return branchNodeListTypeList;
+        return this.branchNodeListTypeList;
     }
     
     public Map<String, Integer> getNodeTypeIndexByName()
     {
-        return nodeTypeIndexByName;
+        return this.nodeTypeIndexByName;
     }
     
     public Map<Object, Integer> getNodeTypeIndexByClass()
     {
-        return nodeTypeIndexByClass;
+        return this.nodeTypeIndexByClass;
     }
     
     public Map<Object, Object> getNodeTypeIndexByHidden()
     {
-        return nodeTypeIndexByHidden;
+        return this.nodeTypeIndexByHidden;
     }
     
-    protected static INodeType getStaticFieldInstance(Field field)
+    protected static INodeType getStaticFieldInstance(final Field field)
     {
         Class<?> modelClass = field.getDeclaringClass();
         boolean isField = false;
-        for (Class<?> clazz : field.getType().getInterfaces())
+        for (final Class<?> clazz : field.getType().getInterfaces())
         {
             if (clazz == INodeType.class)
             {
@@ -264,9 +264,8 @@ public class BranchNodeMetaModel
         Class<?> fieldClass = field.getType();
         int fieldModifier = field.getModifiers();
         
-        if ((type instanceof ParameterizedType) && ((fieldClass == LeafNodeType.class) || (fieldClass == BranchNodeType.class) || (fieldClass == BranchNodeListType.class)))
+        if ((type instanceof final ParameterizedType pType) && ((fieldClass == LeafNodeType.class) || (fieldClass == BranchNodeType.class) || (fieldClass == BranchNodeListType.class)))
         {
-            ParameterizedType pType = (ParameterizedType) type;
             if ((pType.getActualTypeArguments() != null) && (pType.getActualTypeArguments().length == 2))
             {
                 if (pType.getActualTypeArguments()[0] == modelClass)
@@ -280,9 +279,8 @@ public class BranchNodeMetaModel
                         {
                             if (field.get(null) == null)
                             {
-                                if (type2 instanceof ParameterizedType)
+                                if (type2 instanceof final ParameterizedType pType2)
                                 {
-                                    ParameterizedType pType2 = (ParameterizedType) type2;
                                     type2 = pType2.getRawType();
                                 }
                                 Object nodeType = fieldClass.getConstructor(Class.class, Class.class, Field.class).newInstance(modelClass, type2, field);
@@ -291,7 +289,7 @@ public class BranchNodeMetaModel
                             return (INodeType) field.get(null);
                         }
                     }
-                    catch (Exception e)
+                    catch (final Exception e)
                     {
                         throw new RuntimeException(e);
                     }

@@ -35,7 +35,7 @@ public class DBSchemaTreeModel extends TypedTreeMetaModel<DBSchemaTreeModel>
     public static volatile BranchNodeType<DBSchemaTreeModel, DBSchemaNodeType> schema;
     
     @BowMethod(convertReturnValueToBow = true, name = "createSchema", createBowFromReturnValue = true)
-    public static RootBranchNode<DBSchemaTreeModel, DBSchemaNodeType> newSchema(String name)
+    public static RootBranchNode<DBSchemaTreeModel, DBSchemaNodeType> newSchema(final String name)
     {
         RootBranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = ModelRegistry.getTypedTreeMetaModel(DBSchemaTreeModel.class).createRootNode(DBSchemaTreeModel.schema);
         schema.setValue(DBSchemaNodeType.name, name);
@@ -43,13 +43,13 @@ public class DBSchemaTreeModel extends TypedTreeMetaModel<DBSchemaTreeModel>
         return schema;
     }
     
-    public static RootBranchNode<DBSchemaTreeModel, DBSchemaNodeType> newSchema(String name, String dbmsSchemaName)
+    public static RootBranchNode<DBSchemaTreeModel, DBSchemaNodeType> newSchema(final String name, final String dbmsSchemaName)
     {
         return newSchema(name, dbmsSchemaName, null);
     }
     
     @BowMethod(convertReturnValueToBow = true, name = "createSchema")
-    protected static RootBranchNode<DBSchemaTreeModel, DBSchemaNodeType> newSchema(String name, String dbmsSchemaName, @BowParameter(automaticConsumerMode = AutomaticConsumer.NEW_BOW_BY_RETURNTYPE) Consumer<RootBranchNode<DBSchemaTreeModel, DBSchemaNodeType>> onRootNodeCreated)
+    protected static RootBranchNode<DBSchemaTreeModel, DBSchemaNodeType> newSchema(final String name, final String dbmsSchemaName, @BowParameter(automaticConsumerMode = AutomaticConsumer.NEW_BOW_BY_RETURNTYPE) final Consumer<RootBranchNode<DBSchemaTreeModel, DBSchemaNodeType>> onRootNodeCreated)
     {
         RootBranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = ModelRegistry.getTypedTreeMetaModel(DBSchemaTreeModel.class).createRootNode(DBSchemaTreeModel.schema);
         

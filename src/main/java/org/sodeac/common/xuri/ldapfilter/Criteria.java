@@ -50,7 +50,7 @@ public class Criteria implements IFilterItem, Serializable
      */
     public String getName()
     {
-        return name;
+        return this.name;
     }
     
     /**
@@ -60,7 +60,7 @@ public class Criteria implements IFilterItem, Serializable
      *
      * @return criteria
      */
-    protected Criteria setName(String name)
+    protected Criteria setName(final String name)
     {
         this.name = name;
         return this;
@@ -73,7 +73,7 @@ public class Criteria implements IFilterItem, Serializable
      */
     public ComparativeOperator getOperator()
     {
-        return operator;
+        return this.operator;
     }
     
     /**
@@ -83,7 +83,7 @@ public class Criteria implements IFilterItem, Serializable
      *
      * @return
      */
-    protected Criteria setOperator(ComparativeOperator operator)
+    protected Criteria setOperator(final ComparativeOperator operator)
     {
         this.operator = operator;
         return this;
@@ -96,7 +96,7 @@ public class Criteria implements IFilterItem, Serializable
      */
     public String getValue()
     {
-        return value;
+        return this.value;
     }
     
     /**
@@ -106,7 +106,7 @@ public class Criteria implements IFilterItem, Serializable
      *
      * @return criteria
      */
-    protected Criteria setRawValue(String rawValue)
+    protected Criteria setRawValue(final String rawValue)
     {
         this.rawValue = rawValue;
         if (this.rawValue.indexOf("\\") < 0)
@@ -123,10 +123,10 @@ public class Criteria implements IFilterItem, Serializable
     @Override
     public boolean isInvert()
     {
-        return invert;
+        return this.invert;
     }
     
-    protected Criteria setInvert(boolean invert)
+    protected Criteria setInvert(final boolean invert)
     {
         this.invert = invert;
         return this;
@@ -138,39 +138,39 @@ public class Criteria implements IFilterItem, Serializable
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("(");
         
-        if (invert)
+        if (this.invert)
         {
             stringBuilder.append("!(");
         }
         
-        stringBuilder.append(name);
+        stringBuilder.append(this.name);
         
-        if (operator != null)
+        if (this.operator != null)
         {
-            if (operator == ComparativeOperator.EQUAL)
+            if (this.operator == ComparativeOperator.EQUAL)
             {
                 stringBuilder.append("=");
             }
-            else if (operator == ComparativeOperator.GTE)
+            else if (this.operator == ComparativeOperator.GTE)
             {
                 stringBuilder.append(">=");
             }
-            else if (operator == ComparativeOperator.LTE)
+            else if (this.operator == ComparativeOperator.LTE)
             {
                 stringBuilder.append("<=");
             }
-            else if (operator == ComparativeOperator.APPROX)
+            else if (this.operator == ComparativeOperator.APPROX)
             {
                 stringBuilder.append("~=");
             }
         }
         
-        if (value != null)
+        if (this.value != null)
         {
-            stringBuilder.append(rawValue);
+            stringBuilder.append(this.rawValue);
         }
         
-        if (invert)
+        if (this.invert)
         {
             stringBuilder.append(")");
         }
@@ -181,17 +181,17 @@ public class Criteria implements IFilterItem, Serializable
     }
     
     @Override
-    public boolean matches(Map<String, IMatchable> properties)
+    public boolean matches(final Map<String, IMatchable> properties)
     {
         if (properties == null)
         {
-            return invert;
+            return this.invert;
         }
         IMatchable matchable = properties.get(this.name);
-        if ((matchable != null) && matchable.matches(operator, this.name, this.value))
+        if ((matchable != null) && matchable.matches(this.operator, this.name, this.value))
         {
-            return !invert;
+            return !this.invert;
         }
-        return invert;
+        return this.invert;
     }
 }

@@ -454,7 +454,7 @@ public class H2DBMSServiceTest
         return Driver.getSingleDriver(IDatabaseManagementSystemService.class, properties);
     }
     
-    public void compareTables(Connection origin, Connection restore, String table) throws SQLException, IOException
+    public void compareTables(final Connection origin, final Connection restore, final String table) throws SQLException, IOException
     {
         try (CloseableCollector cc = CloseableCollector.newInstance())
         {

@@ -18,7 +18,7 @@ import org.sodeac.common.misc.Driver.IDriver;
 public interface IDefaultBySequence extends IDefaultValueExpressionDriver
 {
     @Override
-    default int driverIsApplicableFor(Map<String, Object> properties)
+    default int driverIsApplicableFor(final Map<String, Object> properties)
     {
         return IDriver.APPLICABLE_DEFAULT;
     }

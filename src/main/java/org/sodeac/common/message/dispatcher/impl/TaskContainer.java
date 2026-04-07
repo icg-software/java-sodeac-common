@@ -29,50 +29,50 @@ public class TaskContainer
     
     public IDispatcherChannelTask getTask()
     {
-        return task;
+        return this.task;
     }
     
-    public void setTask(IDispatcherChannelTask task)
+    public void setTask(final IDispatcherChannelTask task)
     {
         this.task = task;
     }
     
     public String getId()
     {
-        return id;
+        return this.id;
     }
     
-    public void setId(String id)
+    public void setId(final String id)
     {
         this.id = id;
     }
     
     public IPropertyBlock getPropertyBlock()
     {
-        return properties;
+        return this.properties;
     }
     
-    public void setPropertyBlock(IPropertyBlock properties)
+    public void setPropertyBlock(final IPropertyBlock properties)
     {
         this.properties = properties;
     }
     
     public TaskControlImpl getTaskControl()
     {
-        return taskControl;
+        return this.taskControl;
     }
     
-    public void setTaskControl(TaskControlImpl taskControl)
+    public void setTaskControl(final TaskControlImpl taskControl)
     {
         this.taskControl = taskControl;
     }
     
     public boolean isNamedTask()
     {
-        return namedTask;
+        return this.namedTask;
     }
     
-    public void setNamedTask(boolean namedTask)
+    public void setNamedTask(final boolean namedTask)
     {
         this.namedTask = namedTask;
     }

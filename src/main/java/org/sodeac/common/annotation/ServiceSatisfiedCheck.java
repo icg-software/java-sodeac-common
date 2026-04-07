@@ -28,19 +28,19 @@ public @interface ServiceSatisfiedCheck
 {
     Class<? extends Function<IService.IServiceProvider<?>, Boolean>> trigger() default Optional.class;
     
-    public class Optional implements Function<IService.IServiceProvider<?>, Boolean>
+    class Optional implements Function<IService.IServiceProvider<?>, Boolean>
     {
         @Override
-        public Boolean apply(IServiceProvider<?> t)
+        public Boolean apply(final IServiceProvider<?> t)
         {
             return true;
         }
     }
     
-    public class MatchRequired implements Function<IService.IServiceProvider<?>, Boolean>
+    class MatchRequired implements Function<IService.IServiceProvider<?>, Boolean>
     {
         @Override
-        public Boolean apply(IServiceProvider<?> t)
+        public Boolean apply(final IServiceProvider<?> t)
         {
             return t.isMatched();
         }

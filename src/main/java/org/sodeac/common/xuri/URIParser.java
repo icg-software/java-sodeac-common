@@ -47,7 +47,7 @@ public final class URIParser implements Serializable
     
     private static final int SIZE_CASH_HELPER_OBJECT = 13;
     
-    protected static List<IExtension<?>> getExtensionList(ComponentType componentType, URI uri)
+    static List<IExtension<?>> getExtensionList(final ComponentType componentType, final URI uri)
     {
         if (!URIParser.DRIVER_UPDATE_REGISTRATION)
         {
@@ -73,7 +73,7 @@ public final class URIParser implements Serializable
         return list;
     }
     
-    public static void addExtension(IExtension<?> extension)
+    public static void addExtension(final IExtension<?> extension)
     {
         // TODO special list with user defined extensions
         
@@ -85,7 +85,7 @@ public final class URIParser implements Serializable
         synchronized (URIParser.class)
         {
             List<IExtension<?>> newList = new ArrayList<IExtension<?>>();
-            for (IExtension<?> handler : getExtensionList(null, null))
+            for (final IExtension<?> handler : getExtensionList(null, null))
             {
                 if (handler.getType().equals(extension.getType()))
                 {
@@ -99,7 +99,7 @@ public final class URIParser implements Serializable
         
     }
     
-    public static void removeExtension(IExtension<?> extension)
+    public static void removeExtension(final IExtension<?> extension)
     {
         // TODO special list with user defined extensions
         
@@ -112,7 +112,7 @@ public final class URIParser implements Serializable
         {
             boolean removed = false;
             
-            for (IExtension<?> handler : getExtensionList(null, null))
+            for (final IExtension<?> handler : getExtensionList(null, null))
             {
                 if (handler.getType().equals(extension.getType()))
                 {
@@ -126,7 +126,7 @@ public final class URIParser implements Serializable
             }
             
             List<IExtension<?>> newList = new ArrayList<IExtension<?>>();
-            for (IExtension<?> handler : getExtensionList(null, null))
+            for (final IExtension<?> handler : getExtensionList(null, null))
             {
                 if (handler.getType().equals(extension.getType()))
                 {
@@ -139,12 +139,12 @@ public final class URIParser implements Serializable
         
     }
     
-    protected static volatile URIParser instance = null;
-    protected static final LinkedList<ParserHelperContainerObject> CACHE_PARSER_HELPER_CONTAINER_OBJECT = new LinkedList<ParserHelperContainerObject>();
-    protected volatile static List<IExtension<?>> CACHE_ENCODING_EXTENSION = null;
-    protected volatile static boolean DRIVER_UPDATE_REGISTRATION = false;
+    private static volatile URIParser instance = null;
+    private static final LinkedList<ParserHelperContainerObject> CACHE_PARSER_HELPER_CONTAINER_OBJECT = new LinkedList<ParserHelperContainerObject>();
+    private volatile static List<IExtension<?>> CACHE_ENCODING_EXTENSION = null;
+    private volatile static boolean DRIVER_UPDATE_REGISTRATION = false;
     
-    protected static URIParser getInstance()
+    static URIParser getInstance()
     {
         if (instance == null)
         {
@@ -153,7 +153,7 @@ public final class URIParser implements Serializable
         return instance;
     }
     
-    protected URI parse(URI uri)
+    URI parse(final URI uri)
     {
         ParserHelperContainerObject workerObject = null;
         
@@ -219,7 +219,7 @@ public final class URIParser implements Serializable
         }
     }
     
-    private void parseScheme(ParserHelperContainerObject workerObject)
+    private void parseScheme(final ParserHelperContainerObject workerObject)
     {
         for (; workerObject.currentPosition <= workerObject.maxPosition; workerObject.currentPosition++)
         {
@@ -257,7 +257,7 @@ public final class URIParser implements Serializable
         throw new FormatException("scheme not found: " + workerObject.fullPath);
     }
     
-    private static void parseAuthority(ParserHelperContainerObject workerObject)
+    private static void parseAuthority(final ParserHelperContainerObject workerObject)
     {
         workerObject.uri.authority = new AuthorityComponent();
         workerObject.uri.authority.setExpression("");
@@ -295,7 +295,7 @@ public final class URIParser implements Serializable
         {
             workerObject.readNextCharactor();
             
-            for (IExtension<?> extension : registeredExtensionList)
+            for (final IExtension<?> extension : registeredExtensionList)
             {
                 if (extension.getDecoder() == null)
                 {
@@ -515,7 +515,7 @@ public final class URIParser implements Serializable
         workerObject.authoritySubComponent = null;
     }
     
-    private static void parsePath(ParserHelperContainerObject workerObject)
+    private static void parsePath(final ParserHelperContainerObject workerObject)
     {
         workerObject.uri.path = new PathComponent(!workerObject.pathIsRelative);
         workerObject.uri.path.setExpression("");
@@ -554,7 +554,7 @@ public final class URIParser implements Serializable
         {
             workerObject.readNextCharactor();
             
-            for (IExtension<?> extension : registeredExtensionList)
+            for (final IExtension<?> extension : registeredExtensionList)
             {
                 if (extension.getDecoder() == null)
                 {
@@ -677,7 +677,7 @@ public final class URIParser implements Serializable
         workerObject.pathSegment = null;
     }
     
-    private static void parseQuery(ParserHelperContainerObject workerObject)
+    private static void parseQuery(final ParserHelperContainerObject workerObject)
     {
         workerObject.uri.query = new QueryComponent();
         workerObject.uri.query.setExpression("");
@@ -706,7 +706,7 @@ public final class URIParser implements Serializable
         {
             workerObject.readNextCharactor();
             
-            for (IExtension<?> extension : registeredExtensionList)
+            for (final IExtension<?> extension : registeredExtensionList)
             {
                 if (extension.getDecoder() == null)
                 {
@@ -883,7 +883,7 @@ public final class URIParser implements Serializable
         workerObject.currentPosition++;
     }
     
-    private static void parseFragment(ParserHelperContainerObject workerObject)
+    private static void parseFragment(final ParserHelperContainerObject workerObject)
     {
         List<IExtension<?>> registeredExtensionList = getExtensionList(ComponentType.FRAGMENT, workerObject.uri);
         
@@ -907,7 +907,7 @@ public final class URIParser implements Serializable
         {
             workerObject.readNextCharactor();
             
-            for (IExtension<?> extension : registeredExtensionList)
+            for (final IExtension<?> extension : registeredExtensionList)
             {
                 if (extension.getDecoder() == null)
                 {
@@ -966,7 +966,7 @@ public final class URIParser implements Serializable
     }
     
     @SuppressWarnings("deprecation")
-    private static String decodeUrl(String raw)
+    private static String decodeUrl(final String raw)
     {
         if (raw.indexOf(PERCENT_SIGN) < 0)
         {
@@ -975,7 +975,7 @@ public final class URIParser implements Serializable
         return URLDecoder.decode(raw);
     }
     
-    private static void handleString(ParserHelperContainerObject workerObject)
+    private static void handleString(final ParserHelperContainerObject workerObject)
     {
         workerObject.quoteChar = SINGLE_QUOTE;
         workerObject.escapeChar = BACKSLASH;
@@ -987,7 +987,7 @@ public final class URIParser implements Serializable
         }
         else
         {
-            throw new RuntimeException("encoded string parameter must start with \' | " + workerObject.currentCharacter + " : " + workerObject.fullPath);
+            throw new RuntimeException("encoded string parameter must start with ' | " + workerObject.currentCharacter + " : " + workerObject.fullPath);
         }
         
         for (; workerObject.currentPosition <= workerObject.maxPosition; workerObject.currentPosition++)
@@ -1024,7 +1024,7 @@ public final class URIParser implements Serializable
         throw new FormatException("no closing sequence \"" + workerObject.escapeChar + "\" found in string parameter " + " : " + workerObject.fullPath);
     }
     
-    private static void handleJSON(ParserHelperContainerObject workerObject)
+    private static void handleJSON(final ParserHelperContainerObject workerObject)
     {
         workerObject.quoteChar = DOUBLE_QUOTE;
         workerObject.escapeChar = BACKSLASH;
@@ -1121,13 +1121,13 @@ public final class URIParser implements Serializable
         private int extensionEnd = -1;
         private String value;
         private String expression;
-        private StringBuilder mainStringBuilder = new StringBuilder();
+        private final StringBuilder mainStringBuilder = new StringBuilder();
         private URI uri = null;
         private ExtensionHandleObject extensionHandleObject;
         
         private char readNextCharactor()
         {
-            this.currentCharacter = fullPath.charAt(currentPosition);
+            this.currentCharacter = this.fullPath.charAt(this.currentPosition);
             return this.currentCharacter;
         }
         
@@ -1151,13 +1151,13 @@ public final class URIParser implements Serializable
         
         private void resetQueryValue()
         {
-            qtype = null;
-            qname = null;
-            qformat = null;
-            qvalue = null;
-            qtypeParsed = false;
-            qnameParsed = false;
-            qformatParsed = false;
+            this.qtype = null;
+            this.qname = null;
+            this.qformat = null;
+            this.qvalue = null;
+            this.qtypeParsed = false;
+            this.qnameParsed = false;
+            this.qformatParsed = false;
         }
         
         // parser
@@ -1170,24 +1170,24 @@ public final class URIParser implements Serializable
         
         private void clearParser()
         {
-            quoteChar = SINGLE_QUOTE;
-            escapeChar = BACKSLASH;
-            inEscape = false;
+            this.quoteChar = SINGLE_QUOTE;
+            this.escapeChar = BACKSLASH;
+            this.inEscape = false;
             
-            inQuote = false;
-            nestedLevel = 0;
+            this.inQuote = false;
+            this.nestedLevel = 0;
         }
         
         private void appendCurrentCharacter()
         {
-            this.mainStringBuilder.append(currentCharacter);
+            this.mainStringBuilder.append(this.currentCharacter);
         }
         
         private void clearStringBuilder()
         {
-            if (mainStringBuilder.length() > 0)
+            if (this.mainStringBuilder.length() > 0)
             {
-                mainStringBuilder.delete(0, mainStringBuilder.length());
+                this.mainStringBuilder.delete(0, this.mainStringBuilder.length());
             }
         }
         

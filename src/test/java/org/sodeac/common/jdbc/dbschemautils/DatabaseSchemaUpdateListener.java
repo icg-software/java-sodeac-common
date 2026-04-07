@@ -18,16 +18,16 @@ public class DatabaseSchemaUpdateListener implements ExceptionCatchedConsumer<DB
     
     private IDatabaseSchemaUpdateListener intern = null;
     
-    public DatabaseSchemaUpdateListener(IDatabaseSchemaUpdateListener intern)
+    public DatabaseSchemaUpdateListener(final IDatabaseSchemaUpdateListener intern)
     {
         super();
         this.intern = intern;
     }
     
     @Override
-    public void acceptWithException(DBSchemaEvent t) throws Exception
+    public void acceptWithException(final DBSchemaEvent t) throws Exception
     {
-        intern.onAction(t.getActionType(), t.getObjectType(), t.getPhaseType(), t.getConnection(), t.getSchemaSpecificationName(), t.getObjects(), t.getDriver(), t.getException());
+        this.intern.onAction(t.getActionType(), t.getObjectType(), t.getPhaseType(), t.getConnection(), t.getSchemaSpecificationName(), t.getObjects(), t.getDriver(), t.getException());
         
     }
     

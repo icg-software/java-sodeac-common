@@ -59,7 +59,7 @@ public class SmartSupplierTest
                        {
                            Thread.sleep(1000);
                        }
-                       catch (Exception e) { }
+                       catch (final Exception e) { }
                        i.setValue(5);
                    }).start();
         
@@ -82,7 +82,7 @@ public class SmartSupplierTest
                        {
                            Thread.sleep(4000);
                        }
-                       catch (Exception e) { }
+                       catch (final Exception e) { }
                        i.setValue(5);
                    }).start();
         
@@ -115,7 +115,7 @@ public class SmartSupplierTest
         {
             Thread.sleep(2000);
         }
-        catch (Exception e) { }
+        catch (final Exception e) { }
         
         assertEquals("supplier should supply correct", Integer.valueOf(10), tolerantSupplier.get());
         
@@ -123,7 +123,7 @@ public class SmartSupplierTest
         {
             Thread.sleep(5000);
         }
-        catch (Exception e) { }
+        catch (final Exception e) { }
         
         assertEquals("supplier should supply correct", Integer.valueOf(3), tolerantSupplier.get());
         

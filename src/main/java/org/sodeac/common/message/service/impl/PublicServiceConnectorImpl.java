@@ -33,7 +33,7 @@ public class PublicServiceConnectorImpl implements IServiceConnector
     private volatile IServiceConnector localConnector = null;
     
     @Override
-    public int driverIsApplicableFor(Map<String, Object> properties)
+    public int driverIsApplicableFor(final Map<String, Object> properties)
     {
         if ((properties == null) || properties.isEmpty())
         {
@@ -43,7 +43,7 @@ public class PublicServiceConnectorImpl implements IServiceConnector
     }
     
     @Override
-    public IServiceConnection lookup(URI serviceURI)
+    public IServiceConnection lookup(final URI serviceURI)
     {
         IServiceConnector localConnector = this.localConnector;
         if (localConnector == null)

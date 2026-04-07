@@ -49,7 +49,7 @@ public class LDAPFilterExtension implements IExtension<IFilterItem>, Serializabl
         super();
     }
     
-    public LDAPFilterExtension(String rawString)
+    public LDAPFilterExtension(final String rawString)
     {
         super();
         this.rawString = rawString;
@@ -60,7 +60,7 @@ public class LDAPFilterExtension implements IExtension<IFilterItem>, Serializabl
     @Override
     public String getExpression()
     {
-        return rawString;
+        return this.rawString;
     }
     
     @Override
@@ -69,12 +69,12 @@ public class LDAPFilterExtension implements IExtension<IFilterItem>, Serializabl
         return TYPE;
     }
     
-    public IFilterItem decodeFromString(String expression)
+    public IFilterItem decodeFromString(final String expression)
     {
         return LDAPFilterDecodingHandler.getInstance().decodeFromString(expression);
     }
     
-    public String encodeToString(IFilterItem extensionDataObject)
+    public String encodeToString(final IFilterItem extensionDataObject)
     {
         return LDAPFilterEncodingHandler.getInstance().encodeToString(extensionDataObject);
     }
@@ -92,12 +92,12 @@ public class LDAPFilterExtension implements IExtension<IFilterItem>, Serializabl
     }
     
     @Override
-    public int driverIsApplicableFor(Map<String, Object> properties)
+    public int driverIsApplicableFor(final Map<String, Object> properties)
     {
         return IDriver.APPLICABLE_DEFAULT;
     }
     
-    public static String decodeFromHexEscaped(String rawString)
+    public static String decodeFromHexEscaped(final String rawString)
     {
         StringBuilder builder = new StringBuilder();
         
@@ -195,7 +195,7 @@ public class LDAPFilterExtension implements IExtension<IFilterItem>, Serializabl
                         continue;
                     }
                 }
-                catch (NumberFormatException e) { }
+                catch (final NumberFormatException e) { }
                 
             }
             else

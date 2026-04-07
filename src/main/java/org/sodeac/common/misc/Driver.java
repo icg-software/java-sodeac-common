@@ -21,7 +21,7 @@ import java.util.function.BiConsumer;
 
 public class Driver
 {
-    public static <T extends IDriver> T getSingleDriver(Class<T> driverClass, Map<String, Object> properties)
+    public static <T extends IDriver> T getSingleDriver(final Class<T> driverClass, final Map<String, Object> properties)
     {
         if (OSGiUtils.isOSGi())
         {
@@ -52,13 +52,13 @@ public class Driver
                     }
                 }
             }
-            catch (Exception e) { }
-            catch (Error e) { }
+            catch (final Exception e) { }
+            catch (final Error e) { }
         }
         return bestDriver;
     }
     
-    public static <T extends IDriver> boolean addUpdateListener(Class<T> driverClass, BiConsumer<T, T> updateListener)
+    public static <T extends IDriver> boolean addUpdateListener(final Class<T> driverClass, final BiConsumer<T, T> updateListener)
     {
         if (OSGiUtils.isOSGi())
         {
@@ -67,7 +67,7 @@ public class Driver
         return true;
     }
     
-    public static <T extends IDriver> boolean removeUpdateListener(Class<T> driverClass, BiConsumer<T, T> updateListener)
+    public static <T extends IDriver> boolean removeUpdateListener(final Class<T> driverClass, final BiConsumer<T, T> updateListener)
     {
         if (OSGiUtils.isOSGi())
         {
@@ -76,7 +76,7 @@ public class Driver
         return true;
     }
     
-    public static <T extends IDriver> List<T> getDriverList(Class<T> driverClass, Map<String, Object> properties)
+    public static <T extends IDriver> List<T> getDriverList(final Class<T> driverClass, final Map<String, Object> properties)
     {
         if (OSGiUtils.isOSGi())
         {
@@ -111,8 +111,8 @@ public class Driver
                     }
                 }
             }
-            catch (Exception e) { }
-            catch (Error e) { }
+            catch (final Exception e) { }
+            catch (final Error e) { }
         }
         uniqueIndex.clear();
         return list;
@@ -120,12 +120,12 @@ public class Driver
     
     public interface IDriver
     {
-        public static final String TYPE = "TYPE";
+        String TYPE = "TYPE";
         
-        public static final int APPLICABLE_NONE = -1;
-        public static final int APPLICABLE_FALLBACK = 0;
-        public static final int APPLICABLE_DEFAULT = 10000;
+        int APPLICABLE_NONE = -1;
+        int APPLICABLE_FALLBACK = 0;
+        int APPLICABLE_DEFAULT = 10000;
         
-        public int driverIsApplicableFor(Map<String, Object> properties);
+        int driverIsApplicableFor(Map<String, Object> properties);
     }
 }

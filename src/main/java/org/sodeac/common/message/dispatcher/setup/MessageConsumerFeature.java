@@ -34,10 +34,10 @@ import org.sodeac.common.message.dispatcher.setup.MessageDispatcherChannelSetup.
 public class MessageConsumerFeature
 {
     
-    private Integer KEEP_MESSAGE_MODE_MESSAGES_CONSUMED = 1;
-    private Integer KEEP_MESSAGE_MODE_MESSAGES_PROCESSED = 2;
-    private Integer KEEP_MESSAGE_MODE_MESSAGES_CONSUMED_BY_RULE = 3;
-    private Integer KEEP_MESSAGE_MODE_MESSAGES_PROCESSED_BY_RULE = 4;
+    private final Integer KEEP_MESSAGE_MODE_MESSAGES_CONSUMED = 1;
+    private final Integer KEEP_MESSAGE_MODE_MESSAGES_PROCESSED = 2;
+    private final Integer KEEP_MESSAGE_MODE_MESSAGES_CONSUMED_BY_RULE = 3;
+    private final Integer KEEP_MESSAGE_MODE_MESSAGES_PROCESSED_BY_RULE = 4;
     
     private MessageConsumerFeature()
     {
@@ -51,27 +51,27 @@ public class MessageConsumerFeature
     
     public class FeatureBuilder
     {
-        private MessageConsumerFeatureConfiguration feature = new MessageConsumerFeatureConfiguration();
+        private final MessageConsumerFeatureConfiguration feature = new MessageConsumerFeatureConfiguration();
         
         public BuilderPhaseA1 inMessageMonitoringPool()
         {
             return new BuilderPhaseA1();
         }
         
-        public <T, H> BuilderPhaseB1.BuilderPhaseB2 consumeMessage(BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer)
+        public <T, H> BuilderPhaseB1.BuilderPhaseB2 consumeMessage(final BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer)
         {
             return new BuilderPhaseB1().consumeMessage(messageConsumer);
         }
         
         @SuppressWarnings({ "unchecked", "rawtypes" })
-        public <T, H> BuilderPhaseB1.BuilderPhaseB2 consumeMessage(BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer, Class<T> messageType)
+        public <T, H> BuilderPhaseB1.BuilderPhaseB2 consumeMessage(final BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer, final Class<T> messageType)
         {
             FeatureBuilder.this.feature.currentConsumerRule.messageConsumer = (BiConsumer) messageConsumer;
             return new BuilderPhaseB1().consumeMessage(messageConsumer);
         }
         
         @SuppressWarnings({ "unchecked", "rawtypes" })
-        public <T, H> BuilderPhaseB1.BuilderPhaseB2 consumeMessage(BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer, Class<T> messageType, Class<H> helperType)
+        public <T, H> BuilderPhaseB1.BuilderPhaseB2 consumeMessage(final BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer, final Class<T> messageType, final Class<H> helperType)
         {
             FeatureBuilder.this.feature.currentConsumerRule.messageConsumer = (BiConsumer) messageConsumer;
             return new BuilderPhaseB1().consumeMessage(messageConsumer);
@@ -85,39 +85,39 @@ public class MessageConsumerFeature
             }
             
             @SuppressWarnings({ "unchecked", "rawtypes" })
-            public <T> BuilderPhaseA2 useFilter(Predicate<IMessage<T>> filter)
+            public <T> BuilderPhaseA2 useFilter(final Predicate<IMessage<T>> filter)
             {
                 FeatureBuilder.this.feature.currentConsumerRule.poolFilter = (Predicate) filter;
                 return new BuilderPhaseA2();
             }
             
             @SuppressWarnings({ "unchecked", "rawtypes" })
-            public <T> BuilderPhaseA2 useFilter(Predicate<IMessage<T>> filter, Class<T> messageType)
+            public <T> BuilderPhaseA2 useFilter(final Predicate<IMessage<T>> filter, final Class<T> messageType)
             {
                 FeatureBuilder.this.feature.currentConsumerRule.poolFilter = (Predicate) filter;
                 return new BuilderPhaseA2();
             }
             
             @SuppressWarnings({ "unchecked", "rawtypes" })
-            public <T> BuilderPhaseA3 useReplaceOlderMessageFilter(BiFunction<IMessage<T>, IMessage<T>, Boolean> filter)
+            public <T> BuilderPhaseA3 useReplaceOlderMessageFilter(final BiFunction<IMessage<T>, IMessage<T>, Boolean> filter)
             {
                 FeatureBuilder.this.feature.currentConsumerRule.replaceOlderMessageFilter = (BiFunction) filter;
                 return new BuilderPhaseA3();
             }
             
             @SuppressWarnings({ "unchecked", "rawtypes" })
-            public <T> BuilderPhaseA3 useReplaceOlderMessageFilter(BiFunction<IMessage<T>, IMessage<T>, Boolean> filter, Class<T> messageType)
+            public <T> BuilderPhaseA3 useReplaceOlderMessageFilter(final BiFunction<IMessage<T>, IMessage<T>, Boolean> filter, final Class<T> messageType)
             {
                 FeatureBuilder.this.feature.currentConsumerRule.replaceOlderMessageFilter = (BiFunction) filter;
                 return new BuilderPhaseA3();
             }
             
-            public BuilderPhaseA3.BuilderPhaseA4 minPoolSize(int minSize)
+            public BuilderPhaseA3.BuilderPhaseA4 minPoolSize(final int minSize)
             {
                 return new BuilderPhaseA3().minPoolSize(minSize);
             }
             
-            public BuilderPhaseB1 maxPoolSize(int maxSize)
+            public BuilderPhaseB1 maxPoolSize(final int maxSize)
             {
                 return new BuilderPhaseA3().maxPoolSize(maxSize);
             }
@@ -139,25 +139,25 @@ public class MessageConsumerFeature
                     return new BuilderPhaseA4();
                 }
                 
-                public BuilderPhaseB1 maxPoolSize(int maxSize)
+                public BuilderPhaseB1 maxPoolSize(final int maxSize)
                 {
                     return new BuilderPhaseA4().maxPoolSize(maxSize);
                 }
                 
-                public <T, H> BuilderPhaseB1.BuilderPhaseB2 consumeMessage(BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer)
+                public <T, H> BuilderPhaseB1.BuilderPhaseB2 consumeMessage(final BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer)
                 {
                     return new BuilderPhaseB1().consumeMessage(messageConsumer);
                 }
                 
                 @SuppressWarnings({ "unchecked", "rawtypes" })
-                public <T, H> BuilderPhaseB1.BuilderPhaseB2 consumeMessage(BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer, Class<T> messageType)
+                public <T, H> BuilderPhaseB1.BuilderPhaseB2 consumeMessage(final BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer, final Class<T> messageType)
                 {
                     FeatureBuilder.this.feature.currentConsumerRule.messageConsumer = (BiConsumer) messageConsumer;
                     return new BuilderPhaseB1().consumeMessage(messageConsumer);
                 }
                 
                 @SuppressWarnings({ "unchecked", "rawtypes" })
-                public <T, H> BuilderPhaseB1.BuilderPhaseB2 consumeMessage(BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer, Class<T> messageType, Class<H> helperType)
+                public <T, H> BuilderPhaseB1.BuilderPhaseB2 consumeMessage(final BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer, final Class<T> messageType, final Class<H> helperType)
                 {
                     FeatureBuilder.this.feature.currentConsumerRule.messageConsumer = (BiConsumer) messageConsumer;
                     return new BuilderPhaseB1().consumeMessage(messageConsumer);
@@ -185,20 +185,20 @@ public class MessageConsumerFeature
                         return new BuilderPhaseB1();
                     }
                     
-                    public <T, H> BuilderPhaseB1.BuilderPhaseB2 consumeMessage(BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer)
+                    public <T, H> BuilderPhaseB1.BuilderPhaseB2 consumeMessage(final BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer)
                     {
                         return new BuilderPhaseB1().consumeMessage(messageConsumer);
                     }
                     
                     @SuppressWarnings({ "unchecked", "rawtypes" })
-                    public <T, H> BuilderPhaseB1.BuilderPhaseB2 consumeMessage(BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer, Class<T> messageType)
+                    public <T, H> BuilderPhaseB1.BuilderPhaseB2 consumeMessage(final BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer, final Class<T> messageType)
                     {
                         FeatureBuilder.this.feature.currentConsumerRule.messageConsumer = (BiConsumer) messageConsumer;
                         return new BuilderPhaseB1().consumeMessage(messageConsumer);
                     }
                     
                     @SuppressWarnings({ "unchecked", "rawtypes" })
-                    public <T, H> BuilderPhaseB1.BuilderPhaseB2 consumeMessage(BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer, Class<T> messageType, Class<H> helperType)
+                    public <T, H> BuilderPhaseB1.BuilderPhaseB2 consumeMessage(final BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer, final Class<T> messageType, final Class<H> helperType)
                     {
                         FeatureBuilder.this.feature.currentConsumerRule.messageConsumer = (BiConsumer) messageConsumer;
                         return new BuilderPhaseB1().consumeMessage(messageConsumer);
@@ -214,14 +214,14 @@ public class MessageConsumerFeature
                 }
                 
                 @SuppressWarnings({ "unchecked", "rawtypes" })
-                public <T> BuilderPhaseA3 useReplaceOlderMessageFilter(BiFunction<IMessage<T>, IMessage<T>, Boolean> filter)
+                public <T> BuilderPhaseA3 useReplaceOlderMessageFilter(final BiFunction<IMessage<T>, IMessage<T>, Boolean> filter)
                 {
                     FeatureBuilder.this.feature.currentConsumerRule.replaceOlderMessageFilter = (BiFunction) filter;
                     return new BuilderPhaseA3();
                 }
                 
                 @SuppressWarnings({ "unchecked", "rawtypes" })
-                public <T> BuilderPhaseA3 useReplaceOlderMessageFilter(BiFunction<IMessage<T>, IMessage<T>, Boolean> filter, Class<T> messageType)
+                public <T> BuilderPhaseA3 useReplaceOlderMessageFilter(final BiFunction<IMessage<T>, IMessage<T>, Boolean> filter, final Class<T> messageType)
                 {
                     FeatureBuilder.this.feature.currentConsumerRule.replaceOlderMessageFilter = (BiFunction) filter;
                     return new BuilderPhaseA3();
@@ -237,21 +237,21 @@ public class MessageConsumerFeature
             }
             
             @SuppressWarnings({ "unchecked", "rawtypes" })
-            public <T, H> BuilderPhaseB2 consumeMessage(BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer)
+            public <T, H> BuilderPhaseB2 consumeMessage(final BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer)
             {
                 FeatureBuilder.this.feature.currentConsumerRule.messageConsumer = (BiConsumer) messageConsumer;
                 return new BuilderPhaseB2();
             }
             
             @SuppressWarnings({ "unchecked", "rawtypes" })
-            public <T, H> BuilderPhaseB2 consumeMessage(BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer, Class<T> messageType)
+            public <T, H> BuilderPhaseB2 consumeMessage(final BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer, final Class<T> messageType)
             {
                 FeatureBuilder.this.feature.currentConsumerRule.messageConsumer = (BiConsumer) messageConsumer;
                 return new BuilderPhaseB2();
             }
             
             @SuppressWarnings({ "unchecked", "rawtypes" })
-            public <T, H> BuilderPhaseB2 consumeMessage(BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer, Class<T> messageType, Class<H> helperType)
+            public <T, H> BuilderPhaseB2 consumeMessage(final BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer, final Class<T> messageType, final Class<H> helperType)
             {
                 FeatureBuilder.this.feature.currentConsumerRule.messageConsumer = (BiConsumer) messageConsumer;
                 return new BuilderPhaseB2();
@@ -264,7 +264,7 @@ public class MessageConsumerFeature
                     super();
                 }
                 
-                public BuilderPhaseB3 memberOfGroup(String group)
+                public BuilderPhaseB3 memberOfGroup(final String group)
                 {
                     FeatureBuilder.this.feature.currentConsumerRule.groupMembers.add(group);
                     return new BuilderPhaseB3();
@@ -277,7 +277,7 @@ public class MessageConsumerFeature
                         super();
                     }
                     
-                    public BuilderPhaseB3 andMemberOfGroup(String group)
+                    public BuilderPhaseB3 andMemberOfGroup(final String group)
                     {
                         FeatureBuilder.this.feature.currentConsumerRule.groupMembers.add(group);
                         return this;
@@ -294,7 +294,7 @@ public class MessageConsumerFeature
                 super();
             }
             
-            public BuilderPhaseC11 withTimeoutForEachMessage(int timeOut)
+            public BuilderPhaseC11 withTimeoutForEachMessage(final int timeOut)
             {
                 FeatureBuilder.this.feature.currentConsumerRule.timeOut = timeOut;
                 return new BuilderPhaseC11();
@@ -359,14 +359,14 @@ public class MessageConsumerFeature
                         return new BuilderPhaseD1().new BuilderPhaseD2();
                     }
                     
-                    public BuilderPhaseC2 notBeforeTheMessageWaitsForAtLeast(int waitTime)
+                    public BuilderPhaseC2 notBeforeTheMessageWaitsForAtLeast(final int waitTime)
                     {
                         FeatureBuilder.this.feature.currentConsumerRule.messageAgeTriggerMode = TriggerByMessageAgeMode.ALL;
                         FeatureBuilder.this.feature.currentConsumerRule.messageAgeTriggerAge = waitTime;
                         return new BuilderPhaseC2();
                     }
                     
-                    public BuilderPhaseC2 notBeforeOneOfTheMessagesWaitsForAtLeast(int waitTime)
+                    public BuilderPhaseC2 notBeforeOneOfTheMessagesWaitsForAtLeast(final int waitTime)
                     {
                         FeatureBuilder.this.feature.currentConsumerRule.messageAgeTriggerMode = TriggerByMessageAgeMode.LEAST_ONE;
                         FeatureBuilder.this.feature.currentConsumerRule.messageAgeTriggerAge = waitTime;
@@ -374,7 +374,7 @@ public class MessageConsumerFeature
                         return new BuilderPhaseC2();
                     }
                     
-                    public BuilderPhaseC3 notBefore(int messgeSize)
+                    public BuilderPhaseC3 notBefore(final int messgeSize)
                     {
                         FeatureBuilder.this.feature.currentConsumerRule.messageAgeTriggerCount = messgeSize;
                         return new BuilderPhaseC3();
@@ -392,14 +392,14 @@ public class MessageConsumerFeature
                 return new BuilderPhaseD1().new BuilderPhaseD2();
             }
             
-            public BuilderPhaseC2 notBeforeTheMessageWaitsForAtLeast(int waitTime)
+            public BuilderPhaseC2 notBeforeTheMessageWaitsForAtLeast(final int waitTime)
             {
                 FeatureBuilder.this.feature.currentConsumerRule.messageAgeTriggerMode = TriggerByMessageAgeMode.ALL;
                 FeatureBuilder.this.feature.currentConsumerRule.messageAgeTriggerAge = waitTime;
                 return new BuilderPhaseC2();
             }
             
-            public BuilderPhaseC2 notBeforeOneOfTheMessagesWaitsForAtLeast(int waitTime)
+            public BuilderPhaseC2 notBeforeOneOfTheMessagesWaitsForAtLeast(final int waitTime)
             {
                 FeatureBuilder.this.feature.currentConsumerRule.messageAgeTriggerMode = TriggerByMessageAgeMode.LEAST_ONE;
                 FeatureBuilder.this.feature.currentConsumerRule.messageAgeTriggerAge = waitTime;
@@ -407,7 +407,7 @@ public class MessageConsumerFeature
                 return new BuilderPhaseC2();
             }
             
-            public BuilderPhaseC3 notBefore(int messgeSize)
+            public BuilderPhaseC3 notBefore(final int messgeSize)
             {
                 FeatureBuilder.this.feature.currentConsumerRule.messageAgeTriggerCount = messgeSize;
                 return new BuilderPhaseC3();
@@ -463,7 +463,7 @@ public class MessageConsumerFeature
                     super();
                 }
                 
-                public BuilderPhaseC2 messagesWaitForAtLeast(int waitTime)
+                public BuilderPhaseC2 messagesWaitForAtLeast(final int waitTime)
                 {
                     FeatureBuilder.this.feature.currentConsumerRule.messageAgeTriggerMode = TriggerByMessageAgeMode.LEAST_X;
                     FeatureBuilder.this.feature.currentConsumerRule.messageAgeTriggerAge = waitTime;
@@ -491,18 +491,18 @@ public class MessageConsumerFeature
                     super();
                 }
                 
-                public BuilderPhaseD3 ofGroup(String group)
+                public BuilderPhaseD3 ofGroup(final String group)
                 {
                     FeatureBuilder.this.feature.currentConsumerRule.consumeEventAgeTriggerGroup = group;
                     return new BuilderPhaseD3();
                 }
                 
-                public BuilderPhaseD3.BuilderPhaseD4 eitherTookPlaceNeverOrTookPlace(int waitTime)
+                public BuilderPhaseD3.BuilderPhaseD4 eitherTookPlaceNeverOrTookPlace(final int waitTime)
                 {
                     return new BuilderPhaseD3().eitherTookPlaceNeverOrTookPlace(waitTime);
                 }
                 
-                public BuilderPhaseD3.BuilderPhaseD4 tookPlace(int waitTime)
+                public BuilderPhaseD3.BuilderPhaseD4 tookPlace(final int waitTime)
                 {
                     return new BuilderPhaseD3().tookPlace(waitTime);
                 }
@@ -594,58 +594,58 @@ public class MessageConsumerFeature
                 super();
             }
             
-            public <E extends Throwable, T, H> BuilderPhaseX1 onError(Class<E> clazz, BiConsumer<E, MessageConsumeHelper<T, H>> errorConsumer)
+            public <E extends Throwable, T, H> BuilderPhaseX1 onError(final Class<E> clazz, final BiConsumer<E, MessageConsumeHelper<T, H>> errorConsumer)
             {
                 FeatureBuilder.this.feature.currentConsumerRule.specialErrorHandler.add(new SpecialErrorHandlerDefinition(clazz, (BiConsumer) errorConsumer));
                 return this;
             }
             
-            public <E extends Throwable, T, H> BuilderPhaseX1 onError(Class<E> clazz, BiConsumer<E, MessageConsumeHelper<T, H>> errorConsumer, Class<T> messageType)
+            public <E extends Throwable, T, H> BuilderPhaseX1 onError(final Class<E> clazz, final BiConsumer<E, MessageConsumeHelper<T, H>> errorConsumer, final Class<T> messageType)
             {
                 FeatureBuilder.this.feature.currentConsumerRule.specialErrorHandler.add(new SpecialErrorHandlerDefinition(clazz, (BiConsumer) errorConsumer));
                 return this;
             }
             
-            public <E extends Throwable, T, H> BuilderPhaseX1 onError(Class<E> clazz, BiConsumer<E, MessageConsumeHelper<T, H>> errorConsumer, Class<T> messageType, Class<H> helperType)
+            public <E extends Throwable, T, H> BuilderPhaseX1 onError(final Class<E> clazz, final BiConsumer<E, MessageConsumeHelper<T, H>> errorConsumer, final Class<T> messageType, final Class<H> helperType)
             {
                 FeatureBuilder.this.feature.currentConsumerRule.specialErrorHandler.add(new SpecialErrorHandlerDefinition(clazz, (BiConsumer) errorConsumer));
                 return this;
             }
             
-            public <T, H> BuilderPhaseX2 onError(BiConsumer<Throwable, MessageConsumeHelper<T, H>> errorConsumer)
+            public <T, H> BuilderPhaseX2 onError(final BiConsumer<Throwable, MessageConsumeHelper<T, H>> errorConsumer)
             {
                 FeatureBuilder.this.feature.currentConsumerRule.defaultErrorHandler = (BiConsumer) errorConsumer;
                 return new BuilderPhaseX2();
             }
             
-            public <T, H> BuilderPhaseX2 onError(BiConsumer<Throwable, MessageConsumeHelper<T, H>> errorConsumer, Class<T> messageType)
+            public <T, H> BuilderPhaseX2 onError(final BiConsumer<Throwable, MessageConsumeHelper<T, H>> errorConsumer, final Class<T> messageType)
             {
                 FeatureBuilder.this.feature.currentConsumerRule.defaultErrorHandler = (BiConsumer) errorConsumer;
                 return new BuilderPhaseX2();
             }
             
-            public <T, H> BuilderPhaseX2 onError(BiConsumer<Throwable, MessageConsumeHelper<T, H>> errorConsumer, Class<T> messageType, Class<H> helperType)
+            public <T, H> BuilderPhaseX2 onError(final BiConsumer<Throwable, MessageConsumeHelper<T, H>> errorConsumer, final Class<T> messageType, final Class<H> helperType)
             {
                 FeatureBuilder.this.feature.currentConsumerRule.defaultErrorHandler = (BiConsumer) errorConsumer;
                 return new BuilderPhaseX2();
             }
             
             @SuppressWarnings({ "unchecked", "rawtypes" })
-            public <T, H> BuilderPhaseZ1 onTimeout(BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer)
+            public <T, H> BuilderPhaseZ1 onTimeout(final BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer)
             {
                 FeatureBuilder.this.feature.currentConsumerRule.timeOutHandler = (BiConsumer) messageConsumer;
                 return new BuilderPhaseZ1();
             }
             
             @SuppressWarnings({ "unchecked", "rawtypes" })
-            public <T, H> BuilderPhaseZ1 onTimeout(BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer, Class<T> messageType)
+            public <T, H> BuilderPhaseZ1 onTimeout(final BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer, final Class<T> messageType)
             {
                 FeatureBuilder.this.feature.currentConsumerRule.timeOutHandler = (BiConsumer) messageConsumer;
                 return new BuilderPhaseZ1();
             }
             
             @SuppressWarnings({ "unchecked", "rawtypes" })
-            public <T, H> BuilderPhaseZ1 onTimeout(BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer, Class<T> messageType, Class<H> helperType)
+            public <T, H> BuilderPhaseZ1 onTimeout(final BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer, final Class<T> messageType, final Class<H> helperType)
             {
                 FeatureBuilder.this.feature.currentConsumerRule.timeOutHandler = (BiConsumer) messageConsumer;
                 return new BuilderPhaseZ1();
@@ -659,21 +659,21 @@ public class MessageConsumerFeature
                 }
                 
                 @SuppressWarnings({ "unchecked", "rawtypes" })
-                public <T, H> BuilderPhaseZ1 onTimeout(BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer)
+                public <T, H> BuilderPhaseZ1 onTimeout(final BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer)
                 {
                     FeatureBuilder.this.feature.currentConsumerRule.timeOutHandler = (BiConsumer) messageConsumer;
                     return new BuilderPhaseZ1();
                 }
                 
                 @SuppressWarnings({ "unchecked", "rawtypes" })
-                public <T, H> BuilderPhaseZ1 onTimeout(BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer, Class<T> messageType)
+                public <T, H> BuilderPhaseZ1 onTimeout(final BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer, final Class<T> messageType)
                 {
                     FeatureBuilder.this.feature.currentConsumerRule.timeOutHandler = (BiConsumer) messageConsumer;
                     return new BuilderPhaseZ1();
                 }
                 
                 @SuppressWarnings({ "unchecked", "rawtypes" })
-                public <T, H> BuilderPhaseZ1 onTimeout(BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer, Class<T> messageType, Class<H> helperType)
+                public <T, H> BuilderPhaseZ1 onTimeout(final BiConsumer<IMessage<T>, MessageConsumeHelper<T, H>> messageConsumer, final Class<T> messageType, final Class<H> helperType)
                 {
                     FeatureBuilder.this.feature.currentConsumerRule.timeOutHandler = (BiConsumer) messageConsumer;
                     return new BuilderPhaseZ1();
@@ -707,7 +707,7 @@ public class MessageConsumerFeature
                 return new BuilderPhaseZ2().new BuilderPhaseZ3();
             }
             
-            public BuilderPhaseZ2 definePoolAddress(String address)
+            public BuilderPhaseZ2 definePoolAddress(final String address)
             {
                 FeatureBuilder.this.feature.currentConsumerRule.poolAddress = address;
                 return new BuilderPhaseZ2();
@@ -748,25 +748,25 @@ public class MessageConsumerFeature
                     
                     public BuilderPhaseZ4 markConsumedMessagesAsDone()
                     {
-                        FeatureBuilder.this.feature.currentConsumerRule.keepMessagesMode = KEEP_MESSAGE_MODE_MESSAGES_CONSUMED;
+                        FeatureBuilder.this.feature.currentConsumerRule.keepMessagesMode = MessageConsumerFeature.this.KEEP_MESSAGE_MODE_MESSAGES_CONSUMED;
                         return new BuilderPhaseZ4();
                     }
                     
                     public BuilderPhaseZ4 markProcessedMessagesAsDone()
                     {
-                        FeatureBuilder.this.feature.currentConsumerRule.keepMessagesMode = KEEP_MESSAGE_MODE_MESSAGES_PROCESSED;
+                        FeatureBuilder.this.feature.currentConsumerRule.keepMessagesMode = MessageConsumerFeature.this.KEEP_MESSAGE_MODE_MESSAGES_PROCESSED;
                         return new BuilderPhaseZ4();
                     }
                     
                     public BuilderPhaseZ4 markConsumedMessagesByRuleAsDone()
                     {
-                        FeatureBuilder.this.feature.currentConsumerRule.keepMessagesMode = KEEP_MESSAGE_MODE_MESSAGES_CONSUMED_BY_RULE;
+                        FeatureBuilder.this.feature.currentConsumerRule.keepMessagesMode = MessageConsumerFeature.this.KEEP_MESSAGE_MODE_MESSAGES_CONSUMED_BY_RULE;
                         return new BuilderPhaseZ4();
                     }
                     
                     public BuilderPhaseZ4 markProcessedMessageByRulesAsDone()
                     {
-                        FeatureBuilder.this.feature.currentConsumerRule.keepMessagesMode = KEEP_MESSAGE_MODE_MESSAGES_PROCESSED_BY_RULE;
+                        FeatureBuilder.this.feature.currentConsumerRule.keepMessagesMode = MessageConsumerFeature.this.KEEP_MESSAGE_MODE_MESSAGES_PROCESSED_BY_RULE;
                         return new BuilderPhaseZ4();
                     }
                     
@@ -814,24 +814,24 @@ public class MessageConsumerFeature
     
     public static class SpecialErrorHandlerDefinition
     {
-        public SpecialErrorHandlerDefinition(Class type, BiConsumer<Throwable, MessageConsumeHelper> handler)
+        public SpecialErrorHandlerDefinition(final Class type, final BiConsumer<Throwable, MessageConsumeHelper> handler)
         {
             super();
             this.type = type;
             this.handler = handler;
         }
         
-        private Class type;
-        private BiConsumer<Throwable, MessageConsumeHelper> handler;
+        private final Class type;
+        private final BiConsumer<Throwable, MessageConsumeHelper> handler;
         
         public Class getType()
         {
-            return type;
+            return this.type;
         }
         
         public BiConsumer<Throwable, MessageConsumeHelper> getHandler()
         {
-            return handler;
+            return this.handler;
         }
     }
     
@@ -840,10 +840,9 @@ public class MessageConsumerFeature
         public enum TriggerByMessageAgeMode
         {NONE, ALL, LEAST_ONE, LEAST_X}
         
-        ;
         public static final String ANY_GROUP = "CONSUMER_ALL_GROUP";
         
-        private UUID id = UUID.randomUUID();
+        private final UUID id = UUID.randomUUID();
         
         // pool
         private Predicate<IMessage> poolFilter = null;
@@ -913,117 +912,117 @@ public class MessageConsumerFeature
         
         public UUID getId()
         {
-            return id;
+            return this.id;
         }
         
         public Predicate<IMessage> getPoolFilter()
         {
-            return poolFilter;
+            return this.poolFilter;
         }
         
         public BiFunction<IMessage, IMessage, Boolean> getReplaceOlderMessageFilter()
         {
-            return replaceOlderMessageFilter;
+            return this.replaceOlderMessageFilter;
         }
         
         public int getPoolMinSize()
         {
-            return poolMinSize;
+            return this.poolMinSize;
         }
         
         public int getPoolMaxSize()
         {
-            return poolMaxSize;
+            return this.poolMaxSize;
         }
         
         public String getConsumeEventAgeTriggerGroup()
         {
-            return consumeEventAgeTriggerGroup;
+            return this.consumeEventAgeTriggerGroup;
         }
         
         public int getConsumeEventAgeTriggerAge()
         {
-            return consumeEventAgeTriggerAge;
+            return this.consumeEventAgeTriggerAge;
         }
         
         public boolean isConsumeEventAgeTriggerNeverMode()
         {
-            return consumeEventAgeTriggerNeverMode;
+            return this.consumeEventAgeTriggerNeverMode;
         }
         
         public TimeUnit getConsumeEventAgeTriggerUnit()
         {
-            return consumeEventAgeTriggerUnit;
+            return this.consumeEventAgeTriggerUnit;
         }
         
         public BiConsumer<IMessage<?>, MessageConsumeHelper<?, ?>> getMessageConsumer()
         {
-            return messageConsumer;
+            return this.messageConsumer;
         }
         
         public Set<String> getGroupMembers()
         {
-            return groupMembers;
+            return this.groupMembers;
         }
         
         public TriggerByMessageAgeMode getMessageAgeTriggerMode()
         {
-            return messageAgeTriggerMode;
+            return this.messageAgeTriggerMode;
         }
         
         public int getMessageAgeTriggerCount()
         {
-            return messageAgeTriggerCount;
+            return this.messageAgeTriggerCount;
         }
         
         public int getMessageAgeTriggerAge()
         {
-            return messageAgeTriggerAge;
+            return this.messageAgeTriggerAge;
         }
         
         public TimeUnit getMessageAgeTriggerUnit()
         {
-            return messageAgeTriggerUnit;
+            return this.messageAgeTriggerUnit;
         }
         
         public int getTimeOut()
         {
-            return timeOut;
+            return this.timeOut;
         }
         
         public TimeUnit getTimeOutUnit()
         {
-            return timeOutUnit;
+            return this.timeOutUnit;
         }
         
         public BiConsumer<Throwable, MessageConsumeHelper> getDefaultErrorHandler()
         {
-            return defaultErrorHandler;
+            return this.defaultErrorHandler;
         }
         
         public List<SpecialErrorHandlerDefinition> getSpecialErrorHandler()
         {
-            return specialErrorHandler;
+            return this.specialErrorHandler;
         }
         
         public BiConsumer<IMessage<?>, MessageConsumeHelper<?, ?>> getTimeOutHandler()
         {
-            return timeOutHandler;
+            return this.timeOutHandler;
         }
         
         public boolean isKeepMessages()
         {
-            return keepMessages;
+            return this.keepMessages;
         }
         
         public Integer getKeepMessagesMode()
         {
-            return keepMessagesMode;
+            return this.keepMessagesMode;
         }
         
         public String getPoolAddress()
         {
-            return poolAddress;
+            return this.poolAddress;
         }
         
     }
@@ -1038,20 +1037,20 @@ public class MessageConsumerFeature
             super();
             this.consumerRuleList = new ArrayList<MessageConsumerFeature.ConsumerRule>();
             this.currentConsumerRule = new ConsumerRule();
-            this.consumerRuleList.add(currentConsumerRule);
+            this.consumerRuleList.add(this.currentConsumerRule);
         }
         
-        private MessageConsumerFeatureConfiguration(List<ConsumerRule> consumerRuleList, boolean immutable)
+        private MessageConsumerFeatureConfiguration(final List<ConsumerRule> consumerRuleList, final boolean immutable)
         {
             super();
             this.consumerRuleList = new ArrayList<MessageConsumerFeature.ConsumerRule>();
-            for (ConsumerRule consumerRule : consumerRuleList)
+            for (final ConsumerRule consumerRule : consumerRuleList)
             {
                 this.consumerRuleList.add(consumerRule.copy());
             }
             if (immutable)
             {
-                for (ConsumerRule consumerRule : this.consumerRuleList)
+                for (final ConsumerRule consumerRule : this.consumerRuleList)
                 {
                     String privateGroup = "CONSUMER_PRIVATE_GROUP_" + consumerRule.id.toString();
                     if ((consumerRule.consumeEventAgeTriggerAge > -1) && (consumerRule.consumeEventAgeTriggerGroup == null))
@@ -1069,33 +1068,33 @@ public class MessageConsumerFeature
         }
         
         @Override
-        public void applyToChannel(IDispatcherChannel<?> channel)
+        public void applyToChannel(final IDispatcherChannel<?> channel)
         {
             Map<String, Object> configurationProperties = new HashMap<>();
             configurationProperties.put(MessageConsumerFeatureConfiguration.class.getCanonicalName(), this);
             UUID uuid = UUID.randomUUID();
-            channel.createChildScope(uuid, "Message Consumer Planner Scope " + uuid.toString(), configurationProperties, null);
+            channel.createChildScope(uuid, "Message Consumer Planner Scope " + uuid, configurationProperties, null);
         }
         
-        private MessageConsumerFeatureConfiguration copy(boolean immutable)
+        private MessageConsumerFeatureConfiguration copy(final boolean immutable)
         {
             return new MessageConsumerFeatureConfiguration(this.consumerRuleList, immutable);
         }
         
         public List<ConsumerRule> getConsumerRuleList()
         {
-            return consumerRuleList;
+            return this.consumerRuleList;
         }
         
     }
     
     public interface IPoolController
     {
-        public void consumeMessages(String poolAddress);
+        void consumeMessages(String poolAddress);
         
-        public static void consumeMessages(IDispatcherChannel<?> channel, String poolAddress)
+        static void consumeMessages(final IDispatcherChannel<?> channel, final String poolAddress)
         {
-            IPoolController poolController = (IPoolController) channel.getStateAdapter(ConsumeMessagesConsumerManagerAdapter.class);
+            IPoolController poolController = channel.getStateAdapter(ConsumeMessagesConsumerManagerAdapter.class);
             if (poolController != null)
             {
                 poolController.consumeMessages(poolAddress);

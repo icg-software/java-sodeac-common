@@ -27,27 +27,27 @@ public interface IDatabaseManagementSystemService extends IDriver
 {
     // Installer ?
     
-    public boolean createDatabase(SystemProperties properties, DatabaseProperties databaseProperties, ConnectionProperties connectionProperties) throws SQLException, IOException;
+    boolean createDatabase(SystemProperties properties, DatabaseProperties databaseProperties, ConnectionProperties connectionProperties) throws SQLException, IOException;
     
-    public boolean removeDatabase(SystemProperties properties, DatabaseProperties databaseProperties, ConnectionProperties connectionProperties) throws SQLException, IOException;
+    boolean removeDatabase(SystemProperties properties, DatabaseProperties databaseProperties, ConnectionProperties connectionProperties) throws SQLException, IOException;
     
     // Users/Roles/Tablespaces?
     
-    public boolean createSchema(ConnectionProperties connectionProperties) throws SQLException, IOException;
+    boolean createSchema(ConnectionProperties connectionProperties) throws SQLException, IOException;
     
-    public boolean removeSchema(ConnectionProperties connectionProperties) throws SQLException, IOException;
+    boolean removeSchema(ConnectionProperties connectionProperties) throws SQLException, IOException;
     
-    public String getConnectionString(ConnectionProperties connectionProperties);
+    String getConnectionString(ConnectionProperties connectionProperties);
     
-    public String getUser(ConnectionProperties connectionProperties);
+    String getUser(ConnectionProperties connectionProperties);
     
-    public String getPassword(ConnectionProperties connectionProperties);
+    String getPassword(ConnectionProperties connectionProperties);
     
-    public File backup(SystemProperties properties, ConnectionProperties connectionProperties, File backupDirectory, File tempDirectory, String key, String... schemas) throws SQLException, IOException;
+    File backup(SystemProperties properties, ConnectionProperties connectionProperties, File backupDirectory, File tempDirectory, String key, String... schemas) throws SQLException, IOException;
     
-    public void restore(SystemProperties properties, ConnectionProperties connectionProperties, File backupFile, File tempDirectory, String key) throws SQLException, IOException;
+    void restore(SystemProperties properties, ConnectionProperties connectionProperties, File backupFile, File tempDirectory, String key) throws SQLException, IOException;
     
-    public default Connection getConnection(ConnectionProperties connectionProperties) throws SQLException
+    default Connection getConnection(final ConnectionProperties connectionProperties) throws SQLException
     {
         Objects.requireNonNull(connectionProperties);
         
@@ -59,7 +59,7 @@ public interface IDatabaseManagementSystemService extends IDriver
                                 );
     }
     
-    public static class H2PropertyBuilder
+    class H2PropertyBuilder
     {
         public static final String PAGE_SIZE = "PAGE_SIZE";
         public static final String CACHE_SIZE = "CACHE_SIZE";
@@ -69,14 +69,14 @@ public interface IDatabaseManagementSystemService extends IDriver
             super();
         }
         
-        public static H2PropertyBuilder newInstance(String directory, String dbName)
+        public static H2PropertyBuilder newInstance(final String directory, final String dbName)
         {
             H2PropertyBuilder builder = new H2PropertyBuilder();
             try
             {
                 builder.connectionProperties = new ConnectionProperties().setDirectory(new File(directory).getCanonicalPath()).setDbname(dbName);
             }
-            catch (IOException e)
+            catch (final IOException e)
             {
                 throw new RuntimeWrappedException(e);
             }
@@ -84,58 +84,58 @@ public interface IDatabaseManagementSystemService extends IDriver
             return builder;
         }
         
-        public H2PropertyBuilder setConnectionUsername(String username)
+        public H2PropertyBuilder setConnectionUsername(final String username)
         {
             this.connectionProperties.setUsername(username);
             return this;
         }
         
-        public H2PropertyBuilder setConnectionPassword(String password)
+        public H2PropertyBuilder setConnectionPassword(final String password)
         {
             this.connectionProperties.setPassword(password);
             return this;
         }
         
-        public H2PropertyBuilder setConnectionEncryptionKey(String encryptionKey)
+        public H2PropertyBuilder setConnectionEncryptionKey(final String encryptionKey)
         {
             this.connectionProperties.setEncryptionKey(encryptionKey);
             return this;
         }
         
-        public H2PropertyBuilder setCacheSizeInKB(int sizeInKB)
+        public H2PropertyBuilder setCacheSizeInKB(final int sizeInKB)
         {
             this.connectionProperties.getProperties().put(CACHE_SIZE, Integer.toString(sizeInKB));
             return this;
         }
         
-        public H2PropertyBuilder setPageSize(int page)
+        public H2PropertyBuilder setPageSize(final int page)
         {
             this.connectionProperties.getProperties().put(PAGE_SIZE, Integer.toString(page));
             return this;
         }
         
         private ConnectionProperties connectionProperties = null;
-        private SystemProperties systemProperties = null;
-        private DatabaseProperties databaseProperties = null;
+        private final SystemProperties systemProperties = null;
+        private final DatabaseProperties databaseProperties = null;
         
         public ConnectionProperties getConnectionProperties()
         {
-            return connectionProperties;
+            return this.connectionProperties;
         }
         
         public SystemProperties getSystemProperties()
         {
-            return systemProperties;
+            return this.systemProperties;
         }
         
         public DatabaseProperties getDatabaseProperties()
         {
-            return databaseProperties;
+            return this.databaseProperties;
         }
         
     }
     
-    public static class SystemProperties
+    class SystemProperties
     {
         public enum ConnectionProtocol
         {LOCAL, SSH, JCLOUD, K8, CUSTOM}
@@ -146,14 +146,14 @@ public interface IDatabaseManagementSystemService extends IDriver
         private String user = null;
         private String password = null;
         private String installLocation = null;
-        private Map<String, String> properties = new HashMap<String, String>();
+        private final Map<String, String> properties = new HashMap<String, String>();
         
         public ConnectionProtocol getConnectionProtocol()
         {
-            return connectionProtocol;
+            return this.connectionProtocol;
         }
         
-        public SystemProperties setConnectionProtocol(ConnectionProtocol connectionProtocol)
+        public SystemProperties setConnectionProtocol(final ConnectionProtocol connectionProtocol)
         {
             this.connectionProtocol = connectionProtocol;
             return this;
@@ -161,10 +161,10 @@ public interface IDatabaseManagementSystemService extends IDriver
         
         public String getServer()
         {
-            return server;
+            return this.server;
         }
         
-        public SystemProperties setServer(String server)
+        public SystemProperties setServer(final String server)
         {
             this.server = server;
             return this;
@@ -172,10 +172,10 @@ public interface IDatabaseManagementSystemService extends IDriver
         
         public String getPort()
         {
-            return port;
+            return this.port;
         }
         
-        public SystemProperties setPort(String port)
+        public SystemProperties setPort(final String port)
         {
             this.port = port;
             return this;
@@ -183,10 +183,10 @@ public interface IDatabaseManagementSystemService extends IDriver
         
         public String getUser()
         {
-            return user;
+            return this.user;
         }
         
-        public SystemProperties setUser(String user)
+        public SystemProperties setUser(final String user)
         {
             this.user = user;
             return this;
@@ -194,10 +194,10 @@ public interface IDatabaseManagementSystemService extends IDriver
         
         public String getPassword()
         {
-            return password;
+            return this.password;
         }
         
-        public SystemProperties setPassword(String password)
+        public SystemProperties setPassword(final String password)
         {
             this.password = password;
             return this;
@@ -205,10 +205,10 @@ public interface IDatabaseManagementSystemService extends IDriver
         
         public String getInstallLocation()
         {
-            return installLocation;
+            return this.installLocation;
         }
         
-        public SystemProperties setInstallLocation(String installLocation)
+        public SystemProperties setInstallLocation(final String installLocation)
         {
             this.installLocation = installLocation;
             return this;
@@ -216,10 +216,10 @@ public interface IDatabaseManagementSystemService extends IDriver
         
         public Map<String, String> getProperties()
         {
-            return properties;
+            return this.properties;
         }
         
-        public SystemProperties fillProperties(Consumer<Map<String, String>> propertiesWriter)
+        public SystemProperties fillProperties(final Consumer<Map<String, String>> propertiesWriter)
         {
             if (propertiesWriter == null)
             {
@@ -244,20 +244,20 @@ public interface IDatabaseManagementSystemService extends IDriver
         }
     }
     
-    public static class DatabaseProperties
+    class DatabaseProperties
     {
         private String owner = null;
         private String defaultTablespace = null;
         private String charset = null;
         private int connectionLimit = -1;
-        private Map<String, String> properties = new HashMap<String, String>();
+        private final Map<String, String> properties = new HashMap<String, String>();
         
         public String getOwner()
         {
-            return owner;
+            return this.owner;
         }
         
-        public DatabaseProperties setOwner(String owner)
+        public DatabaseProperties setOwner(final String owner)
         {
             this.owner = owner;
             return this;
@@ -265,10 +265,10 @@ public interface IDatabaseManagementSystemService extends IDriver
         
         public String getDefaultTablespace()
         {
-            return defaultTablespace;
+            return this.defaultTablespace;
         }
         
-        public DatabaseProperties setDefaultTablespace(String defaultTablespace)
+        public DatabaseProperties setDefaultTablespace(final String defaultTablespace)
         {
             this.defaultTablespace = defaultTablespace;
             return this;
@@ -276,10 +276,10 @@ public interface IDatabaseManagementSystemService extends IDriver
         
         public int getConnectionLimit()
         {
-            return connectionLimit;
+            return this.connectionLimit;
         }
         
-        public DatabaseProperties setConnectionLimit(int connectionLimit)
+        public DatabaseProperties setConnectionLimit(final int connectionLimit)
         {
             this.connectionLimit = connectionLimit;
             return this;
@@ -287,10 +287,10 @@ public interface IDatabaseManagementSystemService extends IDriver
         
         public String getCharset()
         {
-            return charset;
+            return this.charset;
         }
         
-        public DatabaseProperties setCharset(String charset)
+        public DatabaseProperties setCharset(final String charset)
         {
             this.charset = charset;
             return this;
@@ -298,10 +298,10 @@ public interface IDatabaseManagementSystemService extends IDriver
         
         public Map<String, String> getProperties()
         {
-            return properties;
+            return this.properties;
         }
         
-        public DatabaseProperties fillProperties(Consumer<Map<String, String>> propertiesWriter)
+        public DatabaseProperties fillProperties(final Consumer<Map<String, String>> propertiesWriter)
         {
             if (propertiesWriter == null)
             {
@@ -325,7 +325,7 @@ public interface IDatabaseManagementSystemService extends IDriver
         }
     }
     
-    public static class ConnectionProperties
+    class ConnectionProperties
     {
         private String dbname = null;
         private String username = null;
@@ -335,14 +335,14 @@ public interface IDatabaseManagementSystemService extends IDriver
         private String server = null;
         private String port = null;
         private String directory = null;
-        private Map<String, String> properties = new HashMap<String, String>();
+        private final Map<String, String> properties = new HashMap<String, String>();
         
         public String getDbname()
         {
-            return dbname;
+            return this.dbname;
         }
         
-        public ConnectionProperties setDbname(String dbname)
+        public ConnectionProperties setDbname(final String dbname)
         {
             this.dbname = dbname;
             return this;
@@ -350,10 +350,10 @@ public interface IDatabaseManagementSystemService extends IDriver
         
         public String getSchema()
         {
-            return schema;
+            return this.schema;
         }
         
-        public ConnectionProperties setSchema(String schema)
+        public ConnectionProperties setSchema(final String schema)
         {
             this.schema = schema;
             return this;
@@ -361,10 +361,10 @@ public interface IDatabaseManagementSystemService extends IDriver
         
         public String getUsername()
         {
-            return username;
+            return this.username;
         }
         
-        public ConnectionProperties setUsername(String username)
+        public ConnectionProperties setUsername(final String username)
         {
             this.username = username;
             return this;
@@ -372,10 +372,10 @@ public interface IDatabaseManagementSystemService extends IDriver
         
         public String getPassword()
         {
-            return password;
+            return this.password;
         }
         
-        public ConnectionProperties setPassword(String password)
+        public ConnectionProperties setPassword(final String password)
         {
             this.password = password;
             return this;
@@ -383,10 +383,10 @@ public interface IDatabaseManagementSystemService extends IDriver
         
         public String getEncryptionKey()
         {
-            return encryptionKey;
+            return this.encryptionKey;
         }
         
-        public ConnectionProperties setEncryptionKey(String encryptionKey)
+        public ConnectionProperties setEncryptionKey(final String encryptionKey)
         {
             this.encryptionKey = encryptionKey;
             return this;
@@ -394,10 +394,10 @@ public interface IDatabaseManagementSystemService extends IDriver
         
         public String getServer()
         {
-            return server;
+            return this.server;
         }
         
-        public ConnectionProperties setServer(String server)
+        public ConnectionProperties setServer(final String server)
         {
             this.server = server;
             return this;
@@ -405,10 +405,10 @@ public interface IDatabaseManagementSystemService extends IDriver
         
         public String getPort()
         {
-            return port;
+            return this.port;
         }
         
-        public ConnectionProperties setPort(String port)
+        public ConnectionProperties setPort(final String port)
         {
             this.port = port;
             return this;
@@ -416,10 +416,10 @@ public interface IDatabaseManagementSystemService extends IDriver
         
         public String getDirectory()
         {
-            return directory;
+            return this.directory;
         }
         
-        public ConnectionProperties setDirectory(String directory)
+        public ConnectionProperties setDirectory(final String directory)
         {
             this.directory = directory;
             return this;
@@ -427,10 +427,10 @@ public interface IDatabaseManagementSystemService extends IDriver
         
         public Map<String, String> getProperties()
         {
-            return properties;
+            return this.properties;
         }
         
-        public ConnectionProperties fillProperties(Consumer<Map<String, String>> propertiesWriter)
+        public ConnectionProperties fillProperties(final Consumer<Map<String, String>> propertiesWriter)
         {
             if (propertiesWriter == null)
             {

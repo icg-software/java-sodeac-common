@@ -94,7 +94,7 @@ public class CommonBaseBranchNodeType extends ReplicableBranchNodeType
     public static class GenerateUUIDIfNull implements Consumer<TypedTreeJDBCCruder.ConvertEvent>
     {
         @Override
-        public void accept(ConvertEvent t)
+        public void accept(final ConvertEvent t)
         {
             if (t.getNode().getNodeType().getTypeClass() == UUID.class)
             {
@@ -120,7 +120,7 @@ public class CommonBaseBranchNodeType extends ReplicableBranchNodeType
     public static class GenerateUUID implements Consumer<TypedTreeJDBCCruder.ConvertEvent>
     {
         @Override
-        public void accept(ConvertEvent t)
+        public void accept(final ConvertEvent t)
         {
             if (t.getNode().getNodeType().getTypeClass() == UUID.class)
             {
@@ -140,7 +140,7 @@ public class CommonBaseBranchNodeType extends ReplicableBranchNodeType
     public static class CurrentTimestamp implements Consumer<TypedTreeJDBCCruder.ConvertEvent>
     {
         @Override
-        public void accept(ConvertEvent t)
+        public void accept(final ConvertEvent t)
         {
             ((LeafNode<?, Date>) t.getNode()).setValue(new Date());
         }
@@ -149,7 +149,7 @@ public class CommonBaseBranchNodeType extends ReplicableBranchNodeType
     public static class CurrentDate implements Consumer<TypedTreeJDBCCruder.ConvertEvent>
     {
         @Override
-        public void accept(ConvertEvent t)
+        public void accept(final ConvertEvent t)
         {
             Calendar cal = Calendar.getInstance();
             cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -163,7 +163,7 @@ public class CommonBaseBranchNodeType extends ReplicableBranchNodeType
     public static class TrueIfNull implements Consumer<TypedTreeJDBCCruder.ConvertEvent>
     {
         @Override
-        public void accept(ConvertEvent t)
+        public void accept(final ConvertEvent t)
         {
             if (((LeafNode) t.getNode()).getValue() == null)
             {
@@ -175,7 +175,7 @@ public class CommonBaseBranchNodeType extends ReplicableBranchNodeType
     public static class FalseIfNull implements Consumer<TypedTreeJDBCCruder.ConvertEvent>
     {
         @Override
-        public void accept(ConvertEvent t)
+        public void accept(final ConvertEvent t)
         {
             if (((LeafNode) t.getNode()).getValue() == null)
             {
@@ -187,7 +187,7 @@ public class CommonBaseBranchNodeType extends ReplicableBranchNodeType
     public static class LongZeroIfNull implements Consumer<TypedTreeJDBCCruder.ConvertEvent>
     {
         @Override
-        public void accept(ConvertEvent t)
+        public void accept(final ConvertEvent t)
         {
             if (((LeafNode) t.getNode()).getValue() == null)
             {
@@ -199,7 +199,7 @@ public class CommonBaseBranchNodeType extends ReplicableBranchNodeType
     public static class DoubleZeroIfNull implements Consumer<TypedTreeJDBCCruder.ConvertEvent>
     {
         @Override
-        public void accept(ConvertEvent t)
+        public void accept(final ConvertEvent t)
         {
             if (((LeafNode) t.getNode()).getValue() == null)
             {
@@ -211,7 +211,7 @@ public class CommonBaseBranchNodeType extends ReplicableBranchNodeType
     public static class IntegerZeroIfNull implements Consumer<TypedTreeJDBCCruder.ConvertEvent>
     {
         @Override
-        public void accept(ConvertEvent t)
+        public void accept(final ConvertEvent t)
         {
             if (((LeafNode) t.getNode()).getValue() == null)
             {
@@ -223,7 +223,7 @@ public class CommonBaseBranchNodeType extends ReplicableBranchNodeType
     public static class FloatZeroIfNull implements Consumer<TypedTreeJDBCCruder.ConvertEvent>
     {
         @Override
-        public void accept(ConvertEvent t)
+        public void accept(final ConvertEvent t)
         {
             if (((LeafNode) t.getNode()).getValue() == null)
             {
@@ -235,7 +235,7 @@ public class CommonBaseBranchNodeType extends ReplicableBranchNodeType
     public static class ValueBySequence implements Consumer<TypedTreeJDBCCruder.ConvertEvent>
     {
         @Override
-        public void accept(ConvertEvent t)
+        public void accept(final ConvertEvent t)
         {
             if (t.getNode().getNodeType().getTypeClass() != Long.class)
             {
@@ -259,7 +259,7 @@ public class CommonBaseBranchNodeType extends ReplicableBranchNodeType
                 long next = driver.nextFromSequence(DBSchemaUtils.getSchema(connection), sequenceName, connection);
                 ((LeafNode<?, Long>) t.getNode()).setValue(next);
             }
-            catch (SQLException e)
+            catch (final SQLException e)
             {
                 throw new RuntimeException(e);
             }

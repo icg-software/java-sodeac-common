@@ -28,9 +28,7 @@ public interface IDispatcherChannelTask<T>
      * @param propertyBlock properties for this task
      * @param taskControl   state-handler for this task
      */
-    public default void configure(IDispatcherChannel<T> queue, String id, IPropertyBlock propertyBlock, ITaskControl taskControl) { }
-    
-    ;
+    default void configure(final IDispatcherChannel<T> queue, final String id, final IPropertyBlock propertyBlock, final ITaskControl taskControl) { }
     
     /**
      * run this task, invoked by channel-worker.
@@ -39,5 +37,5 @@ public interface IDispatcherChannelTask<T>
      *
      * @throws Exception
      */
-    public void run(IDispatcherChannelTaskContext<T> taskContext) throws Exception;
+    void run(IDispatcherChannelTaskContext<T> taskContext) throws Exception;
 }

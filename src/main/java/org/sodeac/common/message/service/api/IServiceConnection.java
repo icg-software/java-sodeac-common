@@ -16,35 +16,35 @@ import java.util.function.Consumer;
 
 public interface IServiceConnection
 {
-    public Set<IServiceChannel.IChannelDescription> getChannelCatalog();
+    Set<IServiceChannel.IChannelDescription> getChannelCatalog();
     
-    public <T> IMessageProducerEndpoint<T> openMessageProducerEndpoint(Class<T> messageClass);
+    <T> IMessageProducerEndpoint<T> openMessageProducerEndpoint(Class<T> messageClass);
     
-    public <T> IMessageConsumerEndpoint<T> openMessageConsumerEndpoint(Class<T> messageClass);
+    <T> IMessageConsumerEndpoint<T> openMessageConsumerEndpoint(Class<T> messageClass);
     
-    public IServiceConnection connect();
+    IServiceConnection connect();
     
-    public IServiceConnection disconnect();
+    IServiceConnection disconnect();
     
-    public boolean isConnected();
+    boolean isConnected();
     
-    public IServiceConnection close();
+    IServiceConnection close();
     
-    public boolean isClosed();
+    boolean isClosed();
     
-    public <A> A getAdapter(Class<A> adapterClass);
+    <A> A getAdapter(Class<A> adapterClass);
     
-    public interface IMessageConsumerEndpoint<T> extends IServiceChannel<T>
+    interface IMessageConsumerEndpoint<T> extends IServiceChannel<T>
     {
-        public IMessageConsumerEndpoint<T> onMessageReceived(Consumer<IMessageReceive<T>> messageConsumer);
+        IMessageConsumerEndpoint<T> onMessageReceived(Consumer<IMessageReceive<T>> messageConsumer);
         
-        public IMessageConsumerEndpoint<T> setupEndpoint(Consumer<IMessageConsumerEndpoint<T>> setup);
+        IMessageConsumerEndpoint<T> setupEndpoint(Consumer<IMessageConsumerEndpoint<T>> setup);
     }
     
-    public interface IMessageProducerEndpoint<T> extends IServiceChannel<T>
+    interface IMessageProducerEndpoint<T> extends IServiceChannel<T>
     {
-        public IMessageProducerEndpoint<T> onMessageRequested(BiConsumer<IMessageRequest<T>, Consumer<T>> messageProducer);
+        IMessageProducerEndpoint<T> onMessageRequested(BiConsumer<IMessageRequest<T>, Consumer<T>> messageProducer);
         
-        public IMessageProducerEndpoint<T> setupEndpoint(Consumer<IMessageProducerEndpoint<T>> setup);
+        IMessageProducerEndpoint<T> setupEndpoint(Consumer<IMessageProducerEndpoint<T>> setup);
     }
 }

@@ -41,7 +41,7 @@ public class DBSchemaNodeType extends BranchNodeMetaModel
     public static volatile BranchNodeListType<DBSchemaNodeType, EventConsumerNodeType> consumers;
     
     @BowMethod
-    public static void addConsumer(@BowParameter(self = true) BranchNode<?, DBSchemaNodeType> schema, ExceptionCatchedConsumer<DBSchemaEvent> consumer)
+    public static void addConsumer(@BowParameter(self = true) final BranchNode<?, DBSchemaNodeType> schema, final ExceptionCatchedConsumer<DBSchemaEvent> consumer)
     {
         schema.create(DBSchemaNodeType.consumers).setValue(EventConsumerNodeType.eventConsumer, consumer);
     }

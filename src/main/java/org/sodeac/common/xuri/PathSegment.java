@@ -36,7 +36,7 @@ public class PathSegment implements Serializable, IExtensible
      * @param expression string expression
      * @param value      segment value
      */
-    protected PathSegment(PathSegment previews, String expression, String value)
+    protected PathSegment(final PathSegment previews, final String expression, final String value)
     {
         super();
         this.expression = expression;
@@ -57,7 +57,7 @@ public class PathSegment implements Serializable, IExtensible
      * @param value      segment value
      * @param axis       axistype
      */
-    public PathSegment(PathSegment previews, String expression, String value, Axis axis)
+    public PathSegment(final PathSegment previews, final String expression, final String value, final Axis axis)
     {
         super();
         this.expression = expression;
@@ -84,7 +84,7 @@ public class PathSegment implements Serializable, IExtensible
      *
      * @param expression
      */
-    protected void setExpression(String expression)
+    protected void setExpression(final String expression)
     {
         this.expression = expression;
     }
@@ -96,7 +96,7 @@ public class PathSegment implements Serializable, IExtensible
      */
     public Axis getAxis()
     {
-        return axis;
+        return this.axis;
     }
     
     /**
@@ -104,7 +104,7 @@ public class PathSegment implements Serializable, IExtensible
      *
      * @param extension
      */
-    protected void addExtension(IExtension<?> extension)
+    protected void addExtension(final IExtension<?> extension)
     {
         if (this.extensions == null)
         {
@@ -115,7 +115,7 @@ public class PathSegment implements Serializable, IExtensible
     }
     
     @Override
-    public IExtension<?> getExtension(String type)
+    public IExtension<?> getExtension(final String type)
     {
         List<IExtension<?>> extensionList = getExtensionList();
         
@@ -123,7 +123,7 @@ public class PathSegment implements Serializable, IExtensible
         {
             return extensionList.get(0);
         }
-        for (IExtension<?> extension : extensionList)
+        for (final IExtension<?> extension : extensionList)
         {
             if (type.equals(extension.getType()))
             {
@@ -136,7 +136,7 @@ public class PathSegment implements Serializable, IExtensible
     @Override
     public List<IExtension<?>> getExtensionList()
     {
-        List<IExtension<?>> extensionList = extensionsImmutable;
+        List<IExtension<?>> extensionList = this.extensionsImmutable;
         if (extensionList == null)
         {
             extensionList = this.extensionsImmutable;
@@ -151,10 +151,10 @@ public class PathSegment implements Serializable, IExtensible
     }
     
     @Override
-    public List<IExtension<?>> getExtensionList(String type)
+    public List<IExtension<?>> getExtensionList(final String type)
     {
         List<IExtension<?>> extensionList = new ArrayList<IExtension<?>>();
-        for (IExtension<?> extension : getExtensionList())
+        for (final IExtension<?> extension : getExtensionList())
         {
             if (type.equals(extension.getType()))
             {
@@ -171,7 +171,7 @@ public class PathSegment implements Serializable, IExtensible
      */
     public String getExpression()
     {
-        return expression;
+        return this.expression;
     }
     
     /**
@@ -181,7 +181,7 @@ public class PathSegment implements Serializable, IExtensible
      */
     public String getValue()
     {
-        return value;
+        return this.value;
     }
     
     /**
@@ -191,7 +191,7 @@ public class PathSegment implements Serializable, IExtensible
      */
     public PathSegment getPreviews()
     {
-        return previews;
+        return this.previews;
     }
     
     /**
@@ -201,6 +201,6 @@ public class PathSegment implements Serializable, IExtensible
      */
     public PathSegment getNext()
     {
-        return next;
+        return this.next;
     }
 }

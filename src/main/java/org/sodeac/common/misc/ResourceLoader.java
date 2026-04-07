@@ -33,7 +33,7 @@ public class ResourceLoader
      *
      * @throws IOException
      */
-    public static String loadPackageFileAsString(String fileName, Class<?> packageClass) throws IOException
+    public static String loadPackageFileAsString(final String fileName, final Class<?> packageClass) throws IOException
     {
         if (OSGiUtils.isOSGi())
         {
@@ -64,17 +64,17 @@ public class ResourceLoader
             {
                 inputStream.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
             try
             {
                 byos.flush();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
             try
             {
                 byos.close();
             }
-            catch (Exception e) { }
+            catch (final Exception e) { }
         }
         
         return byos.toString();
@@ -90,7 +90,7 @@ public class ResourceLoader
      *
      * @throws IOException
      */
-    public static InputStream loadPackageInputStream(String fileName, Class<?> packageClass) throws IOException
+    public static InputStream loadPackageInputStream(final String fileName, final Class<?> packageClass) throws IOException
     {
         if (OSGiUtils.isOSGi())
         {

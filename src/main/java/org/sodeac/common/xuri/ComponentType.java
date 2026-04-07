@@ -34,7 +34,7 @@ public enum ComponentType
     QUERY(4, "query"),
     FRAGMENT(5, "fragment");
     
-    private ComponentType(int intValue, String name)
+    ComponentType(final int intValue, final String name)
     {
         this.intValue = intValue;
         this.name = name;
@@ -42,7 +42,7 @@ public enum ComponentType
     
     private static volatile Set<ComponentType> ALL = null;
     
-    private int intValue;
+    private final int intValue;
     private String name = null;
     
     public int getIntValue()
@@ -65,9 +65,9 @@ public enum ComponentType
         return ComponentType.ALL;
     }
     
-    public static ComponentType findByInteger(int value)
+    public static ComponentType findByInteger(final int value)
     {
-        for (ComponentType component : getAll())
+        for (final ComponentType component : getAll())
         {
             if (component.intValue == value)
             {
@@ -77,9 +77,9 @@ public enum ComponentType
         return null;
     }
     
-    public static ComponentType findByName(String name)
+    public static ComponentType findByName(final String name)
     {
-        for (ComponentType component : getAll())
+        for (final ComponentType component : getAll())
         {
             if (component.name.equalsIgnoreCase(name))
             {

@@ -30,7 +30,7 @@ public class LDAPFilterEncodingHandler implements IEncodingExtensionHandler<IFil
      */
     private static final long serialVersionUID = -3779708657170015377L;
     
-    private transient static volatile LDAPFilterEncodingHandler INSTANCE = null;
+    private static volatile LDAPFilterEncodingHandler INSTANCE = null;
     
     public static LDAPFilterEncodingHandler getInstance()
     {
@@ -48,7 +48,7 @@ public class LDAPFilterEncodingHandler implements IEncodingExtensionHandler<IFil
     }
     
     @Override
-    public String encodeToString(IFilterItem extensionDataObject)
+    public String encodeToString(final IFilterItem extensionDataObject)
     {
         return extensionDataObject.toString();
     }

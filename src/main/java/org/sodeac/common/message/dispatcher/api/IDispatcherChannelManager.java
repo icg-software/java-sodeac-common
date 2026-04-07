@@ -24,7 +24,7 @@ public interface IDispatcherChannelManager extends IDispatcherChannelComponent
      *
      * @param configurationPolicy
      */
-    public default void configureChannelManagerPolicy(IChannelManagerPolicy componentBindingPolicy)
+    default void configureChannelManagerPolicy(final IChannelManagerPolicy componentBindingPolicy)
     {
     }
     
@@ -34,7 +34,7 @@ public interface IDispatcherChannelManager extends IDispatcherChannelComponent
      * @author "Sebastian Palarus"
      *
      */
-    public static interface IChannelManagerPolicy
+    interface IChannelManagerPolicy
     {
         /**
          *
@@ -42,6 +42,6 @@ public interface IDispatcherChannelManager extends IDispatcherChannelComponent
          *
          * @return
          */
-        public IChannelManagerPolicy addConfigurationDetail(ComponentBindingSetup componentBindingSetup);
+        IChannelManagerPolicy addConfigurationDetail(ComponentBindingSetup componentBindingSetup);
     }
 }

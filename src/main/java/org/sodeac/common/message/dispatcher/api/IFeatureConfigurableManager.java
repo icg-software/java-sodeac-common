@@ -30,89 +30,87 @@ public interface IFeatureConfigurableManager extends
     IOnMessageRemoveSnapshot
 {
     
-    public default boolean implementsOnMessageStore()
+    default boolean implementsOnMessageStore()
     {
         return implementsControllerMethod("onMessageStore", Void.TYPE, IMessage.class);
     }
     
-    public default boolean implementsOnMessageStoreSnapshot()
+    default boolean implementsOnMessageStoreSnapshot()
     {
         return implementsControllerMethod("onMessageStoreSnapshot", Void.TYPE, SnapshotableDeque.class);
     }
     
-    public default boolean implementsOnChannelSignal()
+    default boolean implementsOnChannelSignal()
     {
         return implementsControllerMethod("onChannelSignal", Void.TYPE, IDispatcherChannel.class, String.class);
     }
     
-    public default boolean implementsOnChannelDetach()
+    default boolean implementsOnChannelDetach()
     {
         return implementsControllerMethod("onChannelDetach", Void.TYPE, IDispatcherChannel.class);
     }
     
-    public default boolean implementsOnChannelAttach()
+    default boolean implementsOnChannelAttach()
     {
         return implementsControllerMethod("onChannelAttach", Void.TYPE, IDispatcherChannel.class);
     }
     
-    public default boolean implementsOnTaskError()
+    default boolean implementsOnTaskError()
     {
         return implementsControllerMethod("onTaskError", Void.TYPE, IDispatcherChannel.class, IDispatcherChannelTask.class, Throwable.class);
     }
     
-    public default boolean implementsOnTaskDone()
+    default boolean implementsOnTaskDone()
     {
         return implementsControllerMethod("onTaskDone", Void.TYPE, IDispatcherChannel.class, IDispatcherChannelTask.class);
     }
     
-    public default boolean implementsOnTaskTimeout()
+    default boolean implementsOnTaskTimeout()
     {
         return implementsControllerMethod("onTaskTimeout", Void.TYPE, IDispatcherChannel.class, IDispatcherChannelTask.class, Object.class, Runnable.class);
     }
     
-    public default boolean implementsOnMessageRemove()
+    default boolean implementsOnMessageRemove()
     {
         return implementsControllerMethod("onMessageRemove", Void.TYPE, IMessage.class);
     }
     
-    public default boolean implementsOnMessageRemoveSnapshot()
+    default boolean implementsOnMessageRemoveSnapshot()
     {
         return implementsControllerMethod("onMessageRemoveSnapshot", Void.TYPE, SnapshotableDeque.class);
     }
     
     @Override
-    default void onMessageStore(IMessage message) { }
+    default void onMessageStore(final IMessage message) { }
     
     @Override
-    default void onMessageStoreSnapshot(DequeSnapshot messageStoreSnapshot) { }
+    default void onMessageStoreSnapshot(final DequeSnapshot messageStoreSnapshot) { }
     
     @Override
-    default void onChannelSignal(IDispatcherChannel channel, String signal) { }
+    default void onChannelSignal(final IDispatcherChannel channel, final String signal) { }
     
     @Override
-    default void onChannelDetach(IDispatcherChannel channel) { }
+    default void onChannelDetach(final IDispatcherChannel channel) { }
     
     @Override
-    default void onChannelAttach(IDispatcherChannel channel) { }
+    default void onChannelAttach(final IDispatcherChannel channel) { }
     
     @Override
-    default void onTaskError(IDispatcherChannel channel, IDispatcherChannelTask task, Throwable throwable) { }
+    default void onTaskError(final IDispatcherChannel channel, final IDispatcherChannelTask task, final Throwable throwable) { }
     
     @Override
-    default void onTaskDone(IDispatcherChannel channel, IDispatcherChannelTask task) { }
+    default void onTaskDone(final IDispatcherChannel channel, final IDispatcherChannelTask task) { }
     
     @Override
-    default void onTaskTimeout(IDispatcherChannel channel, IDispatcherChannelTask task, Object taskState, Runnable interrupter) { }
+    default void onTaskTimeout(final IDispatcherChannel channel, final IDispatcherChannelTask task, final Object taskState, final Runnable interrupter) { }
     
     @Override
-    default void onMessageRemove(IMessage message) { }
-    
-    ;
+    default void onMessageRemove(final IMessage message) { }
     
     @Override
-    default void onMessageRemoveSnapshot(DequeSnapshot messageRemoveSnapshot) { }
+    default void onMessageRemoveSnapshot(final DequeSnapshot messageRemoveSnapshot) { }
     
-    default boolean implementsControllerMethod(String name, Class<?> returnType, Class<?>... parameterTypes)
+    default boolean implementsControllerMethod(final String name, final Class<?> returnType, final Class<?>... parameterTypes)
     {
         Class<?> clazz = this.getClass();
         while (clazz != null)
@@ -125,7 +123,7 @@ public interface IFeatureConfigurableManager extends
                     return true;
                 }
             }
-            catch (NoSuchMethodException e) { }
+            catch (final NoSuchMethodException e) { }
             clazz = clazz.getSuperclass();
         }
         return false;
