@@ -10,16 +10,13 @@
  *******************************************************************************/
 package org.sodeac.common.xuri.ldapfilter;
 
-import org.sodeac.common.xuri.ldapfilter.ComparativeOperator;
-import org.sodeac.common.xuri.ldapfilter.IMatchable;
-
 public class TestMatchable implements IMatchable
 {
-
-	@Override
-	public boolean matches(ComparativeOperator operator, String name, String valueExpression)
-	{
-		return name.equalsIgnoreCase(Boolean.TRUE.toString());
-	}
-
+    
+    @Override
+    public boolean matches(ComparativeOperator operator, String name, String valueExpression)
+    {
+        return name.equalsIgnoreCase(Boolean.TRUE.toString());
+    }
+    
 }

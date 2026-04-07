@@ -16,13 +16,16 @@ import org.sodeac.common.typedtree.LeafNodeType;
 import org.sodeac.common.typedtree.ModelRegistry;
 import org.sodeac.common.typedtree.annotation.TypedTreeModel;
 
-@TypedTreeModel(modelClass=CoreTreeModel.class)
+@TypedTreeModel(modelClass = CoreTreeModel.class)
 @GenerateBow
 public class VersionNodeType extends BranchNodeMetaModel
 {
-	static{ModelRegistry.getBranchNodeMetaModel(VersionNodeType.class);}
-	
-	public static volatile LeafNodeType<VersionNodeType,Integer> major;
-	public static volatile LeafNodeType<VersionNodeType,Integer> minor;
-	public static volatile LeafNodeType<VersionNodeType,Integer> service;
+    static
+    {
+        ModelRegistry.getBranchNodeMetaModel(VersionNodeType.class);
+    }
+    
+    public static volatile LeafNodeType<VersionNodeType, Integer> major;
+    public static volatile LeafNodeType<VersionNodeType, Integer> minor;
+    public static volatile LeafNodeType<VersionNodeType, Integer> service;
 }

@@ -17,9 +17,9 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import org.sodeac.common.jdbc.schemax.IDefaultCurrentDate;
 import org.sodeac.common.misc.OSGiDriverRegistry;
 
-@Component(service=IDefaultCurrentDate.class,property="defaultdriver=true")
+@Component(service = IDefaultCurrentDate.class, property = "defaultdriver=true")
 public class DefaultCurrentDateImpl implements IDefaultCurrentDate
 {
-	@Reference(cardinality=ReferenceCardinality.MANDATORY,policy=ReferencePolicy.STATIC)
-	protected volatile OSGiDriverRegistry internalBootstrapDep;
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC)
+    protected volatile OSGiDriverRegistry internalBootstrapDep;
 }

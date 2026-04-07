@@ -11,52 +11,52 @@
 package org.sodeac.common.message.dispatcher.api;
 
 /**
- * 
+ *
  * @author Sebastian Palarus
  *
  */
 public class ChannelNotFoundException extends RuntimeException
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 9068625039710702255L;
-	
-	private String queueId = null;
-
-	public ChannelNotFoundException(String queueId)
-	{
-		super();
-		this.queueId = queueId;
-	}
-
-	public ChannelNotFoundException(String queueId,String message, Throwable cause, boolean enableSuppression,boolean writableStackTrace)
-	{
-		super(message, cause, enableSuppression, writableStackTrace);
-		this.queueId = queueId;
-	}
-
-	public ChannelNotFoundException(String queueId, String message, Throwable cause)
-	{
-		super(message, cause);
-		this.queueId = queueId;
-	}
-
-	public ChannelNotFoundException(String queueId,String message)
-	{
-		super(message);
-		this.queueId = queueId;
-	}
-
-	public ChannelNotFoundException(String queueId,Throwable cause)
-	{
-		super(cause);
-		this.queueId = queueId;
-	}
-
-	public String getQueueId()
-	{
-		return queueId;
-	}
-	
+    /**
+     *
+     */
+    private static final long serialVersionUID = 9068625039710702255L;
+    
+    private String queueId = null;
+    
+    public ChannelNotFoundException(String queueId)
+    {
+        super();
+        this.queueId = queueId;
+    }
+    
+    public ChannelNotFoundException(String queueId, String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace)
+    {
+        super(message, cause, enableSuppression, writableStackTrace);
+        this.queueId = queueId;
+    }
+    
+    public ChannelNotFoundException(String queueId, String message, Throwable cause)
+    {
+        super(message, cause);
+        this.queueId = queueId;
+    }
+    
+    public ChannelNotFoundException(String queueId, String message)
+    {
+        super(message);
+        this.queueId = queueId;
+    }
+    
+    public ChannelNotFoundException(String queueId, Throwable cause)
+    {
+        super(cause);
+        this.queueId = queueId;
+    }
+    
+    public String getQueueId()
+    {
+        return queueId;
+    }
+    
 }

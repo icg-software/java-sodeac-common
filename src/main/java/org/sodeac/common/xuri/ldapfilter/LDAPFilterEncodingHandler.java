@@ -10,47 +10,46 @@
  *******************************************************************************/
 package org.sodeac.common.xuri.ldapfilter;
 
-
 import java.io.Serializable;
 
 import org.sodeac.common.xuri.IEncodingExtensionHandler;
 
 /**
  * XURI encoding extension handler to encode ldap filter items of type {@link IFilterItem}
- * 
+ *
  * @author Sebastian Palarus
- * @since 1.0
  * @version 1.0
+ * @since 1.0
  *
  */
 public class LDAPFilterEncodingHandler implements IEncodingExtensionHandler<IFilterItem>, Serializable
 {
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -3779708657170015377L;
-	
-	private transient static volatile LDAPFilterEncodingHandler INSTANCE = null;
-	
-	public static LDAPFilterEncodingHandler getInstance()
-	{
-		if(INSTANCE == null)
-		{
-			INSTANCE = new LDAPFilterEncodingHandler();
-		}
-		return INSTANCE;
-	}
-	
-	@Override
-	public String getType()
-	{
-		return LDAPFilterExtension.TYPE;
-	}
-	
-	@Override
-	public String encodeToString(IFilterItem extensionDataObject)
-	{
-		return extensionDataObject.toString();
-	}
+    
+    /**
+     *
+     */
+    private static final long serialVersionUID = -3779708657170015377L;
+    
+    private transient static volatile LDAPFilterEncodingHandler INSTANCE = null;
+    
+    public static LDAPFilterEncodingHandler getInstance()
+    {
+        if (INSTANCE == null)
+        {
+            INSTANCE = new LDAPFilterEncodingHandler();
+        }
+        return INSTANCE;
+    }
+    
+    @Override
+    public String getType()
+    {
+        return LDAPFilterExtension.TYPE;
+    }
+    
+    @Override
+    public String encodeToString(IFilterItem extensionDataObject)
+    {
+        return extensionDataObject.toString();
+    }
 }

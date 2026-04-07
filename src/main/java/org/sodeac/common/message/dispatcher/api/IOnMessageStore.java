@@ -11,24 +11,24 @@
 package org.sodeac.common.message.dispatcher.api;
 
 /**
- * 
- * An extension interface for {@link IDispatcherChannelManager} to consume a notification if {@link IDispatcherChannel} has queued an {@link IMessage}. 
+ *
+ * An extension interface for {@link IDispatcherChannelManager} to consume a notification if {@link IDispatcherChannel} has queued an {@link IMessage}.
  * <br>
- * UseCase: (re)plan tasks 
- * 
+ * UseCase: (re)plan tasks
+ *
  * @author Sebastian Palarus
  *
  */
 public interface IOnMessageStore<T> extends IDispatcherChannelManager
 {
-	/**
-	 * This is fired, if {@link IDispatcherChannel} has queued an {@link IMessage}
-	 * <br>
-	 * invoked and synchronized by queue worker
-	 * <br>
-	 * UseCase: (re)plan tasks 
-	 * 
-	 * @param message new message
-	 */
-	public void onMessageStore(IMessage<T> message);
+    /**
+     * This is fired, if {@link IDispatcherChannel} has queued an {@link IMessage}
+     * <br>
+     * invoked and synchronized by queue worker
+     * <br>
+     * UseCase: (re)plan tasks
+     *
+     * @param message new message
+     */
+    public void onMessageStore(IMessage<T> message);
 }

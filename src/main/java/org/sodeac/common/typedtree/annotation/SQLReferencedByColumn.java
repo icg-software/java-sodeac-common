@@ -22,13 +22,19 @@ import org.sodeac.common.typedtree.annotation.SQLColumn.SQLColumnType;
 @Documented
 @Retention(RUNTIME)
 @Target(FIELD)
-public @interface SQLReferencedByColumn 
+public @interface SQLReferencedByColumn
 {
-	String name();
-	boolean nullable() default true;
-	SQLColumnType type() default SQLColumnType.AUTO;
-	int length() default -1;
-	boolean readable() default true;
-	boolean insertable() default true;
-	boolean updatable() default true;
+    String name();
+    
+    boolean nullable() default true;
+    
+    SQLColumnType type() default SQLColumnType.AUTO;
+    
+    int length() default -1;
+    
+    boolean readable() default true;
+    
+    boolean insertable() default true;
+    
+    boolean updatable() default true;
 }

@@ -10,33 +10,36 @@
  *******************************************************************************/
 package org.sodeac.common.model;
 
-import jakarta.xml.bind.annotation.XmlAttribute;
-
 import org.sodeac.common.annotation.GenerateBow;
 import org.sodeac.common.typedtree.BranchNodeMetaModel;
 import org.sodeac.common.typedtree.LeafNodeType;
 import org.sodeac.common.typedtree.ModelRegistry;
 import org.sodeac.common.typedtree.annotation.TypedTreeModel;
 
-@TypedTreeModel(modelClass=CoreTreeModel.class)
+import jakarta.xml.bind.annotation.XmlAttribute;
+
+@TypedTreeModel(modelClass = CoreTreeModel.class)
 @GenerateBow
 public class CommonListChunkBaseBranchNodeType extends BranchNodeMetaModel
 {
-	static{ModelRegistry.getBranchNodeMetaModel(CommonListChunkBaseBranchNodeType.class);}
-	
-	@XmlAttribute(name="listsize")
-	public static volatile LeafNodeType<CommonListChunkBaseBranchNodeType,Long> listSize;
-	
-	@XmlAttribute(name="chunksize")
-	public static volatile LeafNodeType<CommonListChunkBaseBranchNodeType,Long> chunkSize;
-	
-	@XmlAttribute(name="chunkseq")
-	public static volatile LeafNodeType<CommonListChunkBaseBranchNodeType,Long> chunkSequnece;
-	
-	@XmlAttribute(name="itemsize")
-	public static volatile LeafNodeType<CommonListChunkBaseBranchNodeType,Integer> itemSize;
-	
-	@XmlAttribute(name="last")
-	public static volatile LeafNodeType<CommonListChunkBaseBranchNodeType,Boolean> last;
-	
+    static
+    {
+        ModelRegistry.getBranchNodeMetaModel(CommonListChunkBaseBranchNodeType.class);
+    }
+    
+    @XmlAttribute(name = "listsize")
+    public static volatile LeafNodeType<CommonListChunkBaseBranchNodeType, Long> listSize;
+    
+    @XmlAttribute(name = "chunksize")
+    public static volatile LeafNodeType<CommonListChunkBaseBranchNodeType, Long> chunkSize;
+    
+    @XmlAttribute(name = "chunkseq")
+    public static volatile LeafNodeType<CommonListChunkBaseBranchNodeType, Long> chunkSequnece;
+    
+    @XmlAttribute(name = "itemsize")
+    public static volatile LeafNodeType<CommonListChunkBaseBranchNodeType, Integer> itemSize;
+    
+    @XmlAttribute(name = "last")
+    public static volatile LeafNodeType<CommonListChunkBaseBranchNodeType, Boolean> last;
+    
 }

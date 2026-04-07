@@ -23,11 +23,14 @@ import org.sodeac.common.IService;
 @Documented
 @Retention(RUNTIME)
 @Target(TYPE)
-@Repeatable(value=ServiceRegistrations.class)
+@Repeatable(value = ServiceRegistrations.class)
 public @interface ServiceRegistration
 {
-	String name() default IService.REPLACED_BY_CLASS_NAME;
-	String domain() default IService.REPLACED_BY_PACKAGE_NAME;
-	Version version() default @Version(major = -1, minor = -1, service= -1);
-	Class<?>[] serviceType();
+    String name() default IService.REPLACED_BY_CLASS_NAME;
+    
+    String domain() default IService.REPLACED_BY_PACKAGE_NAME;
+    
+    Version version() default @Version(major = -1, minor = -1, service = -1);
+    
+    Class<?>[] serviceType();
 }

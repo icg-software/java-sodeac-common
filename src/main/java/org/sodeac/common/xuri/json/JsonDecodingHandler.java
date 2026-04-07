@@ -31,42 +31,42 @@ import jakarta.json.JsonReader;
  */
 public class JsonDecodingHandler implements IDecodingExtensionHandler<JsonObject>, Serializable
 {
-
+    
     /**
      *
      */
     private static final long serialVersionUID = -4612916661495917506L;
-
+    
     private static volatile JsonDecodingHandler INSTANCE = null;
-
+    
     public static final char OPENER = '{';
     public static final char CLOSER = '}';
     public static final char ESCAPE = '\\';
     public static final char DOUBLE_QUOTE = '"';
     public static final char[] OPENER_CHARACTERS = new char[] { OPENER };
     public static final char[] CLOSER_CHARACTERS = new char[] { CLOSER };
-
+    
     public static JsonDecodingHandler getInstance()
     {
-        if(INSTANCE == null)
+        if (INSTANCE == null)
         {
             INSTANCE = new JsonDecodingHandler();
         }
         return INSTANCE;
     }
-
+    
     @Override
     public String getType()
     {
         return JsonExtension.TYPE;
     }
-
+    
     @Override
     public ComponentType[] getApplicableComponents()
     {
         return new ComponentType[] { ComponentType.AUTHORITY, ComponentType.PATH, ComponentType.QUERY, ComponentType.FRAGMENT };
     }
-
+    
     @Override
     public int parseRawExtensionString(final ExtensionHandleObject extensionHandleObject)
     {
@@ -74,46 +74,46 @@ public class JsonDecodingHandler implements IDecodingExtensionHandler<JsonObject
         int openerCount = 0;
         boolean inEscape = false;
         boolean inQuote = false;
-
+        
         for (; extensionHandleObject.position < extensionHandleObject.fullPath.length(); extensionHandleObject.position++)
         {
             c = extensionHandleObject.fullPath.charAt(extensionHandleObject.position);
-
-            if(inEscape)
+            
+            if (inEscape)
             {
                 inEscape = false;
                 extensionHandleObject.rawResult.append(c);
                 continue;
             }
-
-            if(c == ESCAPE)
+            
+            if (c == ESCAPE)
             {
                 inEscape = true;
                 extensionHandleObject.rawResult.append(c);
                 continue;
             }
-
-            if(c == DOUBLE_QUOTE)
+            
+            if (c == DOUBLE_QUOTE)
             {
                 extensionHandleObject.rawResult.append(c);
                 inQuote = !inQuote;
                 continue;
             }
-
-            if(!inQuote)
+            
+            if (!inQuote)
             {
-                if(c == OPENER)
+                if (c == OPENER)
                 {
                     openerCount++;
                 }
-
-                if(c == CLOSER)
+                
+                if (c == CLOSER)
                 {
-                    if(openerCount == 0)
+                    if (openerCount == 0)
                     {
                         final String expression = extensionHandleObject.rawResult.toString();
                         extensionHandleObject.extension = new JsonExtension("{" + expression + "}");
-
+                        
                         return extensionHandleObject.position + 1;
                     }
                     else
@@ -122,19 +122,19 @@ public class JsonDecodingHandler implements IDecodingExtensionHandler<JsonObject
                     }
                 }
             }
-
+            
             extensionHandleObject.rawResult.append(c);
         }
-
+        
         throw new FormatException("no closing sequence \"" + new String(getCloserCharacters(extensionHandleObject.component)) + "\" found in " + getType() + " : " + extensionHandleObject.rawResult.toString());
     }
-
+    
     @Override
     public int openerCharactersMatched(final ExtensionHandleObject extensionHandleObject)
     {
         return extensionHandleObject.fullPath.charAt(extensionHandleObject.position) == OPENER ? extensionHandleObject.position + 1 : -1;
     }
-
+    
     @Override
     public JsonObject decodeFromString(final String raw)
     {
@@ -142,7 +142,7 @@ public class JsonDecodingHandler implements IDecodingExtensionHandler<JsonObject
         final JsonObject jsonObject = reader.readObject();
         return jsonObject;
     }
-
+    
     /**
      * getter for opener characters
      *
@@ -154,7 +154,7 @@ public class JsonDecodingHandler implements IDecodingExtensionHandler<JsonObject
     {
         return OPENER_CHARACTERS;
     }
-
+    
     /**
      * setter for closer characters
      *

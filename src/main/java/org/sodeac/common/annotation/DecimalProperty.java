@@ -23,9 +23,10 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RUNTIME)
 @Target({ TYPE, FIELD })
-@Repeatable(value=DecimalProperties.class)
+@Repeatable(value = DecimalProperties.class)
 public @interface DecimalProperty
 {
-	String key();
-	double value();
+    String key();
+    
+    double value();
 }

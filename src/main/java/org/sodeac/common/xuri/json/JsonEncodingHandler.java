@@ -28,24 +28,24 @@ public class JsonEncodingHandler implements IEncodingExtensionHandler<JsonObject
      *
      */
     private static final long serialVersionUID = 312956274744970550L;
-
+    
     private static volatile JsonEncodingHandler INSTANCE = null;
-
+    
     public static JsonEncodingHandler getInstance()
     {
-        if(INSTANCE == null)
+        if (INSTANCE == null)
         {
             INSTANCE = new JsonEncodingHandler();
         }
         return INSTANCE;
     }
-
+    
     @Override
     public String getType()
     {
         return JsonExtension.TYPE;
     }
-
+    
     @Override
     public String encodeToString(final JsonObject extensionDataObject)
     {

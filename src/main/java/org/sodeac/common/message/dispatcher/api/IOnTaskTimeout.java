@@ -11,23 +11,23 @@
 package org.sodeac.common.message.dispatcher.api;
 
 /**
- * 
+ *
  * An extension interface for {@link IDispatcherChannelManager} to consume notifications if a task runs in a timeout
- * 
+ *
  * @author Sebastian Palarus
  *
  */
 public interface IOnTaskTimeout<T> extends IDispatcherChannelManager
 {
-	/**
-	 * This is fired, if {@link IDispatcherChannelTask} runs in timeout.
-	 * <br>
-	 * Attention! This call is not synchronized by worker thread!
-	 * 
-	 * @param channel  queue of task runs in timeout
-	 * @param task runs in timeout
-	 * @param taskState
-	 * @param interruptInvoke
-	 */
-	public void onTaskTimeout(IDispatcherChannel<T> channel, IDispatcherChannelTask<T> task, Object taskState, Runnable interrupter);
+    /**
+     * This is fired, if {@link IDispatcherChannelTask} runs in timeout.
+     * <br>
+     * Attention! This call is not synchronized by worker thread!
+     *
+     * @param channel         queue of task runs in timeout
+     * @param task            runs in timeout
+     * @param taskState
+     * @param interruptInvoke
+     */
+    public void onTaskTimeout(IDispatcherChannel<T> channel, IDispatcherChannelTask<T> task, Object taskState, Runnable interrupter);
 }

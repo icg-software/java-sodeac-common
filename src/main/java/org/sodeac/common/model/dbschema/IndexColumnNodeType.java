@@ -16,12 +16,15 @@ import org.sodeac.common.typedtree.LeafNodeType;
 import org.sodeac.common.typedtree.ModelRegistry;
 import org.sodeac.common.typedtree.annotation.TypedTreeModel;
 
-@TypedTreeModel(modelClass=DBSchemaTreeModel.class)
-@GenerateBow(buildAlias=true)
+@TypedTreeModel(modelClass = DBSchemaTreeModel.class)
+@GenerateBow(buildAlias = true)
 public class IndexColumnNodeType extends BranchNodeMetaModel
 {
-	static{ModelRegistry.getBranchNodeMetaModel(IndexColumnNodeType.class);}
-	
-	public static volatile LeafNodeType<IndexColumnNodeType,Boolean> quotedName;
-	public static volatile LeafNodeType<IndexColumnNodeType,String> columName;
+    static
+    {
+        ModelRegistry.getBranchNodeMetaModel(IndexColumnNodeType.class);
+    }
+    
+    public static volatile LeafNodeType<IndexColumnNodeType, Boolean> quotedName;
+    public static volatile LeafNodeType<IndexColumnNodeType, String> columName;
 }

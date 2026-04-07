@@ -14,16 +14,16 @@ import java.util.function.Consumer;
 
 /**
  * An operation handler for complex editing a property block in atomic way.
- * 
+ *
  * @author Sebastian Palarus
  *
  */
 public interface IPropertyBlockAtomicProcedure extends Consumer<IPropertyBlock>
 {
-	/**
-	 * Edit property block in locked mode. Use {@code propertyBlock}  to read or edit block.
-	 * 
-	 * @param propertyBlock wrapper to origin blocked property block.
-	 */
-	public void accept(IPropertyBlock propertyBlock);
+    /**
+     * Edit property block in locked mode. Use {@code propertyBlock}  to read or edit block.
+     *
+     * @param propertyBlock wrapper to origin blocked property block.
+     */
+    public void accept(IPropertyBlock propertyBlock);
 }

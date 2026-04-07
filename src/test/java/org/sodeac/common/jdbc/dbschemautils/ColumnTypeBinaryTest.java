@@ -46,47 +46,47 @@ import org.sodeac.common.typedtree.BranchNode;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ColumnTypeBinaryTest
 {
-
+    
     public static List<Object[]> connectionList = null;
     public static final Map<String, Boolean> createdSchema = new HashMap<String, Boolean>();
-
+    
     private final String databaseID = "TESTDOMAIN";
     private final String table1Name = "TableColBin";
     private final String columnBinaryName = "col_binary";
     private final String columnBlobName = "col_blob";
-
+    
     @Parameters
     public static List<Object[]> connections()
     {
-        if(connectionList != null)
+        if (connectionList != null)
         {
             return connectionList;
         }
         return connectionList = Statics.connections(createdSchema, "dbschema");
     }
-
+    
     public ColumnTypeBinaryTest(final Callable<TestConnection> connectionFactory)
     {
         this.testConnectionFactory = connectionFactory;
     }
-
+    
     Callable<TestConnection> testConnectionFactory = null;
     TestConnection testConnection = null;
-
+    
     @Before
     public void setUp() throws Exception
     {
         this.testConnection = this.testConnectionFactory.call();
     }
-
+    
     @After
     public void tearDown()
     {
-        if(!this.testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        if(this.testConnection.connection != null)
+        if (this.testConnection.connection != null)
         {
             try
             {
@@ -95,68 +95,76 @@ public class ColumnTypeBinaryTest
             catch (final Exception e) { }
         }
     }
-
+    
     @Test
     public void test000700binarySimpleTest() throws SQLException, ClassNotFoundException, IOException
     {
-        if(!this.testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-
+        
         final Connection connection = this.testConnection.connection;
         final DBSchemaUtils dbSchemaUtils = DBSchemaUtils.get(connection);
-
+        
         final BranchNode<DBSchemaTreeModel, DBSchemaNodeType> schema = DBSchemaTreeModel.newSchema(this.databaseID, this.testConnection.dbmsSchemaName);
         final BranchNode<DBSchemaNodeType, TableNodeType> table1 = schema.create(DBSchemaNodeType.tables).setValue(TableNodeType.name, this.table1Name);
-
+        
         TableNodeType.createCharColumn(table1, "id", false, 36);
         TableNodeType.createBinaryColumn(table1, this.columnBinaryName, true);
         TableNodeType.createBlobColumn(table1, this.columnBlobName, true);
-
+        
         dbSchemaUtils.adaptSchema(schema);
-
+        
         PreparedStatement prepStat = null;
         final ResultSet rset = null;
         try
         {
             connection.setAutoCommit(false);
-
+            
             prepStat = connection.prepareStatement("insert into " + this.table1Name + " (id) values (?)");
             prepStat.setString(1, UUID.randomUUID().toString());
             prepStat.executeUpdate();
             prepStat.close();
             connection.commit();
-
+            
         }
         finally
         {
-            try { rset.close(); }catch (final Exception e) { }
-            try { prepStat.close(); }catch (final Exception e) { }
+            try
+            {
+                rset.close();
+            }
+            catch (final Exception e) { }
+            try
+            {
+                prepStat.close();
+            }
+            catch (final Exception e) { }
         }
     }
-
+    
     @Test
     public void test000701testBinaryBytes() throws SQLException, ClassNotFoundException, IOException
     {
-        if(!this.testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
         final Connection connection = this.testConnection.connection;
         final boolean ac = connection.getAutoCommit();
         connection.setAutoCommit(false);
-
+        
         final byte[] b = new byte[200];
         for (int i = 0; i < 200; i++)
         {
             b[i] = (byte) (i + 10);
         }
-
+        
         final String id = UUID.randomUUID().toString();
-
+        
         PreparedStatement prepStat = null;
-
+        
         try
         {
             prepStat = connection.prepareStatement("insert into " + this.table1Name + " (id,col_binary) values (?,?) ");
@@ -167,70 +175,70 @@ public class ColumnTypeBinaryTest
         }
         finally
         {
-            if(prepStat != null)
+            if (prepStat != null)
             {
                 prepStat.close();
             }
         }
-
+        
         ResultSet rset = null;
         prepStat = null;
         byte[] testByte = null;
-
+        
         try
         {
             prepStat = connection.prepareStatement("select col_binary from " + this.table1Name + " where id = ? ");
             prepStat.setString(1, id);
-
+            
             rset = prepStat.executeQuery();
             rset.next();
             testByte = rset.getBytes(1);
         }
         finally
         {
-            if(rset != null)
+            if (rset != null)
             {
                 rset.close();
             }
-            if(prepStat != null)
+            if (prepStat != null)
             {
                 prepStat.close();
             }
-
+            
         }
-
+        
         assertEquals("byte length should be correct", b.length, testByte.length);
         for (int i = 0; i < b.length; i++)
         {
             assertEquals("byte should be correct", b[i], testByte[i]);
         }
-
+        
         connection.setAutoCommit(ac);
     }
-
+    
     @Test
     public void test000702testBinaryStream() throws SQLException, ClassNotFoundException, IOException
     {
-        if(!this.testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
         final Connection connection = this.testConnection.connection;
         final boolean ac = connection.getAutoCommit();
         connection.setAutoCommit(false);
-
+        
         final byte[] b = new byte[200];
         for (int i = 0; i < 200; i++)
         {
             b[i] = (byte) (i + 20);
         }
-
+        
         final String id = UUID.randomUUID().toString();
-
+        
         final ByteArrayInputStream bais = new ByteArrayInputStream(b);
-
+        
         PreparedStatement prepStat = null;
-
+        
         try
         {
             prepStat = connection.prepareStatement("insert into " + this.table1Name + " (id,col_binary) values (?,?) ");
@@ -238,7 +246,7 @@ public class ColumnTypeBinaryTest
             prepStat.setBinaryStream(2, bais);
             prepStat.executeUpdate();
             connection.commit();
-
+            
             bais.close();
         }
         catch (final Exception e)
@@ -248,27 +256,27 @@ public class ColumnTypeBinaryTest
         }
         finally
         {
-            if(prepStat != null)
+            if (prepStat != null)
             {
                 prepStat.close();
             }
         }
-
+        
         ResultSet rset = null;
         prepStat = null;
         byte[] testByte = null;
         InputStream is = null;
         final ByteArrayOutputStream baos = new ByteArrayOutputStream(200);
-
+        
         try
         {
             prepStat = connection.prepareStatement("select col_binary from " + this.table1Name + " where id = ? ");
             prepStat.setString(1, id);
-
+            
             rset = prepStat.executeQuery();
             rset.next();
             is = rset.getBinaryStream(1);
-
+            
             final byte[] buf = new byte[27];
             int len;
             while ((len = is.read(buf)) > 0)
@@ -286,26 +294,26 @@ public class ColumnTypeBinaryTest
         }
         finally
         {
-            if(rset != null)
+            if (rset != null)
             {
                 rset.close();
             }
-            if(prepStat != null)
+            if (prepStat != null)
             {
                 prepStat.close();
             }
-
+            
         }
-
+        
         assertEquals("byte length should be correct", b.length, testByte.length);
         for (int i = 0; i < b.length; i++)
         {
             assertEquals("byte should be correct", b[i], testByte[i]);
         }
-
+        
         connection.setAutoCommit(ac);
     }
-
+    
     // TODO
 	
 	/*@Test

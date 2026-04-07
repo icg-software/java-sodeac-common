@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RUNTIME)
 @Target({ TYPE, FIELD, METHOD, PACKAGE })
-public @interface BoundedContexts 
+public @interface BoundedContexts
 {
-	BoundedContext[] value();
+    BoundedContext[] value();
 }

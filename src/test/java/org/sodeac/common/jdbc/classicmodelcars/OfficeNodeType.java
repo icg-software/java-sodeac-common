@@ -19,39 +19,42 @@ import org.sodeac.common.typedtree.annotation.SQLPrimaryKey;
 import org.sodeac.common.typedtree.annotation.SQLReferencedByColumn;
 import org.sodeac.common.typedtree.annotation.SQLTable;
 
-@SQLTable(name="OFFICE")
+@SQLTable(name = "OFFICE")
 public class OfficeNodeType extends BranchNodeMetaModel
 {
-	static{ModelRegistry.getBranchNodeMetaModel(OfficeNodeType.class);}
-	
-	@SQLColumn(name="OFFICECODE")
-	@SQLPrimaryKey
-	public static volatile LeafNodeType<OfficeNodeType,String> OFFICECODE;
-	
-	@SQLColumn(name="ADDRESSLINE1")
-	public static volatile LeafNodeType<OfficeNodeType,String> OFFICEADDRESSLINE1;
-	
-	@SQLColumn(name="ADDRESSLINE2")
-	public static volatile LeafNodeType<OfficeNodeType,String> OFFICEADDRESSLINE2;
-	
-	@SQLColumn(name="CITY")
-	public static volatile LeafNodeType<OfficeNodeType,String> OFFICECITY;
-	
-	@SQLColumn(name="COUNTRY")
-	public static volatile LeafNodeType<OfficeNodeType,String> OFFICECOUNTRY;
-	
-	@SQLColumn(name="POSTALCODE")
-	public static volatile LeafNodeType<OfficeNodeType,String> OFFICEPOSTALCODE;
-	
-	@SQLColumn(name="STATE")
-	public static volatile LeafNodeType<OfficeNodeType,String> OFFICESTATE;
-	
-	@SQLColumn(name="TERRITORY")
-	public static volatile LeafNodeType<OfficeNodeType,String> OFFICETERRITORY;
-	
-	@SQLColumn(name="PHONE")
-	public static volatile LeafNodeType<OfficeNodeType,String> OFFICEPHONE;
-	
-	@SQLReferencedByColumn(name="OFFICECODE")
-	public static volatile BranchNodeListType<OfficeNodeType,EmployeeNodeType> EMPLOYEES;
+    static
+    {
+        ModelRegistry.getBranchNodeMetaModel(OfficeNodeType.class);
+    }
+    
+    @SQLColumn(name = "OFFICECODE")
+    @SQLPrimaryKey
+    public static volatile LeafNodeType<OfficeNodeType, String> OFFICECODE;
+    
+    @SQLColumn(name = "ADDRESSLINE1")
+    public static volatile LeafNodeType<OfficeNodeType, String> OFFICEADDRESSLINE1;
+    
+    @SQLColumn(name = "ADDRESSLINE2")
+    public static volatile LeafNodeType<OfficeNodeType, String> OFFICEADDRESSLINE2;
+    
+    @SQLColumn(name = "CITY")
+    public static volatile LeafNodeType<OfficeNodeType, String> OFFICECITY;
+    
+    @SQLColumn(name = "COUNTRY")
+    public static volatile LeafNodeType<OfficeNodeType, String> OFFICECOUNTRY;
+    
+    @SQLColumn(name = "POSTALCODE")
+    public static volatile LeafNodeType<OfficeNodeType, String> OFFICEPOSTALCODE;
+    
+    @SQLColumn(name = "STATE")
+    public static volatile LeafNodeType<OfficeNodeType, String> OFFICESTATE;
+    
+    @SQLColumn(name = "TERRITORY")
+    public static volatile LeafNodeType<OfficeNodeType, String> OFFICETERRITORY;
+    
+    @SQLColumn(name = "PHONE")
+    public static volatile LeafNodeType<OfficeNodeType, String> OFFICEPHONE;
+    
+    @SQLReferencedByColumn(name = "OFFICECODE")
+    public static volatile BranchNodeListType<OfficeNodeType, EmployeeNodeType> EMPLOYEES;
 }

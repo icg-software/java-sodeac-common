@@ -11,36 +11,37 @@
 package org.sodeac.common.message.dispatcher.api;
 
 /**
- * 
+ *
  * An channel manager reacts to a wide variety of queue happenings, if it implements appropriate extension interfaces.
- * 
+ *
  * @author Sebastian Palarus
  *
  */
 public interface IDispatcherChannelManager extends IDispatcherChannelComponent
 {
-	/**
-	 * Configure Manager channel binding behavior.
-	 * 
-	 * @param configurationPolicy
-	 */
-	public default void configureChannelManagerPolicy(IChannelManagerPolicy componentBindingPolicy)
-	{
-	}
-	
-	/**
-	 * Policy container defines runtime configuration of controller.
-	 * 
-	 * @author "Sebastian Palarus"
-	 *
-	 */
-	public static interface IChannelManagerPolicy
-	{
-		/**
-		 * 
-		 * @param configuration
-		 * @return
-		 */
-		public IChannelManagerPolicy addConfigurationDetail(ComponentBindingSetup componentBindingSetup);
-	}
+    /**
+     * Configure Manager channel binding behavior.
+     *
+     * @param configurationPolicy
+     */
+    public default void configureChannelManagerPolicy(IChannelManagerPolicy componentBindingPolicy)
+    {
+    }
+    
+    /**
+     * Policy container defines runtime configuration of controller.
+     *
+     * @author "Sebastian Palarus"
+     *
+     */
+    public static interface IChannelManagerPolicy
+    {
+        /**
+         *
+         * @param configuration
+         *
+         * @return
+         */
+        public IChannelManagerPolicy addConfigurationDetail(ComponentBindingSetup componentBindingSetup);
+    }
 }

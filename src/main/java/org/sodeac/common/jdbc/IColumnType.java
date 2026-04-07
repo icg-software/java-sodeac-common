@@ -12,7 +12,6 @@ package org.sodeac.common.jdbc;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 
 import org.sodeac.common.misc.Driver.IDriver;
 import org.sodeac.common.model.dbschema.ColumnNodeType;
@@ -22,58 +21,60 @@ import org.sodeac.common.typedtree.BranchNode;
 
 /**
  * Interface for column type driver implementations
- * 
+ *
  * @author Sebastian Palarus
  *
  */
 public interface IColumnType extends IDriver
-{	
-	public static enum ColumnType {CHAR,VARCHAR,CLOB,UUID,BOOLEAN,SMALLINT,INTEGER,BIGINT,REAL,DOUBLE,TIMESTAMP,DATE,TIME,BINARY,BLOB}
-	
-	
-	/**
-	 * return the expression for column type in create or alter column command
-	 * 
-	 * @param connection used connection
-	 * @param schema used schema specification
-	 * @param table used table specification
-	 * @param column used column specification
-	 * @param dbProduct database product name
-	 * @param schemaDriver used schema driver
-	 * 
-	 * @return expression for column type in create or alter column command
-	 * 
-	 * @throws SQLException
-	 */
-	public String getTypeExpression
-	(
-		Connection connection, 
-		BranchNode<?, DBSchemaNodeType> schema, 
-		BranchNode<?, TableNodeType> table,
-		BranchNode<?, ColumnNodeType> column,
-		String dbProduct, 
-		IDBSchemaUtilsDriver schemaDriver
-	) throws SQLException;
-	
-	/**
-	 * return the expression for default type of column in create or alter column command
-	 * 
-	 * @param connection used connection
-	 * @param schema used schema specification
-	 * @param table used table specification
-	 * @param column used column specification
-	 * @param dbProduct database product name
-	 * @param schemaDriver used schema driver
-	 * @return expression for default type of column in create or alter column command
-	 * @throws SQLException
-	 */
-	public String getDefaultValueExpression
-	(
-		Connection connection, 
-		BranchNode<?, DBSchemaNodeType> schema, 
-		BranchNode<?, TableNodeType> table,
-		BranchNode<?, ColumnNodeType> column,
-		String dbProduct, 
-		IDBSchemaUtilsDriver schemaDriver
-	) throws SQLException;
+{
+    public static enum ColumnType
+    {CHAR, VARCHAR, CLOB, UUID, BOOLEAN, SMALLINT, INTEGER, BIGINT, REAL, DOUBLE, TIMESTAMP, DATE, TIME, BINARY, BLOB}
+    
+    /**
+     * return the expression for column type in create or alter column command
+     *
+     * @param connection   used connection
+     * @param schema       used schema specification
+     * @param table        used table specification
+     * @param column       used column specification
+     * @param dbProduct    database product name
+     * @param schemaDriver used schema driver
+     *
+     * @return expression for column type in create or alter column command
+     *
+     * @throws SQLException
+     */
+    public String getTypeExpression
+    (
+        Connection connection,
+        BranchNode<?, DBSchemaNodeType> schema,
+        BranchNode<?, TableNodeType> table,
+        BranchNode<?, ColumnNodeType> column,
+        String dbProduct,
+        IDBSchemaUtilsDriver schemaDriver
+    ) throws SQLException;
+    
+    /**
+     * return the expression for default type of column in create or alter column command
+     *
+     * @param connection   used connection
+     * @param schema       used schema specification
+     * @param table        used table specification
+     * @param column       used column specification
+     * @param dbProduct    database product name
+     * @param schemaDriver used schema driver
+     *
+     * @return expression for default type of column in create or alter column command
+     *
+     * @throws SQLException
+     */
+    public String getDefaultValueExpression
+    (
+        Connection connection,
+        BranchNode<?, DBSchemaNodeType> schema,
+        BranchNode<?, TableNodeType> table,
+        BranchNode<?, ColumnNodeType> column,
+        String dbProduct,
+        IDBSchemaUtilsDriver schemaDriver
+    ) throws SQLException;
 }

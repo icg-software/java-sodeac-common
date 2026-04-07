@@ -11,23 +11,23 @@
 package org.sodeac.common.message.dispatcher.api;
 
 /**
- * wrapper object for worker thread 
- * 
+ * wrapper object for worker thread
+ *
  * @author Sebastian Palarus
  *
  */
 public interface IDispatcherChannelWorker
 {
-
-	/**
-	 * invoke {@link java.lang.Thread#interrupt()}  on worker thread
-	 */
-	public void interrupt();
-	
-	/**
-	 * get {@link IDispatcherChannel} for which the worker works
-	 * 
-	 * @return queue for which the worker works
-	 */
-	public IDispatcherChannel getChannel();
+    
+    /**
+     * invoke {@link java.lang.Thread#interrupt()}  on worker thread
+     */
+    public void interrupt();
+    
+    /**
+     * get {@link IDispatcherChannel} for which the worker works
+     *
+     * @return queue for which the worker works
+     */
+    public IDispatcherChannel getChannel();
 }

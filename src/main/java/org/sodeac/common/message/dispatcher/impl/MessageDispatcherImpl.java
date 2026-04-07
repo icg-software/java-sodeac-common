@@ -59,66 +59,66 @@ public class MessageDispatcherImpl implements IMessageDispatcher
     private final ReentrantReadWriteLock channelIndexLock;
     private final ReadLock channelIndexReadLock;
     private final WriteLock channelIndexWriteLock;
-
+    
     private final ReentrantReadWriteLock lifecycleLock;
     private final ReadLock lifecycleReadLock;
     private final WriteLock lifecycleWriteLock;
-
+    
     private final SnapshotableDeque<ChannelWorker> workerPool;
-
+    
     private final DispatcherGuardian dispatcherGuardian;
     private final SpooledChannelWorkerScheduler spooledChannelWorkerScheduler;
-
+    
     private SnapshotableDeque<ChannelManagerContainer> managerList = null;
     private SnapshotableDeque<ServiceContainer> serviceList = null;
-
+    
     private final PropertyBlockImpl propertyBlock;
-
+    
     private String id = null;
-
+    
     private volatile boolean activated = false;
-
+    
     private ExecutorService executorService = null;
-
+    
     private ConfigurationPropertyBindingRegistry configurationPropertyBindingRegistry = null;
-
+    
     private Map<IDispatcherChannelManager, ChannelManagerContainer> channelManagerIndex = null;
     private Map<IDispatcherChannelService, ServiceContainer> serviceContainerIndex = null;
-
+    
     private final Logger logger = LoggerFactory.getLogger(MessageDispatcherImpl.class);
     private boolean stopped = false;
-
+    
     @Override
     public String getId()
     {
         return this.id;
     }
-
+    
     protected MessageDispatcherImpl(final String id)
     {
         super();
-
+        
         this.channelIndex = new HashMap<String, ChannelImpl<?>>();
         this.channelIndexLock = new ReentrantReadWriteLock(true);
         this.channelIndexReadLock = this.channelIndexLock.readLock();
         this.channelIndexWriteLock = this.channelIndexLock.writeLock();
-
+        
         this.lifecycleLock = new ReentrantReadWriteLock(true);
         this.lifecycleReadLock = this.lifecycleLock.readLock();
         this.lifecycleWriteLock = this.lifecycleLock.writeLock();
-
+        
         this.managerList = new SnapshotableDeque<ChannelManagerContainer>();
         this.serviceList = new SnapshotableDeque<ServiceContainer>();
-
+        
         this.serviceContainerIndex = new HashMap<IDispatcherChannelService, ServiceContainer>();
         this.channelManagerIndex = new HashMap<IDispatcherChannelManager, ChannelManagerContainer>();
-
+        
         this.workerPool = new SnapshotableDeque<ChannelWorker>();
-
+        
         this.propertyBlock = createPropertyBlock();
         this.configurationPropertyBindingRegistry = new ConfigurationPropertyBindingRegistry();
-
-        if((id != null) && (!id.isEmpty()))
+        
+        if ((id != null) && (!id.isEmpty()))
         {
             this.id = id;
         }
@@ -126,19 +126,19 @@ public class MessageDispatcherImpl implements IMessageDispatcher
         {
             this.id = "anonym-" + UUID.randomUUID();
         }
-
+        
         this.executorService = Executors.newCachedThreadPool();
-
+        
         this.dispatcherGuardian = new DispatcherGuardian(this);
         this.dispatcherGuardian.start();
-
+        
         this.spooledChannelWorkerScheduler = new SpooledChannelWorkerScheduler(this);
         this.spooledChannelWorkerScheduler.start();
-
+        
         this.activated = true;
-
+        
     }
-
+    
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public <T> void sendMessage(final String channelId, final T message)
@@ -146,11 +146,11 @@ public class MessageDispatcherImpl implements IMessageDispatcher
         this.lifecycleReadLock.lock();
         try
         {
-            if(!this.activated)
+            if (!this.activated)
             {
                 return;
             }
-
+            
             ChannelImpl channel = null;
             this.channelIndexReadLock.lock();
             try
@@ -161,11 +161,11 @@ public class MessageDispatcherImpl implements IMessageDispatcher
             {
                 this.channelIndexReadLock.unlock();
             }
-            if(channel == null)
+            if (channel == null)
             {
                 throw new ChannelNotFoundException(channelId);
             }
-
+            
             channel.sendMessage(message);
         }
         finally
@@ -173,7 +173,7 @@ public class MessageDispatcherImpl implements IMessageDispatcher
             this.lifecycleReadLock.unlock();
         }
     }
-
+    
     @Override
     public List<String> getChannelIdList()
     {
@@ -189,7 +189,7 @@ public class MessageDispatcherImpl implements IMessageDispatcher
         }
         return Collections.unmodifiableList(channelIdList);
     }
-
+    
     @Override
     public IDispatcherChannel<?> getChannel(final String channelId)
     {
@@ -203,7 +203,7 @@ public class MessageDispatcherImpl implements IMessageDispatcher
             this.channelIndexReadLock.unlock();
         }
     }
-
+    
     @Override
     @SuppressWarnings("unchecked")
     public <T> IDispatcherChannel<T> getTypedChannel(final String channelId, final Class<T> messageType)
@@ -218,22 +218,22 @@ public class MessageDispatcherImpl implements IMessageDispatcher
             this.channelIndexReadLock.unlock();
         }
     }
-
+    
     protected void registerTimeOut(final ChannelImpl<?> channel, final TaskContainer taskContainer)
     {
         this.dispatcherGuardian.registerTimeOut(channel, taskContainer);
     }
-
+    
     protected void unregisterTimeOut(final ChannelImpl<?> channel, final TaskContainer taskContainer)
     {
         this.dispatcherGuardian.unregisterTimeOut(channel, taskContainer);
     }
-
+    
     @Override
     public void shutdown()
     {
         this.lifecycleWriteLock.lock();
-
+        
         try
         {
             try (DequeSnapshot<ChannelManagerContainer> managerSnaphot = this.managerList.createSnapshotPoll())
@@ -254,7 +254,7 @@ public class MessageDispatcherImpl implements IMessageDispatcher
                     }
                 }
             }
-
+            
             this.channelIndexReadLock.lock();
             try
             {
@@ -274,7 +274,7 @@ public class MessageDispatcherImpl implements IMessageDispatcher
             {
                 this.channelIndexReadLock.unlock();
             }
-
+            
             this.channelIndexWriteLock.lock();
             try
             {
@@ -284,19 +284,19 @@ public class MessageDispatcherImpl implements IMessageDispatcher
             {
                 this.channelIndexWriteLock.unlock();
             }
-
+            
             try
             {
                 this.dispatcherGuardian.stopGuardian();
             }
             catch (final Exception e) { }
-
+            
             try
             {
                 this.spooledChannelWorkerScheduler.stopScheduler();
             }
             catch (final Exception e) { }
-
+            
             try (DequeSnapshot<ChannelWorker> snapshot = this.workerPool.createSnapshotPoll())
             {
                 for (final ChannelWorker worker : snapshot)
@@ -313,97 +313,97 @@ public class MessageDispatcherImpl implements IMessageDispatcher
         {
             this.lifecycleWriteLock.unlock();
         }
-
+        
         try
         {
             this.configurationPropertyBindingRegistry.clear();
         }
         catch (final Exception e) { }
-
+        
         ((MessageDispatcherManagerImpl) MessageDispatcherManagerImpl.get()).remove(this.id);
-
+        
         this.stopped = true;
     }
-
+    
     @Override
     public void registerChannelManager(final IDispatcherChannelManager channelManager)
     {
         final ChannelManagerPolicy channelManagerPolicy = new ChannelManagerPolicy();
         channelManager.configureChannelManagerPolicy(channelManagerPolicy);
-
-        if(channelManagerPolicy.getConfigurationSet().isEmpty())
+        
+        if (channelManagerPolicy.getConfigurationSet().isEmpty())
         {
             return;
         }
-
+        
         ChannelManagerContainer channelManagerContainer = null;
         this.lifecycleReadLock.lock();
         try
         {
             List<ComponentBindingSetup.BoundedByChannelId> boundByIdList = null;
             List<ComponentBindingSetup.BoundedByChannelConfiguration> boundedByChannelConfigurationList = null;
-
+            
             ComponentBindingSetup.BoundedByChannelId boundedById;
             ComponentBindingSetup.BoundedByChannelConfiguration boundedByChannelConfiguration;
             for (final ComponentBindingSetup config : channelManagerPolicy.getConfigurationSet())
             {
-                if(config instanceof ComponentBindingSetup.BoundedByChannelId)
+                if (config instanceof ComponentBindingSetup.BoundedByChannelId)
                 {
                     boundedById = (ComponentBindingSetup.BoundedByChannelId) config;
-                    if((boundedById.getDispatcherId() != null) && (!boundedById.getDispatcherId().equals(this.id)))
+                    if ((boundedById.getDispatcherId() != null) && (!boundedById.getDispatcherId().equals(this.id)))
                     {
                         continue;
                     }
-                    if(boundByIdList == null)
+                    if (boundByIdList == null)
                     {
                         boundByIdList = new ArrayList<ComponentBindingSetup.BoundedByChannelId>();
                     }
                     boundByIdList.add(boundedById.copy());
                 }
-                if(config instanceof ComponentBindingSetup.BoundedByChannelConfiguration)
+                if (config instanceof ComponentBindingSetup.BoundedByChannelConfiguration)
                 {
                     boundedByChannelConfiguration = (ComponentBindingSetup.BoundedByChannelConfiguration) config;
                     if
                     (
-                            (boundedByChannelConfiguration.getDispatcherId() != null) &&
-                            (!boundedByChannelConfiguration.getDispatcherId().isEmpty()) &&
-                            (!boundedByChannelConfiguration.getDispatcherId().equals(this.id))
+                        (boundedByChannelConfiguration.getDispatcherId() != null) &&
+                        (!boundedByChannelConfiguration.getDispatcherId().isEmpty()) &&
+                        (!boundedByChannelConfiguration.getDispatcherId().equals(this.id))
                     )
                     {
                         continue;
                     }
-                    if(boundedByChannelConfigurationList == null)
+                    if (boundedByChannelConfigurationList == null)
                     {
                         boundedByChannelConfigurationList = new ArrayList<ComponentBindingSetup.BoundedByChannelConfiguration>();
                     }
                     boundedByChannelConfigurationList.add(boundedByChannelConfiguration.copy());
                 }
             }
-
+            
             if
             (
-                    ((boundByIdList == null) || boundByIdList.isEmpty()) &&
-                    ((boundedByChannelConfigurationList == null) || boundedByChannelConfigurationList.isEmpty())
+                ((boundByIdList == null) || boundByIdList.isEmpty()) &&
+                ((boundedByChannelConfigurationList == null) || boundedByChannelConfigurationList.isEmpty())
             )
             {
                 return;
             }
-
+            
             // TODO sameObject
             channelManagerContainer = this.channelManagerIndex.get(channelManager);
-
-            if(channelManagerContainer == null)
+            
+            if (channelManagerContainer == null)
             {
                 channelManagerContainer = new ChannelManagerContainer
-                        (
-                                this, channelManager,
-                                boundByIdList,
-                                boundedByChannelConfigurationList
-                        );
-
+                    (
+                        this, channelManager,
+                        boundByIdList,
+                        boundedByChannelConfigurationList
+                    );
+                
                 this.channelManagerIndex.put(channelManager, channelManagerContainer);
                 this.managerList.addLast(channelManagerContainer);
-
+                
                 this.configurationPropertyBindingRegistry.register(channelManagerContainer);
             }
         }
@@ -413,57 +413,57 @@ public class MessageDispatcherImpl implements IMessageDispatcher
         }
         internRegisterChannelManager(channelManagerContainer);
     }
-
+    
     private boolean internRegisterChannelManager(final ChannelManagerContainer channelManagerContainer)
     {
-        if(channelManagerContainer.isRegistered())
+        if (channelManagerContainer.isRegistered())
         {
             return false;
         }
         channelManagerContainer.setRegistered(true);
-
+        
         if
         (
-                (
-                        (channelManagerContainer.getBoundByIdList() == null) ||
-                        channelManagerContainer.getBoundByIdList().isEmpty()
-                ) &&
-                (
-                        (channelManagerContainer.getBoundedByChannelConfigurationList() == null) ||
-                        channelManagerContainer.getBoundedByChannelConfigurationList().isEmpty()
-                )
+            (
+                (channelManagerContainer.getBoundByIdList() == null) ||
+                channelManagerContainer.getBoundByIdList().isEmpty()
+            ) &&
+            (
+                (channelManagerContainer.getBoundedByChannelConfigurationList() == null) ||
+                channelManagerContainer.getBoundedByChannelConfigurationList().isEmpty()
+            )
         )
         {
             return false;
         }
-
+        
         ChannelImpl<?> channel = null;
-
+        
         boolean managerInUse = false;
         final ChannelBindingModifyFlags modifyFlags = new ChannelBindingModifyFlags();
-
-        if(channelManagerContainer.getBoundByIdList() != null)
+        
+        if (channelManagerContainer.getBoundByIdList() != null)
         {
             for (final BoundedByChannelId boundedChannelId : channelManagerContainer.getBoundByIdList())
             {
-                if(boundedChannelId.getChannelId() == null)
+                if (boundedChannelId.getChannelId() == null)
                 {
                     continue;
                 }
-                if(boundedChannelId.getChannelId().isEmpty())
+                if (boundedChannelId.getChannelId().isEmpty())
                 {
                     continue;
                 }
                 if
                 (
-                        (boundedChannelId.getDispatcherId() != null) &&
-                        (!boundedChannelId.getDispatcherId().isEmpty()) &&
-                        (!boundedChannelId.getDispatcherId().equals(this.id))
+                    (boundedChannelId.getDispatcherId() != null) &&
+                    (!boundedChannelId.getDispatcherId().isEmpty()) &&
+                    (!boundedChannelId.getDispatcherId().equals(this.id))
                 )
                 {
                     continue;
                 }
-
+                
                 this.channelIndexReadLock.lock();
                 try
                 {
@@ -473,36 +473,36 @@ public class MessageDispatcherImpl implements IMessageDispatcher
                 {
                     this.channelIndexReadLock.unlock();
                 }
-
-                if(channel != null)
+                
+                if (channel != null)
                 {
                     // set in existing channel
                     channel.setManager(channelManagerContainer);
                 }
-                else if((channel == null) && boundedChannelId.isChannelMaster()) // autocreate
+                else if ((channel == null) && boundedChannelId.isChannelMaster()) // autocreate
                 {
                     // create a new channel and set into
                     this.channelIndexWriteLock.lock();
                     try
                     {
                         channel = this.channelIndex.get(boundedChannelId.getChannelId());
-
-                        if(channel == null)
+                        
+                        if (channel == null)
                         {
                             final String name = (boundedChannelId.getName() == null || boundedChannelId.getName().isEmpty()) ?
-                                    channelManagerContainer.getChannelManager().getClass().getSimpleName() :
-                                    boundedChannelId.getName();
-
+                                channelManagerContainer.getChannelManager().getClass().getSimpleName() :
+                                boundedChannelId.getName();
+                            
                             channel = new ChannelImpl<Object>(boundedChannelId.getChannelId(), this, null, null, name, null, null);
                             this.channelIndex.put(boundedChannelId.getChannelId(), channel);
-
+                            
                             try (DequeSnapshot<ServiceContainer> servicesSnapshot = this.serviceList.createSnapshot())
                             {
-
+                                
                                 for (final ServiceContainer serviceContainer : servicesSnapshot)
                                 {
                                     modifyFlags.reset();
-
+                                    
                                     channel.checkForService(serviceContainer, modifyFlags);
                                 }
                             }
@@ -512,22 +512,22 @@ public class MessageDispatcherImpl implements IMessageDispatcher
                     {
                         this.channelIndexWriteLock.unlock();
                     }
-
+                    
                     managerInUse = true;
                     channel.setManager(channelManagerContainer);
                 } // end autocreate
-
+                
             }
-
-            if(channelManagerContainer.getBoundedByChannelConfigurationList() != null)
+            
+            if (channelManagerContainer.getBoundedByChannelConfigurationList() != null)
             {
                 for (final BoundedByChannelConfiguration boundedByChannelConfiguration : channelManagerContainer.getBoundedByChannelConfigurationList())
                 {
-                    if(boundedByChannelConfiguration.getLdapFilter() == null)
+                    if (boundedByChannelConfiguration.getLdapFilter() == null)
                     {
                         continue;
                     }
-
+                    
                     try
                     {
                         this.channelIndexReadLock.lock();
@@ -537,7 +537,7 @@ public class MessageDispatcherImpl implements IMessageDispatcher
                             {
                                 modifyFlags.reset();
                                 entry.getValue().checkForChannelManager(channelManagerContainer, modifyFlags);
-                                if(modifyFlags.isRootSet() || modifyFlags.isSubSet())
+                                if (modifyFlags.isRootSet() || modifyFlags.isSubSet())
                                 {
                                     managerInUse = true;
                                 }
@@ -555,11 +555,11 @@ public class MessageDispatcherImpl implements IMessageDispatcher
                 }
             }
         }
-
+        
         return managerInUse;
-
+        
     }
-
+    
     @Override
     public void unregisterChannelManager(final IDispatcherChannelManager channelManager)
     {
@@ -567,20 +567,20 @@ public class MessageDispatcherImpl implements IMessageDispatcher
         this.lifecycleReadLock.lock();
         try
         {
-
+            
             managerContainer = this.channelManagerIndex.get(channelManager);
-
-            if(managerContainer == null)
+            
+            if (managerContainer == null)
             {
                 return;
             }
-
+            
             try (DequeSnapshot<ChannelManagerContainer> managerSnapshot = this.managerList.createSnapshot())
             {
                 DequeNode<ChannelManagerContainer> containerNode = null;
                 while ((containerNode = managerSnapshot.getLinkedNode(managerContainer)) != null)
                 {
-                    if(containerNode != null)
+                    if (containerNode != null)
                     {
                         containerNode.unlink();
                     }
@@ -588,40 +588,40 @@ public class MessageDispatcherImpl implements IMessageDispatcher
             }
             this.channelManagerIndex.remove(channelManager);
             this.configurationPropertyBindingRegistry.unregister(managerContainer);
-
+            
         }
         finally
         {
             this.lifecycleReadLock.unlock();
         }
-
+        
         this.unregisterChannelManager(managerContainer);
     }
-
+    
     private boolean unregisterChannelManager(final ChannelManagerContainer channelManagerContainer)
     {
         boolean registered = false;
         List<ChannelImpl<?>> registeredOnChannelList = null;
         List<ChannelImpl<?>> channelRemoveList = null;
-
+        
         this.channelIndexReadLock.lock();
         try
         {
             for (final Entry<String, ChannelImpl<?>> entry : this.channelIndex.entrySet())
             {
-                if(entry.getValue().unsetChannelManager(channelManagerContainer, true))
+                if (entry.getValue().unsetChannelManager(channelManagerContainer, true))
                 {
-                    if(registeredOnChannelList == null)
+                    if (registeredOnChannelList == null)
                     {
                         registeredOnChannelList = new ArrayList<ChannelImpl<?>>();
                     }
                     registered = true;
                     registeredOnChannelList.add(entry.getValue());
                 }
-
-                if(!entry.getValue().isMastered())
+                
+                if (!entry.getValue().isMastered())
                 {
-                    if(channelRemoveList == null)
+                    if (channelRemoveList == null)
                     {
                         channelRemoveList = new ArrayList<ChannelImpl<?>>();
                     }
@@ -633,8 +633,8 @@ public class MessageDispatcherImpl implements IMessageDispatcher
         {
             this.channelIndexReadLock.unlock();
         }
-
-        if(channelRemoveList != null)
+        
+        if (channelRemoveList != null)
         {
             this.channelIndexWriteLock.lock();
             try
@@ -649,7 +649,7 @@ public class MessageDispatcherImpl implements IMessageDispatcher
                     {
                         logError("dispose channel after remove all manager", e);
                     }
-
+                    
                     this.channelIndex.remove(channel.getId());
                 }
             }
@@ -658,22 +658,22 @@ public class MessageDispatcherImpl implements IMessageDispatcher
                 this.channelIndexWriteLock.unlock();
             }
         }
-
+        
         return registered;
     }
-
+    
     private void checkChannelManagerForChannel(final ChannelImpl<?> channel)
     {
-        if(channel.getManagerSize() > 0)
+        if (channel.getManagerSize() > 0)
         {
             return;
         }
-
-        if(channel instanceof ISubChannel)
+        
+        if (channel instanceof ISubChannel)
         {
             return;
         }
-
+        
         this.channelIndexWriteLock.lock();
         try
         {
@@ -685,7 +685,7 @@ public class MessageDispatcherImpl implements IMessageDispatcher
             {
                 logError("dispose channel after removed all manager", e);
             }
-
+            
             this.channelIndex.remove(channel.getId());
         }
         finally
@@ -693,149 +693,150 @@ public class MessageDispatcherImpl implements IMessageDispatcher
             this.channelIndexWriteLock.unlock();
         }
     }
-
-    @Override public void registerChannelService(final IDispatcherChannelService channelService)
+    
+    @Override
+    public void registerChannelService(final IDispatcherChannelService channelService)
     {
         final ChannelServicePolicy channelServicePolicy = new ChannelServicePolicy();
         channelService.configureChannelServicePolicy(channelServicePolicy);
-
-        if(channelServicePolicy.getConfigurationSet().isEmpty())
+        
+        if (channelServicePolicy.getConfigurationSet().isEmpty())
         {
             return;
         }
-
+        
         ServiceContainer serviceContainer = null;
-
+        
         this.lifecycleReadLock.lock();
         try
         {
             List<ComponentBindingSetup.BoundedByChannelId> boundByIdList = null;
             List<ComponentBindingSetup.BoundedByChannelConfiguration> boundedByChannelConfigurationList = null;
             List<ComponentBindingSetup.ChannelServiceConfiguration> serviceBehaviorConfigurationList = null;
-
+            
             ComponentBindingSetup.BoundedByChannelId boundedById;
             ComponentBindingSetup.BoundedByChannelConfiguration boundedByChannelConfiguration;
             ComponentBindingSetup.ChannelServiceConfiguration serviceConfiguration;
             for (final ComponentBindingSetup config : channelServicePolicy.getConfigurationSet())
             {
-                if(config instanceof ComponentBindingSetup.BoundedByChannelId)
+                if (config instanceof ComponentBindingSetup.BoundedByChannelId)
                 {
                     boundedById = (ComponentBindingSetup.BoundedByChannelId) config;
                     if
                     (
-                            (boundedById.getDispatcherId() != null) &&
-                            (!boundedById.getDispatcherId().isEmpty()) &&
-                            (!boundedById.getDispatcherId().equals(this.id))
+                        (boundedById.getDispatcherId() != null) &&
+                        (!boundedById.getDispatcherId().isEmpty()) &&
+                        (!boundedById.getDispatcherId().equals(this.id))
                     )
                     {
                         continue;
                     }
-                    if(boundByIdList == null)
+                    if (boundByIdList == null)
                     {
                         boundByIdList = new ArrayList<ComponentBindingSetup.BoundedByChannelId>();
                     }
                     boundByIdList.add(boundedById.copy());
                 }
-                if(config instanceof ComponentBindingSetup.BoundedByChannelConfiguration)
+                if (config instanceof ComponentBindingSetup.BoundedByChannelConfiguration)
                 {
                     boundedByChannelConfiguration = (ComponentBindingSetup.BoundedByChannelConfiguration) config;
                     if
                     (
-                            (boundedByChannelConfiguration.getDispatcherId() != null) &&
-                            (!boundedByChannelConfiguration.getDispatcherId().isEmpty()) &&
-                            (!boundedByChannelConfiguration.getDispatcherId().equals(this.id))
+                        (boundedByChannelConfiguration.getDispatcherId() != null) &&
+                        (!boundedByChannelConfiguration.getDispatcherId().isEmpty()) &&
+                        (!boundedByChannelConfiguration.getDispatcherId().equals(this.id))
                     )
                     {
                         continue;
                     }
-                    if(boundedByChannelConfigurationList == null)
+                    if (boundedByChannelConfigurationList == null)
                     {
                         boundedByChannelConfigurationList = new ArrayList<ComponentBindingSetup.BoundedByChannelConfiguration>();
                     }
                     boundedByChannelConfigurationList.add(boundedByChannelConfiguration.copy());
                 }
-                if(config instanceof ComponentBindingSetup.ChannelServiceConfiguration)
+                if (config instanceof ComponentBindingSetup.ChannelServiceConfiguration)
                 {
                     serviceConfiguration = (ComponentBindingSetup.ChannelServiceConfiguration) config;
-                    if(serviceBehaviorConfigurationList == null)
+                    if (serviceBehaviorConfigurationList == null)
                     {
                         serviceBehaviorConfigurationList = new ArrayList<ComponentBindingSetup.ChannelServiceConfiguration>();
                     }
                     serviceBehaviorConfigurationList.add(serviceConfiguration.copy());
                 }
             }
-
+            
             if
             (
-                    ((boundByIdList == null) || boundByIdList.isEmpty()) &&
-                    ((boundedByChannelConfigurationList == null) || boundedByChannelConfigurationList.isEmpty())
+                ((boundByIdList == null) || boundByIdList.isEmpty()) &&
+                ((boundedByChannelConfigurationList == null) || boundedByChannelConfigurationList.isEmpty())
             )
             {
                 return;
             }
-
+            
             // TODO sameObject
             serviceContainer = this.serviceContainerIndex.get(channelService);
-
-            if(serviceContainer == null)
+            
+            if (serviceContainer == null)
             {
                 serviceContainer = new ServiceContainer
-                        (
-                                this,
-                                boundByIdList,
-                                boundedByChannelConfigurationList,
-                                serviceBehaviorConfigurationList
-                        );
+                    (
+                        this,
+                        boundByIdList,
+                        boundedByChannelConfigurationList,
+                        serviceBehaviorConfigurationList
+                    );
                 serviceContainer.setChannelService(channelService);
-
+                
                 this.serviceList.addLast(serviceContainer);
                 this.serviceContainerIndex.put(channelService, serviceContainer);
                 this.configurationPropertyBindingRegistry.register(serviceContainer);
             }
             internRegisterChannelService(serviceContainer);
-
+            
         }
         finally
         {
             this.lifecycleReadLock.unlock();
         }
     }
-
+    
     private boolean internRegisterChannelService(final ServiceContainer serviceContainer)
     {
-        if(serviceContainer.isRegistered())
+        if (serviceContainer.isRegistered())
         {
             return false;
         }
-
+        
         serviceContainer.setRegistered(true);
-
+        
         if
         (
-                (
-                        (serviceContainer.getBoundByIdList() == null) ||
-                        serviceContainer.getBoundByIdList().isEmpty()
-                ) &&
-                (
-                        (serviceContainer.getBoundedByChannelConfigurationList() == null) ||
-                        serviceContainer.getBoundedByChannelConfigurationList().isEmpty()
-                )
+            (
+                (serviceContainer.getBoundByIdList() == null) ||
+                serviceContainer.getBoundByIdList().isEmpty()
+            ) &&
+            (
+                (serviceContainer.getBoundedByChannelConfigurationList() == null) ||
+                serviceContainer.getBoundedByChannelConfigurationList().isEmpty()
+            )
         )
         {
             return false;
         }
-
+        
         final ChannelBindingModifyFlags modifyFlags = new ChannelBindingModifyFlags();
-
-        if(serviceContainer.getBoundByIdList() != null)
+        
+        if (serviceContainer.getBoundByIdList() != null)
         {
             for (final ComponentBindingSetup.BoundedByChannelId boundedByChannelId : serviceContainer.getBoundByIdList())
             {
-                if(boundedByChannelId.getChannelId() == null)
+                if (boundedByChannelId.getChannelId() == null)
                 {
                     continue;
                 }
-                if(boundedByChannelId.getChannelId().isEmpty())
+                if (boundedByChannelId.getChannelId().isEmpty())
                 {
                     continue;
                 }
@@ -844,21 +845,21 @@ public class MessageDispatcherImpl implements IMessageDispatcher
                 try
                 {
                     channel = this.channelIndex.get(boundedByChannelId.getChannelId());
-
+                    
                 }
                 finally
                 {
                     this.channelIndexReadLock.unlock();
                 }
-
-                if(channel != null)
+                
+                if (channel != null)
                 {
                     modifyFlags.reset();
                     channel.checkForService(serviceContainer, modifyFlags);
                 }
             }
         }
-        if(serviceContainer.getBoundedByChannelConfigurationList() != null)
+        if (serviceContainer.getBoundedByChannelConfigurationList() != null)
         {
             this.channelIndexReadLock.lock();
             try
@@ -874,10 +875,10 @@ public class MessageDispatcherImpl implements IMessageDispatcher
                 this.channelIndexReadLock.unlock();
             }
         }
-
+        
         return true;
     }
-
+    
     @Override
     public void unregisterChannelService(final IDispatcherChannelService channelService)
     {
@@ -886,35 +887,35 @@ public class MessageDispatcherImpl implements IMessageDispatcher
         try
         {
             serviceContainer = this.serviceContainerIndex.get(channelService);
-            if(serviceContainer == null)
+            if (serviceContainer == null)
             {
                 return;
             }
-
+            
             this.serviceContainerIndex.remove(channelService);
             try (DequeSnapshot<ServiceContainer> managerSnapshot = this.serviceList.createSnapshot())
             {
                 DequeNode<ServiceContainer> serviceInList = null;
                 while ((serviceInList = managerSnapshot.getLinkedNode(serviceContainer)) != null)
                 {
-                    if(serviceInList != null)
+                    if (serviceInList != null)
                     {
                         serviceInList.unlink();
                     }
                 }
             }
-
+            
             this.configurationPropertyBindingRegistry.unregister(serviceContainer);
-
+            
         }
         finally
         {
             this.lifecycleReadLock.unlock();
         }
         this.unregisterChannelService(serviceContainer);
-
+        
     }
-
+    
     private boolean unregisterChannelService(final ServiceContainer serviceContainer)
     {
         final boolean registered = false;
@@ -930,64 +931,64 @@ public class MessageDispatcherImpl implements IMessageDispatcher
         {
             this.channelIndexReadLock.unlock();
         }
-
+        
         return registered;
     }
-
+    
     @Override
     public PropertyBlockImpl createPropertyBlock()
     {
         return new PropertyBlockImpl(this);
     }
-
+    
     protected boolean addToWorkerPool(final ChannelWorker worker)
     {
-        if(!worker.isGo())
+        if (!worker.isGo())
         {
             return false;
         }
-        if(worker.getMessageChannel() != null)
+        if (worker.getMessageChannel() != null)
         {
             return false;
         }
         worker.setSpoolTimeStamp(System.currentTimeMillis());
         this.workerPool.addFirst(worker);
-
+        
         return true;
     }
-
+    
     protected ChannelWorker getFromWorkerPool()
     {
         try (DequeSnapshot<ChannelWorker> snapshot = this.workerPool.createSnapshot())
         {
             for (final DequeNode<ChannelWorker> node : snapshot.nodeIterable())
             {
-                if(!node.isLinked())
+                if (!node.isLinked())
                 {
                     continue;
                 }
                 final ChannelWorker foundWorker = node.getElement();
                 node.unlink();
-
-                if(!foundWorker.isGo())
+                
+                if (!foundWorker.isGo())
                 {
                     continue;
                 }
-                if(foundWorker.getMessageChannel() != null)
+                if (foundWorker.getMessageChannel() != null)
                 {
                     continue;
                 }
-                if(!foundWorker.isAlive())
+                if (!foundWorker.isAlive())
                 {
                     continue;
                 }
                 return foundWorker;
             }
         }
-
+        
         return null;
     }
-
+    
     protected void checkTimeoutWorker()
     {
         final long shutdownTimeStamp = System.currentTimeMillis() - ChannelWorker.DEFAULT_SHUTDOWN_TIME;
@@ -999,17 +1000,17 @@ public class MessageDispatcherImpl implements IMessageDispatcher
                 final ChannelWorker worker = workerNode.getElement();
                 try
                 {
-                    if(worker.getMessageChannel() != null)
+                    if (worker.getMessageChannel() != null)
                     {
                         removeList.add(workerNode);
                         continue;
                     }
-                    if(!worker.isGo())
+                    if (!worker.isGo())
                     {
                         removeList.add(workerNode);
                         continue;
                     }
-                    if(worker.getSpoolTimeStamp() < shutdownTimeStamp)
+                    if (worker.getSpoolTimeStamp() < shutdownTimeStamp)
                     {
                         removeList.add(workerNode);
                         continue;
@@ -1026,18 +1027,24 @@ public class MessageDispatcherImpl implements IMessageDispatcher
                     remove.unlink();
                     worker.stopWorker();
                 }
-                catch (final Exception e) { this.logError("remove spooled worker", e); }
-                catch (final Error e) { this.logError("remove spooled worker", e); }
+                catch (final Exception e)
+                {
+                    this.logError("remove spooled worker", e);
+                }
+                catch (final Error e)
+                {
+                    this.logError("remove spooled worker", e);
+                }
             }
             removeList.clear();
         }
     }
-
+    
     protected SpooledChannelWorker scheduleChannelWorker(final ChannelImpl<?> channel, final long wakeUpTime)
     {
         return this.spooledChannelWorkerScheduler.scheduleChannelWorker(channel, wakeUpTime);
     }
-
+    
     protected void executeOnTaskTimeOut(final IOnTaskTimeout manager, final IDispatcherChannel<?> channel, final IDispatcherChannelTask task, final Object taskState, final ChannelWorker worker)
     {
         try
@@ -1050,23 +1057,24 @@ public class MessageDispatcherImpl implements IMessageDispatcher
                     try
                     {
                         manager.onTaskTimeout(channel, task, taskState, new Runnable()
-                        {
-
-                            @Override
-                            public void run()
-                            {
-                                if(worker.isAlive())
-                                {
-                                    try
-                                    {
-                                        worker.interrupt();
-                                    }
-                                    catch (final Exception e) { }
-                                    catch (final Error e) { }
-                                }
-
-                            }
-                        });
+                                              {
+                                                  
+                                                  @Override
+                                                  public void run()
+                                                  {
+                                                      if (worker.isAlive())
+                                                      {
+                                                          try
+                                                          {
+                                                              worker.interrupt();
+                                                          }
+                                                          catch (final Exception e) { }
+                                                          catch (final Error e) { }
+                                                      }
+                                                      
+                                                  }
+                                              }
+                        );
                     }
                     catch (final Exception e) { }
                     return task;
@@ -1075,7 +1083,7 @@ public class MessageDispatcherImpl implements IMessageDispatcher
         }
         catch (Exception | Error e) { }
     }
-
+    
     public void executeOnTaskStopExecuter(final ChannelWorker worker, final IDispatcherChannelTask task)
     {
         this.executorService.execute(new Runnable()
@@ -1084,14 +1092,14 @@ public class MessageDispatcherImpl implements IMessageDispatcher
             @SuppressWarnings("deprecation")
             public void run()
             {
-                if(worker.isAlive())
+                if (worker.isAlive())
                 {
-                    if(task instanceof IOnTaskStop)
+                    if (task instanceof IOnTaskStop)
                     {
                         long number = 0L;
                         long moreTimeUntilNow = 0L;
                         long moreTime;
-
+                        
                         while (worker.isAlive() && ((moreTime = ((IOnTaskStop) task).requestForMoreLifeTime(number, moreTimeUntilNow, worker.getWorkerWrapper())) > 0))
                         {
                             try
@@ -1104,14 +1112,17 @@ public class MessageDispatcherImpl implements IMessageDispatcher
                             moreTimeUntilNow += moreTime;
                         }
                     }
-
+                    
                 }
-
-                if(worker.isAlive()) { worker.interrupt(); }
+                
+                if (worker.isAlive())
+                {
+                    worker.interrupt();
+                }
             }
         });
     }
-
+    
     protected void executeOnChannelDetach(final IOnChannelDetach onChannelDetach, final IDispatcherChannel<?> channel)
     {
         try
@@ -1132,7 +1143,7 @@ public class MessageDispatcherImpl implements IMessageDispatcher
         }
         catch (final Exception e) { }
     }
-
+    
     protected Future<IOnMessageStoreResult> createFutureOfScheduleResult(final PublishMessageResultImpl scheduleResult)
     {
         final Callable<IOnMessageStoreResult> call = new Callable<IOnMessageStoreResult>()
@@ -1143,26 +1154,26 @@ public class MessageDispatcherImpl implements IMessageDispatcher
                 scheduleResult.waitForProcessingIsFinished();
                 return scheduleResult;
             }
-
+            
         };
         return this.executorService.submit(call);
     }
-
+    
     protected void onConfigurationModify(final ChannelImpl<?> channel, final String... attributes)
     {
         final ChannelBindingModifyFlags modifyFlags = new ChannelBindingModifyFlags();
-
+        
         try
         {
             final Set<ChannelManagerContainer> matchedManagerContainer = this.configurationPropertyBindingRegistry.getManagerContainer(attributes);
-            if(matchedManagerContainer != null)
+            if (matchedManagerContainer != null)
             {
                 // TODO managerListReadLock.lock(); // TODO required ?
-
+                
                 for (final ChannelManagerContainer managerContainer : matchedManagerContainer)
                 {
                     modifyFlags.reset();
-
+                    
                     try
                     {
                         channel.checkForChannelManager(managerContainer, modifyFlags);
@@ -1178,11 +1189,11 @@ public class MessageDispatcherImpl implements IMessageDispatcher
         {
             logError("check channel binding for manager by configuration filter on channel configuration modify", e);
         }
-
+        
         try
         {
             final Set<ServiceContainer> matchedServiceContainer = this.configurationPropertyBindingRegistry.getServiceContainer(attributes);
-            if(matchedServiceContainer != null)
+            if (matchedServiceContainer != null)
             {
                 // TODO serviceListReadLock.lock(); // TODO required?
                 for (final ServiceContainer serviceContainer : matchedServiceContainer)
@@ -1203,48 +1214,48 @@ public class MessageDispatcherImpl implements IMessageDispatcher
         {
             logError("check channel binding for services by configuration filter on channel configuration modify", e);
         }
-
-        if(channel.getManagerSize() < 1)
+        
+        if (channel.getManagerSize() < 1)
         {
             checkChannelManagerForChannel(channel);
         }
     }
-
+    
     @Override
     public IPropertyBlock getPropertyBlock()
     {
         return this.propertyBlock;
     }
-
+    
     protected void logError(final String message, final Throwable throwable)
     {
         this.logger.error(message, throwable);
     }
-
+    
     private class ChannelManagerPolicy implements IChannelManagerPolicy
     {
         private final Set<ComponentBindingSetup> configurationSet = new HashSet<ComponentBindingSetup>();
-
+        
         @Override
         public IChannelManagerPolicy addConfigurationDetail(final ComponentBindingSetup configuration)
         {
             Objects.requireNonNull(configuration);
             this.configurationSet.add(configuration);
-
+            
             return this;
         }
-
+        
         private Set<ComponentBindingSetup> getConfigurationSet()
         {
             return this.configurationSet;
         }
-
+        
     }
-
+    
     private class ChannelServicePolicy implements IChannelServicePolicy
     {
         private final Set<ComponentBindingSetup> configurationSet = new HashSet<ComponentBindingSetup>();
-
+        
         @Override
         public IChannelServicePolicy addConfigurationDetail(final ComponentBindingSetup configuration)
         {
@@ -1252,14 +1263,14 @@ public class MessageDispatcherImpl implements IMessageDispatcher
             this.configurationSet.add(configuration);
             return this;
         }
-
+        
         private Set<ComponentBindingSetup> getConfigurationSet()
         {
             return this.configurationSet;
         }
-
+        
     }
-
+    
     protected boolean isStopped()
     {
         return this.stopped;

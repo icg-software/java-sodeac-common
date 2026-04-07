@@ -22,64 +22,64 @@ import org.sodeac.common.message.dispatcher.api.IDispatcherChannelSystemManager;
 import org.sodeac.common.message.dispatcher.api.IDispatcherChannelSystemService;
 import org.sodeac.common.misc.OSGiDriverRegistry;
 
-@Component(immediate=true,service=MessageDispatcherManagerComponent.class)
+@Component(immediate = true, service = MessageDispatcherManagerComponent.class)
 public class MessageDispatcherManagerComponent
 {
-	
-	@Reference(cardinality=ReferenceCardinality.MANDATORY,policy=ReferencePolicy.STATIC)
-	protected volatile OSGiDriverRegistry driverRegistry;
-	
-	private static HandleManagerUpdates handleManagerUpdates = new HandleManagerUpdates();
-	private static HandleServiceUpdates handleServiceUpdates = new HandleServiceUpdates();
-	
-	@Activate
-	public void activate()
-	{
-		driverRegistry.addDriverUpdateListener(IDispatcherChannelSystemManager.class, handleManagerUpdates);
-		driverRegistry.addDriverUpdateListener(IDispatcherChannelSystemService.class, handleServiceUpdates);
-	}
-	
-	@Deactivate
-	public void deactivate()
-	{
-		driverRegistry.removeDriverUpdateListener(IDispatcherChannelSystemManager.class, handleManagerUpdates);
-		driverRegistry.removeDriverUpdateListener(IDispatcherChannelSystemService.class, handleServiceUpdates);
-		
-		((MessageDispatcherManagerImpl)MessageDispatcherManagerImpl.get()).shutdownAllDispatcher(); 
-	}
-	
-	private static class HandleManagerUpdates implements BiConsumer<IDispatcherChannelSystemManager, IDispatcherChannelSystemManager>
-	{
-
-		@Override
-		public void accept(IDispatcherChannelSystemManager newManager, IDispatcherChannelSystemManager oldManager)
-		{
-			if(oldManager != null)
-			{
-				((MessageDispatcherManagerImpl)MessageDispatcherManagerImpl.get()).unregisterSystemChannelManager(oldManager);
-			}
-			if(newManager != null)
-			{
-				((MessageDispatcherManagerImpl)MessageDispatcherManagerImpl.get()).registerSystemChannelManager(newManager);
-			}
-		}
-		
-	}
-	
-	@SuppressWarnings("rawtypes")
-	private static class HandleServiceUpdates implements BiConsumer<IDispatcherChannelSystemService, IDispatcherChannelSystemService>
-	{
-		@Override
-		public void accept(IDispatcherChannelSystemService newService, IDispatcherChannelSystemService oldService)
-		{
-			if(oldService != null)
-			{
-				((MessageDispatcherManagerImpl)MessageDispatcherManagerImpl.get()).unregisterSystemChannelService(oldService);
-			}
-			if(newService != null)
-			{
-				((MessageDispatcherManagerImpl)MessageDispatcherManagerImpl.get()).registerSystemChannelService(newService);
-			}
-		}
-	}
+    
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC)
+    protected volatile OSGiDriverRegistry driverRegistry;
+    
+    private static HandleManagerUpdates handleManagerUpdates = new HandleManagerUpdates();
+    private static HandleServiceUpdates handleServiceUpdates = new HandleServiceUpdates();
+    
+    @Activate
+    public void activate()
+    {
+        driverRegistry.addDriverUpdateListener(IDispatcherChannelSystemManager.class, handleManagerUpdates);
+        driverRegistry.addDriverUpdateListener(IDispatcherChannelSystemService.class, handleServiceUpdates);
+    }
+    
+    @Deactivate
+    public void deactivate()
+    {
+        driverRegistry.removeDriverUpdateListener(IDispatcherChannelSystemManager.class, handleManagerUpdates);
+        driverRegistry.removeDriverUpdateListener(IDispatcherChannelSystemService.class, handleServiceUpdates);
+        
+        ((MessageDispatcherManagerImpl) MessageDispatcherManagerImpl.get()).shutdownAllDispatcher();
+    }
+    
+    private static class HandleManagerUpdates implements BiConsumer<IDispatcherChannelSystemManager, IDispatcherChannelSystemManager>
+    {
+        
+        @Override
+        public void accept(IDispatcherChannelSystemManager newManager, IDispatcherChannelSystemManager oldManager)
+        {
+            if (oldManager != null)
+            {
+                ((MessageDispatcherManagerImpl) MessageDispatcherManagerImpl.get()).unregisterSystemChannelManager(oldManager);
+            }
+            if (newManager != null)
+            {
+                ((MessageDispatcherManagerImpl) MessageDispatcherManagerImpl.get()).registerSystemChannelManager(newManager);
+            }
+        }
+        
+    }
+    
+    @SuppressWarnings("rawtypes")
+    private static class HandleServiceUpdates implements BiConsumer<IDispatcherChannelSystemService, IDispatcherChannelSystemService>
+    {
+        @Override
+        public void accept(IDispatcherChannelSystemService newService, IDispatcherChannelSystemService oldService)
+        {
+            if (oldService != null)
+            {
+                ((MessageDispatcherManagerImpl) MessageDispatcherManagerImpl.get()).unregisterSystemChannelService(oldService);
+            }
+            if (newService != null)
+            {
+                ((MessageDispatcherManagerImpl) MessageDispatcherManagerImpl.get()).registerSystemChannelService(newService);
+            }
+        }
+    }
 }

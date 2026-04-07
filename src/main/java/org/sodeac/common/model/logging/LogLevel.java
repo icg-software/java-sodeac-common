@@ -14,84 +14,84 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 
-public enum LogLevel 
+public enum LogLevel
 {
-	/**
-	 * tracing level is designated for very fine-grained log events, to help in comprehending a problem program flow
-	 */
-	TRACE(1),
-	
-	/**
-	 * debug level is designated for fine-grained log events, to help in diagnosing a problem
-	 */
-	DEBUG(2),
-	
-	/**
-	 * info level is designated for progressing events
-	 */
-	INFO(3),
-	
-	/**
-	 * warn level is designated for events which indicates a problem
-	 */
-	WARN(4),
-	
-	/**
-	 * error level is designated for events which indicates a lost of functionality, 
-	 * but still allow the procedure to continue running
-	 */
-	ERROR(5),
-	
-	/**
-	 * error level is designated for events which abort the procedure
-	 */
-	FATAL(6);
-	
-	private LogLevel(int intValue)
-	{
-		this.intValue = intValue;
-	}
-	
-	private static volatile Set<LogLevel> ALL = null;
-	
-	private int intValue;
-	
-	public int getIntValue() 
-	{
-		return intValue;
-	}
-
-	public static Set<LogLevel> getAll()
-	{
-		if(LogLevel.ALL == null)
-		{
-			EnumSet<LogLevel> all = EnumSet.allOf(LogLevel.class);
-			LogLevel.ALL = Collections.unmodifiableSet(all);
-		}
-		return LogLevel.ALL;
-	}
-	
-	public static LogLevel findByInteger(int value)
-	{
-		for(LogLevel logLevel : getAll())
-		{
-			if(logLevel.intValue == value)
-			{
-				return logLevel;
-			}
-		}
-		return null;
-	}
-	
-	public static LogLevel findByName(String name)
-	{
-		for(LogLevel logLevel : getAll())
-		{
-			if(logLevel.name().equalsIgnoreCase(name))
-			{
-				return logLevel;
-			}
-		}
-		return null;
-	}
+    /**
+     * tracing level is designated for very fine-grained log events, to help in comprehending a problem program flow
+     */
+    TRACE(1),
+    
+    /**
+     * debug level is designated for fine-grained log events, to help in diagnosing a problem
+     */
+    DEBUG(2),
+    
+    /**
+     * info level is designated for progressing events
+     */
+    INFO(3),
+    
+    /**
+     * warn level is designated for events which indicates a problem
+     */
+    WARN(4),
+    
+    /**
+     * error level is designated for events which indicates a lost of functionality,
+     * but still allow the procedure to continue running
+     */
+    ERROR(5),
+    
+    /**
+     * error level is designated for events which abort the procedure
+     */
+    FATAL(6);
+    
+    private LogLevel(int intValue)
+    {
+        this.intValue = intValue;
+    }
+    
+    private static volatile Set<LogLevel> ALL = null;
+    
+    private int intValue;
+    
+    public int getIntValue()
+    {
+        return intValue;
+    }
+    
+    public static Set<LogLevel> getAll()
+    {
+        if (LogLevel.ALL == null)
+        {
+            EnumSet<LogLevel> all = EnumSet.allOf(LogLevel.class);
+            LogLevel.ALL = Collections.unmodifiableSet(all);
+        }
+        return LogLevel.ALL;
+    }
+    
+    public static LogLevel findByInteger(int value)
+    {
+        for (LogLevel logLevel : getAll())
+        {
+            if (logLevel.intValue == value)
+            {
+                return logLevel;
+            }
+        }
+        return null;
+    }
+    
+    public static LogLevel findByName(String name)
+    {
+        for (LogLevel logLevel : getAll())
+        {
+            if (logLevel.name().equalsIgnoreCase(name))
+            {
+                return logLevel;
+            }
+        }
+        return null;
+    }
 }

@@ -26,14 +26,14 @@ import org.sodeac.common.IService.IServiceProvider;
 @Target(FIELD)
 public @interface AutoCreateInstance
 {
-	Class<? extends Function<IService.IServiceProvider<?>,Object>> configurationFactory() default NoConfiguration.class;
-	
-	public class NoConfiguration implements Function<IService.IServiceProvider<?>,Object>
-	{
-		@Override
-		public Object apply(IServiceProvider<?> t)
-		{
-			return null;
-		}
-	}
+    Class<? extends Function<IService.IServiceProvider<?>, Object>> configurationFactory() default NoConfiguration.class;
+    
+    public class NoConfiguration implements Function<IService.IServiceProvider<?>, Object>
+    {
+        @Override
+        public Object apply(IServiceProvider<?> t)
+        {
+            return null;
+        }
+    }
 }

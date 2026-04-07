@@ -20,9 +20,11 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RUNTIME)
 @Target(TYPE)
-public @interface GenerateBow 
+public @interface GenerateBow
 {
-	boolean beanLikeSetters() default false;
-	boolean buildAlias() default false;
-	String name() default "";
+    boolean beanLikeSetters() default false;
+    
+    boolean buildAlias() default false;
+    
+    String name() default "";
 }

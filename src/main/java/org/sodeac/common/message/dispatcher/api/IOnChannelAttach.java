@@ -11,20 +11,20 @@
 package org.sodeac.common.message.dispatcher.api;
 
 /**
- * 
+ *
  * An extension interface for {@link IDispatcherChannelManager} to consume notifications if instance of {@link IDispatcherChannelManager} attach to a {@link IDispatcherChannel}
- * 
+ *
  * @author Sebastian Palarus
  *
  */
 public interface IOnChannelAttach<T> extends IDispatcherChannelManager
 {
-	/**
-	 * This is fired, if {@link IDispatcherChannelManager} attach to a {@link IDispatcherChannel}
-	 * <br>
-	 * invoked and synchronized by queue worker
-	 * 
-	 * @param channel is attached with {@link IDispatcherChannelManager}
-	 */
-	public void onChannelAttach(IDispatcherChannel<T> channel);
+    /**
+     * This is fired, if {@link IDispatcherChannelManager} attach to a {@link IDispatcherChannel}
+     * <br>
+     * invoked and synchronized by queue worker
+     *
+     * @param channel is attached with {@link IDispatcherChannelManager}
+     */
+    public void onChannelAttach(IDispatcherChannel<T> channel);
 }

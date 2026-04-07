@@ -25,9 +25,11 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 @Target({ TYPE, FIELD, METHOD, PACKAGE })
 @Repeatable(Domains.class)
-public @interface Domain 
+public @interface Domain
 {
-	String name();
-	String module();
-	BoundedContext[] contexts() default {};
+    String name();
+    
+    String module();
+    
+    BoundedContext[] contexts() default {};
 }

@@ -22,9 +22,14 @@ import java.lang.annotation.Target;
 @Target(PARAMETER)
 public @interface BowParameter
 {
-	public enum AutomaticConsumer {NONE, NEW_BOW_BY_RETURNTYPE}
-	boolean self() default false;
-	boolean convertToBow() default false;
-	BowParameter.AutomaticConsumer automaticConsumerMode() default AutomaticConsumer.NONE;
-	String name() default "";
+    public enum AutomaticConsumer
+    {NONE, NEW_BOW_BY_RETURNTYPE}
+    
+    boolean self() default false;
+    
+    boolean convertToBow() default false;
+    
+    BowParameter.AutomaticConsumer automaticConsumerMode() default AutomaticConsumer.NONE;
+    
+    String name() default "";
 }

@@ -11,14 +11,14 @@
 package org.sodeac.common.message.dispatcher.api;
 
 /**
- * 
+ *
  * An extension interface for various of objects to provide unformatted runtime informations
- * 
+ *
  * @author Sebastian Palarus
  *
  */
 public interface IStateInfoProvider
 {
-	// TODO remove
-	public String getStateInfo();
+    // TODO remove
+    public String getStateInfo();
 }

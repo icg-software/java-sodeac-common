@@ -14,51 +14,51 @@ public class DefaultServiceFactory implements Function<IFactoryEnvironment<?, ?>
         try
         {
             final Class<?> serviceClass = t.getServiceClass();
-
+            
             constr:
             for (final Constructor<?> constructor : serviceClass.getDeclaredConstructors())
             {
                 // if(!constructor.isAccessible())
-                if(!constructor.canAccess(null))
+                if (!constructor.canAccess(null))
                 {
                     continue;
                 }
-
+                
                 boolean hasConfigurationParameter = false;
                 boolean unknownParameter = false;
                 final int index = 0;
-
+                
                 param:
                 for (final Type type : constructor.getGenericParameterTypes())
                 {
-                    if(t.getConfiguration() != null)
+                    if (t.getConfiguration() != null)
                     {
-                        if(((Class<?>) type).isInstance(t.getConfiguration()))
+                        if (((Class<?>) type).isInstance(t.getConfiguration()))
                         {
                             hasConfigurationParameter = true;
                             continue param;
                         }
                     }
-
+                    
                     unknownParameter = true;
                 }
-
-                if(unknownParameter)
+                
+                if (unknownParameter)
                 {
                     continue constr;
                 }
-
-                if(hasConfigurationParameter)
+                
+                if (hasConfigurationParameter)
                 {
                     return constructor.newInstance(t.getConfiguration());
                 }
             }
-
-            if(t.isRequireConfiguration())
+            
+            if (t.isRequireConfiguration())
             {
                 return null;
             }
-
+            
             return t.getServiceClass().getDeclaredConstructor().newInstance();
         }
         catch (final RuntimeException e)

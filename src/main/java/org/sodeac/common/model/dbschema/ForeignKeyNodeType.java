@@ -16,17 +16,20 @@ import org.sodeac.common.typedtree.LeafNodeType;
 import org.sodeac.common.typedtree.ModelRegistry;
 import org.sodeac.common.typedtree.annotation.TypedTreeModel;
 
-@TypedTreeModel(modelClass=DBSchemaTreeModel.class)
-@GenerateBow(buildAlias=true)
+@TypedTreeModel(modelClass = DBSchemaTreeModel.class)
+@GenerateBow(buildAlias = true)
 public class ForeignKeyNodeType extends BranchNodeMetaModel
 {
-	static{ModelRegistry.getBranchNodeMetaModel(ForeignKeyNodeType.class);}
-	
-	public static volatile LeafNodeType<ForeignKeyNodeType,String> constraintName;
-	public static volatile LeafNodeType<ForeignKeyNodeType,String> referencedTableName;	
-	public static volatile LeafNodeType<ForeignKeyNodeType,String> referencedColumnName;
-	
-	public static volatile LeafNodeType<ForeignKeyNodeType,Boolean> quotedKeyName;
-	public static volatile LeafNodeType<ForeignKeyNodeType,Boolean> quotedRefTableName;
-	public static volatile LeafNodeType<ForeignKeyNodeType,Boolean> quotedRefColumnName;
+    static
+    {
+        ModelRegistry.getBranchNodeMetaModel(ForeignKeyNodeType.class);
+    }
+    
+    public static volatile LeafNodeType<ForeignKeyNodeType, String> constraintName;
+    public static volatile LeafNodeType<ForeignKeyNodeType, String> referencedTableName;
+    public static volatile LeafNodeType<ForeignKeyNodeType, String> referencedColumnName;
+    
+    public static volatile LeafNodeType<ForeignKeyNodeType, Boolean> quotedKeyName;
+    public static volatile LeafNodeType<ForeignKeyNodeType, Boolean> quotedRefTableName;
+    public static volatile LeafNodeType<ForeignKeyNodeType, Boolean> quotedRefColumnName;
 }

@@ -11,5 +11,5 @@
 package org.sodeac.common.message.dispatcher.api;
 
 public interface IDispatcherChannelSystemManager extends IDispatcherChannelManager, IDispatcherChannelComponent.IDispatcherChannelComponentDriver
-{	
+{
 }

@@ -39,39 +39,39 @@ public class CruderTest
 {
     public static List<Object[]> connectionList = null;
     public static final Map<String, Boolean> createdSchema = new HashMap<String, Boolean>();
-
+    
     @Parameters
     public static List<Object[]> connections()
     {
-        if(connectionList != null)
+        if (connectionList != null)
         {
             return connectionList;
         }
         return connectionList = Statics.connections(createdSchema, "cruder");
     }
-
+    
     public CruderTest(final Callable<TestConnection> connectionFactory)
     {
         this.testConnectionFactory = connectionFactory;
     }
-
+    
     Callable<TestConnection> testConnectionFactory = null;
     TestConnection testConnection = null;
-
+    
     @Before
     public void setUp() throws Exception
     {
         this.testConnection = this.testConnectionFactory.call();
     }
-
+    
     @After
     public void tearDown()
     {
-        if(!this.testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-        if(this.testConnection.connection != null)
+        if (this.testConnection.connection != null)
         {
             try
             {
@@ -80,126 +80,126 @@ public class CruderTest
             catch (final Exception e) { }
         }
     }
-
+    
     @Test
     public void t00001CreateSchema() throws Exception
     {
-        if(!this.testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-
+        
         final ParseDBSchemaHandler parseDBSchemaHandler = new ParseDBSchemaHandler("ArticleCruderTest");
         ModelRegistry.parse(MiniMerchandiseManagementModel.class, parseDBSchemaHandler); // TODO Model only
         final RootBranchNode<?, DBSchemaNodeType> schemaSpec = parseDBSchemaHandler.fillSchemaSpec(MiniMerchandiseManagementModel.class, CoreTreeModel.class);
         schemaSpec.setValue(DBSchemaNodeType.logUpdates, false);
-
+        
         schemaSpec.setValue(DBSchemaNodeType.dbmsSchemaName, this.testConnection.connection.getSchema());
-
+        
         this.testConnection.connection.setAutoCommit(false);
         final DBSchemaUtils schemaUtils = DBSchemaUtils.get(this.testConnection.connection);
         schemaUtils.adaptSchema(schemaSpec);
         this.testConnection.connection.commit();
         schemaSpec.dispose();
     }
-
+    
     @Test
     public void t00010SimpleTests() throws Exception
     {
-        if(!this.testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-
+        
         final TypedTreeJDBCCruder cruder = TypedTreeJDBCCruder.get();
         final Session session = cruder.openSession(this.testConnection.getDataSource());
-
+        
         final BranchNode<MiniMerchandiseManagementModel, ArticleGroupNodeType> hotDrink = session.persist(ArticleGroupNodeType.newNode()
                                                                                                                               .setValue(ArticleGroupNodeType.number, 1000L)
                                                                                                                               .setValue(ArticleGroupNodeType.name, "HotDrink")
                                                                                                                               .setValue(ArticleGroupNodeType.tax, 1.0));
-
+        
         final BranchNode<MiniMerchandiseManagementModel, ArticleGroupNodeType> beverage = session.persist(ArticleGroupNodeType.newNode()
                                                                                                                               .setValue(ArticleGroupNodeType.number, 1001L)
                                                                                                                               .setValue(ArticleGroupNodeType.name, "Beverage")
                                                                                                                               .setValue(ArticleGroupNodeType.tax, 1.0));
-
+        
         final BranchNode<MiniMerchandiseManagementModel, ArticleGroupNodeType> food = session.persist(ArticleGroupNodeType.newNode()
                                                                                                                           .setValue(ArticleGroupNodeType.number, 1002L)
                                                                                                                           .setValue(ArticleGroupNodeType.name, "Food")
                                                                                                                           .setValue(ArticleGroupNodeType.tax, 1.0));
-
+        
         session.persist(beverage.create(ArticleGroupNodeType.propertyList)
                                 .setValue(CommonGenericPropertyNodeType.type, "org.sodeac.property.generic")
                                 .setValue(CommonGenericPropertyNodeType.key, "TESTKEY")
                                 .setValue(CommonGenericPropertyNodeType.value, "TESTVALUE"));
-
+        
         final BranchNode node = ArticleNodeType.newNode()
                                                .setValue(ArticleNodeType.number, 1000001L)
                                                .setValue(ArticleNodeType.name, "Grüner Tee")
                                                .setValue(ArticleNodeType.description, "Sencha")
                                                .create(ArticleNodeType.group).copyFrom(beverage).getParentNode();
-
+        
         session.persist(node);
-
+        
         session.flush();
         session.commit();
-
+        
         RootBranchNode<MiniMerchandiseManagementModel, ArticleNodeType> article = session.loadRootNode(MiniMerchandiseManagementModel.article, node.getValue(ArticleNodeType.id));
-
+        
         session.loadItem(article.get(ArticleNodeType.group));
         session.loadReferencedChildNodes(article.get(ArticleNodeType.group), ArticleGroupNodeType.propertyList);
-
+        
         assertEquals("value should be correct", node.getValue(ArticleNodeType.id), article.getValue(ArticleNodeType.id));
         assertEquals("value should be correct", node.getValue(ArticleNodeType.name), article.getValue(ArticleNodeType.name));
         assertEquals("value should be correct", node.getValue(ArticleNodeType.number), article.getValue(ArticleNodeType.number));
         assertEquals("value should be correct", node.getValue(ArticleNodeType.description), article.getValue(ArticleNodeType.description));
-
+        
         assertEquals("value should be correct", beverage.getValue(ArticleGroupNodeType.id), article.get(ArticleNodeType.group).getValue(ArticleGroupNodeType.id));
         assertEquals("value should be correct", beverage.getValue(ArticleGroupNodeType.name), article.get(ArticleNodeType.group).getValue(ArticleGroupNodeType.name));
         assertEquals("value should be correct", beverage.getValue(ArticleGroupNodeType.number), article.get(ArticleNodeType.group).getValue(ArticleGroupNodeType.number));
-
+        
         assertEquals("list size should be correct", 1, article.get(ArticleNodeType.group).getUnmodifiableNodeList(ArticleGroupNodeType.propertyList).size());
-
+        
         assertEquals("value should be correct", "org.sodeac.property.generic", article.get(ArticleNodeType.group).getUnmodifiableNodeList(ArticleGroupNodeType.propertyList).get(0).getValue(CommonGenericPropertyNodeType.type));
         assertEquals("value should be correct", "TESTKEY", article.get(ArticleNodeType.group).getUnmodifiableNodeList(ArticleGroupNodeType.propertyList).get(0).getValue(CommonGenericPropertyNodeType.key));
         assertEquals("value should be correct", "TESTVALUE", article.get(ArticleNodeType.group).getUnmodifiableNodeList(ArticleGroupNodeType.propertyList).get(0).getValue(CommonGenericPropertyNodeType.value));
-
+        
         assertEquals("value should be correct", 1, article.getValue(ArticleNodeType.persistVersionNumber).longValue());
         final UUID uuid1 = article.getValue(ArticleNodeType.persistVersionId);
-
+        
         Thread.sleep(3000);
         session.persist(article.setValue(ArticleNodeType.description, "Gunpowder").create(ArticleNodeType.group).copyFrom(hotDrink).getParentNode());
         session.flush();
         session.commit();
-
+        
         assertEquals("value should be correct", "Gunpowder", article.getValue(ArticleNodeType.description));
         assertEquals("value should be correct", hotDrink.getValue(ArticleGroupNodeType.id), article.get(ArticleNodeType.group).getValue(ArticleGroupNodeType.id));
         assertEquals("value should be correct", hotDrink.getValue(ArticleGroupNodeType.name), article.get(ArticleNodeType.group).getValue(ArticleGroupNodeType.name));
         assertEquals("value should be correct", hotDrink.getValue(ArticleGroupNodeType.number), article.get(ArticleNodeType.group).getValue(ArticleGroupNodeType.number));
-
+        
         article = session.loadRootNode(MiniMerchandiseManagementModel.article, node.getValue(ArticleNodeType.id));
         session.loadItem(article.get(ArticleNodeType.group));
         session.loadReferencedChildNodes(article.get(ArticleNodeType.group), ArticleGroupNodeType.propertyList);
-
+        
         assertEquals("value should be correct", node.getValue(ArticleNodeType.id), article.getValue(ArticleNodeType.id));
         assertEquals("value should be correct", node.getValue(ArticleNodeType.name), article.getValue(ArticleNodeType.name));
         assertEquals("value should be correct", node.getValue(ArticleNodeType.number), article.getValue(ArticleNodeType.number));
         assertEquals("value should be correct", "Gunpowder", article.getValue(ArticleNodeType.description));
-
+        
         assertEquals("value should be correct", hotDrink.getValue(ArticleGroupNodeType.id), article.get(ArticleNodeType.group).getValue(ArticleGroupNodeType.id));
         assertEquals("value should be correct", hotDrink.getValue(ArticleGroupNodeType.name), article.get(ArticleNodeType.group).getValue(ArticleGroupNodeType.name));
         assertEquals("value should be correct", hotDrink.getValue(ArticleGroupNodeType.number), article.get(ArticleNodeType.group).getValue(ArticleGroupNodeType.number));
-
+        
         assertEquals("list size should be correct", 0, article.get(ArticleNodeType.group).getUnmodifiableNodeList(ArticleGroupNodeType.propertyList).size());
-
+        
         assertEquals("value should be correct", 2, article.getValue(ArticleNodeType.persistVersionNumber).longValue());
         final UUID uuid2 = article.getValue(ArticleNodeType.persistVersionId);
         assertNotEquals("value should be different", uuid1, uuid2);
-
+        
         session.delete(article);
         session.commit();
-
+        
         final PreparedStatement preparedStatement = this.testConnection.connection.prepareStatement("select count(*) from " + ArticleNodeType.class.getAnnotation(SQLTable.class).name());
         try
         {
@@ -218,40 +218,40 @@ public class CruderTest
         {
             preparedStatement.close();
         }
-
+        
         session.close();
-
+        
         cruder.close();
     }
-
+    
     @Test
     public void t00110TestExtension2() throws Exception
     {
-        if(!this.testConnection.enabled)
+        if (!this.testConnection.enabled)
         {
             return;
         }
-
+        
         final TypedTreeJDBCCruder cruder = TypedTreeJDBCCruder.get();
         final Session session = cruder.openSession(this.testConnection.getDataSource());
-
+        
         final BranchNode<MiniMerchandiseManagementModel, ArticleNodeType> article1 = ArticleNodeType.newNode()
                                                                                                     .setValue(ArticleNodeType.number, 1001001L)
                                                                                                     .setValue(ArticleNodeType.name, "BaseArticle1")
                                                                                                     .setValue(ArticleNodeType.description, "....");
-
+        
         final BranchNode<MiniMerchandiseManagementModel, ArticleNodeType> article2 = ArticleNodeType.newNode()
                                                                                                     .setValue(ArticleNodeType.number, 1001002L)
                                                                                                     .setValue(ArticleNodeType.name, "BaseArticle2")
                                                                                                     .setValue(ArticleNodeType.description, "....");
-
+        
         session.persist(article1);
         session.persist(article2);
-
+        
         session.persist(article1.create(ArticleNodeType.extension2).setValue(ArticleExtension2NodeType.featureA, "Feature1"));
-
+        
         session.commit();
-
+        
         PreparedStatement preparedStatement = this.testConnection.connection.prepareStatement("select count(*) from article_extension_2 where article_id = ? and id = ?");
         try
         {
@@ -268,12 +268,12 @@ public class CruderTest
                 resultSet.close();
                 resultSet = null;
             }
-
+            
             article2.create(ArticleNodeType.extension2).copyFrom(article1.get(ArticleNodeType.extension2)).setValue(ArticleExtension2NodeType.featureA, "Feature2");
-
+            
             session.persist(article2.get(ArticleNodeType.extension2));
             session.commit();
-
+            
             preparedStatement.setObject(1, article1.getValue(ArticleNodeType.id));
             preparedStatement.setObject(2, article1.get(ArticleNodeType.extension2).getValue(ArticleExtension2NodeType.id));
             resultSet = preparedStatement.executeQuery();
@@ -287,7 +287,7 @@ public class CruderTest
                 resultSet.close();
                 resultSet = null;
             }
-
+            
             preparedStatement.setObject(1, article2.getValue(ArticleNodeType.id));
             preparedStatement.setObject(2, article1.get(ArticleNodeType.extension2).getValue(ArticleExtension2NodeType.id));
             resultSet = preparedStatement.executeQuery();
@@ -301,7 +301,7 @@ public class CruderTest
                 resultSet.close();
                 resultSet = null;
             }
-
+            
             preparedStatement.setObject(1, article2.getValue(ArticleNodeType.id));
             preparedStatement.setObject(2, article2.get(ArticleNodeType.extension2).getValue(ArticleExtension2NodeType.id));
             resultSet = preparedStatement.executeQuery();
@@ -321,24 +321,24 @@ public class CruderTest
             preparedStatement.close();
             preparedStatement = null;
         }
-
+        
         session.loadItem(article2);
         article2.remove(ArticleNodeType.extension2);
-
+        
         session.loadReferencedChildNode(article2, ArticleNodeType.extension2);
-
+        
         assertEquals("value should be correct", article1.get(ArticleNodeType.extension2).getValue(ArticleExtension1NodeType.id), article2.get(ArticleNodeType.extension2).getValue(ArticleExtension1NodeType.id));
-
+        
         article2.create(ArticleNodeType.extension2).setValue(ArticleExtension1NodeType.id, article1.get(ArticleNodeType.extension2).getValue(ArticleExtension1NodeType.id));
-
+        
         session.loadItem(article2.get(ArticleNodeType.extension2));
-
+        
         assertEquals("value should be correct", article1.get(ArticleNodeType.extension2).getValue(ArticleExtension1NodeType.id), article2.get(ArticleNodeType.extension2).getValue(ArticleExtension1NodeType.id));
-
+        
         session.close();
         cruder.close();
     }
-
+    
     //@Test
 	/*public void t0000100InsertAutogenerated() throws Exception
 	{
@@ -430,5 +430,5 @@ public class CruderTest
 			new File(tempDir + "/" + database + ".mv.db").delete();
 		}
 	}*/
-
+ 
 }

@@ -10,31 +10,30 @@
  *******************************************************************************/
 package org.sodeac.common.jdbc;
 
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class TestTools
 {
-	
-	public static String getSchemaName()
-	{
-		try
-		{
-			Date begin = new SimpleDateFormat("yyyyMMddHHmmssSSS").parse("20200101000000000");
-			Date now = new Date();
-			long diff = now.getTime() - begin.getTime();
-			diff = diff / 1000;
-			Thread.sleep(2000);
-			return String.format("%09X", diff);
-		}
-		catch (Exception e) 
-		{
-			if(e instanceof RuntimeException)
-			{
-				throw (RuntimeException)e;
-			}
-			throw new RuntimeException(e);
-		}
-	}
+    
+    public static String getSchemaName()
+    {
+        try
+        {
+            Date begin = new SimpleDateFormat("yyyyMMddHHmmssSSS").parse("20200101000000000");
+            Date now = new Date();
+            long diff = now.getTime() - begin.getTime();
+            diff = diff / 1000;
+            Thread.sleep(2000);
+            return String.format("%09X", diff);
+        }
+        catch (Exception e)
+        {
+            if (e instanceof RuntimeException)
+            {
+                throw (RuntimeException) e;
+            }
+            throw new RuntimeException(e);
+        }
+    }
 }

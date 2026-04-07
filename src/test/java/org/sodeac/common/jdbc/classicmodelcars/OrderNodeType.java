@@ -21,30 +21,33 @@ import org.sodeac.common.typedtree.annotation.SQLColumn.SQLColumnType;
 import org.sodeac.common.typedtree.annotation.SQLPrimaryKey;
 import org.sodeac.common.typedtree.annotation.SQLTable;
 
-@SQLTable(name="ORDERS")
+@SQLTable(name = "ORDERS")
 public class OrderNodeType extends BranchNodeMetaModel
 {
-	static{ModelRegistry.getBranchNodeMetaModel(OrderNodeType.class);}
-	
-	@SQLColumn(name="ORDERNUMBER")
-	@SQLPrimaryKey
-	public static volatile LeafNodeType<OrderNodeType,Integer> ORDERNUMBER;
-	
-	@SQLColumn(name="REQUIREDDATE",type=SQLColumnType.DATE)
-	public static volatile LeafNodeType<OrderNodeType,Date> ORDERREQUIREDDATE;
-	
-	@SQLColumn(name="ORDERDATE",type=SQLColumnType.DATE)
-	public static volatile LeafNodeType<OrderNodeType,Date> ORDERORDERDATE;
-	
-	@SQLColumn(name="SHIPPEDDATE",type=SQLColumnType.DATE)
-	public static volatile LeafNodeType<OrderNodeType,Date> ORDERSHIPPEDDATE;
-	
-	@SQLColumn(name="STATUS")
-	public static volatile LeafNodeType<OrderNodeType,String> ORDERSTATUS;
-	
-	@SQLColumn(name="COMMENTS",type=SQLColumnType.CLOB)
-	public static volatile LeafNodeType<OrderNodeType,String> ORDERCOMMENTS;
-	
-	public static volatile BranchNodeListType<OrderNodeType,OrderDetailNodeType> ORDERDETAILS;
-	
+    static
+    {
+        ModelRegistry.getBranchNodeMetaModel(OrderNodeType.class);
+    }
+    
+    @SQLColumn(name = "ORDERNUMBER")
+    @SQLPrimaryKey
+    public static volatile LeafNodeType<OrderNodeType, Integer> ORDERNUMBER;
+    
+    @SQLColumn(name = "REQUIREDDATE", type = SQLColumnType.DATE)
+    public static volatile LeafNodeType<OrderNodeType, Date> ORDERREQUIREDDATE;
+    
+    @SQLColumn(name = "ORDERDATE", type = SQLColumnType.DATE)
+    public static volatile LeafNodeType<OrderNodeType, Date> ORDERORDERDATE;
+    
+    @SQLColumn(name = "SHIPPEDDATE", type = SQLColumnType.DATE)
+    public static volatile LeafNodeType<OrderNodeType, Date> ORDERSHIPPEDDATE;
+    
+    @SQLColumn(name = "STATUS")
+    public static volatile LeafNodeType<OrderNodeType, String> ORDERSTATUS;
+    
+    @SQLColumn(name = "COMMENTS", type = SQLColumnType.CLOB)
+    public static volatile LeafNodeType<OrderNodeType, String> ORDERCOMMENTS;
+    
+    public static volatile BranchNodeListType<OrderNodeType, OrderDetailNodeType> ORDERDETAILS;
+    
 }

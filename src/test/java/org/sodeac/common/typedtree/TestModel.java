@@ -10,13 +10,10 @@
  *******************************************************************************/
 package org.sodeac.common.typedtree;
 
-import org.sodeac.common.typedtree.BranchNodeType;
-import org.sodeac.common.typedtree.TypedTreeMetaModel;
-
 public class TestModel extends TypedTreeMetaModel<TestModel>
 {
-	public static volatile BranchNodeType<TestModel,UserType> user;
-	public static volatile BranchNodeType<TestModel,CountryType> country;
-	
-	public static volatile BranchNodeType<TestModel,SortTestType> sortTest;
+    public static volatile BranchNodeType<TestModel, UserType> user;
+    public static volatile BranchNodeType<TestModel, CountryType> country;
+    
+    public static volatile BranchNodeType<TestModel, SortTestType> sortTest;
 }

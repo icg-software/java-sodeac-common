@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RUNTIME)
 @Target({ TYPE, FIELD })
-public @interface SQLReplaces 
+public @interface SQLReplaces
 {
-	SQLReplace[] value();
+    SQLReplace[] value();
 }

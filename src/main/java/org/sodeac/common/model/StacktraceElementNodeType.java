@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.sodeac.common.model;
 
-import jakarta.xml.bind.annotation.XmlAttribute;
-
 import org.sodeac.common.annotation.GenerateBow;
 import org.sodeac.common.typedtree.BranchNodeMetaModel;
 import org.sodeac.common.typedtree.LeafNodeType;
@@ -19,25 +17,30 @@ import org.sodeac.common.typedtree.ModelRegistry;
 import org.sodeac.common.typedtree.annotation.IgnoreIfFalse;
 import org.sodeac.common.typedtree.annotation.TypedTreeModel;
 
-@TypedTreeModel(modelClass=CoreTreeModel.class)
+import jakarta.xml.bind.annotation.XmlAttribute;
+
+@TypedTreeModel(modelClass = CoreTreeModel.class)
 @GenerateBow
-public class StacktraceElementNodeType extends BranchNodeMetaModel 
+public class StacktraceElementNodeType extends BranchNodeMetaModel
 {
-	static{ModelRegistry.getBranchNodeMetaModel(StacktraceElementNodeType.class);}
-	
-	@XmlAttribute(name="class")
-	public static volatile LeafNodeType<StacktraceElementNodeType,String> className;
-	
-	@XmlAttribute(name="file")
-	public static volatile LeafNodeType<StacktraceElementNodeType,String> fileName;
-	
-	@XmlAttribute(name="linenumber")
-	public static volatile LeafNodeType<StacktraceElementNodeType,Integer> lineNumber;
-	
-	@XmlAttribute(name="methodname")
-	public static volatile LeafNodeType<StacktraceElementNodeType,String> methodName;
-	
-	@XmlAttribute(name="native")
-	@IgnoreIfFalse
-	public static volatile LeafNodeType<StacktraceElementNodeType,Boolean> nativeMethod;
+    static
+    {
+        ModelRegistry.getBranchNodeMetaModel(StacktraceElementNodeType.class);
+    }
+    
+    @XmlAttribute(name = "class")
+    public static volatile LeafNodeType<StacktraceElementNodeType, String> className;
+    
+    @XmlAttribute(name = "file")
+    public static volatile LeafNodeType<StacktraceElementNodeType, String> fileName;
+    
+    @XmlAttribute(name = "linenumber")
+    public static volatile LeafNodeType<StacktraceElementNodeType, Integer> lineNumber;
+    
+    @XmlAttribute(name = "methodname")
+    public static volatile LeafNodeType<StacktraceElementNodeType, String> methodName;
+    
+    @XmlAttribute(name = "native")
+    @IgnoreIfFalse
+    public static volatile LeafNodeType<StacktraceElementNodeType, Boolean> nativeMethod;
 }

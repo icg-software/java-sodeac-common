@@ -13,10 +13,15 @@ package org.sodeac.common.typedtree;
 import java.util.Set;
 
 @FunctionalInterface
-public interface ITypedTreeModelParserHandler 
+public interface ITypedTreeModelParserHandler
 {
-	default public void startModel(BranchNodeMetaModel model, Set<INodeType<BranchNodeMetaModel, ?>> references) {};
-	default public void endModel(BranchNodeMetaModel model, Set<INodeType<BranchNodeMetaModel, ?>> references) {};
-	
-	public void onNodeType(BranchNodeMetaModel model, INodeType<BranchNodeMetaModel, ?> nodeType);
+    default public void startModel(BranchNodeMetaModel model, Set<INodeType<BranchNodeMetaModel, ?>> references) { }
+    
+    ;
+    
+    default public void endModel(BranchNodeMetaModel model, Set<INodeType<BranchNodeMetaModel, ?>> references) { }
+    
+    ;
+    
+    public void onNodeType(BranchNodeMetaModel model, INodeType<BranchNodeMetaModel, ?> nodeType);
 }

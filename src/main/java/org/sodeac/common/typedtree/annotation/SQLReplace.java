@@ -23,11 +23,15 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 @Target({ TYPE, FIELD })
 @Repeatable(SQLReplaces.class)
-public @interface SQLReplace 
+public @interface SQLReplace
 {
-	String nodeName() default "";
-	SQLTable[] table() default {};
-	SQLPrimaryKey[] primaryKey() default {};
-	SQLSequence[] sequence() default {};
-	SQLColumn[] column() default {};
+    String nodeName() default "";
+    
+    SQLTable[] table() default {};
+    
+    SQLPrimaryKey[] primaryKey() default {};
+    
+    SQLSequence[] sequence() default {};
+    
+    SQLColumn[] column() default {};
 }

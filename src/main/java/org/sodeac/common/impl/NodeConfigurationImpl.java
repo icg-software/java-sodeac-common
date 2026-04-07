@@ -23,28 +23,28 @@ import org.sodeac.common.annotation.ServiceSatisfiedCheck;
 import org.sodeac.common.annotation.Version;
 import org.sodeac.common.jdbc.TypedTreeJDBCCruder;
 
-@ServiceFactory(factoryClass=NodeConfigurationImpl.LocalServiceFactory.class)
-@ServiceRegistration(serviceType=INodeConfiguration.class)
-@Version(major=0,minor=6)
+@ServiceFactory(factoryClass = NodeConfigurationImpl.LocalServiceFactory.class)
+@ServiceRegistration(serviceType = INodeConfiguration.class)
+@Version(major = 0, minor = 6)
 public class NodeConfigurationImpl implements INodeConfiguration
 {
-	private NodeConfigurationImpl()
-	{
-		super();
-	}
-	
-	@ServiceAddress(domain="org.sodeac.common.jdbc",name="TypedTreeJDBCCruder",filter="(x=a)",minVersion=@Version(major=1,minor=0), beforeVersion=@Version(major=2,minor=0))
-	@ServicePreference(score=1000,filter=("l=n"))
-	@ServiceSatisfiedCheck(trigger=ServiceSatisfiedCheck.MatchRequired.class)
-	protected volatile IServiceProvider<TypedTreeJDBCCruder> cruderProvider;
-	
-	protected static class LocalServiceFactory implements Function<IFactoryEnvironment<?,?>,INodeConfiguration>
-	{
-		@Override
-		public INodeConfiguration apply(IFactoryEnvironment<?,?> t)
-		{
-			NodeConfigurationImpl nodeConfigurationImpl = new NodeConfigurationImpl();
-			return nodeConfigurationImpl;
-		}	
-	}
+    private NodeConfigurationImpl()
+    {
+        super();
+    }
+    
+    @ServiceAddress(domain = "org.sodeac.common.jdbc", name = "TypedTreeJDBCCruder", filter = "(x=a)", minVersion = @Version(major = 1, minor = 0), beforeVersion = @Version(major = 2, minor = 0))
+    @ServicePreference(score = 1000, filter = ("l=n"))
+    @ServiceSatisfiedCheck(trigger = ServiceSatisfiedCheck.MatchRequired.class)
+    protected volatile IServiceProvider<TypedTreeJDBCCruder> cruderProvider;
+    
+    protected static class LocalServiceFactory implements Function<IFactoryEnvironment<?, ?>, INodeConfiguration>
+    {
+        @Override
+        public INodeConfiguration apply(IFactoryEnvironment<?, ?> t)
+        {
+            NodeConfigurationImpl nodeConfigurationImpl = new NodeConfigurationImpl();
+            return nodeConfigurationImpl;
+        }
+    }
 }

@@ -15,39 +15,39 @@ package org.sodeac.common.xuri;
  */
 
 /**
- * Path component of URI. Path components contains multiple subcomponents of type {@link PathSegment}.  
- * 
+ * Path component of URI. Path components contains multiple subcomponents of type {@link PathSegment}.
+ *
  * @author Sebastian Palarus
- * @since 1.0
  * @version 1.0
+ * @since 1.0
  *
  */
 public class PathComponent extends AbstractComponent<PathSegment>
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 2578881338528861330L;
-	
-	private boolean absolute;
-	
-	/**
-	 * constructor for path component
-	 *  
-	 * @param absolute path is absolute (starts with / )
-	 */
-	protected PathComponent(boolean absolute)
-	{
-		super(ComponentType.PATH);
-		this.absolute = absolute;
-	}
-
-	/**
-	 * 
-	 * @return path is absolute
-	 */
-	public boolean isAbsolute()
-	{
-		return absolute;
-	}
+    /**
+     *
+     */
+    private static final long serialVersionUID = 2578881338528861330L;
+    
+    private boolean absolute;
+    
+    /**
+     * constructor for path component
+     *
+     * @param absolute path is absolute (starts with / )
+     */
+    protected PathComponent(boolean absolute)
+    {
+        super(ComponentType.PATH);
+        this.absolute = absolute;
+    }
+    
+    /**
+     *
+     * @return path is absolute
+     */
+    public boolean isAbsolute()
+    {
+        return absolute;
+    }
 }

@@ -11,22 +11,22 @@
 package org.sodeac.common.message.dispatcher.api;
 
 /**
- * 
+ *
  * An extension interface for {@link IDispatcherChannelManager} to consume channel signals
- * 
+ *
  * @author Sebastian Palarus
  *
  */
 public interface IOnChannelSignal<T> extends IDispatcherChannelManager
 {
-	/**
-	 * consume channel signals
-	 * 
-	 * <br>
-	 *  invoked and synchronized by queue worker
-	 * 
-	 * @param channel parent queue
-	 * @param signal fired signal
-	 */
-	public void onChannelSignal(IDispatcherChannel<T> channel, String signal);
+    /**
+     * consume channel signals
+     *
+     * <br>
+     * invoked and synchronized by queue worker
+     *
+     * @param channel parent queue
+     * @param signal  fired signal
+     */
+    public void onChannelSignal(IDispatcherChannel<T> channel, String signal);
 }

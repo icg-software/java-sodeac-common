@@ -20,7 +20,7 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RUNTIME)
 @Target(FIELD)
-public @interface IgnoreIfTrue 
+public @interface IgnoreIfTrue
 {
 
 }

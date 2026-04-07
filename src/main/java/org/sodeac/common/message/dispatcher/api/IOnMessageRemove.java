@@ -11,20 +11,20 @@
 package org.sodeac.common.message.dispatcher.api;
 
 /**
- * 
+ *
  * An extension interface for {@link IDispatcherChannelManager} to consume notifications if a {@link IMessage} is removed on {@link IDispatcherChannel}
- * 
+ *
  * @author Sebastian Palarus
  *
  */
 public interface IOnMessageRemove<T> extends IDispatcherChannelManager
 {
-	/**
-	 * This methode is fired, if {@link IDispatcherChannelManager} removed a queued {@link IMessage}
-	 * <br>
-	 * invoked and synchronized by queue worker
-	 *  
-	 * @param message removed message
-	 */
-	public void onMessageRemove(IMessage<T> message);
+    /**
+     * This methode is fired, if {@link IDispatcherChannelManager} removed a queued {@link IMessage}
+     * <br>
+     * invoked and synchronized by queue worker
+     *
+     * @param message removed message
+     */
+    public void onMessageRemove(IMessage<T> message);
 }

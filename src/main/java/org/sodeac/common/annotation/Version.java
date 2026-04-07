@@ -23,7 +23,9 @@ import java.lang.annotation.Target;
 @Target(TYPE)
 public @interface Version
 {
-	int major();
-	int minor();
-	int service() default 0;
+    int major();
+    
+    int minor();
+    
+    int service() default 0;
 }

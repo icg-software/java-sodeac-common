@@ -36,61 +36,61 @@ public class JsonExtension implements IExtension<JsonObject>, Serializable
 {
     @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC)
     protected volatile OSGiDriverRegistry internalBootstrapDep;
-
+    
     /**
      *
      */
     private static final long serialVersionUID = 6901232768391674155L;
-
+    
     public static final String TYPE = "org.sodeac.xuri.json";
-
+    
     public JsonExtension()
     {
         super();
     }
-
+    
     public JsonExtension(final String rawString)
     {
         super();
         this.rawString = rawString;
     }
-
+    
     private String rawString = null;
-
+    
     @Override
     public String getExpression()
     {
         return this.rawString;
     }
-
+    
     @Override
     public String getType()
     {
         return TYPE;
     }
-
+    
     public JsonObject decodeFromString(final String expression)
     {
         return JsonDecodingHandler.getInstance().decodeFromString(expression);
     }
-
+    
     public String encodeToString(final JsonObject extensionDataObject)
     {
         return JsonEncodingHandler.getInstance().encodeToString(extensionDataObject);
     }
-
+    
     @Override
     public IDecodingExtensionHandler<JsonObject> getDecoder()
     {
         return JsonDecodingHandler.getInstance();
     }
-
+    
     @Override
     public IEncodingExtensionHandler<JsonObject> getEncoder()
     {
         return JsonEncodingHandler.getInstance();
     }
-
+    
     @Override
     public int driverIsApplicableFor(final Map<String, Object> properties)
     {

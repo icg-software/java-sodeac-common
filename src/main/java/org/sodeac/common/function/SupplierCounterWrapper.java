@@ -15,32 +15,32 @@ import java.util.function.Supplier;
 
 public class SupplierCounterWrapper<T> implements Supplier<T>
 {
-	private Supplier<T> supplier = null;
-	private AtomicLong count = null;
-	
-	private SupplierCounterWrapper(Supplier<T> supplier)
-	{
-		super();
-		this.supplier = supplier;
-		this.count = new AtomicLong(0);
-	}
-	
-	public static <T> SupplierCounterWrapper<T> forSupplier(Supplier<T> supplier)
-	{
-		return new SupplierCounterWrapper<>(supplier);
-	}
-
-	@Override
-	public T get()
-	{
-		T t = this.supplier.get();
-		count.incrementAndGet();
-		return t;
-	}
-	
-	public long getSuppliedCount()
-	{
-		return this.count.get();
-	}
-
+    private Supplier<T> supplier = null;
+    private AtomicLong count = null;
+    
+    private SupplierCounterWrapper(Supplier<T> supplier)
+    {
+        super();
+        this.supplier = supplier;
+        this.count = new AtomicLong(0);
+    }
+    
+    public static <T> SupplierCounterWrapper<T> forSupplier(Supplier<T> supplier)
+    {
+        return new SupplierCounterWrapper<>(supplier);
+    }
+    
+    @Override
+    public T get()
+    {
+        T t = this.supplier.get();
+        count.incrementAndGet();
+        return t;
+    }
+    
+    public long getSuppliedCount()
+    {
+        return this.count.get();
+    }
+    
 }

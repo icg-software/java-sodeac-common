@@ -12,22 +12,22 @@ package org.sodeac.common.xuri;
 
 public class URISyntaxException extends RuntimeException
 {
-	private String input = null;
-	
-	public URISyntaxException(String input, String reason)
-	{
-		super(reason);
-		this.input = input;
-	}
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -107918100196279807L;
-
-	public String getInput()
-	{
-		return input;
-	}
-
+    private String input = null;
+    
+    public URISyntaxException(String input, String reason)
+    {
+        super(reason);
+        this.input = input;
+    }
+    
+    /**
+     *
+     */
+    private static final long serialVersionUID = -107918100196279807L;
+    
+    public String getInput()
+    {
+        return input;
+    }
+    
 }

@@ -26,25 +26,25 @@ import org.sodeac.common.IService.IServiceProvider;
 @Target(FIELD)
 public @interface ServiceSatisfiedCheck
 {
-	Class<? extends Function<IService.IServiceProvider<?>,Boolean>> trigger() default Optional.class;
-	
-	public class Optional implements Function<IService.IServiceProvider<?>,Boolean>
-	{
-		@Override
-		public Boolean apply(IServiceProvider<?> t)
-		{
-			return true;
-		}
-	}
-	
-	public class MatchRequired implements Function<IService.IServiceProvider<?>,Boolean>
-	{
-		@Override
-		public Boolean apply(IServiceProvider<?> t)
-		{
-			return t.isMatched();
-		}
-	}
-	
-	// TODO ReferenceRequired
+    Class<? extends Function<IService.IServiceProvider<?>, Boolean>> trigger() default Optional.class;
+    
+    public class Optional implements Function<IService.IServiceProvider<?>, Boolean>
+    {
+        @Override
+        public Boolean apply(IServiceProvider<?> t)
+        {
+            return true;
+        }
+    }
+    
+    public class MatchRequired implements Function<IService.IServiceProvider<?>, Boolean>
+    {
+        @Override
+        public Boolean apply(IServiceProvider<?> t)
+        {
+            return t.isMatched();
+        }
+    }
+    
+    // TODO ReferenceRequired
 }

@@ -16,27 +16,29 @@ import org.sodeac.common.typedtree.ModelRegistry;
 import org.sodeac.common.typedtree.TypedTreeMetaModel.RootBranchNode;
 import org.sodeac.common.typedtree.annotation.SQLColumn;
 import org.sodeac.common.typedtree.annotation.SQLTable;
-import org.sodeac.common.typedtree.annotation.SQLUniqueIndex;
 import org.sodeac.common.typedtree.annotation.TypedTreeModel;
 
-@SQLTable(name="article_extension_1")
-@TypedTreeModel(modelClass=MiniMerchandiseManagementModel.class)
+@SQLTable(name = "article_extension_1")
+@TypedTreeModel(modelClass = MiniMerchandiseManagementModel.class)
 public class ArticleExtension1NodeType extends CommonBaseBranchNodeType
 {
-	static{ModelRegistry.getBranchNodeMetaModel(ArticleExtension1NodeType.class);}
-	
-	public static RootBranchNode<MiniMerchandiseManagementModel, ArticleExtension1NodeType> newNode()
-	{
-		return MiniMerchandiseManagementModel.get().createRootNode(ArticleExtension1NodeType.class);
-	}
-	
-	@SQLColumn(name="article_feature_1",length=108)
-	public static volatile LeafNodeType<ArticleExtension1NodeType,String> feature1;
-	
-	@SQLColumn(name="article_feature_2",length=108)
-	public static volatile LeafNodeType<ArticleExtension1NodeType,String> feature2;
-	
-	@SQLColumn(name="article_feature_3",length=108)
-	public static volatile LeafNodeType<ArticleExtension1NodeType,String> feature3;
-	
+    static
+    {
+        ModelRegistry.getBranchNodeMetaModel(ArticleExtension1NodeType.class);
+    }
+    
+    public static RootBranchNode<MiniMerchandiseManagementModel, ArticleExtension1NodeType> newNode()
+    {
+        return MiniMerchandiseManagementModel.get().createRootNode(ArticleExtension1NodeType.class);
+    }
+    
+    @SQLColumn(name = "article_feature_1", length = 108)
+    public static volatile LeafNodeType<ArticleExtension1NodeType, String> feature1;
+    
+    @SQLColumn(name = "article_feature_2", length = 108)
+    public static volatile LeafNodeType<ArticleExtension1NodeType, String> feature2;
+    
+    @SQLColumn(name = "article_feature_3", length = 108)
+    public static volatile LeafNodeType<ArticleExtension1NodeType, String> feature3;
+    
 }

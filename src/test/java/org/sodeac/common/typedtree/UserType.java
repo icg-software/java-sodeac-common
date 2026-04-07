@@ -10,14 +10,13 @@
  *******************************************************************************/
 package org.sodeac.common.typedtree;
 
-import org.sodeac.common.typedtree.BranchNodeType;
-import org.sodeac.common.typedtree.BranchNodeMetaModel;
-import org.sodeac.common.typedtree.LeafNodeType;
-
 public class UserType extends BranchNodeMetaModel
 {
-	static{ModelRegistry.getBranchNodeMetaModel(UserType.class);}
-	
-	public static volatile LeafNodeType<UserType,String> name;
-	public static volatile BranchNodeType<UserType,AddressType> address;
+    static
+    {
+        ModelRegistry.getBranchNodeMetaModel(UserType.class);
+    }
+    
+    public static volatile LeafNodeType<UserType, String> name;
+    public static volatile BranchNodeType<UserType, AddressType> address;
 }

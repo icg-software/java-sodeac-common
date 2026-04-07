@@ -14,18 +14,18 @@ import java.util.concurrent.CountDownLatch;
 
 public class TaskDoneNotifier extends CountDownLatch
 {
-	public TaskDoneNotifier()
-	{
-		super(1);
-	}
-	
-	public void setTaskDone()
-	{
-		super.countDown();
-	}
-	
-	public boolean isTaskDone()
-	{
-		return super.getCount() < 1;
-	}
+    public TaskDoneNotifier()
+    {
+        super(1);
+    }
+    
+    public void setTaskDone()
+    {
+        super.countDown();
+    }
+    
+    public boolean isTaskDone()
+    {
+        return super.getCount() < 1;
+    }
 }

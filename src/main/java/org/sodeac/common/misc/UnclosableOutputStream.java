@@ -15,50 +15,50 @@ import java.io.OutputStream;
 
 public class UnclosableOutputStream extends OutputStream
 {
-	private OutputStream out = null;
-	
-	public UnclosableOutputStream(OutputStream out)
-	{
-		super();
-		this.out = out;
-	}
-
-	@Override
-	public void write(int b) throws IOException
-	{
-		this.out.write(b);
-	}
-
-	@Override
-	public void write(byte[] b) throws IOException
-	{
-		this.out.write(b);
-	}
-
-	@Override
-	public void write(byte[] b, int off, int len) throws IOException
-	{
-		this.out.write(b, off, len);
-	}
-
-	@Override
-	public void flush() throws IOException
-	{
-		this.out.flush();
-	}
-
-	@Override
-	public void close() throws IOException{}
-
-	@Override
-	public String toString()
-	{
-		return "Unclosable " + out.toString();
-	}
-	
-	public OutputStream unwrap()
-	{
-		return out;
-	}
-
+    private OutputStream out = null;
+    
+    public UnclosableOutputStream(OutputStream out)
+    {
+        super();
+        this.out = out;
+    }
+    
+    @Override
+    public void write(int b) throws IOException
+    {
+        this.out.write(b);
+    }
+    
+    @Override
+    public void write(byte[] b) throws IOException
+    {
+        this.out.write(b);
+    }
+    
+    @Override
+    public void write(byte[] b, int off, int len) throws IOException
+    {
+        this.out.write(b, off, len);
+    }
+    
+    @Override
+    public void flush() throws IOException
+    {
+        this.out.flush();
+    }
+    
+    @Override
+    public void close() throws IOException { }
+    
+    @Override
+    public String toString()
+    {
+        return "Unclosable " + out.toString();
+    }
+    
+    public OutputStream unwrap()
+    {
+        return out;
+    }
+    
 }

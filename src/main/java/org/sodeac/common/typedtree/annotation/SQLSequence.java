@@ -22,10 +22,14 @@ import java.lang.annotation.Target;
 @Target(FIELD)
 public @interface SQLSequence
 {
-	String name() default "";
-	long min() default 1L;
-	long max() default Long.MAX_VALUE;
-	long cache() default -1L;
-	boolean cycle() default false;
-	
+    String name() default "";
+    
+    long min() default 1L;
+    
+    long max() default Long.MAX_VALUE;
+    
+    long cache() default -1L;
+    
+    boolean cycle() default false;
+    
 }

@@ -26,12 +26,13 @@ import org.sodeac.common.IService.IServiceReference;
 @Target(FIELD)
 public @interface OnServiceMatch
 {
-	Class<? extends Consumer<IService.IServiceReference<?>>> trigger() default NoTrigger.class;
-	int order() default 1080;
-	
-	public class NoTrigger implements Consumer<IService.IServiceReference<?>>
-	{
-		@Override
-		public void accept(IServiceReference<?> t){}
-	}
+    Class<? extends Consumer<IService.IServiceReference<?>>> trigger() default NoTrigger.class;
+    
+    int order() default 1080;
+    
+    public class NoTrigger implements Consumer<IService.IServiceReference<?>>
+    {
+        @Override
+        public void accept(IServiceReference<?> t) { }
+    }
 }

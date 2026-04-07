@@ -12,23 +12,24 @@ package org.sodeac.common.message.dispatcher.api;
 
 import org.sodeac.common.message.dispatcher.impl.MessageDispatcherManagerImpl;
 
-
-public interface IMessageDispatcherManager 
+public interface IMessageDispatcherManager
 {
-	public static final String DEFAULT_DISPATCHER_ID = "org.sodeac.common.message.dispatcher.default";
-	
-	public static IMessageDispatcherManager get()
-	{
-		return MessageDispatcherManagerImpl.get();
-	}
-	
-	public default IMessageDispatcher getDefaultDispatcher()
-	{
-		// shutdown-protection ?
-		return getOrCreateDispatcher(DEFAULT_DISPATCHER_ID);
-	}
-	
-	public IMessageDispatcher createDispatcher(String id);
-	public IMessageDispatcher getOrCreateDispatcher(String id);
-	public IMessageDispatcher getDispatcher(String id);
+    public static final String DEFAULT_DISPATCHER_ID = "org.sodeac.common.message.dispatcher.default";
+    
+    public static IMessageDispatcherManager get()
+    {
+        return MessageDispatcherManagerImpl.get();
+    }
+    
+    public default IMessageDispatcher getDefaultDispatcher()
+    {
+        // shutdown-protection ?
+        return getOrCreateDispatcher(DEFAULT_DISPATCHER_ID);
+    }
+    
+    public IMessageDispatcher createDispatcher(String id);
+    
+    public IMessageDispatcher getOrCreateDispatcher(String id);
+    
+    public IMessageDispatcher getDispatcher(String id);
 }

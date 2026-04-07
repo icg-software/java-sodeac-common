@@ -19,13 +19,13 @@ import org.sodeac.common.typedtree.BranchNode;
 
 public interface IDefaultValueExpressionDriver extends IDriver
 {
-	public String createExpression(BranchNode<?,ColumnNodeType> column, Connection connection, String schema, Dictionary<String, Object> properties, IDBSchemaUtilsDriver driver);
-	
-	public default boolean updateRequired(BranchNode<?,ColumnNodeType> column, Connection connection, String schema, Dictionary<String, Object> properties, IDBSchemaUtilsDriver driver, String currentValue)
-	{
-		String defaultValue = createExpression(column, connection, schema, properties, driver);
-		
-		return ! defaultValue.equalsIgnoreCase(currentValue);
-
-	}
+    public String createExpression(BranchNode<?, ColumnNodeType> column, Connection connection, String schema, Dictionary<String, Object> properties, IDBSchemaUtilsDriver driver);
+    
+    public default boolean updateRequired(BranchNode<?, ColumnNodeType> column, Connection connection, String schema, Dictionary<String, Object> properties, IDBSchemaUtilsDriver driver, String currentValue)
+    {
+        String defaultValue = createExpression(column, connection, schema, properties, driver);
+        
+        return !defaultValue.equalsIgnoreCase(currentValue);
+        
+    }
 }

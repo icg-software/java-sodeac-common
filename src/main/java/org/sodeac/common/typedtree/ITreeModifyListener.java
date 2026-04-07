@@ -13,24 +13,29 @@ package org.sodeac.common.typedtree;
 import org.sodeac.common.function.ConplierBean;
 
 /**
- * 
+ *
  * A tree modify listener is a low level modify listener. It notifies for all modifications in tree.
- * 
+ *
  * @author Sebastian Palarus
  *
  */
 public interface ITreeModifyListener
 {
-	/**
-	 * 
-	 * Notify  before modification is invoked.
-	 * 
-	 * @param parentNode parent node of modified node
-	 * @param staticNodeTypeInstance static child node type instance from meta model
-	 * @param oldValue
-	 * @param newValue
-	 * @param doit
-	 */
-	public default <C extends INodeType<?,?>, T> void beforeModify(BranchNode<?, ?> parentNode, Object staticNodeTypeInstance, T oldValue, T newValue, ConplierBean<Boolean> doit) {};
-	public default <C extends INodeType<?,?>, T> void afterModify(BranchNode<?, ?> parentNode, Object staticNodeTypeInstance, T oldValue, T newValue) {};
+    /**
+     *
+     * Notify  before modification is invoked.
+     *
+     * @param parentNode             parent node of modified node
+     * @param staticNodeTypeInstance static child node type instance from meta model
+     * @param oldValue
+     * @param newValue
+     * @param doit
+     */
+    public default <C extends INodeType<?, ?>, T> void beforeModify(BranchNode<?, ?> parentNode, Object staticNodeTypeInstance, T oldValue, T newValue, ConplierBean<Boolean> doit) { }
+    
+    ;
+    
+    public default <C extends INodeType<?, ?>, T> void afterModify(BranchNode<?, ?> parentNode, Object staticNodeTypeInstance, T oldValue, T newValue) { }
+    
+    ;
 }

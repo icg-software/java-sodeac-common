@@ -26,11 +26,11 @@ import org.sodeac.common.IService.IServiceReference;
 @Target(FIELD)
 public @interface OnServiceRevoke
 {
-Class<? extends Consumer<IService.IServiceReference<?>>> trigger() default NoTrigger.class;
-	
-	public class NoTrigger implements Consumer<IService.IServiceReference<?>>
-	{
-		@Override
-		public void accept(IServiceReference<?> t){}
-	}
+    Class<? extends Consumer<IService.IServiceReference<?>>> trigger() default NoTrigger.class;
+    
+    public class NoTrigger implements Consumer<IService.IServiceReference<?>>
+    {
+        @Override
+        public void accept(IServiceReference<?> t) { }
+    }
 }

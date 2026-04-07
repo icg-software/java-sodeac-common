@@ -18,21 +18,24 @@ import org.sodeac.common.typedtree.LeafNodeType;
 import org.sodeac.common.typedtree.ModelRegistry;
 import org.sodeac.common.typedtree.annotation.TypedTreeModel;
 
-@TypedTreeModel(modelClass=DBSchemaTreeModel.class)
-@GenerateBow(buildAlias=true)
+@TypedTreeModel(modelClass = DBSchemaTreeModel.class)
+@GenerateBow(buildAlias = true)
 public class ColumnNodeType extends BranchNodeMetaModel
 {
-	static{ModelRegistry.getBranchNodeMetaModel(ColumnNodeType.class);}
-	
-	public static volatile LeafNodeType<ColumnNodeType,String> name;
-	public static volatile LeafNodeType<ColumnNodeType,String> columnType;
-	public static volatile LeafNodeType<ColumnNodeType,Boolean> quotedName;
-	public static volatile LeafNodeType<ColumnNodeType,Boolean> nullable;
-	public static volatile LeafNodeType<ColumnNodeType,Integer> size;
-	public static volatile LeafNodeType<ColumnNodeType,String> defaultStaticValue;
-	public static volatile LeafNodeType<ColumnNodeType,Class<? extends IDefaultValueExpressionDriver>> defaultValueClass;
-	
-	public static volatile BranchNodeType<ColumnNodeType,PrimaryKeyNodeType> primaryKey;
-	public static volatile BranchNodeType<ColumnNodeType,ForeignKeyNodeType> foreignKey;
-	public static volatile BranchNodeType<ColumnNodeType,SequenceNodeType> sequence;
+    static
+    {
+        ModelRegistry.getBranchNodeMetaModel(ColumnNodeType.class);
+    }
+    
+    public static volatile LeafNodeType<ColumnNodeType, String> name;
+    public static volatile LeafNodeType<ColumnNodeType, String> columnType;
+    public static volatile LeafNodeType<ColumnNodeType, Boolean> quotedName;
+    public static volatile LeafNodeType<ColumnNodeType, Boolean> nullable;
+    public static volatile LeafNodeType<ColumnNodeType, Integer> size;
+    public static volatile LeafNodeType<ColumnNodeType, String> defaultStaticValue;
+    public static volatile LeafNodeType<ColumnNodeType, Class<? extends IDefaultValueExpressionDriver>> defaultValueClass;
+    
+    public static volatile BranchNodeType<ColumnNodeType, PrimaryKeyNodeType> primaryKey;
+    public static volatile BranchNodeType<ColumnNodeType, ForeignKeyNodeType> foreignKey;
+    public static volatile BranchNodeType<ColumnNodeType, SequenceNodeType> sequence;
 }

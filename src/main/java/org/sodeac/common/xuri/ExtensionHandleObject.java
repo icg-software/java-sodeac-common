@@ -14,21 +14,21 @@ import java.io.Serializable;
 
 /***
  * worker object only
- * 
+ *
  * @author Sebastian Palarus
  *
  */
 public class ExtensionHandleObject implements Serializable
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 4292017896595754513L;
-	
-	public URI uri;
-	public ComponentType component;
-	public String fullPath;
-	public int position;
-	public StringBuilder rawResult;
-	public IExtension<?> extension;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 4292017896595754513L;
+    
+    public URI uri;
+    public ComponentType component;
+    public String fullPath;
+    public int position;
+    public StringBuilder rawResult;
+    public IExtension<?> extension;
 }

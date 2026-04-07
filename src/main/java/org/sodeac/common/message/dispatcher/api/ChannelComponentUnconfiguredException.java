@@ -11,51 +11,51 @@
 package org.sodeac.common.message.dispatcher.api;
 
 /**
- * 
+ *
  * @author Sebastian Palarus
  *
  */
 public class ChannelComponentUnconfiguredException extends RuntimeException
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -4059017650955484511L;
-	
-	private IDispatcherChannelComponent component = null;
+    /**
+     *
+     */
+    private static final long serialVersionUID = -4059017650955484511L;
+    
+    private IDispatcherChannelComponent component = null;
 	/*public ChannelComponentUnconfiguredException(IDispatcherChannelComponent component)
 	{
 		super();
 		this.component = component;
 	}*/
-
-	public ChannelComponentUnconfiguredException(IDispatcherChannelComponent component,String message, Throwable cause, boolean enableSuppression,boolean writableStackTrace)
-	{
-		super(message, cause, enableSuppression, writableStackTrace);
-		this.component = component;
-	}
-
-	public ChannelComponentUnconfiguredException(IDispatcherChannelComponent component, String message, Throwable cause)
-	{
-		super(message, cause);
-		this.component = component;
-	}
-
-	public ChannelComponentUnconfiguredException(IDispatcherChannelComponent component,String message)
-	{
-		super(message);
-		this.component = component;
-	}
-
-	public ChannelComponentUnconfiguredException(IDispatcherChannelComponent component,Throwable cause)
-	{
-		super(cause);
-		this.component = component;
-	}
-
-	public IDispatcherChannelComponent getChannelComponent()
-	{
-		return this.component;
-	}
-	
+    
+    public ChannelComponentUnconfiguredException(IDispatcherChannelComponent component, String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace)
+    {
+        super(message, cause, enableSuppression, writableStackTrace);
+        this.component = component;
+    }
+    
+    public ChannelComponentUnconfiguredException(IDispatcherChannelComponent component, String message, Throwable cause)
+    {
+        super(message, cause);
+        this.component = component;
+    }
+    
+    public ChannelComponentUnconfiguredException(IDispatcherChannelComponent component, String message)
+    {
+        super(message);
+        this.component = component;
+    }
+    
+    public ChannelComponentUnconfiguredException(IDispatcherChannelComponent component, Throwable cause)
+    {
+        super(cause);
+        this.component = component;
+    }
+    
+    public IDispatcherChannelComponent getChannelComponent()
+    {
+        return this.component;
+    }
+    
 }

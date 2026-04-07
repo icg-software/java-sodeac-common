@@ -13,104 +13,104 @@ package org.sodeac.common.xuri;
 import java.io.Serializable;
 
 /**
- * Represents a Uniform Resource Identifier (URI) reference. 
- * 
+ * Represents a Uniform Resource Identifier (URI) reference.
+ *
  * @author Sebastian Palarus
- * @since 1.0
  * @version 1.0
+ * @since 1.0
  *
  */
-public class URI implements Serializable 
+public class URI implements Serializable
 {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1421043812832070455L;
-
-	protected String uriString = null;
-	
-	protected SchemeComponent scheme = null;
-	protected AuthorityComponent authority = null;
-	protected PathComponent path = null;
-	protected QueryComponent query = null;
-	protected FragmentComponent fragment = null;
-	
-	/**
-	 * Constructor of URI. 
-	 * 
-	 * @param uriString complete URI string
-	 */
-	public URI(String uriString)
-	{
-		super();
-		this.uriString = uriString;
-		URIParser.getInstance().parse(this);
-	}
-
-	/**
-	 * getter for URI string
-	 *  
-	 * @return complete URI string
-	 */
-	public String getURIString() 
-	{
-		return uriString;
-	}
-	
-	@Override
-	public String toString() 
-	{
-		return this.uriString;
-	}
-	
-	/**
-	 * getter for scheme
-	 * 
-	 * @return scheme object
-	 */
-	public SchemeComponent getScheme()
-	{
-		return this.scheme;
-	}
-
-	/**
-	 * getter for authority object
-	 * 
-	 * @return authority object
-	 */
-	public AuthorityComponent getAuthority()
-	{
-		return authority;
-	}
-
-	/**
-	 * getter for query object
-	 * 
-	 * @return query object
-	 */
-	public QueryComponent getQuery()
-	{
-		return query;
-	}
-
-	/**
-	 * getter for path object
-	 * 
-	 * @return path object
-	 */
-	public PathComponent getPath()
-	{
-		return path;
-	}
-	
-	/**
-	 * getter for fragment object
-	 * 
-	 * @return fragment object
-	 */
-	public FragmentComponent getFragment()
-	{
-		return this.fragment;
-	}
+    
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1421043812832070455L;
+    
+    protected String uriString = null;
+    
+    protected SchemeComponent scheme = null;
+    protected AuthorityComponent authority = null;
+    protected PathComponent path = null;
+    protected QueryComponent query = null;
+    protected FragmentComponent fragment = null;
+    
+    /**
+     * Constructor of URI.
+     *
+     * @param uriString complete URI string
+     */
+    public URI(String uriString)
+    {
+        super();
+        this.uriString = uriString;
+        URIParser.getInstance().parse(this);
+    }
+    
+    /**
+     * getter for URI string
+     *
+     * @return complete URI string
+     */
+    public String getURIString()
+    {
+        return uriString;
+    }
+    
+    @Override
+    public String toString()
+    {
+        return this.uriString;
+    }
+    
+    /**
+     * getter for scheme
+     *
+     * @return scheme object
+     */
+    public SchemeComponent getScheme()
+    {
+        return this.scheme;
+    }
+    
+    /**
+     * getter for authority object
+     *
+     * @return authority object
+     */
+    public AuthorityComponent getAuthority()
+    {
+        return authority;
+    }
+    
+    /**
+     * getter for query object
+     *
+     * @return query object
+     */
+    public QueryComponent getQuery()
+    {
+        return query;
+    }
+    
+    /**
+     * getter for path object
+     *
+     * @return path object
+     */
+    public PathComponent getPath()
+    {
+        return path;
+    }
+    
+    /**
+     * getter for fragment object
+     *
+     * @return fragment object
+     */
+    public FragmentComponent getFragment()
+    {
+        return this.fragment;
+    }
 }

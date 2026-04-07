@@ -15,23 +15,23 @@ package org.sodeac.common.xuri;
  */
 
 /**
- * Query component of URI. Query components contains multiple subcomponents of type {@link QuerySegment}. 
- * 
+ * Query component of URI. Query components contains multiple subcomponents of type {@link QuerySegment}.
+ *
  * @author Sebastian Palarus
- * @since 1.0
  * @version 1.0
+ * @since 1.0
  *
  */
 public class QueryComponent extends AbstractComponent<QuerySegment>
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 393235970805892989L;
-
-	protected QueryComponent()
-	{
-		super(ComponentType.QUERY);
-	}
-
+    /**
+     *
+     */
+    private static final long serialVersionUID = 393235970805892989L;
+    
+    protected QueryComponent()
+    {
+        super(ComponentType.QUERY);
+    }
+    
 }

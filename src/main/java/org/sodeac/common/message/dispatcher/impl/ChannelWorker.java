@@ -43,27 +43,27 @@ public class ChannelWorker extends Thread
     public static final long FREE_TIME = 108 + 27;
     public static final long RESCHEDULE_BUFFER_TIME = 27;
     public static final long DEFAULT_SHUTDOWN_TIME = 1080 * 54;
-
+    
     private long spoolTimeStamp = 0;
-
+    
     private ChannelImpl<?> channel = null;
     private IDispatcherChannelWorker workerWrapper = null;
     private volatile boolean go = true;
     protected volatile boolean isUpdateNotified = false;
     protected volatile boolean isSoftUpdated = false;
     private final Object waitMonitor = new Object();
-
+    
     private List<TaskContainer> dueTaskList = null;
-
+    
     private volatile Long currentTimeOutTimeStamp = null;
     private volatile TaskContainer currentRunningTask = null;
     private volatile long wakeUpTimeStamp = -1;
     private volatile boolean inFreeingArea = false;
-
+    
     private ChannelTaskContextImpl context = null;
-
+    
     private final Logger logger = LoggerFactory.getLogger(ChannelWorker.class);
-
+    
     protected ChannelWorker(final ChannelImpl<?> impl)
     {
         super();
@@ -75,7 +75,7 @@ public class ChannelWorker extends Thread
         super.setDaemon(true);
         super.setName(ChannelWorker.class.getSimpleName() + " " + this.channel.getId());
     }
-
+    
     private void checkQueueAttach()
     {
         try
@@ -87,7 +87,7 @@ public class ChannelWorker extends Thread
             }
             try
             {
-
+                
                 for (final IOnChannelAttach onQueueAttach : onQueueAttachSnapshot)
                 {
                     try
@@ -110,7 +110,7 @@ public class ChannelWorker extends Thread
             this.logger.error("Exception while check queueAttach", e);
         }
     }
-
+    
     @SuppressWarnings("unchecked")
     @Override
     public void run()
@@ -122,15 +122,15 @@ public class ChannelWorker extends Thread
         while (this.go)
         {
             checkQueueAttach();
-
+            
             synchronized (this.waitMonitor)
             {
                 this.isUpdateNotified = false;
                 this.isSoftUpdated = false;
             }
-
+            
             this.channel.closeWorkerSnapshots();
-
+            
             try
             {
                 removedMessagesSnapshot = this.channel.getRemovedMessagesSnapshot();
@@ -139,7 +139,7 @@ public class ChannelWorker extends Thread
                     if ((removedMessagesSnapshot != null) && (!removedMessagesSnapshot.isEmpty()))
                     {
                         checkQueueAttach();
-
+                        
                         for (final ChannelManagerContainer conf : this.channel.getManagerContainerList())
                         {
                             try
@@ -151,7 +151,7 @@ public class ChannelWorker extends Thread
                             }
                             catch (final Exception ignored) { }
                         }
-
+                        
                         for (final MessageImpl message : (DequeSnapshot<MessageImpl>) removedMessagesSnapshot)
                         {
                             this.channel.touchLastWorkerAction();
@@ -167,7 +167,7 @@ public class ChannelWorker extends Thread
                                 catch (final Exception ignored) { }
                             }
                         }
-
+                        
                         for (final MessageImpl message : (DequeSnapshot<MessageImpl>) removedMessagesSnapshot)
                         {
                             try
@@ -202,7 +202,7 @@ public class ChannelWorker extends Thread
                 this.logger.error("Error while process removedEventList", e);
                 throw e;
             }
-
+            
             try
             {
                 newMessagesSnapshot = this.channel.getNewScheduledEventsSnaphot();
@@ -211,10 +211,10 @@ public class ChannelWorker extends Thread
                     if ((newMessagesSnapshot != null) && (!newMessagesSnapshot.isEmpty()))
                     {
                         checkQueueAttach();
-
+                        
                         boolean onMessageStoredSingle = false;
                         boolean onMessageStoredSnapshot = false;
-
+                        
                         for (final ChannelManagerContainer conf : this.channel.getManagerContainerList())
                         {
                             if (conf.isImplementingIOnMessageStore())
@@ -226,7 +226,7 @@ public class ChannelWorker extends Thread
                                 onMessageStoredSnapshot = true;
                             }
                         }
-
+                        
                         if (onMessageStoredSingle || onMessageStoredSnapshot)
                         {
                             scheduledResultSet.clear();
@@ -238,7 +238,7 @@ public class ChannelWorker extends Thread
                                 }
                                 catch (final Exception ignored) { }
                             }
-
+                            
                             if (onMessageStoredSnapshot)
                             {
                                 this.channel.touchLastWorkerAction();
@@ -252,10 +252,10 @@ public class ChannelWorker extends Thread
                                         }
                                         catch (final Exception ignored) { }
                                     }
-
+                                    
                                 }
                             }
-
+                            
                             if (onMessageStoredSingle)
                             {
                                 for (final MessageImpl<?> message : (DequeSnapshot<MessageImpl<?>>) newMessagesSnapshot)
@@ -290,7 +290,7 @@ public class ChannelWorker extends Thread
                                     }
                                 }
                             }
-
+                            
                             for (final IOnMessageStoreResult scheduleResult : scheduledResultSet)
                             {
                                 try
@@ -307,7 +307,7 @@ public class ChannelWorker extends Thread
                                 }
                                 catch (final Exception ignored) { }
                             }
-
+                            
                             scheduledResultSet.clear();
                         }
                     }
@@ -337,7 +337,7 @@ public class ChannelWorker extends Thread
                 this.logger.error("Error while process newScheduledList", e);
                 throw e;
             }
-
+            
             try
             {
                 final DequeSnapshot<String> signalSnapshot = this.channel.getSignalsSnapshot();
@@ -346,7 +346,7 @@ public class ChannelWorker extends Thread
                     if ((signalSnapshot != null) && (!signalSnapshot.isEmpty()))
                     {
                         checkQueueAttach();
-
+                        
                         signalProcessed.clear();
                         for (final String signal : signalSnapshot)
                         {
@@ -359,7 +359,7 @@ public class ChannelWorker extends Thread
                             {
                                 try
                                 {
-
+                                    
                                     if (this.go && conf.isImplementingIOnChannelSignal())
                                     {
                                         ((IOnChannelSignal) conf.getChannelManager()).onChannelSignal(this.channel, signal);
@@ -375,7 +375,7 @@ public class ChannelWorker extends Thread
                                     throw e;
                                 }
                             }
-
+                            
                             signalProcessed.add(signal);
                         }
                         signalProcessed.clear();
@@ -402,14 +402,14 @@ public class ChannelWorker extends Thread
                 this.logger.error("Error while process signalList", e);
                 throw e;
             }
-
+            
             this.dueTaskList.clear();
             this.channel.getDueTasks(this.dueTaskList);
-
+            
             if (!this.dueTaskList.isEmpty())
             {
                 checkQueueAttach();
-
+                
                 this.channel.touchLastWorkerAction();
                 boolean taskTimeOut = false;
                 for (final TaskContainer dueTask : this.dueTaskList)
@@ -423,12 +423,12 @@ public class ChannelWorker extends Thread
                         if (this.go)
                         {
                             this.context.resetCurrentProcessedTaskList();
-
+                            
                             try
                             {
                                 taskTimeOut = ((dueTask.getTaskControl().getTimeout() > 0) || (dueTask.getTaskControl().getHeartbeatTimeout() > 0));
                                 this.currentRunningTask = dueTask;
-
+                                
                                 if (dueTask.getTask() instanceof IPeriodicChannelTask)
                                 {
                                     Long periodicRepetitionInterval = ((IPeriodicChannelTask) dueTask.getTask()).getPeriodicRepetitionInterval();
@@ -437,17 +437,17 @@ public class ChannelWorker extends Thread
                                         periodicRepetitionInterval = 1000L * 60L * 60L * 24L * 365L * 108L;
                                     }
                                     dueTask.getTaskControl().setExecutionTimeStamp
-                                            (
-                                                    System.currentTimeMillis() + periodicRepetitionInterval,
-                                                    ExecutionTimestampSource.PERODIC,
-                                                    PeriodicServiceTimestampPredicate.getInstance()
-                                            );
+                                        (
+                                            System.currentTimeMillis() + periodicRepetitionInterval,
+                                            ExecutionTimestampSource.PERODIC,
+                                            PeriodicServiceTimestampPredicate.getInstance()
+                                        );
                                     dueTask.getTaskControl().preRunPeriodicTask();
                                 }
                                 else if (dueTask.getTask() instanceof IDispatcherChannelService)
                                 {
                                     long periodicRepetitionInterval = -1L;
-
+                                    
                                     try
                                     {
                                         if (dueTask.getPropertyBlock().getProperty(ChannelImpl.PROPERTY_PERIODIC_REPETITION_INTERVAL) != null)
@@ -468,24 +468,24 @@ public class ChannelWorker extends Thread
                                         }
                                     }
                                     catch (final Exception ignored) { }
-
+                                    
                                     if (periodicRepetitionInterval < 1)
                                     {
                                         periodicRepetitionInterval = 1000L * 60L * 60L * 24L * 365L * 108L;
                                     }
                                     dueTask.getTaskControl().setExecutionTimeStamp
-                                            (
-                                                    System.currentTimeMillis() + periodicRepetitionInterval,
-                                                    ExecutionTimestampSource.PERODIC,
-                                                    PeriodicServiceTimestampPredicate.getInstance()
-                                            );
+                                        (
+                                            System.currentTimeMillis() + periodicRepetitionInterval,
+                                            ExecutionTimestampSource.PERODIC,
+                                            PeriodicServiceTimestampPredicate.getInstance()
+                                        );
                                     dueTask.getTaskControl().preRunPeriodicTask();
                                 }
                                 else
                                 {
                                     dueTask.getTaskControl().preRun();
                                 }
-
+                                
                                 if (taskTimeOut)
                                 {
                                     if (dueTask.getTaskControl().getTimeout() > 0)
@@ -501,19 +501,19 @@ public class ChannelWorker extends Thread
                                     this.context.setDueTask(dueTask);
                                     dueTask.heartbeat();
                                 }
-
+                                
                                 //
                                 //	run task or service
                                 //
-
+                                
                                 dueTask.getTask().run(this.context);
-
+                                
                                 if (this.go)
                                 {
                                     dueTask.getPropertyBlock().setProperty(ChannelImpl.PROPERTY_KEY_THROWED_EXCEPTION, null);
-
+                                    
                                     dueTask.getTaskControl().postRun();
-
+                                    
                                     this.currentTimeOutTimeStamp = null;
                                     this.currentRunningTask = null;
                                     if (taskTimeOut)
@@ -539,10 +539,13 @@ public class ChannelWorker extends Thread
                                 final TaskContainer runningTask = this.currentRunningTask;
                                 this.currentTimeOutTimeStamp = null;
                                 this.currentRunningTask = null;
-
-                                if (runningTask != null) { runningTask.getPropertyBlock().setProperty(ChannelImpl.PROPERTY_KEY_THROWED_EXCEPTION, e); }
+                                
+                                if (runningTask != null)
+                                {
+                                    runningTask.getPropertyBlock().setProperty(ChannelImpl.PROPERTY_KEY_THROWED_EXCEPTION, e);
+                                }
                                 this.logger.error("Exception while process task " + dueTask.getTask(), e);
-
+                                
                                 dueTask.getTaskControl().postRun();
                                 if (taskTimeOut)
                                 {
@@ -555,18 +558,18 @@ public class ChannelWorker extends Thread
                                         this.logger.error("eventQueue.getEventDispatcher().unregisterTimeOut(this.eventQueue,dueTask)", e2);
                                     }
                                 }
-
+                                
                                 if (!(dueTask.getTask() instanceof IDispatcherChannelService))
                                 {
                                     dueTask.getTaskControl().setDone();
                                 }
-
+                                
                                 if (!this.go)
                                 {
                                     this.channel.closeWorkerSnapshots();
                                     return;
                                 }
-
+                                
                                 try
                                 {
                                     for (final ChannelManagerContainer conf : this.channel.getManagerContainerList())
@@ -588,19 +591,22 @@ public class ChannelWorker extends Thread
                                 {
                                     this.logger.error("Error while process onTaskError " + dueTask, ie);
                                 }
-
+                                
                             }
                             catch (final Error e)
                             {
                                 final TaskContainer runningTask = this.currentRunningTask;
                                 this.currentTimeOutTimeStamp = null;
                                 this.currentRunningTask = null;
-
+                                
                                 final Exception exc = new Exception(e.getMessage(), e);
-
-                                if (runningTask != null) { runningTask.getPropertyBlock().setProperty(ChannelImpl.PROPERTY_KEY_THROWED_EXCEPTION, exc); }
+                                
+                                if (runningTask != null)
+                                {
+                                    runningTask.getPropertyBlock().setProperty(ChannelImpl.PROPERTY_KEY_THROWED_EXCEPTION, exc);
+                                }
                                 this.logger.error("Error while process task " + dueTask.getTask(), e);
-
+                                
                                 dueTask.getTaskControl().postRun();
                                 if (taskTimeOut)
                                 {
@@ -617,7 +623,7 @@ public class ChannelWorker extends Thread
                                 {
                                     dueTask.getTaskControl().setDone();
                                 }
-
+                                
                                 try
                                 {
                                     for (final ChannelManagerContainer conf : this.channel.getManagerContainerList())
@@ -639,19 +645,19 @@ public class ChannelWorker extends Thread
                                 {
                                     this.logger.error("Error while process onTaskError " + dueTask, ie);
                                 }
-
+                                
                                 throw e;
                             }
-
+                            
                             this.currentTimeOutTimeStamp = null;
                             this.currentRunningTask = null;
-
+                            
                             if (!this.go)
                             {
                                 this.channel.closeWorkerSnapshots();
                                 return;
                             }
-
+                            
                             if (dueTask.getTaskControl().isDone())
                             {
                                 for (final ChannelManagerContainer conf : this.channel.getManagerContainerList())
@@ -683,13 +689,13 @@ public class ChannelWorker extends Thread
                         catch (final Exception ignored) { }
                         this.logger.error("Exception while process currentProcessedTaskList", e);
                     }
-
+                    
                 }
             }
-
+            
             this.channel.cleanDoneTasks();
             this.channel.closeWorkerSnapshots();
-
+            
             try
             {
                 boolean shutdownWorker = false;
@@ -702,7 +708,7 @@ public class ChannelWorker extends Thread
                         this.inFreeingArea = false;
                     }
                 }
-
+                
                 if (shutdownWorker)
                 {
                     synchronized (this.waitMonitor)
@@ -726,29 +732,29 @@ public class ChannelWorker extends Thread
                                 this.wakeUpTimeStamp = -1;
                             }
                         }
-
+                        
                         this.inFreeingArea = false;
-
+                        
                         if (!this.go)
                         {
                             return;
                         }
-
+                        
                         this.channel.touchLastWorkerAction();
-
+                        
                         continue;
                     }
                 }
-
+                
                 checkQueueAttach();
-
+                
                 if (this.go && this.isUpdateNotified)
                 {
                     this.wakeUpTimeStamp = -1;
                     this.isUpdateNotified = false;
                     continue;
                 }
-
+                
                 long nextRunTimeStamp = System.currentTimeMillis() + DEFAULT_WAIT_TIME;
                 try
                 {
@@ -773,19 +779,19 @@ public class ChannelWorker extends Thread
 						freeWorker = this.channel.checkFreeWorker(this, nextRunTimeStamp);
 					}
 				}*/
-
+                
                 synchronized (this.waitMonitor)
                 {
                     if (this.go)
                     {
                         this.wakeUpTimeStamp = -1;
-
+                        
                         if (this.isUpdateNotified)
                         {
                             this.isUpdateNotified = false;
                             continue;
                         }
-
+                        
                         long waitTime = nextRunTimeStamp - System.currentTimeMillis();
                         if (waitTime > DEFAULT_WAIT_TIME)
                         {
@@ -823,13 +829,13 @@ public class ChannelWorker extends Thread
                                         this.wakeUpTimeStamp = -1;
                                     }
                                 }
-
+                                
                                 this.inFreeingArea = false;
                             }
                             else
                             {
                                 this.inFreeingArea = false;
-
+                                
                                 try
                                 {
                                     this.wakeUpTimeStamp = System.currentTimeMillis() + waitTime;
@@ -861,7 +867,7 @@ public class ChannelWorker extends Thread
             }
         }
     }
-
+    
     public boolean checkTimeOut(final AtomicBoolean stop)
     {
         final TaskContainer timeOutTaskContainer = this.currentRunningTask;
@@ -869,17 +875,17 @@ public class ChannelWorker extends Thread
         {
             return false;
         }
-
+        
         TaskControlImpl taskControl = null;
         if ((taskControl = timeOutTaskContainer.getTaskControl()) == null)
         {
             return false;
         }
-
+        
         // First check HeartBeat TimeOut
-
+        
         boolean heartBeatTimeout = false;
-
+        
         if (taskControl.getHeartbeatTimeout() > 0)
         {
             try
@@ -898,44 +904,44 @@ public class ChannelWorker extends Thread
                 this.logger.error("Exception checking heartbeat timeout", e);
             }
         }
-
+        
         if (!heartBeatTimeout)
         {
             // Task TimeOut
-
+            
             final Long timeOut = this.currentTimeOutTimeStamp;
             if (timeOut == null)
             {
                 return false;
             }
-
+            
             // check timeOut and timeOutTask again to prevent working with values don't match
-
+            
             if (timeOutTaskContainer != this.currentRunningTask)
             {
                 return false;
             }
-
+            
             if (timeOut != this.currentTimeOutTimeStamp)
             {
                 return false;
             }
-
+            
             if (timeOut.longValue() > System.currentTimeMillis())
             {
                 return false;
             }
         }
-
+        
         final ChannelImpl<?> channel = this.channel;
         final boolean stopFlag = taskControl.getStopOnTimeoutFlag();
         final IDispatcherChannelTask<Object> task = timeOutTaskContainer.getTask();
         final Object taskState = taskControl.getTaskState();
         timeOutTaskContainer.setTaskControl(taskControl.copyForTimeout());
-
+        
         this.go = false;
         this.interrupt();
-
+        
         try
         {
             if (task instanceof IDispatcherChannelService)
@@ -948,7 +954,7 @@ public class ChannelWorker extends Thread
             }
         }
         catch (final Exception ignored) { }
-
+        
         for (final ChannelManagerContainer conf : channel.getManagerContainerList())
         {
             try
@@ -964,13 +970,13 @@ public class ChannelWorker extends Thread
             }
             catch (final Exception ignored) { }
         }
-
+        
         try
         {
             this.context.onTimeout();
         }
         catch (final Exception ignored) { }
-
+        
         if (stopFlag)
         {
             if (Thread.currentThread() != this)
@@ -981,23 +987,23 @@ public class ChannelWorker extends Thread
                     ((MessageDispatcherImpl) channel.getDispatcher()).executeOnTaskStopExecuter(this, task);
                 }
                 catch (final Exception ignored) { }
-
+                
             }
             else
             {
                 this.logger.warn("worker not stopped: checkTimeout invoke by self");
             }
         }
-
+        
         return true;
     }
-
+    
     public void notifySoftUpdate()
     { // FIXME: also synchronized(this.waitMonitor) ???
         this.isUpdateNotified = true;
         this.isSoftUpdated = true;
     }
-
+    
     public void notifyUpdate(final long newRuntimeStamp)
     {
         synchronized (this.waitMonitor)
@@ -1014,57 +1020,57 @@ public class ChannelWorker extends Thread
             }
         }
     }
-
+    
     public void notifyUpdate()
     {
         synchronized (this.waitMonitor)
         {
             this.isUpdateNotified = true;
             this.isSoftUpdated = false;
-
+            
             this.waitMonitor.notifyAll();
         }
     }
-
+    
     public void softStopWorker()
     {
         this.go = false;
     }
-
+    
     public void stopWorker()
     {
         this.go = false;
         // interrupt this thread
         this.interrupt();
-
+        
         synchronized (this.waitMonitor)
         {
             this.waitMonitor.notifyAll();
         }
     }
-
+    
     public ChannelImpl getMessageChannel()
     {
         return this.channel;
     }
-
+    
     protected boolean setMessageChannel(final ChannelImpl channel)
     {
         if (!this.go)
         {
             return false;
         }
-
+        
         if ((channel != null) && (this.channel != null))
         {
             return false;
         }
-
+        
         if (!this.inFreeingArea)
         {
             return false;
         }
-
+        
         this.channel = channel;
         this.context.setChannel(this.channel);
         if (this.channel == null)
@@ -1075,30 +1081,30 @@ public class ChannelWorker extends Thread
         {
             super.setName(ChannelWorker.class.getSimpleName() + " " + this.channel.getId());
         }
-
+        
         return true;
     }
-
+    
     public TaskContainer getCurrentRunningTask()
     {
         return this.currentRunningTask;
     }
-
+    
     public boolean isGo()
     {
         return this.go;
     }
-
+    
     public long getSpoolTimeStamp()
     {
         return this.spoolTimeStamp;
     }
-
+    
     public void setSpoolTimeStamp(final long spoolTimeStamp)
     {
         this.spoolTimeStamp = spoolTimeStamp;
     }
-
+    
     public IDispatcherChannelWorker getWorkerWrapper()
     {
         return this.workerWrapper;

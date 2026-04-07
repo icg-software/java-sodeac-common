@@ -9,12 +9,10 @@
  *     Sebastian Palarus - initial API and implementation
  *******************************************************************************/
 
-
 /**
- * 
- * Provides an API for eventdispatcher. An eventdispatcher is a kind of control center middleware for osgi-events. 
- * 
- * 
+ *
+ * Provides an API for eventdispatcher. An eventdispatcher is a kind of control center middleware for osgi-events.
+ *
  * @author Sebastian Palarus
  *
  */

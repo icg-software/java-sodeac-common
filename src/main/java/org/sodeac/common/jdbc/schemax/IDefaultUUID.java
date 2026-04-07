@@ -17,9 +17,9 @@ import org.sodeac.common.misc.Driver.IDriver;
 
 public interface IDefaultUUID extends IDefaultValueExpressionDriver
 {
-	@Override
-	default int driverIsApplicableFor(Map<String, Object> properties)
-	{
-		return IDriver.APPLICABLE_NONE;
-	}
+    @Override
+    default int driverIsApplicableFor(Map<String, Object> properties)
+    {
+        return IDriver.APPLICABLE_NONE;
+    }
 }

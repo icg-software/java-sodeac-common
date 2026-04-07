@@ -20,9 +20,10 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RUNTIME)
 @Target(FIELD)
-public @interface Association 
+public @interface Association
 {
-	public enum AssociationType {AGGREGATION,COMPOSITION}
-	
-	AssociationType type();
+    public enum AssociationType
+    {AGGREGATION, COMPOSITION}
+    
+    AssociationType type();
 }

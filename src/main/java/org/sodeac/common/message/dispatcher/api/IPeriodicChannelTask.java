@@ -12,16 +12,16 @@ package org.sodeac.common.message.dispatcher.api;
 
 /**
  * An extenstion interface for {@link IDispatcherChannelTask}. Tasks implements this interface will not finished by default and re-run periodically by worker, until the task set done manually with state-handler {@link ITaskControl}.
- * 
+ *
  * @author Sebastian Palarus
  *
  */
 public interface IPeriodicChannelTask extends IDispatcherChannelTask
 {
-	/**
-	 * default periodic interval
-	 * 
-	 * @return
-	 */
-	public long getPeriodicRepetitionInterval();
+    /**
+     * default periodic interval
+     *
+     * @return
+     */
+    public long getPeriodicRepetitionInterval();
 }

@@ -25,43 +25,43 @@ public class SynchronizationToolbox
     public static BiFunction<JsonObject, String, Integer> JsonIntegerValueParser = (o, n) -> o.getJsonNumber(n) == null ? null : o.getJsonNumber(n).intValue();
     public static BiFunction<JsonObject, String, Double> JsonDoubleValueParser = (o, n) -> o.getJsonNumber(n) == null ? null : o.getJsonNumber(n).doubleValue();
     public static BiFunction<JsonObject, String, Boolean> JsonBooleanValueParser = (o, n) -> o.isNull(n) ? null : o.getBoolean(n);
-
+    
     public static <T extends BranchNodeMetaModel> boolean equalsByLeafNodes(final BranchNode<?, T> node1, final BranchNode<?, T> node2, final LeafNodeType<T, ?>... attributes)
     {
-        if(attributes == null)
+        if (attributes == null)
         {
             return true;
         }
-
+        
         for (final LeafNodeType<T, ?> attribute : attributes)
         {
-            if(!attributeEquals(attribute, node1, node2))
+            if (!attributeEquals(attribute, node1, node2))
             {
                 return false;
             }
         }
         return true;
     }
-
+    
     public static <T extends BranchNodeMetaModel> boolean attributeEquals(final LeafNodeType<T, ?> attribute, final BranchNode<?, T> node1, final BranchNode<?, T> node2)
     {
         final Object value1 = node1.getValue(attribute);
         final Object value2 = node2.getValue(attribute);
-
-        if((value1 == null) && (value2 != null))
+        
+        if ((value1 == null) && (value2 != null))
         {
             return false;
         }
-        if((value2 == null) && (value1 != null))
+        if ((value2 == null) && (value1 != null))
         {
             return false;
         }
-
-        if(value1 == null)
+        
+        if (value1 == null)
         {
             return true;
         }
         return value1.equals(value2);
     }
-
+    
 }

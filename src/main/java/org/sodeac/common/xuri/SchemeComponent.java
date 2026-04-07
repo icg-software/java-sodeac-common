@@ -16,39 +16,39 @@ package org.sodeac.common.xuri;
 
 /**
  * Scheme component of URI.
- * 
+ *
  * @author Sebastian Palarus
- * @since 1.0
  * @version 1.0
- * 
+ * @since 1.0
+ *
  */
 public class SchemeComponent extends AbstractComponent<NoSubComponent>
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 5126925115989645523L;
-	
-	private String value = null;
-	
-	/**
-	 * constructor for scheme component
-	 * 
-	 * @param value representative scheme string
-	 */
-	protected SchemeComponent(String value)
-	{
-		super(ComponentType.SCHEME);
-		this.value = value;
-	}
-
-	/**
-	 * getter for representative scheme string
-	 * 
-	 * @return representative scheme string
-	 */
-	public String getValue()
-	{
-		return this.value;
-	}
+    /**
+     *
+     */
+    private static final long serialVersionUID = 5126925115989645523L;
+    
+    private String value = null;
+    
+    /**
+     * constructor for scheme component
+     *
+     * @param value representative scheme string
+     */
+    protected SchemeComponent(String value)
+    {
+        super(ComponentType.SCHEME);
+        this.value = value;
+    }
+    
+    /**
+     * getter for representative scheme string
+     *
+     * @return representative scheme string
+     */
+    public String getValue()
+    {
+        return this.value;
+    }
 }

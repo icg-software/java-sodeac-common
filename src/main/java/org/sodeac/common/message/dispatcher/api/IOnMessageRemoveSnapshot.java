@@ -13,20 +13,20 @@ package org.sodeac.common.message.dispatcher.api;
 import org.sodeac.common.snapdeque.DequeSnapshot;
 
 /**
- * 
+ *
  * An extension interface for {@link IDispatcherChannelManager} to consume notifications if a {@link IMessage}s are removed from {@link IDispatcherChannel}
- * 
+ *
  * @author Sebastian Palarus
  *
  */
 public interface IOnMessageRemoveSnapshot<T> extends IDispatcherChannelManager
 {
-	/**
-	 * This is fired, if {@link IDispatcherChannelManager} removed queued {@link IMessage}s
-	 * <br>
-	 * invoked and synchronized by queue worker
-	 *  
-	 * @param messageRemoveSnapshot removed message snapshot
-	 */
-	public void onMessageRemoveSnapshot(DequeSnapshot<IMessage<T>> messageRemoveSnapshot);
+    /**
+     * This is fired, if {@link IDispatcherChannelManager} removed queued {@link IMessage}s
+     * <br>
+     * invoked and synchronized by queue worker
+     *
+     * @param messageRemoveSnapshot removed message snapshot
+     */
+    public void onMessageRemoveSnapshot(DequeSnapshot<IMessage<T>> messageRemoveSnapshot);
 }

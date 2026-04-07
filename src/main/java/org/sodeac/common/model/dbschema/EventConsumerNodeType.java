@@ -18,11 +18,14 @@ import org.sodeac.common.typedtree.LeafNodeType;
 import org.sodeac.common.typedtree.ModelRegistry;
 import org.sodeac.common.typedtree.annotation.TypedTreeModel;
 
-@TypedTreeModel(modelClass=DBSchemaTreeModel.class)
-@GenerateBow(buildAlias=true)
+@TypedTreeModel(modelClass = DBSchemaTreeModel.class)
+@GenerateBow(buildAlias = true)
 public class EventConsumerNodeType extends BranchNodeMetaModel
 {
-	static{ModelRegistry.getBranchNodeMetaModel(EventConsumerNodeType.class);}
-	
-	public static volatile LeafNodeType<EventConsumerNodeType,ExceptionCatchedConsumer<DBSchemaUtils.DBSchemaEvent>> eventConsumer;
+    static
+    {
+        ModelRegistry.getBranchNodeMetaModel(EventConsumerNodeType.class);
+    }
+    
+    public static volatile LeafNodeType<EventConsumerNodeType, ExceptionCatchedConsumer<DBSchemaUtils.DBSchemaEvent>> eventConsumer;
 }

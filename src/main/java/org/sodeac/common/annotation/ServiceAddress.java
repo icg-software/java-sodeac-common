@@ -22,9 +22,13 @@ import java.lang.annotation.Target;
 @Target(FIELD)
 public @interface ServiceAddress
 {
-	String name() default "";
-	String domain() default "";
-	Version minVersion() default @Version(major = -1, minor = -1, service = -1);
-	Version beforeVersion() default @Version(major = -1, minor = -1, service = -1);
-	String filter() default "";
+    String name() default "";
+    
+    String domain() default "";
+    
+    Version minVersion() default @Version(major = -1, minor = -1, service = -1);
+    
+    Version beforeVersion() default @Version(major = -1, minor = -1, service = -1);
+    
+    String filter() default "";
 }
