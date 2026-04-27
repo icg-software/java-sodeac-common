@@ -21,14 +21,11 @@
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
-            <version>4.0.5</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>jakarta.json</artifactId>
-            <version>2.0.1</version>
         </dependency>
 
         <!-- FIXME: Remove: Transfer UNIT tests to junit 5 -->
@@ -250,25 +247,4 @@
             </properties>
         </profile>
     </profiles>
-
-    <licenses>
-        <license>
-            <name>Eclipse Public License v2.0</name>
-            <url>http://www.eclipse.org/legal/epl-v20.html</url>
-        </license>
-    </licenses>
-
-    <developers>
-        <developer>
-            <id>sebastian.palarus</id>
-            <name>Sebastian Palarus</name>
-        </developer>
-    </developers>
-
-    <scm>
-        <connection>scm:git:https://github.com/spalarus/java-sodeac-common.git</connection>
-        <url>https://github.com/spalarus/java-sodeac-common.git</url>
-    </scm>
-
-    <url>https://github.com/spalarus/java-sodeac-common</url>
 </project>
