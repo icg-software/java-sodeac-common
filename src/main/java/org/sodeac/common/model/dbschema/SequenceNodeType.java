@@ -16,16 +16,19 @@ import org.sodeac.common.typedtree.LeafNodeType;
 import org.sodeac.common.typedtree.ModelRegistry;
 import org.sodeac.common.typedtree.annotation.TypedTreeModel;
 
-@TypedTreeModel(modelClass=DBSchemaTreeModel.class)
-@GenerateBow(buildAlias=true)
+@TypedTreeModel(modelClass = DBSchemaTreeModel.class)
+@GenerateBow(buildAlias = true)
 public class SequenceNodeType extends BranchNodeMetaModel
 {
-	static{ModelRegistry.getBranchNodeMetaModel(SequenceNodeType.class);}
-	
-	public static volatile LeafNodeType<SequenceNodeType,String> name;
-	public static volatile LeafNodeType<SequenceNodeType,String> dbmsSchemaName;	
-	public static volatile LeafNodeType<SequenceNodeType,Long> min;
-	public static volatile LeafNodeType<SequenceNodeType,Long> max;
-	public static volatile LeafNodeType<SequenceNodeType,Long> cache;
-	public static volatile LeafNodeType<SequenceNodeType,Boolean> cycle;
+    static
+    {
+        ModelRegistry.getBranchNodeMetaModel(SequenceNodeType.class);
+    }
+    
+    public static volatile LeafNodeType<SequenceNodeType, String> name;
+    public static volatile LeafNodeType<SequenceNodeType, String> dbmsSchemaName;
+    public static volatile LeafNodeType<SequenceNodeType, Long> min;
+    public static volatile LeafNodeType<SequenceNodeType, Long> max;
+    public static volatile LeafNodeType<SequenceNodeType, Long> cache;
+    public static volatile LeafNodeType<SequenceNodeType, Boolean> cycle;
 }

@@ -15,24 +15,24 @@ import org.sodeac.common.message.dispatcher.api.IDispatcherChannelWorker;
 
 public class ChannelWorkerWrapper implements IDispatcherChannelWorker
 {
-	private ChannelWorker worker = null;
-	
-	protected ChannelWorkerWrapper(ChannelWorker worker)
-	{
-		super();
-		this.worker = worker;
-	}
-
-	@Override
-	public void interrupt()
-	{
-		worker.interrupt();
-	}
-
-	@Override
-	public IDispatcherChannel getChannel()
-	{
-		return worker.getMessageChannel();
-	}
-
+    private ChannelWorker worker = null;
+    
+    protected ChannelWorkerWrapper(final ChannelWorker worker)
+    {
+        super();
+        this.worker = worker;
+    }
+    
+    @Override
+    public void interrupt()
+    {
+        this.worker.interrupt();
+    }
+    
+    @Override
+    public IDispatcherChannel getChannel()
+    {
+        return this.worker.getMessageChannel();
+    }
+    
 }

@@ -11,36 +11,36 @@
 package org.sodeac.common.message.dispatcher.api;
 
 /**
- * 
+ *
  * @author Sebastian Palarus
  *
  */
 public class PropertyIsLockedException extends RuntimeException
 {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -6738548351245631901L;
-
-	public PropertyIsLockedException(String message, Throwable cause, boolean enableSuppression,boolean writableStackTrace)
-	{
-		super(message, cause, enableSuppression, writableStackTrace);
-	}
-
-	public PropertyIsLockedException(String message, Throwable cause)
-	{
-		super(message, cause);
-	}
-
-	public PropertyIsLockedException(String message)
-	{
-		super(message);
-	}
-
-	public PropertyIsLockedException(Throwable cause)
-	{
-		super(cause);
-	}
-
+    
+    /**
+     *
+     */
+    private static final long serialVersionUID = -6738548351245631901L;
+    
+    public PropertyIsLockedException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace)
+    {
+        super(message, cause, enableSuppression, writableStackTrace);
+    }
+    
+    public PropertyIsLockedException(final String message, final Throwable cause)
+    {
+        super(message, cause);
+    }
+    
+    public PropertyIsLockedException(final String message)
+    {
+        super(message);
+    }
+    
+    public PropertyIsLockedException(final Throwable cause)
+    {
+        super(cause);
+    }
+    
 }

@@ -10,46 +10,45 @@
  *******************************************************************************/
 package org.sodeac.common.xuri.json;
 
-
 import java.io.Serializable;
-
-import javax.json.JsonObject;
 
 import org.sodeac.common.xuri.IEncodingExtensionHandler;
 
+import jakarta.json.JsonObject;
+
 /**
  * XURI encoding extension handler to encode json objects
- * 
+ *
  * @author Sebastian Palarus
  *
  */
 public class JsonEncodingHandler implements IEncodingExtensionHandler<JsonObject>, Serializable
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 312956274744970550L;
-	
-	private transient static volatile JsonEncodingHandler INSTANCE = null;
-	
-	public static JsonEncodingHandler getInstance()
-	{
-		if(INSTANCE == null)
-		{
-			INSTANCE = new JsonEncodingHandler();
-		}
-		return INSTANCE;
-	}
-	
-	@Override
-	public String getType()
-	{
-		return JsonExtension.TYPE;
-	}
-	
-	@Override
-	public String encodeToString(JsonObject extensionDataObject)
-	{
-		return extensionDataObject.toString();
-	}
+    /**
+     *
+     */
+    private static final long serialVersionUID = 312956274744970550L;
+    
+    private static volatile JsonEncodingHandler INSTANCE = null;
+    
+    public static JsonEncodingHandler getInstance()
+    {
+        if (INSTANCE == null)
+        {
+            INSTANCE = new JsonEncodingHandler();
+        }
+        return INSTANCE;
+    }
+    
+    @Override
+    public String getType()
+    {
+        return JsonExtension.TYPE;
+    }
+    
+    @Override
+    public String encodeToString(final JsonObject extensionDataObject)
+    {
+        return extensionDataObject.toString();
+    }
 }

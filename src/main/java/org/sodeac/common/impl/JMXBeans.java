@@ -12,8 +12,8 @@ package org.sodeac.common.impl;
 
 public class JMXBeans
 {
-	public interface ServiceRegistrationMBean
-	{
-		public String getIdString();
-	}
+    public interface ServiceRegistrationMBean
+    {
+        String getIdString();
+    }
 }

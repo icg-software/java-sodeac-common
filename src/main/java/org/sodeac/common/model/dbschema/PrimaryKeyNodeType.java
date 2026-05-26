@@ -16,14 +16,17 @@ import org.sodeac.common.typedtree.LeafNodeType;
 import org.sodeac.common.typedtree.ModelRegistry;
 import org.sodeac.common.typedtree.annotation.TypedTreeModel;
 
-@TypedTreeModel(modelClass=DBSchemaTreeModel.class)
-@GenerateBow(buildAlias=true)
+@TypedTreeModel(modelClass = DBSchemaTreeModel.class)
+@GenerateBow(buildAlias = true)
 public class PrimaryKeyNodeType extends BranchNodeMetaModel
 {
-	static{ModelRegistry.getBranchNodeMetaModel(PrimaryKeyNodeType.class);}
-	
-	public static volatile LeafNodeType<PrimaryKeyNodeType,String> indexName;
-	public static volatile LeafNodeType<PrimaryKeyNodeType,String> constraintName;	
-	public static volatile LeafNodeType<PrimaryKeyNodeType,String> tableSpace;
-	public static volatile LeafNodeType<PrimaryKeyNodeType,Boolean> quotedName;
+    static
+    {
+        ModelRegistry.getBranchNodeMetaModel(PrimaryKeyNodeType.class);
+    }
+    
+    public static volatile LeafNodeType<PrimaryKeyNodeType, String> indexName;
+    public static volatile LeafNodeType<PrimaryKeyNodeType, String> constraintName;
+    public static volatile LeafNodeType<PrimaryKeyNodeType, String> tableSpace;
+    public static volatile LeafNodeType<PrimaryKeyNodeType, Boolean> quotedName;
 }

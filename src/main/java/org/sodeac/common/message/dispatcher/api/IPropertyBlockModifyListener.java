@@ -14,8 +14,10 @@ import java.util.List;
 
 public interface IPropertyBlockModifyListener
 {
-	public static enum ModifyType {INSERT,UPDATE,REMOVE}
-	
-	public void onModify(ModifyType type,String key, Object valueOld, Object valueNew);
-	public void onModifySet(List<PropertyBlockModifyItem> modifySet);
+    enum ModifyType
+    {INSERT, UPDATE, REMOVE}
+    
+    void onModify(ModifyType type, String key, Object valueOld, Object valueNew);
+    
+    void onModifySet(List<PropertyBlockModifyItem> modifySet);
 }

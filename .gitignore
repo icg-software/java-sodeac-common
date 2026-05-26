@@ -8,3 +8,12 @@
 /.project
 /spoon.classpath-app.tmp
 /src/generated/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### VS Code ###
+.vscode/

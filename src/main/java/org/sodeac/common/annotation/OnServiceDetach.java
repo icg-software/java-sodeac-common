@@ -26,11 +26,11 @@ import org.sodeac.common.IService.IServiceProvider;
 @Target(FIELD)
 public @interface OnServiceDetach
 {
-	Class<? extends Consumer<IService.IServiceProvider<?>>> trigger() default NoTrigger.class;
-	
-	public class NoTrigger implements Consumer<IService.IServiceProvider<?>>
-	{
-		@Override
-		public void accept(IServiceProvider<?> t){}
-	}
+    Class<? extends Consumer<IService.IServiceProvider<?>>> trigger() default NoTrigger.class;
+    
+    class NoTrigger implements Consumer<IService.IServiceProvider<?>>
+    {
+        @Override
+        public void accept(final IServiceProvider<?> t) { }
+    }
 }

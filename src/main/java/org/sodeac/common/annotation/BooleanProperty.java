@@ -23,9 +23,10 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RUNTIME)
 @Target({ TYPE, FIELD })
-@Repeatable(value=BooleanProperties.class)
+@Repeatable(value = BooleanProperties.class)
 public @interface BooleanProperty
 {
-	String key();
-	boolean value();
+    String key();
+    
+    boolean value();
 }

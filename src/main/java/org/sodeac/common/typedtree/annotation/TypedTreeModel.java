@@ -22,7 +22,7 @@ import org.sodeac.common.typedtree.TypedTreeMetaModel;
 @Documented
 @Retention(RUNTIME)
 @Target(TYPE)
-public @interface TypedTreeModel 
+public @interface TypedTreeModel
 {
-	Class<? extends TypedTreeMetaModel<?>> modelClass();
+    Class<? extends TypedTreeMetaModel<?>> modelClass();
 }

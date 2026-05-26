@@ -17,38 +17,38 @@ import org.sodeac.common.message.dispatcher.api.PropertyBlockModifyItem;
 
 public class ChannelConfigurationModifyListener implements IPropertyBlockModifyListener
 {
-	private ChannelImpl channel;
-	
-	protected ChannelConfigurationModifyListener(ChannelImpl queue)
-	{
-		super();
-		this.channel = queue;
-	}
-
-	@Override
-	public void onModify(ModifyType type, String key, Object valueOld, Object valueNew)
-	{
-		((MessageDispatcherImpl)channel.getDispatcher()).onConfigurationModify(this.channel, key);
-	}
-
-	@Override
-	public void onModifySet(List<PropertyBlockModifyItem> modifySet)
-	{
-		if(modifySet == null)
-		{
-			return;
-		}
-		if(modifySet.isEmpty())
-		{
-			return;
-		}
-		String[] attributes = new String[modifySet.size()];
-		int index = 0;
-		for(PropertyBlockModifyItem item : modifySet)
-		{
-			attributes[index++] = item.getKey();
-		}
- 		((MessageDispatcherImpl)channel.getDispatcher()).onConfigurationModify(this.channel,attributes);
-	}
-
+    private final ChannelImpl channel;
+    
+    protected ChannelConfigurationModifyListener(final ChannelImpl queue)
+    {
+        super();
+        this.channel = queue;
+    }
+    
+    @Override
+    public void onModify(final ModifyType type, final String key, final Object valueOld, final Object valueNew)
+    {
+        ((MessageDispatcherImpl) this.channel.getDispatcher()).onConfigurationModify(this.channel, key);
+    }
+    
+    @Override
+    public void onModifySet(final List<PropertyBlockModifyItem> modifySet)
+    {
+        if (modifySet == null)
+        {
+            return;
+        }
+        if (modifySet.isEmpty())
+        {
+            return;
+        }
+        String[] attributes = new String[modifySet.size()];
+        int index = 0;
+        for (final PropertyBlockModifyItem item : modifySet)
+        {
+            attributes[index++] = item.getKey();
+        }
+        ((MessageDispatcherImpl) this.channel.getDispatcher()).onConfigurationModify(this.channel, attributes);
+    }
+    
 }

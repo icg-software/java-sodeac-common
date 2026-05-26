@@ -11,41 +11,41 @@
 package org.sodeac.common.xuri;
 
 /**
- * 
+ *
  * @author Sebastian Palarus
- * @since 1.0
  * @version 1.0
+ * @since 1.0
  *
  */
 public class FormatException extends RuntimeException
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 2434139633155210329L;
-
-	public FormatException()
-	{
-		super();
-	}
-	
-	public FormatException(String message) 
-	{
-		super(message);
-	}
-	
-	public FormatException(String message, Throwable cause) 
-	{
-		super(message,cause);
-	}
-	
-	public FormatException(Throwable cause) 
-	{
-		super(cause);
-	}
-	
-	public FormatException(String message, Throwable cause,boolean enableSuppression,boolean writableStackTrace) 
-	{
-		super(message, cause, enableSuppression, writableStackTrace);
-	}
+    /**
+     *
+     */
+    private static final long serialVersionUID = 2434139633155210329L;
+    
+    public FormatException()
+    {
+        super();
+    }
+    
+    public FormatException(final String message)
+    {
+        super(message);
+    }
+    
+    public FormatException(final String message, final Throwable cause)
+    {
+        super(message, cause);
+    }
+    
+    public FormatException(final Throwable cause)
+    {
+        super(cause);
+    }
+    
+    public FormatException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace)
+    {
+        super(message, cause, enableSuppression, writableStackTrace);
+    }
 }

@@ -12,14 +12,14 @@ package org.sodeac.common.typedtree;
 
 public class SerializerOptions
 {
-	private SerializerOptions()
-	{
-		super();
-	}
-	
-	public SerializerOptions newInstance()
-	{
-		return new SerializerOptions();
-	}
-	
+    private SerializerOptions()
+    {
+        super();
+    }
+    
+    public SerializerOptions newInstance()
+    {
+        return new SerializerOptions();
+    }
+    
 }

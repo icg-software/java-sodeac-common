@@ -11,25 +11,26 @@
 package org.sodeac.common.message.dispatcher.api;
 
 import java.util.UUID;
+
 /**
- *  API for a special scope in channels.
- *  
+ * API for a special scope in channels.
+ *
  * @author Sebastian Palarus
  *
  */
 public interface ISubChannel<T> extends IDispatcherChannel<T>
 {
-	
-	/**
-	 * getter for scope id. ScopeId is unique key (by global session) addressed this scope
-	 * 
-	 * @return scope id
-	 */
-	public UUID getScopeId();
-	
-	/**
-	 * dispose this scope and remove it from global scope
-	 */
-	public void dispose();
-	
+    
+    /**
+     * getter for scope id. ScopeId is unique key (by global session) addressed this scope
+     *
+     * @return scope id
+     */
+    UUID getScopeId();
+    
+    /**
+     * dispose this scope and remove it from global scope
+     */
+    void dispose();
+    
 }

@@ -19,24 +19,34 @@ import java.lang.annotation.Target;
 import java.util.function.Function;
 
 import org.sodeac.common.IService.IFactoryEnvironment;
-import org.sodeac.common.impl.LocalServiceRegistryImpl;
+import org.sodeac.common.misc.DefaultServiceFactory;
 
 @Documented
 @Retention(RUNTIME)
 @Target(TYPE)
 public @interface ServiceFactory
 {
-	int lowerScalingLimit() default 1;
-	int upperScalingLimit() default 1;
-	int initialScaling() default 0;
-	boolean shared() default true;
-	Class<?> requiredConfigurationClass() default NoRequiredConfiguration.class;
-	Class<? extends Function<IFactoryEnvironment<?,?>,?>> factoryClass() default LocalServiceRegistryImpl.DefaultFactory.class;
-	ServiceRegistration[] registrations() default{};
-	StringProperty[] stringProperty() default{};
-	BooleanProperty[] booleanProperty() default{};
-	DecimalProperty[] decimalProperty() default{};
-	IntegerProperty[] integerProperty() default{};
-	
-	public class NoRequiredConfiguration{}
+    int lowerScalingLimit() default 1;
+    
+    int upperScalingLimit() default 1;
+    
+    int initialScaling() default 0;
+    
+    boolean shared() default true;
+    
+    Class<?> requiredConfigurationClass() default NoRequiredConfiguration.class;
+    
+    Class<? extends Function<IFactoryEnvironment<?, ?>, ?>> factoryClass() default DefaultServiceFactory.class;
+    
+    ServiceRegistration[] registrations() default {};
+    
+    StringProperty[] stringProperty() default {};
+    
+    BooleanProperty[] booleanProperty() default {};
+    
+    DecimalProperty[] decimalProperty() default {};
+    
+    IntegerProperty[] integerProperty() default {};
+    
+    class NoRequiredConfiguration { }
 }

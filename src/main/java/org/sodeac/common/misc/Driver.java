@@ -21,111 +21,111 @@ import java.util.function.BiConsumer;
 
 public class Driver
 {
-	public static <T extends IDriver> T getSingleDriver(Class<T> driverClass, Map<String,Object> properties)
-	{
-		if(OSGiUtils.isOSGi())
-		{
-			T driver = OSGiUtils.getSingleDriver(driverClass, properties);
-			if(driver != null)
-			{
-				return driver;
-			}
-		}
-		ServiceLoader<T> serviceLoader = ServiceLoader.load(driverClass);
-		Iterator<T> iterator = serviceLoader.iterator();
-		T bestDriver = null;
-		int bestIndex = -1;
-		boolean hasNext = true;
-		while(hasNext)
-		{
-			try
-			{
-				hasNext = iterator.hasNext();
-				if(hasNext)
-				{
-					T driverInstance = iterator.next();
-					int applicableIndex = driverInstance.driverIsApplicableFor(properties);
-					if(applicableIndex > bestIndex)
-					{
-						bestDriver = driverInstance;
-						bestIndex = applicableIndex;
-					}
-				}
-			}
-			catch (Exception e) {}
-			catch (Error e) {}
-		}
-		return bestDriver;
-	}
-	
-	public static  <T extends IDriver> boolean addUpdateListener(Class<T> driverClass, BiConsumer<T, T> updateListener)
-	{
-		if(OSGiUtils.isOSGi())
-		{
-			return OSGiUtils.addDriverUpdateListener(driverClass, updateListener);
-		}
-		return true;
-	}
-	
-	public static <T extends IDriver> boolean  removeUpdateListener(Class<T> driverClass, BiConsumer<T, T> updateListener)
-	{
-		if(OSGiUtils.isOSGi())
-		{
-			return OSGiUtils.removeDriverUpdateListener(driverClass, updateListener);
-		}
-		return true;
-	}
-	
-	public static <T extends IDriver> List<T> getDriverList(Class<T> driverClass, Map<String,Object> properties)
-	{
-		if(OSGiUtils.isOSGi())
-		{
-			List<T> driverList = OSGiUtils.getDriverList(driverClass, properties);
-			if(! driverList.isEmpty())
-			{
-				return driverList;
-			}
-		}
-		ServiceLoader<T> serviceLoader = ServiceLoader.load(driverClass);
-		Iterator<T> iterator = serviceLoader.iterator();
-		List<T> list = new ArrayList<T>();
-		Set<String> uniqueIndex = new HashSet<String>();
-		boolean hasNext = true;
-		while(hasNext)
-		{
-			try
-			{
-				hasNext = iterator.hasNext();
-				if(hasNext)
-				{
-					T driverInstance = iterator.next();
-					if(uniqueIndex.contains(driverInstance.getClass().getCanonicalName()))
-					{
-						continue;
-					}
-					int applicableIndex = driverInstance.driverIsApplicableFor(properties);
-					if(applicableIndex > IDriver.APPLICABLE_NONE)
-					{
-						list.add(driverInstance);
-						uniqueIndex.add(driverInstance.getClass().getCanonicalName());
-					}
-				}
-			}
-			catch (Exception e) {}
-			catch (Error e) {}
-		}
-		uniqueIndex.clear();
-		return list;
-	}
-	
-	public interface IDriver
-	{
-		public static final String TYPE = "TYPE";
-		
-		public static final int APPLICABLE_NONE = -1;
-		public static final int APPLICABLE_FALLBACK = 0;
-		public static final int APPLICABLE_DEFAULT = 10000;
-		
-		public int driverIsApplicableFor(Map<String,Object> properties);
-	}
+    public static <T extends IDriver> T getSingleDriver(final Class<T> driverClass, final Map<String, Object> properties)
+    {
+        if (OSGiUtils.isOSGi())
+        {
+            T driver = OSGiUtils.getSingleDriver(driverClass, properties);
+            if (driver != null)
+            {
+                return driver;
+            }
+        }
+        ServiceLoader<T> serviceLoader = ServiceLoader.load(driverClass);
+        Iterator<T> iterator = serviceLoader.iterator();
+        T bestDriver = null;
+        int bestIndex = -1;
+        boolean hasNext = true;
+        while (hasNext)
+        {
+            try
+            {
+                hasNext = iterator.hasNext();
+                if (hasNext)
+                {
+                    T driverInstance = iterator.next();
+                    int applicableIndex = driverInstance.driverIsApplicableFor(properties);
+                    if (applicableIndex > bestIndex)
+                    {
+                        bestDriver = driverInstance;
+                        bestIndex = applicableIndex;
+                    }
+                }
+            }
+            catch (final Exception e) { }
+            catch (final Error e) { }
+        }
+        return bestDriver;
+    }
+    
+    public static <T extends IDriver> boolean addUpdateListener(final Class<T> driverClass, final BiConsumer<T, T> updateListener)
+    {
+        if (OSGiUtils.isOSGi())
+        {
+            return OSGiUtils.addDriverUpdateListener(driverClass, updateListener);
+        }
+        return true;
+    }
+    
+    public static <T extends IDriver> boolean removeUpdateListener(final Class<T> driverClass, final BiConsumer<T, T> updateListener)
+    {
+        if (OSGiUtils.isOSGi())
+        {
+            return OSGiUtils.removeDriverUpdateListener(driverClass, updateListener);
+        }
+        return true;
+    }
+    
+    public static <T extends IDriver> List<T> getDriverList(final Class<T> driverClass, final Map<String, Object> properties)
+    {
+        if (OSGiUtils.isOSGi())
+        {
+            List<T> driverList = OSGiUtils.getDriverList(driverClass, properties);
+            if (!driverList.isEmpty())
+            {
+                return driverList;
+            }
+        }
+        ServiceLoader<T> serviceLoader = ServiceLoader.load(driverClass);
+        Iterator<T> iterator = serviceLoader.iterator();
+        List<T> list = new ArrayList<T>();
+        Set<String> uniqueIndex = new HashSet<String>();
+        boolean hasNext = true;
+        while (hasNext)
+        {
+            try
+            {
+                hasNext = iterator.hasNext();
+                if (hasNext)
+                {
+                    T driverInstance = iterator.next();
+                    if (uniqueIndex.contains(driverInstance.getClass().getCanonicalName()))
+                    {
+                        continue;
+                    }
+                    int applicableIndex = driverInstance.driverIsApplicableFor(properties);
+                    if (applicableIndex > IDriver.APPLICABLE_NONE)
+                    {
+                        list.add(driverInstance);
+                        uniqueIndex.add(driverInstance.getClass().getCanonicalName());
+                    }
+                }
+            }
+            catch (final Exception e) { }
+            catch (final Error e) { }
+        }
+        uniqueIndex.clear();
+        return list;
+    }
+    
+    public interface IDriver
+    {
+        String TYPE = "TYPE";
+        
+        int APPLICABLE_NONE = -1;
+        int APPLICABLE_FALLBACK = 0;
+        int APPLICABLE_DEFAULT = 10000;
+        
+        int driverIsApplicableFor(Map<String, Object> properties);
+    }
 }

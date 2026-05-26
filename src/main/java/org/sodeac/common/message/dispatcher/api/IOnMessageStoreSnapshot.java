@@ -13,24 +13,24 @@ package org.sodeac.common.message.dispatcher.api;
 import org.sodeac.common.snapdeque.DequeSnapshot;
 
 /**
- * 
- * An extension interface for {@link IDispatcherChannelManager} to consume a notification if {@link IDispatcherChannel} has queued {@link IMessage}s. 
+ *
+ * An extension interface for {@link IDispatcherChannelManager} to consume a notification if {@link IDispatcherChannel} has queued {@link IMessage}s.
  * <br>
- * UseCase: (re)plan tasks 
- * 
+ * UseCase: (re)plan tasks
+ *
  * @author Sebastian Palarus
  *
  */
 public interface IOnMessageStoreSnapshot<T> extends IDispatcherChannelManager
 {
-	/**
-	 * This is fired, if {@link IDispatcherChannel} has queued {@link IMessage}s
-	 * <br>
-	 * invoked and synchronized by queue worker
-	 * <br>
-	 * UseCase: (re)plan tasks 
-	 * 
-	 * @param messageStoreSnapshot new messageSnapshot
-	 */
-	public void onMessageStoreSnapshot(DequeSnapshot<IMessage<T>> messageStoreSnapshot);
+    /**
+     * This is fired, if {@link IDispatcherChannel} has queued {@link IMessage}s
+     * <br>
+     * invoked and synchronized by queue worker
+     * <br>
+     * UseCase: (re)plan tasks
+     *
+     * @param messageStoreSnapshot new messageSnapshot
+     */
+    void onMessageStoreSnapshot(DequeSnapshot<IMessage<T>> messageStoreSnapshot);
 }

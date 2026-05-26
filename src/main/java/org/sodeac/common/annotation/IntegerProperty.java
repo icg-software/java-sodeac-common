@@ -23,9 +23,10 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RUNTIME)
 @Target({ TYPE, FIELD })
-@Repeatable(value=IntegerProperties.class)
+@Repeatable(value = IntegerProperties.class)
 public @interface IntegerProperty
 {
-	String key();
-	long value();
+    String key();
+    
+    long value();
 }

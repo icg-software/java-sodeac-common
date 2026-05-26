@@ -17,9 +17,9 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import org.sodeac.common.jdbc.schemax.IDefaultStaticValue;
 import org.sodeac.common.misc.OSGiDriverRegistry;
 
-@Component(service=IDefaultStaticValue.class,property="defaultdriver=true")
+@Component(service = IDefaultStaticValue.class, property = "defaultdriver=true")
 public class DefaultStaticValueImpl implements IDefaultStaticValue
 {
-	@Reference(cardinality=ReferenceCardinality.MANDATORY,policy=ReferencePolicy.STATIC)
-	protected volatile OSGiDriverRegistry internalBootstrapDep;
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC)
+    protected volatile OSGiDriverRegistry internalBootstrapDep;
 }

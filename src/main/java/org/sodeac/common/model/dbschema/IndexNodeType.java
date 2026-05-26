@@ -17,16 +17,19 @@ import org.sodeac.common.typedtree.LeafNodeType;
 import org.sodeac.common.typedtree.ModelRegistry;
 import org.sodeac.common.typedtree.annotation.TypedTreeModel;
 
-@TypedTreeModel(modelClass=DBSchemaTreeModel.class)
-@GenerateBow(buildAlias=true)
+@TypedTreeModel(modelClass = DBSchemaTreeModel.class)
+@GenerateBow(buildAlias = true)
 public class IndexNodeType extends BranchNodeMetaModel
 {
-	static{ModelRegistry.getBranchNodeMetaModel(IndexNodeType.class);}
-	
-	public static volatile LeafNodeType<IndexNodeType,String> name;
-	public static volatile LeafNodeType<IndexNodeType,String> dbmsSchemaName;	
-	public static volatile LeafNodeType<IndexNodeType,String> tableSpace;
-	public static volatile LeafNodeType<IndexNodeType,Boolean> quotedName;
-	public static volatile LeafNodeType<IndexNodeType,Boolean> unique;
-	public static volatile BranchNodeListType<IndexNodeType,IndexColumnNodeType> members;
+    static
+    {
+        ModelRegistry.getBranchNodeMetaModel(IndexNodeType.class);
+    }
+    
+    public static volatile LeafNodeType<IndexNodeType, String> name;
+    public static volatile LeafNodeType<IndexNodeType, String> dbmsSchemaName;
+    public static volatile LeafNodeType<IndexNodeType, String> tableSpace;
+    public static volatile LeafNodeType<IndexNodeType, Boolean> quotedName;
+    public static volatile LeafNodeType<IndexNodeType, Boolean> unique;
+    public static volatile BranchNodeListType<IndexNodeType, IndexColumnNodeType> members;
 }

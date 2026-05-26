@@ -11,22 +11,22 @@
 package org.sodeac.common.message.dispatcher.api;
 
 /**
- * 
+ *
  * An extension interface for {@link IDispatcherChannelManager} to consume notifications if a task throws an exception or an error
- * 
+ *
  * @author Sebastian Palarus
  *
  */
 public interface IOnTaskError<T> extends IDispatcherChannelManager
 {
-	/**
-	 * This methode is fired, if {@link IDispatcherChannelTask} throws an exception or an error
-	 * <br>
-	 * invoked and synchronized by queue worker
-	 * 
-	 * @param queue  queue of task which throws the exception
-	 * @param task task which throws the exception
-	 * @param throwable throwed exception or error
-	 */
-	public void onTaskError(IDispatcherChannel<T> queue,IDispatcherChannelTask<T> task, Throwable throwable);
+    /**
+     * This methode is fired, if {@link IDispatcherChannelTask} throws an exception or an error
+     * <br>
+     * invoked and synchronized by queue worker
+     *
+     * @param queue     queue of task which throws the exception
+     * @param task      task which throws the exception
+     * @param throwable throwed exception or error
+     */
+    void onTaskError(IDispatcherChannel<T> queue, IDispatcherChannelTask<T> task, Throwable throwable);
 }

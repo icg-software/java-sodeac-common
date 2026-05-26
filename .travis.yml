@@ -1,6 +1,7 @@
 language: java
 
-sudo: false
-
 jdk:
-- openjdk8
+  - openjdk21
+
+script:
+  - mvn -B verify

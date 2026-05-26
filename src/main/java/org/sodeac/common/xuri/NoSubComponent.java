@@ -14,18 +14,18 @@ import java.io.Serializable;
 
 /**
  * dummy sub component for URI components that are not subdivided into subcomponents
- * 
+ *
  * @author Sebastian Palarus
- * @since 1.0
  * @version 1.0
+ * @since 1.0
  *
  */
 public class NoSubComponent implements Serializable
 {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -7279745335408819219L;
-
+    
+    /**
+     *
+     */
+    private static final long serialVersionUID = -7279745335408819219L;
+    
 }

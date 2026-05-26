@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.sodeac.common.typedtree;
 
-import org.sodeac.common.typedtree.BranchNodeMetaModel;
-import org.sodeac.common.typedtree.LeafNodeType;
-
 public class CountryType extends BranchNodeMetaModel
 {
-	static{ModelRegistry.getBranchNodeMetaModel(CountryType.class);}
-	
-	public static volatile LeafNodeType<CountryType,String> name;
-	public static volatile BranchNodeListType<CountryType,LangType> languageList;
+    static
+    {
+        ModelRegistry.getBranchNodeMetaModel(CountryType.class);
+    }
+    
+    public static volatile LeafNodeType<CountryType, String> name;
+    public static volatile BranchNodeListType<CountryType, LangType> languageList;
 }

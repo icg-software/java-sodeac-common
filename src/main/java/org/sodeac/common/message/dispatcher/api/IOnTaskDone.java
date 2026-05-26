@@ -11,21 +11,21 @@
 package org.sodeac.common.message.dispatcher.api;
 
 /**
- * 
+ *
  * An extension interface for {@link IDispatcherChannelManager} to consume notifications of finishing a task
- * 
+ *
  * @author Sebastian Palarus
  *
  */
 public interface IOnTaskDone<T> extends IDispatcherChannelManager
 {
-	/**
-	 * This is fired, if {@link IDispatcherChannelTask} remove a scheduled {@link IMessage}
-	 * <br>
-	 * invoked and synchronized by queue worker
-	 * 
-	 * @param channel  queue of task finished {@link IDispatcherChannelTask}
-	 * @param task finished {@link IDispatcherChannelTask}
-	 */
-	public void onTaskDone(IDispatcherChannel<T> channel,IDispatcherChannelTask<T> task);
+    /**
+     * This is fired, if {@link IDispatcherChannelTask} remove a scheduled {@link IMessage}
+     * <br>
+     * invoked and synchronized by queue worker
+     *
+     * @param channel queue of task finished {@link IDispatcherChannelTask}
+     * @param task    finished {@link IDispatcherChannelTask}
+     */
+    void onTaskDone(IDispatcherChannel<T> channel, IDispatcherChannelTask<T> task);
 }

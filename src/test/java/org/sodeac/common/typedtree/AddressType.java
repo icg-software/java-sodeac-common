@@ -10,18 +10,17 @@
  *******************************************************************************/
 package org.sodeac.common.typedtree;
 
-import org.sodeac.common.typedtree.BranchNodeType;
-import org.sodeac.common.typedtree.BranchNodeMetaModel;
-import org.sodeac.common.typedtree.LeafNodeType;
-
 public class AddressType extends BranchNodeMetaModel
 {
-	static{ModelRegistry.getBranchNodeMetaModel(AddressType.class);}
-	
-	public static volatile LeafNodeType<AddressType,String> street;
-	public static volatile LeafNodeType<AddressType,String> number;
-	public static volatile LeafNodeType<AddressType,String> city;
-	public static volatile LeafNodeType<AddressType,Integer> zip;
-	public static volatile BranchNodeType<AddressType,CountryType> country;
-	public static volatile BranchNodeType<AddressType,UserType> parentuser;
+    static
+    {
+        ModelRegistry.getBranchNodeMetaModel(AddressType.class);
+    }
+    
+    public static volatile LeafNodeType<AddressType, String> street;
+    public static volatile LeafNodeType<AddressType, String> number;
+    public static volatile LeafNodeType<AddressType, String> city;
+    public static volatile LeafNodeType<AddressType, Integer> zip;
+    public static volatile BranchNodeType<AddressType, CountryType> country;
+    public static volatile BranchNodeType<AddressType, UserType> parentuser;
 }

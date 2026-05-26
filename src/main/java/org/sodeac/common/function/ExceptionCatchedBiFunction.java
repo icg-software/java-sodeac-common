@@ -16,47 +16,49 @@ import org.sodeac.common.misc.RuntimeWrappedException;
 
 public interface ExceptionCatchedBiFunction<T, U, R> extends BiFunction<T, U, R>
 {
-
-	@Override
-	default R apply(T t, U u)
-	{
-		try
-		{
-			return applyWithException(t,u);
-		}
-		catch (Exception e) 
-		{
-			if(e instanceof RuntimeException)
-			{
-				throw (RuntimeException)e;
-			}
-			throw new RuntimeWrappedException(e);
-		}
-		catch (Error e) 
-		{
-			throw new RuntimeWrappedException(e);
-		}
-	}
-	
-	/**
-	 * Applies this function to the given arguments with potentially throws an exception.
-	 * 
-	 * @param t the first function argument
+    
+    @Override
+    default R apply(final T t, final U u)
+    {
+        try
+        {
+            return applyWithException(t, u);
+        }
+        catch (final Exception e)
+        {
+            if (e instanceof RuntimeException)
+            {
+                throw (RuntimeException) e;
+            }
+            throw new RuntimeWrappedException(e);
+        }
+        catch (final Error e)
+        {
+            throw new RuntimeWrappedException(e);
+        }
+    }
+    
+    /**
+     * Applies this function to the given arguments with potentially throws an exception.
+     *
+     * @param t the first function argument
      * @param u the second function argument
-	 * @return the function result
-	 * @throws Exception
-	 */
-	public R applyWithException(T t, U u) throws Exception, Error;
-	
-	public static <T, U, R> BiFunction<T, U, R> wrap(ExceptionCatchedBiFunction<T, U, R> function)
-	{
-		return new BiFunction<T, U, R>()
-		{
-			@Override
-			public R apply(T t, U u)
-			{
-				return function.apply(t,u);
-			}
-		};
-	}
+     *
+     * @return the function result
+     *
+     * @throws Exception
+     */
+    R applyWithException(T t, U u) throws Exception, Error;
+    
+    static <T, U, R> BiFunction<T, U, R> wrap(final ExceptionCatchedBiFunction<T, U, R> function)
+    {
+        return new BiFunction<T, U, R>()
+        {
+            @Override
+            public R apply(final T t, final U u)
+            {
+                return function.apply(t, u);
+            }
+        };
+    }
 }

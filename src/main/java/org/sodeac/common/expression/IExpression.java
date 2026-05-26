@@ -12,9 +12,12 @@ package org.sodeac.common.expression;
 
 public interface IExpression<T>
 {
-	public Class<T> getExpressionType();
-	public String getExpressionString();
-	public T evaluate(Context context);
-	
-	public default void dispose() {};
+    Class<T> getExpressionType();
+    
+    String getExpressionString();
+    
+    T evaluate(Context context);
+    
+    default void dispose() { }
+    
 }

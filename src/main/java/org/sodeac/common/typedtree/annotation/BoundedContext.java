@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 @Target({ TYPE, FIELD, METHOD, PACKAGE })
 @Repeatable(BoundedContexts.class)
-public @interface BoundedContext 
+public @interface BoundedContext
 {
-	String name();
+    String name();
 }

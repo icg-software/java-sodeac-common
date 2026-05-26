@@ -12,26 +12,26 @@ package org.sodeac.common.message.dispatcher.api;
 
 /**
  * Interface to register {@link IDispatcherChannelTask}
- * 
+ *
  * @author Sebastian Palarus
  *
  */
-public interface IDispatcherChannelService<T> extends IDispatcherChannelTask<T>,IDispatcherChannelComponent
-{ 
-	/**
-	 * 
-	 * @param componentConfiguration
-	 */
-	public default void configureChannelServicePolicy(IChannelServicePolicy componentBindingPolicy)
-	{
-	}
-	
-	public static interface IChannelServicePolicy
-	{
-		/**
-		 * 
-		 * @param configuration
-		 */
-		public IChannelServicePolicy addConfigurationDetail(ComponentBindingSetup componentBindingSetup);
-	}
+public interface IDispatcherChannelService<T> extends IDispatcherChannelTask<T>, IDispatcherChannelComponent
+{
+    /**
+     *
+     * @param componentConfiguration
+     */
+    default void configureChannelServicePolicy(final IChannelServicePolicy componentBindingPolicy)
+    {
+    }
+    
+    interface IChannelServicePolicy
+    {
+        /**
+         *
+         * @param configuration
+         */
+        IChannelServicePolicy addConfigurationDetail(ComponentBindingSetup componentBindingSetup);
+    }
 }

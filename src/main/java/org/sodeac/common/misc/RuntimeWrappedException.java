@@ -12,14 +12,14 @@ package org.sodeac.common.misc;
 
 public class RuntimeWrappedException extends RuntimeException
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 8985443414667960529L;
-
-	public RuntimeWrappedException(Throwable throwable)
-	{
-		super(throwable.getMessage(), throwable);
-	}
-	
+    /**
+     *
+     */
+    private static final long serialVersionUID = 8985443414667960529L;
+    
+    public RuntimeWrappedException(final Throwable throwable)
+    {
+        super(throwable.getMessage(), throwable);
+    }
+    
 }

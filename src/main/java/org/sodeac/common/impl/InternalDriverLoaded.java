@@ -28,58 +28,58 @@ import org.sodeac.common.xuri.IExtension;
 import org.sodeac.common.xuri.json.JsonExtension;
 import org.sodeac.common.xuri.ldapfilter.LDAPFilterExtension;
 
-@Component(service=InternalDriverLoaded.class)
+@Component(service = InternalDriverLoaded.class)
 public class InternalDriverLoaded
 {
-	@Reference(cardinality=ReferenceCardinality.MANDATORY,policy=ReferencePolicy.STATIC)
-	protected volatile OSGiDriverRegistry internalBootstrapDep;
-	
-	// XURI
-	
-	@Reference(cardinality=ReferenceCardinality.MANDATORY,policy=ReferencePolicy.STATIC,target="(type=" + JsonExtension.TYPE + ")")
-	protected volatile IExtension<?> jsonExtension;
-	
-	@Reference(cardinality=ReferenceCardinality.MANDATORY,policy=ReferencePolicy.STATIC,target="(type=" + LDAPFilterExtension.TYPE + ")")
-	protected volatile IExtension<?> ldapFilterExtension;
-	
-	// DBSchema
-	
-	@Reference(cardinality=ReferenceCardinality.MANDATORY,policy=ReferencePolicy.STATIC,target="(defaultdriver=true)")
-	protected volatile IColumnType defaultColumnType;
-	
-	@Reference(cardinality=ReferenceCardinality.MANDATORY,policy=ReferencePolicy.STATIC,target="(defaultdriver=true)")
-	protected volatile IDefaultCurrentDate defaultCurrentDate;
-	
-	@Reference(cardinality=ReferenceCardinality.MANDATORY,policy=ReferencePolicy.STATIC,target="(defaultdriver=true)")
-	protected volatile IDefaultCurrentTime defaultCurrentTime;
-	
-	@Reference(cardinality=ReferenceCardinality.MANDATORY,policy=ReferencePolicy.STATIC,target="(defaultdriver=true)")
-	protected volatile IDefaultCurrentTimestamp defaultCurrentTimestamp;
-	
-	@Reference(cardinality=ReferenceCardinality.MANDATORY,policy=ReferencePolicy.STATIC,target="(defaultdriver=true)")
-	protected volatile IDefaultStaticValue defaultStaticValue;
-	
-	@Reference(cardinality=ReferenceCardinality.MANDATORY,policy=ReferencePolicy.STATIC,target="(&(defaultdriver=true)(type=h2))")
-	protected volatile IDBSchemaUtilsDriver h2DBUtils;
-	
-	@Reference(cardinality=ReferenceCardinality.MANDATORY,policy=ReferencePolicy.STATIC,target="(&(defaultdriver=true)(type=h2))")
-	protected volatile IDefaultBySequence h2DefaultBySequence;
-	
-	@Reference(cardinality=ReferenceCardinality.MANDATORY,policy=ReferencePolicy.STATIC,target="(&(defaultdriver=true)(type=postgresql))")
-	protected volatile IDBSchemaUtilsDriver pgDBUtils;
-	
-	@Reference(cardinality=ReferenceCardinality.MANDATORY,policy=ReferencePolicy.STATIC,target="(&(defaultdriver=true)(type=postgresql))")
-	protected volatile IDefaultBySequence pgDefaultBySequence;
-	
-	// Message Dispatcher Components
-	
-	@Reference(cardinality=ReferenceCardinality.MANDATORY,policy=ReferencePolicy.STATIC)
-	protected volatile MessageDispatcherManagerComponent messageDispatcherManagerComponent;
-	
-	@Reference(cardinality=ReferenceCardinality.MANDATORY,policy=ReferencePolicy.STATIC,target="(&(type=consume-messages)(role=consumer))")
-	protected volatile IDispatcherChannelSystemManager consumeMessagesConsumerManager;
-	
-	@Reference(cardinality=ReferenceCardinality.MANDATORY,policy=ReferencePolicy.STATIC,target="(&(type=consume-messages)(role=planner))")
-	protected volatile IDispatcherChannelSystemManager consumeMessagesPlannerManager;
-	
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC)
+    protected volatile OSGiDriverRegistry internalBootstrapDep;
+    
+    // XURI
+    
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, target = "(type=" + JsonExtension.TYPE + ")")
+    protected volatile IExtension<?> jsonExtension;
+    
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, target = "(type=" + LDAPFilterExtension.TYPE + ")")
+    protected volatile IExtension<?> ldapFilterExtension;
+    
+    // DBSchema
+    
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, target = "(defaultdriver=true)")
+    protected volatile IColumnType defaultColumnType;
+    
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, target = "(defaultdriver=true)")
+    protected volatile IDefaultCurrentDate defaultCurrentDate;
+    
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, target = "(defaultdriver=true)")
+    protected volatile IDefaultCurrentTime defaultCurrentTime;
+    
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, target = "(defaultdriver=true)")
+    protected volatile IDefaultCurrentTimestamp defaultCurrentTimestamp;
+    
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, target = "(defaultdriver=true)")
+    protected volatile IDefaultStaticValue defaultStaticValue;
+    
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, target = "(&(defaultdriver=true)(type=h2))")
+    protected volatile IDBSchemaUtilsDriver h2DBUtils;
+    
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, target = "(&(defaultdriver=true)(type=h2))")
+    protected volatile IDefaultBySequence h2DefaultBySequence;
+    
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, target = "(&(defaultdriver=true)(type=postgresql))")
+    protected volatile IDBSchemaUtilsDriver pgDBUtils;
+    
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, target = "(&(defaultdriver=true)(type=postgresql))")
+    protected volatile IDefaultBySequence pgDefaultBySequence;
+    
+    // Message Dispatcher Components
+    
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC)
+    protected volatile MessageDispatcherManagerComponent messageDispatcherManagerComponent;
+    
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, target = "(&(type=consume-messages)(role=consumer))")
+    protected volatile IDispatcherChannelSystemManager consumeMessagesConsumerManager;
+    
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, target = "(&(type=consume-messages)(role=planner))")
+    protected volatile IDispatcherChannelSystemManager consumeMessagesPlannerManager;
+    
 }

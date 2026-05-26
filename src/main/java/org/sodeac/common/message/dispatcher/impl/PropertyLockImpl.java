@@ -16,37 +16,37 @@ import org.sodeac.common.message.dispatcher.api.IPropertyLock;
 
 public class PropertyLockImpl implements IPropertyLock
 {
-	private PropertyBlockImpl block;
-	private String key;
-	private UUID pin;
-	
-	protected PropertyLockImpl(PropertyBlockImpl block,String key, UUID pin)
-	{
-		super();
-		this.block = block;
-		this.key = key;
-		this.pin = pin;
-	}
-
-	@Override
-	public boolean unlock()
-	{
-		return block.unlockProperty(this);
-	}
-
-	protected PropertyBlockImpl getBlock()
-	{
-		return block;
-	}
-
-	protected String getKey()
-	{
-		return key;
-	}
-
-	protected UUID getPin()
-	{
-		return pin;
-	}
-
+    private final PropertyBlockImpl block;
+    private final String key;
+    private final UUID pin;
+    
+    protected PropertyLockImpl(final PropertyBlockImpl block, final String key, final UUID pin)
+    {
+        super();
+        this.block = block;
+        this.key = key;
+        this.pin = pin;
+    }
+    
+    @Override
+    public boolean unlock()
+    {
+        return this.block.unlockProperty(this);
+    }
+    
+    protected PropertyBlockImpl getBlock()
+    {
+        return this.block;
+    }
+    
+    protected String getKey()
+    {
+        return this.key;
+    }
+    
+    protected UUID getPin()
+    {
+        return this.pin;
+    }
+    
 }

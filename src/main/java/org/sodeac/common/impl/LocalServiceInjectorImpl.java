@@ -4,11 +4,11 @@ import org.sodeac.common.IService.IInjector;
 
 public class LocalServiceInjectorImpl implements IInjector
 {
-
-	@Override
-	public void injectMembers(Object instance)
-	{
-		// TODO Auto-generated method stub
-		
-	}
+    
+    @Override
+    public void injectMembers(final Object instance)
+    {
+        // TODO Auto-generated method stub
+        
+    }
 }

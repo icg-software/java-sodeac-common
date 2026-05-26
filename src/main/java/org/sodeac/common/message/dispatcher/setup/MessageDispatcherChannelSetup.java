@@ -31,205 +31,217 @@ import org.sodeac.common.misc.TaskDoneNotifier;
 
 public class MessageDispatcherChannelSetup
 {
-	private MessageDispatcherChannelSetup()
-	{
-		super();
-	}
-	
-	public static MessageDispatcherChannelBuilder create()
-	{
-		return new MessageDispatcherChannelBuilder();
-	}
-	
-	public static class MessageDispatcherChannelBuilder
-	{
-		private MessageDispatcherChannelBuilder()
-		{
-			super();
-			this.featureList = new ArrayList<MessageDispatcherChannelSetup.IPreparedChannelFeature>();
-		}
-		
-		private List<IPreparedChannelFeature> featureList = null;
-	
-		public PreparedMessageDispatcherChannelBuilder preparedBuilder()
-		{
-			return new PreparedMessageDispatcherChannelBuilder(this.featureList);
-		}
-		
-		public MessageDispatcherChannelBuilder addFeature(IChannelFeature channelFeature)
-		{
-			this.featureList.add((IPreparedChannelFeature)channelFeature);
-			return this;
-		}
-		
-		public static class PreparedMessageDispatcherChannelBuilder
-		{
-			private PreparedMessageDispatcherChannelBuilder(List<IPreparedChannelFeature> featureList)
-			{
-				super();
-				this.featureList = new ArrayList<>(featureList);
-			}
-			private List<IPreparedChannelFeature> featureList = null;
-			
-			public InDispatcher inDispatcher(Supplier<IMessageDispatcher> dispatcherSupplier)
-			{
-				Objects.requireNonNull(dispatcherSupplier, "dispatcher supplier is null");
-				return new InDispatcher(dispatcherSupplier);
-			}
-			
-			public InDispatcher inDispatcher(IMessageDispatcher dispatcher)
-			{
-				Objects.requireNonNull(dispatcher, "dispatcher is null");
-				return new InDispatcher(new ConplierBean<IMessageDispatcher>(dispatcher));
-			}
-			
-			public InDispatcher inManagedDispatcher(String dispatcherId)
-			{
-				Objects.requireNonNull(dispatcherId, "dispatcher id is null");
-				if(dispatcherId.isEmpty())
-				{
-					throw new IllegalStateException("dispatcher is is empty");
-				}
-				return new InDispatcher(new ConplierBean<IMessageDispatcher>(IMessageDispatcherManager.get().getOrCreateDispatcher(dispatcherId)));
-			}
-			
-			public class InDispatcher
-			{
-				private InDispatcher(Supplier<IMessageDispatcher> dispatcherSupplier)
-				{
-					super();
-					this.dispatcherSupplier = dispatcherSupplier;
-				}
-				
-				private Supplier<IMessageDispatcher> dispatcherSupplier = null;
-				
-				public WithName underTheName(String channelName)
-				{
-					if(channelName == null)
-					{
-						channelName = "";
-					}
-					return new WithName(channelName);
-				}
-				
-				public IDispatcherChannelReference buildChannelWithId(String channelId)
-				{
-					return new WithName("").buildChannelWithId(channelId);
-				}
-				
-				public class WithName
-				{
-					public WithName(String name)
-					{
-						super();
-						this.name = name;
-					}
-					private String name = null;
-					
-					public IDispatcherChannelReference buildChannelWithId(String channelId)
-					{
-						IMessageDispatcher dispatcher = dispatcherSupplier.get();
-						Objects.requireNonNull(dispatcher, "dispatcher could not be supplied");
-						if(dispatcher.getChannel(channelId) != null)
-						{
-							throw new IllegalStateException("channel " + channelId + " already exists");
-						}
-						TaskDoneNotifier setupDone = new TaskDoneNotifier();
-						ChannelMasterManager channelMasterManager = new ChannelMasterManager(channelId, name, dispatcher, featureList, setupDone );
-						dispatcher.registerChannelManager(channelMasterManager);
-						try
-						{
-							setupDone.await(7, TimeUnit.SECONDS);
-						}
-						catch (Exception e) {}
-						return channelMasterManager;
-					}
-				}
-				
-			}
-		}
-	}
-	
-	public interface IChannelFeature
-	{
-		
-	}
-	
-	public interface IPreparedChannelFeature extends IChannelFeature
-	{
-		public void applyToChannel(IDispatcherChannel<?> channel);
-	}
-	
-	@SuppressWarnings("rawtypes")
-	protected static class ChannelMasterManager implements IDispatcherChannelManager,IOnChannelAttach,IDispatcherChannelReference
-	{
-		private String id;
-		private String name;
-		private IMessageDispatcher dispatcher;
-		private List<IPreparedChannelFeature> featureList;
-		private TaskDoneNotifier taskDoneNotifier;
-		
-		protected ChannelMasterManager(String id, String name, IMessageDispatcher dispatcher, List<IPreparedChannelFeature> featureList, TaskDoneNotifier taskDoneNotifier)
-		{
-			super();
-			this.id = id;
-			this.name = name;
-			this.dispatcher = dispatcher;
-			this.featureList = featureList;
-			this.taskDoneNotifier = taskDoneNotifier;
-		}
-		
-		@Override
-		public void configureChannelManagerPolicy(IChannelManagerPolicy configurationPolicy) 
-		{
-			configurationPolicy.addConfigurationDetail(new ComponentBindingSetup.BoundedByChannelId(id).setChannelMaster(true).setName(name));
-		}
-
-		@Override
-		public void close() throws IOException
-		{
-			dispatcher.unregisterChannelManager(this);
-		}
-
-		@Override
-		public void onChannelAttach(IDispatcherChannel channel)
-		{
-			for(IPreparedChannelFeature channelFeature : this.featureList)
-			{
-				try
-				{
-					channelFeature.applyToChannel(channel);
-				}
-				catch (Exception e) {}
-				catch (Error e) {}
-			}
-			
-			this.taskDoneNotifier.setTaskDone();
-			this.taskDoneNotifier = null;
-			this.featureList = null;
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public <T> IDispatcherChannel<T> getChannel(Class<T> type)
-		{
-			return (IDispatcherChannel<T>) dispatcher.getChannel(id);
-		}
-	}
-	
-	public interface MessageConsumeHelper<T,H>
-	{
-		public boolean isFirstMessage();
-		public boolean isLastMessage();
-		public int messageSize();
-		public Collection<IMessage<T>> getAllMessages();
-		public IMessage<T> getMessage();
-		public IDispatcherChannel<T> getChannel();
-		public H getHelper(Supplier<H> supplierIfNotExist);
-		public void heartbeat();
-		public boolean isInTimeout();
-		public boolean isProcessed();
-		public void setProcessed();
-		
-	}
+    private MessageDispatcherChannelSetup()
+    {
+        super();
+    }
+    
+    public static MessageDispatcherChannelBuilder create()
+    {
+        return new MessageDispatcherChannelBuilder();
+    }
+    
+    public static class MessageDispatcherChannelBuilder
+    {
+        private MessageDispatcherChannelBuilder()
+        {
+            super();
+            this.featureList = new ArrayList<MessageDispatcherChannelSetup.IPreparedChannelFeature>();
+        }
+        
+        private List<IPreparedChannelFeature> featureList = null;
+        
+        public PreparedMessageDispatcherChannelBuilder preparedBuilder()
+        {
+            return new PreparedMessageDispatcherChannelBuilder(this.featureList);
+        }
+        
+        public MessageDispatcherChannelBuilder addFeature(final IChannelFeature channelFeature)
+        {
+            this.featureList.add((IPreparedChannelFeature) channelFeature);
+            return this;
+        }
+        
+        public static class PreparedMessageDispatcherChannelBuilder
+        {
+            private PreparedMessageDispatcherChannelBuilder(final List<IPreparedChannelFeature> featureList)
+            {
+                super();
+                this.featureList = new ArrayList<>(featureList);
+            }
+            
+            private List<IPreparedChannelFeature> featureList = null;
+            
+            public InDispatcher inDispatcher(final Supplier<IMessageDispatcher> dispatcherSupplier)
+            {
+                Objects.requireNonNull(dispatcherSupplier, "dispatcher supplier is null");
+                return new InDispatcher(dispatcherSupplier);
+            }
+            
+            public InDispatcher inDispatcher(final IMessageDispatcher dispatcher)
+            {
+                Objects.requireNonNull(dispatcher, "dispatcher is null");
+                return new InDispatcher(new ConplierBean<IMessageDispatcher>(dispatcher));
+            }
+            
+            public InDispatcher inManagedDispatcher(final String dispatcherId)
+            {
+                Objects.requireNonNull(dispatcherId, "dispatcher id is null");
+                if (dispatcherId.isEmpty())
+                {
+                    throw new IllegalStateException("dispatcher is is empty");
+                }
+                return new InDispatcher(new ConplierBean<IMessageDispatcher>(IMessageDispatcherManager.get().getOrCreateDispatcher(dispatcherId)));
+            }
+            
+            public class InDispatcher
+            {
+                private InDispatcher(final Supplier<IMessageDispatcher> dispatcherSupplier)
+                {
+                    super();
+                    this.dispatcherSupplier = dispatcherSupplier;
+                }
+                
+                private Supplier<IMessageDispatcher> dispatcherSupplier = null;
+                
+                public WithName underTheName(String channelName)
+                {
+                    if (channelName == null)
+                    {
+                        channelName = "";
+                    }
+                    return new WithName(channelName);
+                }
+                
+                public IDispatcherChannelReference buildChannelWithId(final String channelId)
+                {
+                    return new WithName("").buildChannelWithId(channelId);
+                }
+                
+                public class WithName
+                {
+                    public WithName(final String name)
+                    {
+                        super();
+                        this.name = name;
+                    }
+                    
+                    private String name = null;
+                    
+                    public IDispatcherChannelReference buildChannelWithId(final String channelId)
+                    {
+                        IMessageDispatcher dispatcher = InDispatcher.this.dispatcherSupplier.get();
+                        Objects.requireNonNull(dispatcher, "dispatcher could not be supplied");
+                        if (dispatcher.getChannel(channelId) != null)
+                        {
+                            throw new IllegalStateException("channel " + channelId + " already exists");
+                        }
+                        TaskDoneNotifier setupDone = new TaskDoneNotifier();
+                        ChannelMasterManager channelMasterManager = new ChannelMasterManager(channelId, this.name, dispatcher, PreparedMessageDispatcherChannelBuilder.this.featureList, setupDone);
+                        dispatcher.registerChannelManager(channelMasterManager);
+                        try
+                        {
+                            setupDone.await(7, TimeUnit.SECONDS);
+                        }
+                        catch (final Exception e) { }
+                        return channelMasterManager;
+                    }
+                }
+                
+            }
+        }
+    }
+    
+    public interface IChannelFeature
+    {
+    
+    }
+    
+    public interface IPreparedChannelFeature extends IChannelFeature
+    {
+        void applyToChannel(IDispatcherChannel<?> channel);
+    }
+    
+    @SuppressWarnings("rawtypes")
+    protected static class ChannelMasterManager implements IDispatcherChannelManager, IOnChannelAttach, IDispatcherChannelReference
+    {
+        private final String id;
+        private final String name;
+        private final IMessageDispatcher dispatcher;
+        private List<IPreparedChannelFeature> featureList;
+        private TaskDoneNotifier taskDoneNotifier;
+        
+        protected ChannelMasterManager(final String id, final String name, final IMessageDispatcher dispatcher, final List<IPreparedChannelFeature> featureList, final TaskDoneNotifier taskDoneNotifier)
+        {
+            super();
+            this.id = id;
+            this.name = name;
+            this.dispatcher = dispatcher;
+            this.featureList = featureList;
+            this.taskDoneNotifier = taskDoneNotifier;
+        }
+        
+        @Override
+        public void configureChannelManagerPolicy(final IChannelManagerPolicy configurationPolicy)
+        {
+            configurationPolicy.addConfigurationDetail(new ComponentBindingSetup.BoundedByChannelId(this.id).setChannelMaster(true).setName(this.name));
+        }
+        
+        @Override
+        public void close() throws IOException
+        {
+            this.dispatcher.unregisterChannelManager(this);
+        }
+        
+        @Override
+        public void onChannelAttach(final IDispatcherChannel channel)
+        {
+            for (final IPreparedChannelFeature channelFeature : this.featureList)
+            {
+                try
+                {
+                    channelFeature.applyToChannel(channel);
+                }
+                catch (final Exception e) { }
+                catch (final Error e) { }
+            }
+            
+            this.taskDoneNotifier.setTaskDone();
+            this.taskDoneNotifier = null;
+            this.featureList = null;
+        }
+        
+        @SuppressWarnings("unchecked")
+        @Override
+        public <T> IDispatcherChannel<T> getChannel(final Class<T> type)
+        {
+            return (IDispatcherChannel<T>) this.dispatcher.getChannel(this.id);
+        }
+    }
+    
+    public interface MessageConsumeHelper<T, H>
+    {
+        boolean isFirstMessage();
+        
+        boolean isLastMessage();
+        
+        int messageSize();
+        
+        Collection<IMessage<T>> getAllMessages();
+        
+        IMessage<T> getMessage();
+        
+        IDispatcherChannel<T> getChannel();
+        
+        H getHelper(Supplier<H> supplierIfNotExist);
+        
+        void heartbeat();
+        
+        boolean isInTimeout();
+        
+        boolean isProcessed();
+        
+        void setProcessed();
+        
+    }
 }

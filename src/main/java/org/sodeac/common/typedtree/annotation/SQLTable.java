@@ -20,13 +20,19 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RUNTIME)
 @Target(TYPE)
-public @interface SQLTable 
+public @interface SQLTable
 {
-	String name() ;
-	String catalog() default "";
-	String schema() default "";
-	boolean skipSchemaGeneration() default false;
-	boolean readable() default true;
-	boolean insertable() default true;
-	boolean updatable() default true;
+    String name();
+    
+    String catalog() default "";
+    
+    String schema() default "";
+    
+    boolean skipSchemaGeneration() default false;
+    
+    boolean readable() default true;
+    
+    boolean insertable() default true;
+    
+    boolean updatable() default true;
 }

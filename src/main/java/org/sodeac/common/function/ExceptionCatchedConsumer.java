@@ -16,53 +16,53 @@ import org.sodeac.common.misc.RuntimeWrappedException;
 
 /**
  * Extends {@link Consumer} to consume with potentially throws an exception. Catched exceptions will delegate as {@link RuntimeWrappedException}
- * 
- * @author Sebastian Palarus
  *
  * @param <T>
+ *
+ * @author Sebastian Palarus
  */
 @FunctionalInterface
 public interface ExceptionCatchedConsumer<T> extends Consumer<T>
 {
-	@Override
-	default void accept(T t)
-	{
-		try
-		{
-			acceptWithException(t);
-		}
-		catch (Exception e) 
-		{
-			if(e instanceof RuntimeException)
-			{
-				throw (RuntimeException)e;
-			}
-			throw new RuntimeWrappedException(e);
-		}
-		catch (Error e) 
-		{
-			throw new RuntimeWrappedException(e);
-		}
-	}
-	
-	/**
-	 * Consume object with potentially throws an exception.
-	 * 
-	 * @param t object to consume 
-	 * 
-	 * @throws Exception
-	 */
-	public void acceptWithException(T t) throws Exception, Error;
-	
-	public static <T> Consumer<T> wrap(ExceptionCatchedConsumer<T> consumer)
-	{
-		return new Consumer<T>()
-		{
-			@Override
-			public void accept(T t)
-			{
-				consumer.accept(t);
-			}
-		};
-	}
+    @Override
+    default void accept(final T t)
+    {
+        try
+        {
+            acceptWithException(t);
+        }
+        catch (final Exception e)
+        {
+            if (e instanceof RuntimeException)
+            {
+                throw (RuntimeException) e;
+            }
+            throw new RuntimeWrappedException(e);
+        }
+        catch (final Error e)
+        {
+            throw new RuntimeWrappedException(e);
+        }
+    }
+    
+    /**
+     * Consume object with potentially throws an exception.
+     *
+     * @param t object to consume
+     *
+     * @throws Exception
+     */
+    void acceptWithException(T t) throws Exception, Error;
+    
+    static <T> Consumer<T> wrap(final ExceptionCatchedConsumer<T> consumer)
+    {
+        return new Consumer<T>()
+        {
+            @Override
+            public void accept(final T t)
+            {
+                consumer.accept(t);
+            }
+        };
+    }
 }

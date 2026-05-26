@@ -22,11 +22,16 @@ import java.lang.annotation.Target;
 @Target(METHOD)
 public @interface BowMethod
 {
-	public enum ReturnBowMode {DEFAULT, SELF, UNDEFINED_PARENT_TYPE, NESTED_BOW};
-	
-	boolean convertReturnValueToBow() default false;
-	boolean keepStatic() default false;
-	boolean createBowFromReturnValue() default false;
-	BowMethod.ReturnBowMode returnBowMode() default BowMethod.ReturnBowMode.DEFAULT;
-	String name() default "";
+    enum ReturnBowMode
+    {DEFAULT, SELF, UNDEFINED_PARENT_TYPE, NESTED_BOW}
+    
+    boolean convertReturnValueToBow() default false;
+    
+    boolean keepStatic() default false;
+    
+    boolean createBowFromReturnValue() default false;
+    
+    BowMethod.ReturnBowMode returnBowMode() default BowMethod.ReturnBowMode.DEFAULT;
+    
+    String name() default "";
 }

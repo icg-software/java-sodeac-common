@@ -20,8 +20,9 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RUNTIME)
 @Target(FIELD)
-public @interface XMLNodeList 
+public @interface XMLNodeList
 {
-	boolean listElement() default true;
-	String childElementName() default "";
+    boolean listElement() default true;
+    
+    String childElementName() default "";
 }

@@ -19,33 +19,36 @@ import org.sodeac.common.typedtree.annotation.SQLPrimaryKey;
 import org.sodeac.common.typedtree.annotation.SQLReferencedByColumn;
 import org.sodeac.common.typedtree.annotation.SQLTable;
 
-@SQLTable(name="EMPLOYEES")
+@SQLTable(name = "EMPLOYEES")
 public class EmployeeNodeType extends BranchNodeMetaModel
 {
-	static{ModelRegistry.getBranchNodeMetaModel(EmployeeNodeType.class);}	
-	
-	@SQLColumn(name="EMPLOYEENUMBER")
-	@SQLPrimaryKey
-	public static volatile LeafNodeType<EmployeeNodeType,Integer> EMPLOYEENUMBER;
-	
-	@SQLColumn(name="EXTENSION")
-	public static volatile LeafNodeType<EmployeeNodeType,String> EMPLOYEEEXTENSION;
-	
-	@SQLColumn(name="FIRSTNAME")
-	public static volatile LeafNodeType<EmployeeNodeType,String> EMPLOYEEFIRSTNAME;
-	
-	@SQLColumn(name="LASTNAME")
-	public static volatile LeafNodeType<EmployeeNodeType,String> EMPLOYEELASTNAME;
-	
-	@SQLColumn(name="JOBTITLE")
-	public static volatile LeafNodeType<EmployeeNodeType,String> EMPLOYEEJOBTITLE;
-	
-	@SQLColumn(name="EMAIL")
-	public static volatile LeafNodeType<EmployeeNodeType,String> EMPLOYEEEMAIL;
-	
-	@SQLColumn(name="REPORTSTO")
-	public static volatile LeafNodeType<EmployeeNodeType,Integer> EMPLOYEEREPORTSTO;
-	
-	@SQLReferencedByColumn(name="SALESREPEMPLOYEENUMBER")
-	public static volatile BranchNodeListType<EmployeeNodeType,CustomerNodeType> CUSTOMERS;
+    static
+    {
+        ModelRegistry.getBranchNodeMetaModel(EmployeeNodeType.class);
+    }
+    
+    @SQLColumn(name = "EMPLOYEENUMBER")
+    @SQLPrimaryKey
+    public static volatile LeafNodeType<EmployeeNodeType, Integer> EMPLOYEENUMBER;
+    
+    @SQLColumn(name = "EXTENSION")
+    public static volatile LeafNodeType<EmployeeNodeType, String> EMPLOYEEEXTENSION;
+    
+    @SQLColumn(name = "FIRSTNAME")
+    public static volatile LeafNodeType<EmployeeNodeType, String> EMPLOYEEFIRSTNAME;
+    
+    @SQLColumn(name = "LASTNAME")
+    public static volatile LeafNodeType<EmployeeNodeType, String> EMPLOYEELASTNAME;
+    
+    @SQLColumn(name = "JOBTITLE")
+    public static volatile LeafNodeType<EmployeeNodeType, String> EMPLOYEEJOBTITLE;
+    
+    @SQLColumn(name = "EMAIL")
+    public static volatile LeafNodeType<EmployeeNodeType, String> EMPLOYEEEMAIL;
+    
+    @SQLColumn(name = "REPORTSTO")
+    public static volatile LeafNodeType<EmployeeNodeType, Integer> EMPLOYEEREPORTSTO;
+    
+    @SQLReferencedByColumn(name = "SALESREPEMPLOYEENUMBER")
+    public static volatile BranchNodeListType<EmployeeNodeType, CustomerNodeType> CUSTOMERS;
 }

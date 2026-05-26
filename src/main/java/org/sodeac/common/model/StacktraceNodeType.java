@@ -17,12 +17,15 @@ import org.sodeac.common.typedtree.ModelRegistry;
 import org.sodeac.common.typedtree.annotation.TypedTreeModel;
 import org.sodeac.common.typedtree.annotation.XMLNodeList;
 
-@TypedTreeModel(modelClass=CoreTreeModel.class)
+@TypedTreeModel(modelClass = CoreTreeModel.class)
 @GenerateBow
 public class StacktraceNodeType extends BranchNodeMetaModel
 {
-	static{ModelRegistry.getBranchNodeMetaModel(StacktraceNodeType.class);}
-	
-	@XMLNodeList(childElementName="StacktraceElement", listElement=false)
-	public static volatile BranchNodeListType<StacktraceNodeType,StacktraceElementNodeType> elements;
+    static
+    {
+        ModelRegistry.getBranchNodeMetaModel(StacktraceNodeType.class);
+    }
+    
+    @XMLNodeList(childElementName = "StacktraceElement", listElement = false)
+    public static volatile BranchNodeListType<StacktraceNodeType, StacktraceElementNodeType> elements;
 }

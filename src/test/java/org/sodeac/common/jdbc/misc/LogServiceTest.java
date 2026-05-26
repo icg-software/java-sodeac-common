@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.sodeac.common.jdbc.misc;
 
-
 import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
@@ -40,109 +39,109 @@ import org.sodeac.common.misc.CloseableCollector;
 import org.sodeac.common.model.logging.LogEventListChunkNodeType;
 import org.sodeac.common.model.logging.LoggingTreeModel;
 import org.sodeac.common.typedtree.ModelRegistry;
-import org.sodeac.common.typedtree.XMLMarshaller;
 import org.sodeac.common.typedtree.TypedTreeMetaModel.RootBranchNode;
+import org.sodeac.common.typedtree.XMLMarshaller;
 
 @RunWith(Parameterized.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class LogServiceTest
 {
-	public static List<Object[]> connectionList = null;
-	public static final Map<String,Boolean> createdSchema = new HashMap<String,Boolean>();
-	
-	@Parameters
+    public static List<Object[]> connectionList = null;
+    public static final Map<String, Boolean> createdSchema = new HashMap<String, Boolean>();
+    
+    @Parameters
     public static List<Object[]> connections()
     {
-    	if(connectionList != null)
-    	{
-    		return connectionList;
-    	}
-    	return connectionList = Statics.connections(createdSchema, "logger");
+        if (connectionList != null)
+        {
+            return connectionList;
+        }
+        return connectionList = Statics.connections(createdSchema, "logger");
     }
-	
-	public LogServiceTest(Callable<TestConnection> connectionFactory)
-	{
-		this.testConnectionFactory = connectionFactory;
-	}
-	
-	Callable<TestConnection> testConnectionFactory = null;
-	TestConnection testConnection = null;
-	
-	@Before
-	public void setUp() throws Exception 
-	{
-		this.testConnection = testConnectionFactory.call();
-	}
-	
-	@After
-	public void tearDown()
-	{
-		if(! this.testConnection.enabled)
-		{
-			return;
-		}
-		if(this.testConnection.connection != null)
-		{
-			try
-			{
-				this.testConnection.connection.close();
-			}
-			catch (Exception e) {}
-		}
-	}
-	
-	@Test
-	public void test00001LogServiceDatasoure() throws Exception
-	{
-		if(! testConnection.enabled)
-		{
-			return;
-		}
-		
-		ConplierBean<DataSource> dataSourceProvider = new ConplierBean<DataSource>(testConnection.getDataSource());
-		
-		RootBranchNode<LoggingTreeModel,LogEventListChunkNodeType> chunk = LoggingTreeModel.createLogEventListChunk(2, 1, 0, true);
-		
-		ILogService logService = ILogService.newLogService(LogServiceTest.class,dataSourceProvider,null)
-				.addLoggerBackend(e -> LogEventListChunkNodeType.addLogToEventListChunk(chunk, e));
-		
-		logService.error("TEST_MESSAGE_1", new RuntimeException("xxx"));
-		
-		logService.info("TEST_MESSAGE_2");
-		
-		try(CloseableCollector closeableCollector = CloseableCollector.newInstance())
-		{
-			Connection connection = closeableCollector.register(dataSourceProvider.get().getConnection());
-			
-			ResultSet resultSetLogEventCount = closeableCollector.register(closeableCollector.register(connection.prepareStatement("SELECT COUNT(*) FROM SDC_LOG_EVENT")).executeQuery());
-			resultSetLogEventCount.next();
-			assertEquals("size should be correct", 2, resultSetLogEventCount.getInt(1));
-			
-			ResultSet resultSetLogPropertyCount = closeableCollector.register(closeableCollector.register(connection.prepareStatement("SELECT COUNT(*) FROM SDC_LOG_PROPERTY")).executeQuery());
-			resultSetLogPropertyCount.next();
-			assertEquals("size should be correct", 1, resultSetLogPropertyCount.getInt(1));
-			
-		}
-		
-		XMLMarshaller marshaller = ModelRegistry.getTypedTreeMetaModel(LoggingTreeModel.class).getXMLMarshaller();
-		
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		marshaller.marshal(chunk, baos, true);
-		
-		String xml1 = baos.toString();
-		
-		ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-		RootBranchNode<LoggingTreeModel,LogEventListChunkNodeType> chunk2 = ModelRegistry.getTypedTreeMetaModel(LoggingTreeModel.class).createRootNode(LoggingTreeModel.logEventListChunk);
-		marshaller.unmarshal(chunk2, bais, true);
-		
-		baos = new ByteArrayOutputStream();
-		marshaller.marshal(chunk2, baos, true);
-		
-		String xml2 = baos.toString();
-		assertEquals("value should be correct",xml1, xml2);
-		
-		logService.newEvent().setMessage("TEST_MESSAGE_3").addCurrentStacktrace().fire();
-		
-		logService.close();
-	}
+    
+    public LogServiceTest(final Callable<TestConnection> connectionFactory)
+    {
+        this.testConnectionFactory = connectionFactory;
+    }
+    
+    Callable<TestConnection> testConnectionFactory = null;
+    TestConnection testConnection = null;
+    
+    @Before
+    public void setUp() throws Exception
+    {
+        this.testConnection = this.testConnectionFactory.call();
+    }
+    
+    @After
+    public void tearDown()
+    {
+        if (!this.testConnection.enabled)
+        {
+            return;
+        }
+        if (this.testConnection.connection != null)
+        {
+            try
+            {
+                this.testConnection.connection.close();
+            }
+            catch (final Exception e) { }
+        }
+    }
+    
+    @Test
+    public void test00001LogServiceDatasoure() throws Exception
+    {
+        if (!this.testConnection.enabled)
+        {
+            return;
+        }
+        
+        ConplierBean<DataSource> dataSourceProvider = new ConplierBean<DataSource>(this.testConnection.getDataSource());
+        
+        RootBranchNode<LoggingTreeModel, LogEventListChunkNodeType> chunk = LoggingTreeModel.createLogEventListChunk(2, 1, 0, true);
+        
+        ILogService logService = ILogService.newLogService(LogServiceTest.class, dataSourceProvider, null)
+                                            .addLoggerBackend(e -> LogEventListChunkNodeType.addLogToEventListChunk(chunk, e));
+        
+        logService.error("TEST_MESSAGE_1", new RuntimeException("xxx"));
+        
+        logService.info("TEST_MESSAGE_2");
+        
+        try (CloseableCollector closeableCollector = CloseableCollector.newInstance())
+        {
+            Connection connection = closeableCollector.register(dataSourceProvider.get().getConnection());
+            
+            ResultSet resultSetLogEventCount = closeableCollector.register(closeableCollector.register(connection.prepareStatement("SELECT COUNT(*) FROM SDC_LOG_EVENT")).executeQuery());
+            resultSetLogEventCount.next();
+            assertEquals("size should be correct", 2, resultSetLogEventCount.getInt(1));
+            
+            ResultSet resultSetLogPropertyCount = closeableCollector.register(closeableCollector.register(connection.prepareStatement("SELECT COUNT(*) FROM SDC_LOG_PROPERTY")).executeQuery());
+            resultSetLogPropertyCount.next();
+            assertEquals("size should be correct", 1, resultSetLogPropertyCount.getInt(1));
+            
+        }
+        
+        XMLMarshaller marshaller = ModelRegistry.getTypedTreeMetaModel(LoggingTreeModel.class).getXMLMarshaller();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        marshaller.marshal(chunk, baos, true);
+        
+        String xml1 = baos.toString();
+        
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        RootBranchNode<LoggingTreeModel, LogEventListChunkNodeType> chunk2 = ModelRegistry.getTypedTreeMetaModel(LoggingTreeModel.class).createRootNode(LoggingTreeModel.logEventListChunk);
+        marshaller.unmarshal(chunk2, bais, true);
+        
+        baos = new ByteArrayOutputStream();
+        marshaller.marshal(chunk2, baos, true);
+        
+        String xml2 = baos.toString();
+        assertEquals("value should be correct", xml1, xml2);
+        
+        logService.newEvent().setMessage("TEST_MESSAGE_3").addCurrentStacktrace().fire();
+        
+        logService.close();
+    }
 }

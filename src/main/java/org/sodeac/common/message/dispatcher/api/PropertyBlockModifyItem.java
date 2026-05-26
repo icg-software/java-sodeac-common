@@ -14,50 +14,57 @@ import org.sodeac.common.message.dispatcher.api.IPropertyBlockModifyListener.Mod
 
 public class PropertyBlockModifyItem
 {
-	public PropertyBlockModifyItem(ModifyType type,String key, Object valueOld, Object valueNew)
-	{
-		super();
-		this.type = type;
-		this.key = key;
-		this.valueOld = valueOld;
-		this.valueNew = valueNew;
-	}
-	
-	private ModifyType type;
-	private String key;
-	private Object valueOld; 
-	private Object valueNew;
-	
-	public ModifyType getType()
-	{
-		return type;
-	}
-	public void setType(ModifyType type)
-	{
-		this.type = type;
-	}
-	public String getKey()
-	{
-		return key;
-	}
-	public void setKey(String key)
-	{
-		this.key = key;
-	}
-	public Object getValueOld()
-	{
-		return valueOld;
-	}
-	public void setValueOld(Object valueOld)
-	{
-		this.valueOld = valueOld;
-	}
-	public Object getValueNew()
-	{
-		return valueNew;
-	}
-	public void setValueNew(Object valueNew)
-	{
-		this.valueNew = valueNew;
-	}
+    public PropertyBlockModifyItem(final ModifyType type, final String key, final Object valueOld, final Object valueNew)
+    {
+        super();
+        this.type = type;
+        this.key = key;
+        this.valueOld = valueOld;
+        this.valueNew = valueNew;
+    }
+    
+    private ModifyType type;
+    private String key;
+    private Object valueOld;
+    private Object valueNew;
+    
+    public ModifyType getType()
+    {
+        return this.type;
+    }
+    
+    public void setType(final ModifyType type)
+    {
+        this.type = type;
+    }
+    
+    public String getKey()
+    {
+        return this.key;
+    }
+    
+    public void setKey(final String key)
+    {
+        this.key = key;
+    }
+    
+    public Object getValueOld()
+    {
+        return this.valueOld;
+    }
+    
+    public void setValueOld(final Object valueOld)
+    {
+        this.valueOld = valueOld;
+    }
+    
+    public Object getValueNew()
+    {
+        return this.valueNew;
+    }
+    
+    public void setValueNew(final Object valueNew)
+    {
+        this.valueNew = valueNew;
+    }
 }

@@ -16,40 +16,40 @@ import org.sodeac.common.misc.RuntimeWrappedException;
 
 public interface ExceptionCatchedSupplier<T> extends Supplier<T>
 {
-
-	@Override
-	default T get()
-	{
-		try
-		{
-			return getWithException();
-		}
-		catch (Exception e) 
-		{
-			if(e instanceof RuntimeException)
-			{
-				throw (RuntimeException)e;
-			}
-			throw new RuntimeWrappedException(e);
-		}
-		catch (Error e) 
-		{
-			throw new RuntimeWrappedException(e);
-		}
-	}
-	
-	public T getWithException() throws Exception, Error;
-	
-	public static <T> Supplier<T> wrap(ExceptionCatchedSupplier<T> supplier)
-	{
-		return new Supplier<T>()
-		{
-			@Override
-			public T get()
-			{
-				return supplier.get();
-			}
-		};
-	}
-	
+    
+    @Override
+    default T get()
+    {
+        try
+        {
+            return getWithException();
+        }
+        catch (final Exception e)
+        {
+            if (e instanceof RuntimeException)
+            {
+                throw (RuntimeException) e;
+            }
+            throw new RuntimeWrappedException(e);
+        }
+        catch (final Error e)
+        {
+            throw new RuntimeWrappedException(e);
+        }
+    }
+    
+    T getWithException() throws Exception, Error;
+    
+    static <T> Supplier<T> wrap(final ExceptionCatchedSupplier<T> supplier)
+    {
+        return new Supplier<T>()
+        {
+            @Override
+            public T get()
+            {
+                return supplier.get();
+            }
+        };
+    }
+    
 }

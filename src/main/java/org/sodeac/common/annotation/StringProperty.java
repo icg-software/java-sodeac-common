@@ -23,9 +23,10 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RUNTIME)
 @Target({ TYPE, FIELD })
-@Repeatable(value=StringProperties.class)
+@Repeatable(value = StringProperties.class)
 public @interface StringProperty
 {
-	String key();
-	String value();
+    String key();
+    
+    String value();
 }

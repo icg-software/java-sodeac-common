@@ -33,63 +33,83 @@ import org.sodeac.common.typedtree.BranchNode;
 @Documented
 @Retention(RUNTIME)
 @Target(FIELD)
-public @interface SQLColumn 
+public @interface SQLColumn
 {
-	public enum SQLColumnType {AUTO,CHAR,VARCHAR,CLOB,UUID,BOOLEAN,SMALLINT,INTEGER,BIGINT,REAL,DOUBLE,TIMESTAMP,DATE,TIME,BINARY,BLOB}
-	
-	String name();
-	boolean nullable() default true;
-	SQLColumnType type() default SQLColumnType.AUTO;
-	int length() default 255;
-	boolean readable() default true;
-	boolean insertable() default true;
-	boolean updatable() default true;
-	String staticDefaultValue() default "";
-	Class<? extends IDefaultValueExpressionDriver> defaultValueExpressionDriver() default NoDefaultValueExpressionDriver.class;
-	Class<? extends Consumer<TypedTreeJDBCCruder.ConvertEvent>> onInsert() default NoConsumer.class;
-	Class<? extends Consumer<TypedTreeJDBCCruder.ConvertEvent>> onUpdate() default NoConsumer.class;
-	Class<? extends Consumer<TypedTreeJDBCCruder.ConvertEvent>> onUpsert() default NoConsumer.class;
-	Class<? extends Function<?,?>> nodeValue2JDBC() default NoNode2JDBC.class;
-	Class<? extends Function<?,?>> JDBC2NodeValue() default NoJDBC2Node.class ;
-	
-	public class NoConsumer implements Consumer<TypedTreeJDBCCruder.ConvertEvent>
-	{
-		@Override
-		public void accept(ConvertEvent t){}
-		
-	}
-	
-	public class NoNode2JDBC implements Function<Object,Object>
-	{
-
-		@Override
-		public Object apply(Object t)
-		{
-			return t;
-		}
-		
-	}
-	
-	public class NoJDBC2Node implements Function<Object,Object>
-	{
-
-		@Override
-		public Object apply(Object t)
-		{
-			return t;
-		}
-		
-	}
-	
-	public class NoDefaultValueExpressionDriver implements IDefaultValueExpressionDriver
-	{
-
-		@Override
-		public int driverIsApplicableFor(Map<String, Object> properties){return IDriver.APPLICABLE_NONE;}
-
-		@Override
-		public String createExpression(BranchNode<?,ColumnNodeType> column, Connection connection, String schema, Dictionary<String, Object> properties, IDBSchemaUtilsDriver driver){ return null; }
-		
-	}
-	
+    enum SQLColumnType
+    {AUTO, CHAR, VARCHAR, CLOB, UUID, BOOLEAN, SMALLINT, INTEGER, BIGINT, REAL, DOUBLE, TIMESTAMP, DATE, TIME, BINARY, BLOB}
+    
+    String name();
+    
+    boolean nullable() default true;
+    
+    SQLColumnType type() default SQLColumnType.AUTO;
+    
+    int length() default 255;
+    
+    boolean readable() default true;
+    
+    boolean insertable() default true;
+    
+    boolean updatable() default true;
+    
+    String staticDefaultValue() default "";
+    
+    Class<? extends IDefaultValueExpressionDriver> defaultValueExpressionDriver() default NoDefaultValueExpressionDriver.class;
+    
+    Class<? extends Consumer<TypedTreeJDBCCruder.ConvertEvent>> onInsert() default NoConsumer.class;
+    
+    Class<? extends Consumer<TypedTreeJDBCCruder.ConvertEvent>> onUpdate() default NoConsumer.class;
+    
+    Class<? extends Consumer<TypedTreeJDBCCruder.ConvertEvent>> onUpsert() default NoConsumer.class;
+    
+    Class<? extends Function<?, ?>> nodeValue2JDBC() default NoNode2JDBC.class;
+    
+    Class<? extends Function<?, ?>> JDBC2NodeValue() default NoJDBC2Node.class;
+    
+    class NoConsumer implements Consumer<TypedTreeJDBCCruder.ConvertEvent>
+    {
+        @Override
+        public void accept(final ConvertEvent t) { }
+        
+    }
+    
+    class NoNode2JDBC implements Function<Object, Object>
+    {
+        
+        @Override
+        public Object apply(final Object t)
+        {
+            return t;
+        }
+        
+    }
+    
+    class NoJDBC2Node implements Function<Object, Object>
+    {
+        
+        @Override
+        public Object apply(final Object t)
+        {
+            return t;
+        }
+        
+    }
+    
+    class NoDefaultValueExpressionDriver implements IDefaultValueExpressionDriver
+    {
+        
+        @Override
+        public int driverIsApplicableFor(final Map<String, Object> properties)
+        {
+            return IDriver.APPLICABLE_NONE;
+        }
+        
+        @Override
+        public String createExpression(final BranchNode<?, ColumnNodeType> column, final Connection connection, final String schema, final Dictionary<String, Object> properties, final IDBSchemaUtilsDriver driver)
+        {
+            return null;
+        }
+        
+    }
+    
 }

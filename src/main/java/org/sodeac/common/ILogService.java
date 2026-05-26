@@ -26,199 +26,234 @@ import org.sodeac.common.typedtree.BranchNode;
 
 public interface ILogService extends AutoCloseable
 {
-	public LogLevel getWriteLogLevel();
-	public ILogService setWriteLogLevel(LogLevel logLevel);
-	public ILogService setDefaultDomain(String domain);
-	public ILogService setDefaultModule(String module);
-	public ILogService setDefaultTask(String task);
-	public ILogService setDefaultSource(String source);
-	public ILogService setDefaultNode(UUID node);
-	public ILogService setDefaultLogEventType(LogEventType logEventType);
-	public ILogService setAutoDispose(boolean autoDispose);
-	
-	public ILogService addLoggerBackend(Consumer<BranchNode<?,LogEventNodeType>> logger);
-	public ILogService removeLoggerBackend(Consumer<BranchNode<?,LogEventNodeType>> logger);
-	
-	public default ILogService debug(String message)
-	{
-		if(getWriteLogLevel().getIntValue() > LogLevel.DEBUG.getIntValue())
-		{
-			return this;
-		}
-		
-		newEvent()
-			.setLogItemLevel(LogLevel.DEBUG)
-			.setMessage(message)
-		.fire();
-		
-		return this;
-	}
-	public default ILogService info(String message)
-	{
-		if(getWriteLogLevel().getIntValue() > LogLevel.INFO.getIntValue())
-		{
-			return this;
-		}
-		
-		newEvent()
-			.setLogItemLevel(LogLevel.INFO)
-			.setMessage(message)
-		.fire();
-		
-		return this;
-	}
-	public default ILogService warn(String message)
-	{
-		if(getWriteLogLevel().getIntValue() > LogLevel.WARN.getIntValue())
-		{
-			return this;
-		}
-		
-		newEvent()
-			.setLogItemLevel(LogLevel.WARN)
-			.setMessage(message)
-		.fire();
-		
-		return this;
-	}
-	public default ILogService warn(String message, Throwable throwable)
-	{
-		if(getWriteLogLevel().getIntValue() > LogLevel.WARN.getIntValue())
-		{
-			return this;
-		}
-		
-		newEvent()
-			.setLogItemLevel(LogLevel.WARN)
-			.setMessage(message)
-			.addThrowable(throwable)
-		.fire();
-		
-		return this;
-	}
-	public default ILogService error(String message)
-	{
-		if(getWriteLogLevel().getIntValue() > LogLevel.ERROR.getIntValue())
-		{
-			return this;
-		}
-		
-		newEvent()
-			.setLogItemLevel(LogLevel.ERROR)
-			.setMessage(message)
-		.fire();
-		
-		return this;
-	}
-	public default ILogService error(String message, Throwable throwable)
-	{
-		if(getWriteLogLevel().getIntValue() > LogLevel.ERROR.getIntValue())
-		{
-			return this;
-		}
-		
-		newEvent()
-			.setLogItemLevel(LogLevel.ERROR)
-			.setMessage(message)
-			.addThrowable(throwable)
-		.fire();
-		
-		return this;
-	}
-	public default ILogService fatal(String message)
-	{
-		newEvent()
-			.setLogItemLevel(LogLevel.FATAL)
-			.setMessage(message)
-			.addStacktrace(Thread.currentThread().getStackTrace())
-		.fire();
-		
-		return this;
-	}
-	public default ILogService fatal(String message, Throwable throwable)
-	{
-		if(getWriteLogLevel().getIntValue() > LogLevel.INFO.getIntValue())
-		{
-			return this;
-		}
-		
-		newEvent()
-			.setLogItemLevel(LogLevel.FATAL)
-			.setMessage(message)
-			.addThrowable(throwable)
-		.fire();
-		
-		return this;
-	}
-	
-	public ILogEventBuilder newEvent();
-	
-	public interface ILogEventBuilder
-	{
-		public ILogEventBuilder setLogItemLevel(LogLevel logLevel);
-		public ILogEventBuilder setLogEventType(LogEventType logEventType);
-		public ILogEventBuilder setDomain(String domain);
-		public ILogEventBuilder setModule(String module);
-		public ILogEventBuilder setNode(UUID node);
-		public ILogEventBuilder setSource(String source);
-		public ILogEventBuilder setFormat(String format);
-		public ILogEventBuilder setTask(String task);
-		public ILogEventBuilder setURI(String uri);
-		public ILogEventBuilder setMessage(String message);
-		public ILogEventBuilder addProperty(String key, String value);
-		public ILogEventBuilder addProperty(String key, String value, String type);
-		public ILogEventBuilder addProperty(String key, String value, String type, String domain);
-		public ILogEventBuilder addTag(String tag);
-		public ILogEventBuilder addComment(String comment);
-		public ILogEventBuilder addComment(String comment, String id, String format);
-		public ILogEventBuilder addThrowable(Throwable throwable);
-		public ILogEventBuilder addStacktrace(StackTraceElement[] stacktrace);
-		public ILogEventBuilder addCurrentStacktrace();
-		public ILogService fire();
-	}
-	
-	public static ILogService newLogService(Class<?> clazz)
-	{
-		String bundle = null;
-		String bundleVersion = null;
-		try
-		{
-			if(OSGiUtils.isOSGi())
-			{
-				bundle = OSGiUtils.getSymbolicName(clazz);
-				bundleVersion = OSGiUtils.getVersion(clazz);
-			}
-		}
-		catch (Exception e) {}
-		String source = "sdc:///?class=" + clazz.getCanonicalName();
-		if((bundle != null) && (! bundle.isEmpty()))
-		{
-			source = source + "&bundlename=" + bundle;
-		}
-		if((bundleVersion != null) && (! bundleVersion.isEmpty()))
-		{
-			source = source + "&bundleversion=" + bundleVersion;
-		}
-		return new LogServiceImpl().setDefaultSource(source);
-	}
-	
-	public static ILogService newLogService(Class<?> clazz, Supplier<DataSource> dataSourceProvider, String schema) throws SQLException
-	{
-		return ILogService.newLogService(clazz).addLoggerBackend
-		(
-			new LogServiceImpl.LogServiceDatasourceBackend().setDataSource(dataSourceProvider, schema)
-		);
-	}
-	
-	public static Consumer<BranchNode<?,LogEventNodeType>> createDataSourceBackend(Supplier<DataSource> dataSourceProvider, String schema, boolean schemaCheck) throws SQLException
-	{
-		LogServiceImpl.LogServiceDatasourceBackend backend = new LogServiceImpl.LogServiceDatasourceBackend();
-		backend.setDataSource(dataSourceProvider, schema, schemaCheck);
-		return backend;
-	}
-	
-	public static Consumer<BranchNode<?,LogEventNodeType>> createSystemLoggerBackend(Class<?> clazz)
-	{
-		return new LogServiceImpl.SystemLogger(clazz);
-	}
+    LogLevel getWriteLogLevel();
+    
+    ILogService setWriteLogLevel(LogLevel logLevel);
+    
+    ILogService setDefaultDomain(String domain);
+    
+    ILogService setDefaultModule(String module);
+    
+    ILogService setDefaultTask(String task);
+    
+    ILogService setDefaultSource(String source);
+    
+    ILogService setDefaultNode(UUID node);
+    
+    ILogService setDefaultLogEventType(LogEventType logEventType);
+    
+    ILogService setAutoDispose(boolean autoDispose);
+    
+    ILogService addLoggerBackend(Consumer<BranchNode<?, LogEventNodeType>> logger);
+    
+    ILogService removeLoggerBackend(Consumer<BranchNode<?, LogEventNodeType>> logger);
+    
+    default ILogService debug(final String message)
+    {
+        if (getWriteLogLevel().getIntValue() > LogLevel.DEBUG.getIntValue())
+        {
+            return this;
+        }
+        
+        newEvent()
+            .setLogItemLevel(LogLevel.DEBUG)
+            .setMessage(message)
+            .fire();
+        
+        return this;
+    }
+    
+    default ILogService info(final String message)
+    {
+        if (getWriteLogLevel().getIntValue() > LogLevel.INFO.getIntValue())
+        {
+            return this;
+        }
+        
+        newEvent()
+            .setLogItemLevel(LogLevel.INFO)
+            .setMessage(message)
+            .fire();
+        
+        return this;
+    }
+    
+    default ILogService warn(final String message)
+    {
+        if (getWriteLogLevel().getIntValue() > LogLevel.WARN.getIntValue())
+        {
+            return this;
+        }
+        
+        newEvent()
+            .setLogItemLevel(LogLevel.WARN)
+            .setMessage(message)
+            .fire();
+        
+        return this;
+    }
+    
+    default ILogService warn(final String message, final Throwable throwable)
+    {
+        if (getWriteLogLevel().getIntValue() > LogLevel.WARN.getIntValue())
+        {
+            return this;
+        }
+        
+        newEvent()
+            .setLogItemLevel(LogLevel.WARN)
+            .setMessage(message)
+            .addThrowable(throwable)
+            .fire();
+        
+        return this;
+    }
+    
+    default ILogService error(final String message)
+    {
+        if (getWriteLogLevel().getIntValue() > LogLevel.ERROR.getIntValue())
+        {
+            return this;
+        }
+        
+        newEvent()
+            .setLogItemLevel(LogLevel.ERROR)
+            .setMessage(message)
+            .fire();
+        
+        return this;
+    }
+    
+    default ILogService error(final String message, final Throwable throwable)
+    {
+        if (getWriteLogLevel().getIntValue() > LogLevel.ERROR.getIntValue())
+        {
+            return this;
+        }
+        
+        newEvent()
+            .setLogItemLevel(LogLevel.ERROR)
+            .setMessage(message)
+            .addThrowable(throwable)
+            .fire();
+        
+        return this;
+    }
+    
+    default ILogService fatal(final String message)
+    {
+        newEvent()
+            .setLogItemLevel(LogLevel.FATAL)
+            .setMessage(message)
+            .addStacktrace(Thread.currentThread().getStackTrace())
+            .fire();
+        
+        return this;
+    }
+    
+    default ILogService fatal(final String message, final Throwable throwable)
+    {
+        if (getWriteLogLevel().getIntValue() > LogLevel.INFO.getIntValue())
+        {
+            return this;
+        }
+        
+        newEvent()
+            .setLogItemLevel(LogLevel.FATAL)
+            .setMessage(message)
+            .addThrowable(throwable)
+            .fire();
+        
+        return this;
+    }
+    
+    ILogEventBuilder newEvent();
+    
+    interface ILogEventBuilder
+    {
+        ILogEventBuilder setLogItemLevel(LogLevel logLevel);
+        
+        ILogEventBuilder setLogEventType(LogEventType logEventType);
+        
+        ILogEventBuilder setDomain(String domain);
+        
+        ILogEventBuilder setModule(String module);
+        
+        ILogEventBuilder setNode(UUID node);
+        
+        ILogEventBuilder setSource(String source);
+        
+        ILogEventBuilder setFormat(String format);
+        
+        ILogEventBuilder setTask(String task);
+        
+        ILogEventBuilder setURI(String uri);
+        
+        ILogEventBuilder setMessage(String message);
+        
+        ILogEventBuilder addProperty(String key, String value);
+        
+        ILogEventBuilder addProperty(String key, String value, String type);
+        
+        ILogEventBuilder addProperty(String key, String value, String type, String domain);
+        
+        ILogEventBuilder addTag(String tag);
+        
+        ILogEventBuilder addComment(String comment);
+        
+        ILogEventBuilder addComment(String comment, String id, String format);
+        
+        ILogEventBuilder addThrowable(Throwable throwable);
+        
+        ILogEventBuilder addStacktrace(StackTraceElement[] stacktrace);
+        
+        ILogEventBuilder addCurrentStacktrace();
+        
+        ILogService fire();
+    }
+    
+    static ILogService newLogService(final Class<?> clazz)
+    {
+        String bundle = null;
+        String bundleVersion = null;
+        try
+        {
+            if (OSGiUtils.isOSGi())
+            {
+                bundle = OSGiUtils.getSymbolicName(clazz);
+                bundleVersion = OSGiUtils.getVersion(clazz);
+            }
+        }
+        catch (final Exception e) { }
+        String source = "sdc:///?class=" + clazz.getCanonicalName();
+        if ((bundle != null) && (!bundle.isEmpty()))
+        {
+            source = source + "&bundlename=" + bundle;
+        }
+        if ((bundleVersion != null) && (!bundleVersion.isEmpty()))
+        {
+            source = source + "&bundleversion=" + bundleVersion;
+        }
+        return new LogServiceImpl().setDefaultSource(source);
+    }
+    
+    static ILogService newLogService(final Class<?> clazz, final Supplier<DataSource> dataSourceProvider, final String schema) throws SQLException
+    {
+        return ILogService.newLogService(clazz).addLoggerBackend
+            (
+                new LogServiceImpl.LogServiceDatasourceBackend().setDataSource(dataSourceProvider, schema)
+            );
+    }
+    
+    static Consumer<BranchNode<?, LogEventNodeType>> createDataSourceBackend(final Supplier<DataSource> dataSourceProvider, final String schema, final boolean schemaCheck) throws SQLException
+    {
+        LogServiceImpl.LogServiceDatasourceBackend backend = new LogServiceImpl.LogServiceDatasourceBackend();
+        backend.setDataSource(dataSourceProvider, schema, schemaCheck);
+        return backend;
+    }
+    
+    static Consumer<BranchNode<?, LogEventNodeType>> createSystemLoggerBackend(final Class<?> clazz)
+    {
+        return new LogServiceImpl.SystemLogger(clazz);
+    }
 }

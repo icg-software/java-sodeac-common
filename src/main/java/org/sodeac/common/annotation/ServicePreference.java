@@ -21,9 +21,10 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RUNTIME)
 @Target(FIELD)
-@Repeatable(value=ServicePreferences.class)
+@Repeatable(value = ServicePreferences.class)
 public @interface ServicePreference
 {
-	int score();
-	String filter();
+    int score();
+    
+    String filter();
 }

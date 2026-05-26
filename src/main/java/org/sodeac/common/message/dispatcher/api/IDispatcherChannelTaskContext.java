@@ -14,56 +14,55 @@ import java.util.List;
 
 /**
  * Context of task running
- * 
+ *
  * @author Sebastian Palarus
  *
  */
 public interface IDispatcherChannelTaskContext<T>
 {
-	/**
-	 * getter for queue
-	 * 
-	 * @return queue
-	 */
-	public IDispatcherChannel<T> getChannel();
-	
-	
-	/**
-	 * getter for task property block
-	 * 
-	 * @return task property block
-	 */
-	public IPropertyBlock getTaskPropertyBlock(); 
-	
-	/**
-	 * getter for task control
-	 * 
-	 * @return task control
-	 */
-	public ITaskControl getTaskControl();
-	
-	/**
-	 * getter for current processing task list
-	 * 
-	 * @return current processing task list
-	 */
-	public List<IDispatcherChannelTask<T>> currentProcessedTaskList();
-
-	/**
-	 * 
-	 * @return
-	 */
-	public String getTaskId();
-	
-	/**
-	 * publish healthy living state
-	 */
-	public void heartbeat();
-	
-	/**
-	 * Setter for task state. task state is usable in {@link IOnTaskTimeout#onTaskTimeout(IDispatcherChannel, IDispatcherChannelTask, Object, Runnable)}. 
-	 * 
-	 * @param taskState
-	 */
-	public void setTaskState(Object taskState);
+    /**
+     * getter for queue
+     *
+     * @return queue
+     */
+    IDispatcherChannel<T> getChannel();
+    
+    /**
+     * getter for task property block
+     *
+     * @return task property block
+     */
+    IPropertyBlock getTaskPropertyBlock();
+    
+    /**
+     * getter for task control
+     *
+     * @return task control
+     */
+    ITaskControl getTaskControl();
+    
+    /**
+     * getter for current processing task list
+     *
+     * @return current processing task list
+     */
+    List<IDispatcherChannelTask<T>> currentProcessedTaskList();
+    
+    /**
+     *
+     * @return
+     */
+    String getTaskId();
+    
+    /**
+     * publish healthy living state
+     */
+    void heartbeat();
+    
+    /**
+     * Setter for task state. task state is usable in {@link IOnTaskTimeout#onTaskTimeout(IDispatcherChannel, IDispatcherChannelTask, Object, Runnable)}.
+     *
+     * @param taskState
+     */
+    void setTaskState(Object taskState);
 }

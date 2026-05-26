@@ -22,5 +22,5 @@ import java.lang.annotation.Target;
 @Target(TYPE)
 public @interface ServiceRegistrations
 {
-	ServiceRegistration[] value();
+    ServiceRegistration[] value();
 }

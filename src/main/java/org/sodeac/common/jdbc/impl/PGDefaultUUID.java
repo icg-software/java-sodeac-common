@@ -22,58 +22,58 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.sodeac.common.jdbc.IDBSchemaUtilsDriver;
 import org.sodeac.common.jdbc.schemax.IDefaultUUID;
+import org.sodeac.common.misc.Driver.IDriver;
 import org.sodeac.common.misc.OSGiDriverRegistry;
 import org.sodeac.common.misc.RuntimeWrappedException;
-import org.sodeac.common.misc.Driver.IDriver;
 import org.sodeac.common.model.dbschema.ColumnNodeType;
 import org.sodeac.common.typedtree.BranchNode;
 
-@Component(service=IDefaultUUID.class,property= {"defaultdriver=true","type=postgresql"})
+@Component(service = IDefaultUUID.class, property = { "defaultdriver=true", "type=postgresql" })
 public class PGDefaultUUID implements IDefaultUUID
 {
-	@Reference(cardinality=ReferenceCardinality.MANDATORY,policy=ReferencePolicy.STATIC)
-	protected volatile OSGiDriverRegistry internalBootstrapDep;
-	
-	@Override
-	public int driverIsApplicableFor(Map<String, Object> properties)
-	{
-		try
-		{
-			Connection connection = (Connection)properties.get(Connection.class.getCanonicalName());
-			if(connection.getMetaData().getDatabaseProductName().equalsIgnoreCase("PostgreSQL"))
-			{
-				return IDriver.APPLICABLE_DEFAULT;
-			}
-		}
-		catch (Exception e) {}
-		return IDriver.APPLICABLE_NONE;
-	}
-
-	@Override
-	public String createExpression
-	(
-		BranchNode<?, ColumnNodeType> column, 
-		Connection connection, String schemaName, 
-		Dictionary<String, Object> properties, 
-		IDBSchemaUtilsDriver driver
-	)
-	{
-		try
-		{
-			PreparedStatement preparedStatement = connection.prepareStatement("create extension if not exists \"uuid-ossp\"");
-			try
-			{
-				preparedStatement.executeUpdate();
-			}
-			finally 
-			{
-				preparedStatement.close();
-			}
-		}
-		catch (SQLException e) 
-		{
-			throw new RuntimeWrappedException(e);
-		}
-		return "public.uuid_generate_v4()";
-	}
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC)
+    protected volatile OSGiDriverRegistry internalBootstrapDep;
+    
+    @Override
+    public int driverIsApplicableFor(final Map<String, Object> properties)
+    {
+        try
+        {
+            Connection connection = (Connection) properties.get(Connection.class.getCanonicalName());
+            if (connection.getMetaData().getDatabaseProductName().equalsIgnoreCase("PostgreSQL"))
+            {
+                return IDriver.APPLICABLE_DEFAULT;
+            }
+        }
+        catch (final Exception e) { }
+        return IDriver.APPLICABLE_NONE;
+    }
+    
+    @Override
+    public String createExpression
+        (
+            final BranchNode<?, ColumnNodeType> column,
+            final Connection connection, final String schemaName,
+            final Dictionary<String, Object> properties,
+            final IDBSchemaUtilsDriver driver
+        )
+    {
+        try
+        {
+            PreparedStatement preparedStatement = connection.prepareStatement("create extension if not exists \"uuid-ossp\"");
+            try
+            {
+                preparedStatement.executeUpdate();
+            }
+            finally
+            {
+                preparedStatement.close();
+            }
+        }
+        catch (final SQLException e)
+        {
+            throw new RuntimeWrappedException(e);
+        }
+        return "public.uuid_generate_v4()";
+    }
 }

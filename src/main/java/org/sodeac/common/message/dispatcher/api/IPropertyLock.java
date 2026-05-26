@@ -12,16 +12,16 @@ package org.sodeac.common.message.dispatcher.api;
 
 /**
  * A lock for {@link IPropertyBlock} to unlock locked property-values
- * 
+ *
  * @author Sebastian Palarus
  *
  */
 public interface IPropertyLock
 {
-	/**
-	 * unlock locked property-value for writable access
-	 * 
-	 * @return property is unlocked now
-	 */
-	public boolean unlock();
+    /**
+     * unlock locked property-value for writable access
+     *
+     * @return property is unlocked now
+     */
+    boolean unlock();
 }

@@ -17,33 +17,33 @@ import org.sodeac.common.message.dispatcher.api.ISubChannel;
 
 public class SubChannelImpl extends ChannelImpl implements ISubChannel
 {
-	private UUID scopeId;
-	private boolean adoptContoller = false;
-	private boolean adoptServices = false;
-	
-	protected SubChannelImpl(UUID scopeId,ChannelImpl rootChannel, ChannelImpl parentChannel, String scopeName, boolean adoptContoller, boolean adoptServices, Map<String, Object> configurationProperties, Map<String, Object> stateProperties)
-	{
-		super(parentChannel.getId() + "." + scopeId.toString(),(MessageDispatcherImpl)parentChannel.getDispatcher(), rootChannel, parentChannel, scopeName, configurationProperties,stateProperties);
-		
-		this.adoptContoller = adoptContoller;
-		this.adoptServices = adoptServices;
-		this.scopeId = scopeId;
-	}
-
-	@Override
-	public UUID getScopeId()
-	{
-		return scopeId;
-	}
-	
-	public boolean isAdoptContoller()
-	{
-		return adoptContoller;
-	}
-
-	public boolean isAdoptServices()
-	{
-		return adoptServices;
-	}
-
+    private final UUID scopeId;
+    private boolean adoptContoller = false;
+    private boolean adoptServices = false;
+    
+    protected SubChannelImpl(final UUID scopeId, final ChannelImpl rootChannel, final ChannelImpl parentChannel, final String scopeName, final boolean adoptContoller, final boolean adoptServices, final Map<String, Object> configurationProperties, final Map<String, Object> stateProperties)
+    {
+        super(parentChannel.getId() + "." + scopeId.toString(), (MessageDispatcherImpl) parentChannel.getDispatcher(), rootChannel, parentChannel, scopeName, configurationProperties, stateProperties);
+        
+        this.adoptContoller = adoptContoller;
+        this.adoptServices = adoptServices;
+        this.scopeId = scopeId;
+    }
+    
+    @Override
+    public UUID getScopeId()
+    {
+        return this.scopeId;
+    }
+    
+    public boolean isAdoptContoller()
+    {
+        return this.adoptContoller;
+    }
+    
+    public boolean isAdoptServices()
+    {
+        return this.adoptServices;
+    }
+    
 }

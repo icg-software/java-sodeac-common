@@ -10,6 +10,6 @@
  *******************************************************************************/
 package org.sodeac.common.message.dispatcher.api;
 
-public interface IDispatcherChannelSystemService<T> extends IDispatcherChannelService<T>,IDispatcherChannelComponent.IDispatcherChannelComponentDriver
+public interface IDispatcherChannelSystemService<T> extends IDispatcherChannelService<T>, IDispatcherChannelComponent.IDispatcherChannelComponentDriver
 {
 }

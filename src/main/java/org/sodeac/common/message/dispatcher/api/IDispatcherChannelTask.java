@@ -12,29 +12,30 @@ package org.sodeac.common.message.dispatcher.api;
 
 /**
  * A {@link IDispatcherChannelTask} acts as processor for one or more {@link IMessage}s.
- * 
+ *
  * @author Sebastian Palarus
  *
  */
 @FunctionalInterface
 public interface IDispatcherChannelTask<T>
 {
-	
-	/**
-	 * invoked one time at initialization of this task
-	 * 
-	 * @param queue parent-{@link IDispatcherChannel} 
-	 * @param id registration-id of this task
-	 * @param propertyBlock properties for this task
-	 * @param taskControl state-handler for this task
-	 */
-	public default void configure(IDispatcherChannel<T> queue, String id, IPropertyBlock propertyBlock, ITaskControl taskControl) {};
-	
-	/**
-	 * run this task, invoked by channel-worker.
-	 * 
-	 * @param context of task running
-	 * @throws Exception
-	 */
-	public void run(IDispatcherChannelTaskContext<T> taskContext) throws Exception;
+    
+    /**
+     * invoked one time at initialization of this task
+     *
+     * @param queue         parent-{@link IDispatcherChannel}
+     * @param id            registration-id of this task
+     * @param propertyBlock properties for this task
+     * @param taskControl   state-handler for this task
+     */
+    default void configure(final IDispatcherChannel<T> queue, final String id, final IPropertyBlock propertyBlock, final ITaskControl taskControl) { }
+    
+    /**
+     * run this task, invoked by channel-worker.
+     *
+     * @param context of task running
+     *
+     * @throws Exception
+     */
+    void run(IDispatcherChannelTaskContext<T> taskContext) throws Exception;
 }

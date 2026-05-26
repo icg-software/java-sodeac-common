@@ -24,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 @Target({ TYPE, FIELD })
 public @interface Timeout
 {
-	long value();
-	TimeUnit unit();
+    long value();
+    
+    TimeUnit unit();
 }

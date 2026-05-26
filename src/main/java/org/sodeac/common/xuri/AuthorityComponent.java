@@ -15,27 +15,26 @@ package org.sodeac.common.xuri;
  */
 
 /**
- * Authority component of URI. Authority components contains multiple subcomponents of type {@link AuthoritySubComponent}. 
- * 
+ * Authority component of URI. Authority components contains multiple subcomponents of type {@link AuthoritySubComponent}.
+ *
  * @author Sebastian Palarus
- * @since 1.0
  * @version 1.0
+ * @since 1.0
  *
  */
 public class AuthorityComponent extends AbstractComponent<AuthoritySubComponent>
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 3937914592142761246L;
-
-
-	/**
-	 * constructor for authority component
-	 */
-	public AuthorityComponent()
-	{
-		super(ComponentType.AUTHORITY);
-	}
-	
+    /**
+     *
+     */
+    private static final long serialVersionUID = 3937914592142761246L;
+    
+    /**
+     * constructor for authority component
+     */
+    public AuthorityComponent()
+    {
+        super(ComponentType.AUTHORITY);
+    }
+    
 }

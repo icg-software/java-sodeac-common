@@ -24,5 +24,5 @@ import java.lang.annotation.Target;
 @Target({ TYPE, FIELD })
 public @interface IntegerProperties
 {
-	IntegerProperty[] value();
+    IntegerProperty[] value();
 }

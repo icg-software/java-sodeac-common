@@ -13,38 +13,37 @@ package org.sodeac.common.xuri;
 import org.sodeac.common.misc.Driver.IDriver;
 
 /**
- * 
+ *
  * Interface for extensions to define and handle an expression string
- * 
+ *
  * @author Sebastian Palarus
  *
  */
 public interface IExtension<T> extends IDriver
 {
-	/**
-	 * 
-	 * @return type of extension
-	 */
-	public String getType();
-	
-	/**
-	 * 
-	 * @return representative expression string for extension
-	 */
-	public String getExpression();
-	
-	/**
-	 * getter for default decoder instance
-	 * 
-	 * @return default decoder instance
-	 */
-	public IDecodingExtensionHandler<T> getDecoder();
-	
-	
-	/**
-	 * getter for default encoder instance
-	 * 
-	 * @return default encoder instance
-	 */
-	public IEncodingExtensionHandler<T> getEncoder();
+    /**
+     *
+     * @return type of extension
+     */
+    String getType();
+    
+    /**
+     *
+     * @return representative expression string for extension
+     */
+    String getExpression();
+    
+    /**
+     * getter for default decoder instance
+     *
+     * @return default decoder instance
+     */
+    IDecodingExtensionHandler<T> getDecoder();
+    
+    /**
+     * getter for default encoder instance
+     *
+     * @return default encoder instance
+     */
+    IEncodingExtensionHandler<T> getEncoder();
 }

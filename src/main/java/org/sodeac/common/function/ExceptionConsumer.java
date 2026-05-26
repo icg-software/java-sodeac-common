@@ -13,55 +13,53 @@ package org.sodeac.common.function;
 import java.util.function.Consumer;
 
 /**
- * 
- * @deprecated use {@link ExceptionCatchedConsumer} instead
- * 
- * Extends {@link Consumer} to consume with potentially throws an exception. Throwed exceptions will delegate as {@link RuntimeException}
- * 
- * 
- * @author Sebastian Palarus
  *
  * @param <T>
+ *
+ * @author Sebastian Palarus
+ * @deprecated use {@link ExceptionCatchedConsumer} instead
+ * <p>
+ * Extends {@link Consumer} to consume with potentially throws an exception. Throwed exceptions will delegate as {@link RuntimeException}
  */
 @FunctionalInterface
 @Deprecated
 public interface ExceptionConsumer<T> extends Consumer<T>
 {
-	@Override
-	default void accept(T t)
-	{
-		try
-		{
-			acceptWithException(t);
-		}
-		catch (Exception e) 
-		{
-			if(e instanceof RuntimeException)
-			{
-				throw (RuntimeException)e;
-			}
-			throw new RuntimeException(e);
-		}
-	}
-	
-	/**
-	 * Consume object with potentially throws an exception.
-	 * 
-	 * @param t object to consume 
-	 * 
-	 * @throws Exception
-	 */
-	public void acceptWithException(T t) throws Exception;
-	
-	public static <T> Consumer<T> wrap(ExceptionConsumer<T> consumer)
-	{
-		return new Consumer<T>()
-		{
-			@Override
-			public void accept(T t)
-			{
-				consumer.accept(t);
-			}
-		};
-	}
+    @Override
+    default void accept(final T t)
+    {
+        try
+        {
+            acceptWithException(t);
+        }
+        catch (final Exception e)
+        {
+            if (e instanceof RuntimeException)
+            {
+                throw (RuntimeException) e;
+            }
+            throw new RuntimeException(e);
+        }
+    }
+    
+    /**
+     * Consume object with potentially throws an exception.
+     *
+     * @param t object to consume
+     *
+     * @throws Exception
+     */
+    void acceptWithException(T t) throws Exception;
+    
+    static <T> Consumer<T> wrap(final ExceptionConsumer<T> consumer)
+    {
+        return new Consumer<T>()
+        {
+            @Override
+            public void accept(final T t)
+            {
+                consumer.accept(t);
+            }
+        };
+    }
 }

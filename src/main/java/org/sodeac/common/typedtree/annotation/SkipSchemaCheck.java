@@ -21,6 +21,6 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RUNTIME)
 @Target({ TYPE, FIELD })
-public @interface SkipSchemaCheck 
+public @interface SkipSchemaCheck
 {
 }

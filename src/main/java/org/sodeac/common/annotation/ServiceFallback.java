@@ -22,5 +22,5 @@ import java.lang.annotation.Target;
 @Target(FIELD)
 public @interface ServiceFallback
 {
-	Class<?> clazz();
+    Class<?> clazz();
 }

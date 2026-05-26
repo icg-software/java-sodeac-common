@@ -14,32 +14,32 @@ import java.sql.Connection;
 import java.util.Dictionary;
 import java.util.Map;
 
-import org.sodeac.common.misc.Driver.IDriver;
 import org.sodeac.common.jdbc.IDBSchemaUtilsDriver;
 import org.sodeac.common.jdbc.IDefaultValueExpressionDriver;
+import org.sodeac.common.misc.Driver.IDriver;
 import org.sodeac.common.model.dbschema.ColumnNodeType;
 import org.sodeac.common.typedtree.BranchNode;
 
 public interface IDefaultStaticValue extends IDefaultValueExpressionDriver
 {
-
-	@Override
-	default int driverIsApplicableFor(Map<String, Object> properties)
-	{
-		return IDriver.APPLICABLE_DEFAULT;
-	}
-
-	@Override
-	default String createExpression
-	(
-		BranchNode<?, ColumnNodeType> column, 
-		Connection connection,
-		String schema, 
-		Dictionary<String, Object> properties, 
-		IDBSchemaUtilsDriver driver
-	)
-	{
-		return column.getValue(ColumnNodeType.defaultStaticValue);
-	}
-	
+    
+    @Override
+    default int driverIsApplicableFor(final Map<String, Object> properties)
+    {
+        return IDriver.APPLICABLE_DEFAULT;
+    }
+    
+    @Override
+    default String createExpression
+        (
+            final BranchNode<?, ColumnNodeType> column,
+            final Connection connection,
+            final String schema,
+            final Dictionary<String, Object> properties,
+            final IDBSchemaUtilsDriver driver
+        )
+    {
+        return column.getValue(ColumnNodeType.defaultStaticValue);
+    }
+    
 }

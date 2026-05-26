@@ -20,7 +20,7 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RUNTIME)
 @Target(FIELD)
-public @interface SQLUniqueIndex 
+public @interface SQLUniqueIndex
 {
-	String name() default "";
+    String name() default "";
 }

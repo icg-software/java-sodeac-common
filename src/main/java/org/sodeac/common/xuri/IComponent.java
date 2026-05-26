@@ -11,14 +11,14 @@
 package org.sodeac.common.xuri;
 
 /**
- * 
+ *
  * Component of URI (scheme, authority, path, query, fragment)
- * 
- * @author Sebastian Palarus
- * @since 1.0
- * @version 1.0
- * 
+ *
  * @param <T>
+ *
+ * @author Sebastian Palarus
+ * @version 1.0
+ * @since 1.0
  */
 public interface IComponent<T>
 {

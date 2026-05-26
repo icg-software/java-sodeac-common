@@ -14,19 +14,19 @@ import java.util.function.BiConsumer;
 
 public interface IChildNodeListener<T extends BranchNodeMetaModel> extends BiConsumer<Node<T, ?>, Object>
 {
-
-	@Override
-	public void accept(Node<T, ?> node, Object oldValue);
-	
-	public interface ILeafNodeListener<T extends BranchNodeMetaModel, X> extends IChildNodeListener<T>
-	{
-		@Override
-		public default void accept(Node<T, ?> node, Object oldValue)
-		{
-			this.onUpdate((LeafNode)node, (X)oldValue);
-		}
-		
-		public void onUpdate(LeafNode<T, X> node, X oldValue);
-	}
-	
+    
+    @Override
+    void accept(Node<T, ?> node, Object oldValue);
+    
+    interface ILeafNodeListener<T extends BranchNodeMetaModel, X> extends IChildNodeListener<T>
+    {
+        @Override
+        default void accept(final Node<T, ?> node, final Object oldValue)
+        {
+            this.onUpdate((LeafNode) node, (X) oldValue);
+        }
+        
+        void onUpdate(LeafNode<T, X> node, X oldValue);
+    }
+    
 }

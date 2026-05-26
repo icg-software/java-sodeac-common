@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.sodeac.common.message.service.api;
 
-
 import java.util.function.Consumer;
 
 import org.sodeac.common.message.service.api.IServiceChannel.IChannelEvent;
@@ -18,33 +17,37 @@ import org.sodeac.common.message.service.api.IServiceChannel.IChannelEventProces
 
 public interface ICommonChannelEventProcessors
 {
-	public interface IChannelErrorProcessor  extends IChannelEventProcessor
-	{
-		public IChannelEventProcessor onChannelEvent(Consumer<IChannelError> consumer);
-	}
-	
-	public interface IChannelError extends IChannelEvent
-	{
-		public enum ErrorType {ON_TRANSPORT, ON_SUPPLY, ON_CONSUME, ON_TIMEOUT}
-		
-		public Throwable getThrowable();
-		public ErrorType getType();
-		
-		public IServiceChannel<?> getChannel();
-	}
-
-	public interface IChannelCloseProcessor  extends IChannelEventProcessor
-	{
-		public <T> IChannelEventProcessor onChannelEvent(Consumer<IChannelClose> consumer);
-	}
-	
-	public interface IChannelClose extends IChannelEvent
-	{
-		public enum Actor {SUPPLIER,CONSUMNER}
-		
-		public int getCountSupplier();
-		public int getCountConsumer();
-		
-		public IServiceChannel<?> getChannel();
-	}
+    interface IChannelErrorProcessor extends IChannelEventProcessor
+    {
+        IChannelEventProcessor onChannelEvent(Consumer<IChannelError> consumer);
+    }
+    
+    interface IChannelError extends IChannelEvent
+    {
+        enum ErrorType
+        {ON_TRANSPORT, ON_SUPPLY, ON_CONSUME, ON_TIMEOUT}
+        
+        Throwable getThrowable();
+        
+        ErrorType getType();
+        
+        IServiceChannel<?> getChannel();
+    }
+    
+    interface IChannelCloseProcessor extends IChannelEventProcessor
+    {
+        <T> IChannelEventProcessor onChannelEvent(Consumer<IChannelClose> consumer);
+    }
+    
+    interface IChannelClose extends IChannelEvent
+    {
+        enum Actor
+        {SUPPLIER, CONSUMNER}
+        
+        int getCountSupplier();
+        
+        int getCountConsumer();
+        
+        IServiceChannel<?> getChannel();
+    }
 }
